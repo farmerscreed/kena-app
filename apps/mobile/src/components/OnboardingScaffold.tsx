@@ -32,6 +32,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { CaretLeftIcon } from 'phosphor-react-native';
 import { useTheme } from '../theme';
 
 export interface OnboardingScaffoldProps {
@@ -90,14 +91,25 @@ export function OnboardingScaffold({
           accessibilityRole="button"
           accessibilityLabel="Back"
           hitSlop={theme.spacing.m}
-          style={{ alignSelf: 'flex-start', marginBottom: theme.spacing.xxl }}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignSelf: 'flex-start',
+            marginBottom: theme.spacing.xxl,
+          }}
         >
+          <CaretLeftIcon
+            size={body.size + 2}
+            color={theme.colors.brand.primary}
+            weight="bold"
+          />
           <Text
             maxFontSizeMultiplier={1.4}
             style={{
               color: theme.colors.brand.primary,
               fontSize: body.size,
               fontFamily: body.family,
+              marginLeft: theme.spacing.xs,
             }}
           >
             Back

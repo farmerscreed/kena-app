@@ -29,7 +29,7 @@ function withProviders(ui: ReactNode) {
   );
 }
 
-function renderHero(overrides?: { skip?: boolean }) {
+function renderHero(overrides?: { skip?: boolean; onBack?: () => void }) {
   const onPrimary = jest.fn();
   const onSkip = jest.fn();
   render(
@@ -43,6 +43,7 @@ function renderHero(overrides?: { skip?: boolean }) {
         pagerTestID="test-pager"
         primary={{ label: 'Continue', onPress: onPrimary, testID: 'hero-primary' }}
         skip={overrides?.skip ? { label: 'Skip', onPress: onSkip, testID: 'hero-skip' } : undefined}
+        onBack={overrides?.onBack}
       />,
     ),
   );
@@ -73,5 +74,17 @@ describe('OnboardingHero — scroll reachability', () => {
     renderHero({ skip: true });
     const scroll = screen.getByTestId('onboarding-hero-scroll');
     expect(within(scroll).getByTestId('hero-skip')).toBeTruthy();
+  });
+
+  it('renders a back affordance that fires onBack when provided', () => {
+    const onBack = jest.fn();
+    renderHero({ onBack });
+    fireEvent.press(screen.getByLabelText('Back'));
+    expect(onBack).toHaveBeenCalledTimes(1);
+  });
+
+  it('omits the back affordance when onBack is not provided', () => {
+    renderHero();
+    expect(screen.queryByLabelText('Back')).toBeNull();
   });
 });

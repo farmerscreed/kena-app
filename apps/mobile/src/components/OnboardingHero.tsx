@@ -25,7 +25,7 @@
 // CTA labels. No layout decisions belong on individual screens.
 
 import { useEffect } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import Animated, {
@@ -35,6 +35,7 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
+import { CaretLeftIcon } from 'phosphor-react-native';
 import type { Icon as PhosphorIcon } from 'phosphor-react-native';
 import { Button } from './Button';
 import { PageIndicator } from './PageIndicator';
@@ -59,6 +60,8 @@ export interface OnboardingHeroProps {
   primary: { label: string; onPress: () => void; testID?: string };
   /** Optional. Omit on Intro 1 (no skip per spec). */
   skip?: { label: string; onPress: () => void; testID?: string };
+  /** Optional back affordance (chevron, top-left). Omit on Intro 1. */
+  onBack?: () => void;
 }
 
 const HERO_SIZE = 220;
@@ -74,6 +77,7 @@ export function OnboardingHero({
   pagerTestID,
   primary,
   skip,
+  onBack,
 }: OnboardingHeroProps) {
   const theme = useTheme();
   const reducedMotion = useReducedMotion();
@@ -135,6 +139,17 @@ export function OnboardingHero({
       style={[styles.root, { backgroundColor: theme.colors.surface.base }]}
       edges={['top', 'bottom']}
     >
+      {onBack ? (
+        <Pressable
+          onPress={onBack}
+          accessibilityRole="button"
+          accessibilityLabel="Back"
+          hitSlop={theme.spacing.m}
+          style={[styles.backButton, { top: theme.spacing.m, left: theme.spacing.xl }]}
+        >
+          <CaretLeftIcon size={24} color={theme.colors.text.secondary} weight="bold" />
+        </Pressable>
+      ) : null}
       {/* Scrollable so the CTA is always reachable. With contentContainerStyle
           flexGrow:1, the flex:1 spacer bottom-anchors the CTA when there's room;
           when the hero + headline + body overflow a short viewport (small phone
@@ -278,6 +293,7 @@ export function OnboardingHero({
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  backButton: { position: 'absolute', zIndex: 10, padding: 4 },
   content: { flexGrow: 1, alignItems: 'center' },
   heroBlock: {
     width: HERO_SIZE,
