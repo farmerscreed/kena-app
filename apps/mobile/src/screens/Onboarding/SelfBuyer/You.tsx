@@ -9,19 +9,10 @@
 // raise a hard error since the field is opt-in.
 
 import { useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, TextInput } from 'react-native';
 import { Button } from '../../../components/Button';
 import { OnboardingEyebrow } from '../../../components/OnboardingEyebrow';
+import { OnboardingScaffold } from '../../../components/OnboardingScaffold';
 import { TimezonePicker } from '../../../components/TimezonePicker';
 import { useTheme } from '../../../theme';
 import { useOnboarding } from '../../../state/onboarding';
@@ -71,207 +62,172 @@ export function SelfBuyerYouScreen({
   };
 
   return (
-    <SafeAreaView
-      style={[styles.root, { backgroundColor: theme.colors.surface.base }]}
-      edges={['top', 'bottom']}
-    >
-      <KeyboardAvoidingView
-        style={styles.fill}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={[
-            styles.scroll,
-            {
-              paddingHorizontal: theme.spacing.xxl,
-              paddingTop: theme.spacing.xxl,
-              paddingBottom: theme.spacing.xxl,
-            },
-          ]}
-          keyboardShouldPersistTaps="handled"
+    <OnboardingScaffold
+      onBack={() => navigation.goBack()}
+      scrollTestID="self-buyer-you-scroll"
+      footer={
+        <Button
+          variant="primary"
+          onPress={handleContinue}
+          disabled={!valid}
+          testID="self-buyer-you-continue"
+          style={{ width: '100%' }}
         >
-          <Pressable
-            onPress={() => navigation.goBack()}
-            accessibilityRole="button"
-            accessibilityLabel="Back"
-            hitSlop={theme.spacing.m}
-            style={{ alignSelf: 'flex-start', marginBottom: theme.spacing.xxl }}
-          >
-            <Text
-              style={{
-                color: theme.colors.brand.primary,
-                fontSize: body.size,
-                fontFamily: body.family,
-              }}
-            >
-              Back
-            </Text>
-          </Pressable>
+          Continue
+        </Button>
+      }
+    >
+      <OnboardingEyebrow persona="Myself" step={1} total={2} />
 
-          <OnboardingEyebrow persona="Myself" step={1} total={2} />
+      <Text
+        accessibilityRole="header"
+        maxFontSizeMultiplier={1.3}
+        style={{
+          color: theme.colors.text.primary,
+          fontSize: headline.size,
+          lineHeight: headline.lineHeight,
+          fontWeight: headline.weight as '700',
+          fontFamily: headline.family,
+          marginBottom: theme.spacing.s,
+        }}
+      >
+        Welcome. Let's set you up.
+      </Text>
 
-          <Text
-            accessibilityRole="header"
-            style={{
-              color: theme.colors.text.primary,
-              fontSize: headline.size,
-              lineHeight: headline.lineHeight,
-              fontWeight: headline.weight as '700',
-              fontFamily: headline.family,
-              marginBottom: theme.spacing.s,
-            }}
-          >
-            Welcome. Let's set you up.
-          </Text>
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: body.size,
+          lineHeight: body.lineHeight,
+          fontFamily: body.family,
+          marginBottom: theme.spacing.xxl,
+        }}
+      >
+        A few quick details. We don't need much.
+      </Text>
 
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: body.size,
-              lineHeight: body.lineHeight,
-              fontFamily: body.family,
-              marginBottom: theme.spacing.xxl,
-            }}
-          >
-            A few quick details. We don't need much.
-          </Text>
+      {/* Name */}
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: label.size,
+          fontWeight: label.weight as '500',
+          fontFamily: label.family,
+          marginBottom: theme.spacing.s,
+        }}
+      >
+        What should we call you?
+      </Text>
+      <TextInput
+        value={name}
+        onChangeText={setName}
+        placeholder="First name is fine"
+        placeholderTextColor={theme.colors.text.secondary}
+        autoCapitalize="words"
+        autoCorrect={false}
+        returnKeyType="next"
+        accessibilityLabel="Your first name"
+        testID="self-buyer-you-name"
+        style={{
+          backgroundColor: theme.colors.surface.elevated,
+          borderRadius: theme.radii.m,
+          paddingHorizontal: theme.spacing.l,
+          paddingVertical: theme.spacing.m,
+          fontSize: body.size,
+          fontFamily: body.family,
+          color: theme.colors.text.primary,
+          borderWidth: 1,
+          borderColor: theme.colors.border.default,
+          minHeight: theme.minTapTarget,
+          marginBottom: theme.spacing.xxl,
+        }}
+      />
 
-          {/* Name */}
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: label.size,
-              fontWeight: label.weight as '500',
-              fontFamily: label.family,
-              marginBottom: theme.spacing.s,
-            }}
-          >
-            What should we call you?
-          </Text>
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            placeholder="First name is fine"
-            placeholderTextColor={theme.colors.text.secondary}
-            autoCapitalize="words"
-            autoCorrect={false}
-            returnKeyType="next"
-            accessibilityLabel="Your first name"
-            testID="self-buyer-you-name"
-            style={{
-              backgroundColor: theme.colors.surface.elevated,
-              borderRadius: theme.radii.m,
-              paddingHorizontal: theme.spacing.l,
-              paddingVertical: theme.spacing.m,
-              fontSize: body.size,
-              fontFamily: body.family,
-              color: theme.colors.text.primary,
-              borderWidth: 1,
-              borderColor: theme.colors.border.default,
-              minHeight: theme.minTapTarget,
-              marginBottom: theme.spacing.xxl,
-            }}
-          />
+      {/* Year of birth (optional) */}
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: label.size,
+          fontWeight: label.weight as '500',
+          fontFamily: label.family,
+          marginBottom: theme.spacing.s,
+        }}
+      >
+        Year of birth (optional)
+      </Text>
+      <TextInput
+        value={yearText}
+        onChangeText={setYearText}
+        placeholder="e.g. 1962"
+        placeholderTextColor={theme.colors.text.secondary}
+        keyboardType="number-pad"
+        maxLength={4}
+        accessibilityLabel="Year of birth, optional"
+        testID="self-buyer-you-yob"
+        style={{
+          backgroundColor: theme.colors.surface.elevated,
+          borderRadius: theme.radii.m,
+          paddingHorizontal: theme.spacing.l,
+          paddingVertical: theme.spacing.m,
+          fontSize: body.size,
+          fontFamily: body.family,
+          color: theme.colors.text.primary,
+          borderWidth: 1,
+          borderColor: yob.valid
+            ? theme.colors.border.default
+            : theme.colors.state.urgent,
+          minHeight: theme.minTapTarget,
+          marginBottom: theme.spacing.s,
+        }}
+      />
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: yob.valid ? theme.colors.text.secondary : theme.colors.state.urgent,
+          fontSize: caption.size,
+          fontFamily: caption.family,
+          marginBottom: theme.spacing.xxl,
+        }}
+      >
+        {yob.valid
+          ? 'Helps us frame your readings in context. You can skip this.'
+          : `Enter a four-digit year between ${YEAR_MIN} and ${YEAR_MAX}.`}
+      </Text>
 
-          {/* Year of birth (optional) */}
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: label.size,
-              fontWeight: label.weight as '500',
-              fontFamily: label.family,
-              marginBottom: theme.spacing.s,
-            }}
-          >
-            Year of birth (optional)
-          </Text>
-          <TextInput
-            value={yearText}
-            onChangeText={setYearText}
-            placeholder="e.g. 1962"
-            placeholderTextColor={theme.colors.text.secondary}
-            keyboardType="number-pad"
-            maxLength={4}
-            accessibilityLabel="Year of birth, optional"
-            testID="self-buyer-you-yob"
-            style={{
-              backgroundColor: theme.colors.surface.elevated,
-              borderRadius: theme.radii.m,
-              paddingHorizontal: theme.spacing.l,
-              paddingVertical: theme.spacing.m,
-              fontSize: body.size,
-              fontFamily: body.family,
-              color: theme.colors.text.primary,
-              borderWidth: 1,
-              borderColor: yob.valid
-                ? theme.colors.border.default
-                : theme.colors.state.urgent,
-              minHeight: theme.minTapTarget,
-              marginBottom: theme.spacing.s,
-            }}
-          />
-          <Text
-            style={{
-              color: yob.valid ? theme.colors.text.secondary : theme.colors.state.urgent,
-              fontSize: caption.size,
-              fontFamily: caption.family,
-              marginBottom: theme.spacing.xxl,
-            }}
-          >
-            {yob.valid
-              ? 'Helps us frame your readings in context. You can skip this.'
-              : `Enter a four-digit year between ${YEAR_MIN} and ${YEAR_MAX}.`}
-          </Text>
-
-          {/* Timezone */}
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: label.size,
-              fontWeight: label.weight as '500',
-              fontFamily: label.family,
-              marginBottom: theme.spacing.s,
-            }}
-          >
-            Your timezone
-          </Text>
-          <TimezonePicker
-            value={timezone}
-            onChange={setTimezone}
-            fieldA11yPrefix="Your timezone"
-            sheetTitle="Choose your timezone"
-            testID="self-buyer-you-zone"
-          />
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: caption.size,
-              fontFamily: caption.family,
-              marginTop: theme.spacing.s,
-            }}
-          >
-            Auto-detected. Tap to change.
-          </Text>
-
-          <View style={{ height: theme.spacing.xxxl }} />
-
-          <Button
-            variant="primary"
-            onPress={handleContinue}
-            disabled={!valid}
-            testID="self-buyer-you-continue"
-            style={{ width: '100%' }}
-          >
-            Continue
-          </Button>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      {/* Timezone */}
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: label.size,
+          fontWeight: label.weight as '500',
+          fontFamily: label.family,
+          marginBottom: theme.spacing.s,
+        }}
+      >
+        Your timezone
+      </Text>
+      <TimezonePicker
+        value={timezone}
+        onChange={setTimezone}
+        fieldA11yPrefix="Your timezone"
+        sheetTitle="Choose your timezone"
+        testID="self-buyer-you-zone"
+      />
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: caption.size,
+          fontFamily: caption.family,
+          marginTop: theme.spacing.s,
+        }}
+      >
+        Auto-detected. Tap to change.
+      </Text>
+    </OnboardingScaffold>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1 },
-  fill: { flex: 1 },
-  scroll: { flexGrow: 1 },
-});

@@ -193,6 +193,7 @@ export function OnboardingHero({
         {/* Headline. */}
         <Animated.Text
           accessibilityRole="header"
+          maxFontSizeMultiplier={1.3}
           style={[
             headlineAnimStyle,
             {
@@ -213,6 +214,7 @@ export function OnboardingHero({
 
         {/* Body copy. */}
         <Animated.Text
+          maxFontSizeMultiplier={1.5}
           style={[
             bodyAnimStyle,
             {

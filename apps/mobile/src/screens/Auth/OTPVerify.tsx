@@ -8,18 +8,9 @@
 // for the same email.
 
 import { useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Pressable, Text, TextInput, View } from 'react-native';
 import { Button } from '../../components/Button';
+import { OnboardingScaffold } from '../../components/OnboardingScaffold';
 import { useTheme } from '../../theme';
 import { useAuth } from '../../state/auth';
 import type { AuthScreenProps } from '../../navigation/types';
@@ -104,248 +95,212 @@ export function OTPVerifyScreen({ navigation, route }: AuthScreenProps<'OTPVerif
   };
 
   return (
-    <SafeAreaView
-      style={[styles.root, { backgroundColor: theme.colors.surface.base }]}
-      edges={['top', 'bottom']}
-    >
-      <KeyboardAvoidingView
-        style={styles.fill}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    <OnboardingScaffold onBack={() => navigation.goBack()} scrollTestID="otp-scroll">
+      <Text
+        accessibilityRole="header"
+        maxFontSizeMultiplier={1.3}
+        style={{
+          color: theme.colors.text.primary,
+          fontSize: headline.size,
+          lineHeight: headline.lineHeight,
+          fontWeight: headline.weight as '700',
+          fontFamily: headline.family,
+          marginBottom: theme.spacing.s,
+        }}
       >
-        <ScrollView
-          contentContainerStyle={[
-            styles.scroll,
-            {
-              paddingHorizontal: theme.spacing.xxl,
-              paddingTop: theme.spacing.xxl,
-              paddingBottom: theme.spacing.xxl,
-            },
-          ]}
-          keyboardShouldPersistTaps="handled"
+        {verified
+          ? mode === 'signin'
+            ? 'Welcome back.'
+            : 'You’re in.'
+          : 'Check your email'}
+      </Text>
+
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: body.size,
+          lineHeight: body.lineHeight,
+          fontFamily: body.family,
+          marginBottom: theme.spacing.xxl,
+        }}
+      >
+        {verified ? (
+          mode === 'signin' ? (
+            <>Loading your home…</>
+          ) : (
+            <>Setting things up for{' '}
+            <Text style={{ color: theme.colors.text.primary, fontWeight: '600' }}>{email}</Text>
+            .</>
+          )
+        ) : (
+          <>We sent a 6-digit code to{' '}
+          <Text style={{ color: theme.colors.text.primary, fontWeight: '600' }}>{email}</Text>
+          .</>
+        )}
+      </Text>
+
+      {!verified ? (
+        <>
+          <Text
+            maxFontSizeMultiplier={1.5}
+            style={{
+              color: theme.colors.text.secondary,
+              fontSize: label.size,
+              fontWeight: label.weight as '500',
+              fontFamily: label.family,
+              marginBottom: theme.spacing.s,
+            }}
+          >
+            6-digit code
+          </Text>
+
+          <TextInput
+            value={code}
+            onChangeText={(v) => setCode(v.replace(/[^\d]/g, '').slice(0, 6))}
+            placeholder="123456"
+            placeholderTextColor={theme.colors.text.secondary}
+            keyboardType="number-pad"
+            inputMode="numeric"
+            textContentType="oneTimeCode"
+            autoComplete="sms-otp"
+            returnKeyType="go"
+            onSubmitEditing={handleVerify}
+            maxLength={6}
+            accessibilityLabel="6-digit code"
+            testID="otp-code"
+            style={{
+              backgroundColor: theme.colors.surface.elevated,
+              borderRadius: theme.radii.m,
+              paddingHorizontal: theme.spacing.l,
+              paddingVertical: theme.spacing.m,
+              fontSize: 28,
+              letterSpacing: 4,
+              fontFamily: theme.fontFamily.numeric,
+              color: theme.colors.text.primary,
+              borderWidth: 1,
+              borderColor: error ? theme.colors.state.urgent : theme.colors.border.default,
+              minHeight: theme.minTapTarget,
+              textAlign: 'center',
+            }}
+          />
+
+          {/* Sprint 19 Block 9 UX-C — tiny digit-count indicator
+              under the input so the user can see at a glance
+              how many more digits they need. */}
+          <Text
+            maxFontSizeMultiplier={1.5}
+            style={{
+              color: theme.colors.text.secondary,
+              fontSize: caption.size,
+              fontFamily: theme.fontFamily.numeric,
+              textAlign: 'right',
+              marginTop: theme.spacing.xs,
+              letterSpacing: 0.3,
+            }}
+            testID="otp-digit-count"
+          >
+            {code.length} / 6
+          </Text>
+        </>
+      ) : null}
+
+      {error ? (
+        <Text
+          accessibilityLiveRegion="polite"
+          maxFontSizeMultiplier={1.5}
+          style={{
+            color: theme.colors.state.urgent,
+            fontSize: label.size,
+            fontFamily: label.family,
+            marginTop: theme.spacing.s,
+          }}
         >
+          {error}
+        </Text>
+      ) : null}
+      {info ? (
+        <Text
+          accessibilityLiveRegion="polite"
+          maxFontSizeMultiplier={1.5}
+          style={{
+            color: theme.colors.text.secondary,
+            fontSize: label.size,
+            fontFamily: label.family,
+            marginTop: theme.spacing.s,
+          }}
+        >
+          {info}
+        </Text>
+      ) : null}
+
+      <View style={{ height: theme.spacing.xxxl }} />
+
+      {!verified ? (
+        <>
+          <Button
+            variant="primary"
+            onPress={handleVerify}
+            disabled={!valid}
+            loading={submitting}
+            testID="otp-submit"
+            style={{ width: '100%' }}
+          >
+            Verify
+          </Button>
+
+          <View style={{ height: theme.spacing.l }} />
+
           <Pressable
-            onPress={() => navigation.goBack()}
+            onPress={handleResend}
+            disabled={resending}
             accessibilityRole="button"
-            accessibilityLabel="Back"
-            hitSlop={theme.spacing.m}
-            style={{ alignSelf: 'flex-start', marginBottom: theme.spacing.xxl }}
+            accessibilityLabel="Resend code"
+            testID="otp-resend"
+            hitSlop={theme.spacing.s}
+            style={{ paddingVertical: theme.spacing.s, alignItems: 'center' }}
           >
             <Text
+              maxFontSizeMultiplier={1.5}
               style={{
                 color: theme.colors.brand.primary,
                 fontSize: body.size,
                 fontFamily: body.family,
+                opacity: resending ? theme.opacity.disabled : 1,
               }}
             >
-              Back
+              {resending ? 'Sending…' : 'Resend code'}
             </Text>
           </Pressable>
 
-          <Text
-            accessibilityRole="header"
+          {/* Sprint 19 Block 9 UX-A — "Use a different email"
+              link. Pre-Block-9 the only escape was tapping Back
+              twice (OTP → SignUp/SignIn → Fork). */}
+          <Pressable
+            onPress={handleDifferentEmail}
+            accessibilityRole="button"
+            accessibilityLabel="Use a different email"
+            testID="otp-different-email"
+            hitSlop={theme.spacing.s}
             style={{
-              color: theme.colors.text.primary,
-              fontSize: headline.size,
-              lineHeight: headline.lineHeight,
-              fontWeight: headline.weight as '700',
-              fontFamily: headline.family,
-              marginBottom: theme.spacing.s,
+              paddingVertical: theme.spacing.s,
+              alignItems: 'center',
+              marginTop: theme.spacing.s,
             }}
           >
-            {verified
-              ? mode === 'signin'
-                ? 'Welcome back.'
-                : 'You’re in.'
-              : 'Check your email'}
-          </Text>
-
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: body.size,
-              lineHeight: body.lineHeight,
-              fontFamily: body.family,
-              marginBottom: theme.spacing.xxl,
-            }}
-          >
-            {verified ? (
-              mode === 'signin' ? (
-                <>Loading your home…</>
-              ) : (
-                <>Setting things up for{' '}
-                <Text style={{ color: theme.colors.text.primary, fontWeight: '600' }}>{email}</Text>
-                .</>
-              )
-            ) : (
-              <>We sent a 6-digit code to{' '}
-              <Text style={{ color: theme.colors.text.primary, fontWeight: '600' }}>{email}</Text>
-              .</>
-            )}
-          </Text>
-
-          {!verified ? (
-            <>
-              <Text
-                style={{
-                  color: theme.colors.text.secondary,
-                  fontSize: label.size,
-                  fontWeight: label.weight as '500',
-                  fontFamily: label.family,
-                  marginBottom: theme.spacing.s,
-                }}
-              >
-                6-digit code
-              </Text>
-
-              <TextInput
-                value={code}
-                onChangeText={(v) => setCode(v.replace(/[^\d]/g, '').slice(0, 6))}
-                placeholder="123456"
-                placeholderTextColor={theme.colors.text.secondary}
-                keyboardType="number-pad"
-                inputMode="numeric"
-                textContentType="oneTimeCode"
-                autoComplete="sms-otp"
-                returnKeyType="go"
-                onSubmitEditing={handleVerify}
-                maxLength={6}
-                accessibilityLabel="6-digit code"
-                testID="otp-code"
-                style={{
-                  backgroundColor: theme.colors.surface.elevated,
-                  borderRadius: theme.radii.m,
-                  paddingHorizontal: theme.spacing.l,
-                  paddingVertical: theme.spacing.m,
-                  fontSize: 28,
-                  letterSpacing: 4,
-                  fontFamily: theme.fontFamily.numeric,
-                  color: theme.colors.text.primary,
-                  borderWidth: 1,
-                  borderColor: error ? theme.colors.state.urgent : theme.colors.border.default,
-                  minHeight: theme.minTapTarget,
-                  textAlign: 'center',
-                }}
-              />
-
-              {/* Sprint 19 Block 9 UX-C — tiny digit-count indicator
-                  under the input so the user can see at a glance
-                  how many more digits they need. */}
-              <Text
-                style={{
-                  color: theme.colors.text.secondary,
-                  fontSize: caption.size,
-                  fontFamily: theme.fontFamily.numeric,
-                  textAlign: 'right',
-                  marginTop: theme.spacing.xs,
-                  letterSpacing: 0.3,
-                }}
-                testID="otp-digit-count"
-              >
-                {code.length} / 6
-              </Text>
-            </>
-          ) : null}
-
-          {error ? (
             <Text
-              accessibilityLiveRegion="polite"
-              style={{
-                color: theme.colors.state.urgent,
-                fontSize: label.size,
-                fontFamily: label.family,
-                marginTop: theme.spacing.s,
-              }}
-            >
-              {error}
-            </Text>
-          ) : null}
-          {info ? (
-            <Text
-              accessibilityLiveRegion="polite"
+              maxFontSizeMultiplier={1.5}
               style={{
                 color: theme.colors.text.secondary,
-                fontSize: label.size,
-                fontFamily: label.family,
-                marginTop: theme.spacing.s,
+                fontSize: body.size,
+                fontFamily: body.family,
               }}
             >
-              {info}
+              Use a different email
             </Text>
-          ) : null}
-
-          <View style={{ height: theme.spacing.xxxl }} />
-
-          {!verified ? (
-            <>
-              <Button
-                variant="primary"
-                onPress={handleVerify}
-                disabled={!valid}
-                loading={submitting}
-                testID="otp-submit"
-                style={{ width: '100%' }}
-              >
-                Verify
-              </Button>
-
-              <View style={{ height: theme.spacing.l }} />
-
-              <Pressable
-                onPress={handleResend}
-                disabled={resending}
-                accessibilityRole="button"
-                accessibilityLabel="Resend code"
-                testID="otp-resend"
-                hitSlop={theme.spacing.s}
-                style={{ paddingVertical: theme.spacing.s, alignItems: 'center' }}
-              >
-                <Text
-                  style={{
-                    color: theme.colors.brand.primary,
-                    fontSize: body.size,
-                    fontFamily: body.family,
-                    opacity: resending ? theme.opacity.disabled : 1,
-                  }}
-                >
-                  {resending ? 'Sending…' : 'Resend code'}
-                </Text>
-              </Pressable>
-
-              {/* Sprint 19 Block 9 UX-A — "Use a different email"
-                  link. Pre-Block-9 the only escape was tapping Back
-                  twice (OTP → SignUp/SignIn → Fork). */}
-              <Pressable
-                onPress={handleDifferentEmail}
-                accessibilityRole="button"
-                accessibilityLabel="Use a different email"
-                testID="otp-different-email"
-                hitSlop={theme.spacing.s}
-                style={{
-                  paddingVertical: theme.spacing.s,
-                  alignItems: 'center',
-                  marginTop: theme.spacing.s,
-                }}
-              >
-                <Text
-                  style={{
-                    color: theme.colors.text.secondary,
-                    fontSize: body.size,
-                    fontFamily: body.family,
-                  }}
-                >
-                  Use a different email
-                </Text>
-              </Pressable>
-            </>
-          ) : null}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </Pressable>
+        </>
+      ) : null}
+    </OnboardingScaffold>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1 },
-  fill: { flex: 1 },
-  scroll: { flexGrow: 1 },
-});

@@ -6,10 +6,10 @@
 // is gated off until the Shopify integration ships in a later sprint.
 
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 import { Card } from '../../../components/Card';
 import { OnboardingEyebrow } from '../../../components/OnboardingEyebrow';
+import { OnboardingScaffold } from '../../../components/OnboardingScaffold';
 import { Pill } from '../../../components/Pill';
 import { useTheme } from '../../../theme';
 import { useOnboarding } from '../../../state/onboarding';
@@ -65,221 +65,190 @@ export function SelfBuyerWatchScreen({
   };
 
   return (
-    <SafeAreaView
-      style={[styles.root, { backgroundColor: theme.colors.surface.base }]}
-      edges={['top', 'bottom']}
+    <OnboardingScaffold
+      onBack={() => navigation.goBack()}
+      keyboardAware={false}
+      scrollTestID="self-buyer-watch-scroll"
     >
-      <ScrollView
-        contentContainerStyle={[
-          styles.scroll,
-          {
-            paddingHorizontal: theme.spacing.xxl,
-            paddingTop: theme.spacing.xxl,
-            paddingBottom: theme.spacing.xxl,
-          },
-        ]}
+      <OnboardingEyebrow persona="Myself" step={2} total={2} />
+
+      <Text
+        accessibilityRole="header"
+        maxFontSizeMultiplier={1.3}
+        style={{
+          color: theme.colors.text.primary,
+          fontSize: headline.size,
+          lineHeight: headline.lineHeight,
+          fontWeight: headline.weight as '700',
+          fontFamily: headline.family,
+          marginBottom: theme.spacing.s,
+        }}
       >
-        <Pressable
-          onPress={() => navigation.goBack()}
-          accessibilityRole="button"
-          accessibilityLabel="Back"
-          hitSlop={theme.spacing.m}
-          style={{ alignSelf: 'flex-start', marginBottom: theme.spacing.xxl }}
-        >
-          <Text
-            style={{
-              color: theme.colors.brand.primary,
-              fontSize: body.size,
-              fontFamily: body.family,
-            }}
-          >
-            Back
-          </Text>
-        </Pressable>
+        Do you have the watch yet?
+      </Text>
 
-        <OnboardingEyebrow persona="Myself" step={2} total={2} />
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: body.size,
+          lineHeight: body.lineHeight,
+          fontFamily: body.family,
+          marginBottom: theme.spacing.xxl,
+        }}
+      >
+        No problem either way — we'll guide you through the next step.
+      </Text>
 
+      <Card
+        elevation="low"
+        onPress={handleHaveWatch}
+        disabled={finalizing}
+        accessibilityLabel="I have it. Pair it now over Bluetooth."
+        testID="self-buyer-watch-have"
+        style={{ marginBottom: theme.spacing.l }}
+      >
         <Text
-          accessibilityRole="header"
           style={{
             color: theme.colors.text.primary,
-            fontSize: headline.size,
-            lineHeight: headline.lineHeight,
-            fontWeight: headline.weight as '700',
-            fontFamily: headline.family,
-            marginBottom: theme.spacing.s,
+            fontSize: title.size,
+            lineHeight: title.lineHeight,
+            fontWeight: title.weight as '600',
+            fontFamily: title.family,
+            marginBottom: theme.spacing.xs,
           }}
         >
-          Do you have the watch yet?
+          I have it
         </Text>
-
         <Text
           style={{
             color: theme.colors.text.secondary,
             fontSize: body.size,
             lineHeight: body.lineHeight,
             fontFamily: body.family,
-            marginBottom: theme.spacing.xxl,
           }}
         >
-          No problem either way — we'll guide you through the next step.
+          Let's pair it now.
         </Text>
-
-        <Card
-          elevation="low"
-          onPress={handleHaveWatch}
-          disabled={finalizing}
-          accessibilityLabel="I have it. Pair it now over Bluetooth."
-          testID="self-buyer-watch-have"
-          style={{ marginBottom: theme.spacing.l }}
-        >
-          <Text
-            style={{
-              color: theme.colors.text.primary,
-              fontSize: title.size,
-              lineHeight: title.lineHeight,
-              fontWeight: title.weight as '600',
-              fontFamily: title.family,
-              marginBottom: theme.spacing.xs,
-            }}
-          >
-            I have it
-          </Text>
+        {pressed === 'have' && finalizing ? (
           <Text
             style={{
               color: theme.colors.text.secondary,
-              fontSize: body.size,
-              lineHeight: body.lineHeight,
-              fontFamily: body.family,
+              fontSize: caption.size,
+              fontFamily: caption.family,
+              marginTop: theme.spacing.s,
             }}
-          >
-            Let's pair it now.
-          </Text>
-          {pressed === 'have' && finalizing ? (
-            <Text
-              style={{
-                color: theme.colors.text.secondary,
-                fontSize: caption.size,
-                fontFamily: caption.family,
-                marginTop: theme.spacing.s,
-              }}
-              accessibilityLiveRegion="polite"
-            >
-              Setting things up…
-            </Text>
-          ) : null}
-        </Card>
-
-        <Card
-          elevation="default"
-          disabled
-          accessibilityLabel="I need to order one. Coming soon."
-          testID="self-buyer-watch-order"
-          style={{ marginBottom: theme.spacing.l }}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: theme.spacing.xs,
-            }}
-          >
-            <Text
-              style={{
-                color: theme.colors.text.primary,
-                fontSize: title.size,
-                lineHeight: title.lineHeight,
-                fontWeight: title.weight as '600',
-                fontFamily: title.family,
-                flex: 1,
-              }}
-            >
-              I need to order one
-            </Text>
-            <Pill variant="info">Coming soon</Pill>
-          </View>
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: body.size,
-              lineHeight: body.lineHeight,
-              fontFamily: body.family,
-            }}
-          >
-            We're getting the shop ready. We'll let you know when it opens.
-          </Text>
-        </Card>
-
-        {/* Sprint 19 Block 9 — "Add a watch later" parity with the
-            caregiver FamilyWatch screen. Same handler as "I have it"
-            (completeSelfBuyer doesn't actually pair — pairing lives
-            in Settings → Devices); the label is honest about the
-            state. */}
-        <Card
-          elevation="low"
-          onPress={handleAddLater}
-          disabled={finalizing}
-          accessibilityLabel="Add a watch later. Finish setup now and pair from Settings when you're ready."
-          testID="self-buyer-watch-later"
-          style={{ marginBottom: theme.spacing.l }}
-        >
-          <Text
-            style={{
-              color: theme.colors.text.primary,
-              fontSize: title.size,
-              lineHeight: title.lineHeight,
-              fontWeight: title.weight as '600',
-              fontFamily: title.family,
-              marginBottom: theme.spacing.xs,
-            }}
-          >
-            Add a watch later
-          </Text>
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: body.size,
-              lineHeight: body.lineHeight,
-              fontFamily: body.family,
-            }}
-          >
-            Finish setting up now. You can pair a watch from Settings whenever it's ready.
-          </Text>
-          {pressed === 'later' && finalizing ? (
-            <Text
-              style={{
-                color: theme.colors.text.secondary,
-                fontSize: caption.size,
-                fontFamily: caption.family,
-                marginTop: theme.spacing.s,
-              }}
-              accessibilityLiveRegion="polite"
-            >
-              Setting things up…
-            </Text>
-          ) : null}
-        </Card>
-
-        {finalizeError ? (
-          <Text
             accessibilityLiveRegion="polite"
-            testID="self-buyer-watch-error"
-            style={{
-              color: theme.colors.state.urgent,
-              fontSize: body.size,
-              fontFamily: body.family,
-              marginTop: theme.spacing.l,
-            }}
           >
-            {finalizeError}
+            Setting things up…
           </Text>
         ) : null}
-      </ScrollView>
-    </SafeAreaView>
+      </Card>
+
+      <Card
+        elevation="default"
+        disabled
+        accessibilityLabel="I need to order one. Coming soon."
+        testID="self-buyer-watch-order"
+        style={{ marginBottom: theme.spacing.l }}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: theme.spacing.xs,
+          }}
+        >
+          <Text
+            style={{
+              color: theme.colors.text.primary,
+              fontSize: title.size,
+              lineHeight: title.lineHeight,
+              fontWeight: title.weight as '600',
+              fontFamily: title.family,
+              flex: 1,
+            }}
+          >
+            I need to order one
+          </Text>
+          <Pill variant="info">Coming soon</Pill>
+        </View>
+        <Text
+          style={{
+            color: theme.colors.text.secondary,
+            fontSize: body.size,
+            lineHeight: body.lineHeight,
+            fontFamily: body.family,
+          }}
+        >
+          We're getting the shop ready. We'll let you know when it opens.
+        </Text>
+      </Card>
+
+      {/* Sprint 19 Block 9 — "Add a watch later" parity with the
+          caregiver FamilyWatch screen. Same handler as "I have it"
+          (completeSelfBuyer doesn't actually pair — pairing lives
+          in Settings → Devices); the label is honest about the
+          state. */}
+      <Card
+        elevation="low"
+        onPress={handleAddLater}
+        disabled={finalizing}
+        accessibilityLabel="Add a watch later. Finish setup now and pair from Settings when you're ready."
+        testID="self-buyer-watch-later"
+        style={{ marginBottom: theme.spacing.l }}
+      >
+        <Text
+          style={{
+            color: theme.colors.text.primary,
+            fontSize: title.size,
+            lineHeight: title.lineHeight,
+            fontWeight: title.weight as '600',
+            fontFamily: title.family,
+            marginBottom: theme.spacing.xs,
+          }}
+        >
+          Add a watch later
+        </Text>
+        <Text
+          style={{
+            color: theme.colors.text.secondary,
+            fontSize: body.size,
+            lineHeight: body.lineHeight,
+            fontFamily: body.family,
+          }}
+        >
+          Finish setting up now. You can pair a watch from Settings whenever it's ready.
+        </Text>
+        {pressed === 'later' && finalizing ? (
+          <Text
+            style={{
+              color: theme.colors.text.secondary,
+              fontSize: caption.size,
+              fontFamily: caption.family,
+              marginTop: theme.spacing.s,
+            }}
+            accessibilityLiveRegion="polite"
+          >
+            Setting things up…
+          </Text>
+        ) : null}
+      </Card>
+
+      {finalizeError ? (
+        <Text
+          accessibilityLiveRegion="polite"
+          testID="self-buyer-watch-error"
+          style={{
+            color: theme.colors.state.urgent,
+            fontSize: body.size,
+            fontFamily: body.family,
+            marginTop: theme.spacing.l,
+          }}
+        >
+          {finalizeError}
+        </Text>
+      ) : null}
+    </OnboardingScaffold>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1 },
-  scroll: { flexGrow: 1 },
-});
