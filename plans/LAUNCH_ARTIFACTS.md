@@ -35,7 +35,24 @@ Update this log every time a new build artifact is produced.
 > (1Password "Leiko Android Release Keystore"). Target backend: prod
 > Supabase `kqnzxjrpnjnczhgdwdqg`.
 >
-> **Next upload:** bump `LEIKO_VERSION_CODE` to **5** before the next build.
+> **Next upload:** bump `LEIKO_VERSION_CODE` to **6** before the next build — v5 (below) is built and pending upload to the **Open testing** track.
+
+### v5 — `.aab` · versionCode 5 — onboarding scroll fix + v5 remote-refresh/battery hardening
+
+| Field | Value |
+|---|---|
+| **Artifact** | local build — `apps/mobile/android/app/build/outputs/bundle/release/app-release.aab` (~80 MB, 83,838,382 bytes) on the build machine (no EAS URL) |
+| **Package** | `com.leiko.care` |
+| **Build type** | `.aab` via `gradlew bundleRelease` (env-driven `LEIKO_VERSION_CODE=5`) |
+| **versionName / versionCode** | `1.0.0` / `5` |
+| **Built** | 2026-07-08 |
+| **Source** | `main` @ `0ff5951` (merge of `fix/vc5-live-bugs`); tree later lint-cleaned at `dae275c` (no app-code change) |
+| **Signed** | corporate keystore `~/secrets/leiko-release.jks`, fingerprint `64:3C:19:3A:AA:D1:BE:75…` (not the debug key) |
+| **Bundles** | **Onboarding fix** — intro screens now scroll so the CTA is never stranded off-screen on small devices / large OS fonts; all onboarding + auth screens migrated onto a shared `OnboardingScaffold`; font-scaling caps; back-chevron + backward-nav through intros; entrance transition (`687a6a2`→`8c31b54`). **Plus the v5 hardening already on main** — battery-optimization/Doze-exemption prompt after pairing (`156a9f3`/`3211c87`), silent-first remote refresh with visible fallback (`26ad5ed`), `LeikoPowerModule` + release-build fix (`5ff704e`), Expo access-token + Expo-ticket-status push fixes, PostHog project-key fix |
+| **On-device** | Onboarding fix verified on Pixel 8 `43230DLJH001YY` (Android 16) at 1.5× font, 2026-07-08 — Welcome, Sign-up, Intro 1/2, and the You form all render with reachable CTAs |
+| **Gates** | tsc 0 errors · eslint 0 errors / 0 warnings · 2,519 jest tests + 110 snapshots pass · `gradlew bundleRelease` SUCCESSFUL |
+| **Play status** | ⏳ Built; **pending upload to the corporate Open testing track** (versionCode 5) |
+| **Used for** | The v5 release — fixes the client-blocking onboarding scroll bug and hardens background/remote-refresh sync |
 
 ### v4 — `.aab` · versionCode 4 — remote-refresh silent push + corporate/FCM migration
 
@@ -48,7 +65,7 @@ Update this log every time a new build artifact is produced.
 | **Built** | 2026-06-10 |
 | **Bundles** | Corporate/FCM migration (`777f26f` rename · `18d0ee5` FCM via google-services · `1f6789d` assetlinks fingerprints · `50364cf` Expo projectId link — the root-cause fix for empty `push_tokens`) + remote-refresh silent push (`a390af3`/`fa90c5c`/`d2b0f8d` phases 1-3 · `bc1b3a0` vault-based stale-sync cron + `pg_net`) |
 | **Installed** | Sideloaded on both bench phones, both reporting vc4: Pixel 8 `43230DLJH001YY` (`lawonecloud@gmail.com`, wearer) + OnePlus CPH2551 `c4f40da1` (`lawonecloud+caregiver@gmail.com`, caregiver) |
-| **Play status** | ⏳ **Unconfirmed** — was vc4 uploaded to the corporate track, or is vc2 still the live open-test build? (handoff §5.2) |
+| **Play status** | ✅ Uploaded to the corporate **Open testing** track — confirmed as the highest uploaded versionCode = 4 (Play Console, 2026-07-08). The live open-test build until vc5 is uploaded. |
 | **Used for** | On-device validation of remote-refresh — the headline unproven path: does a silent push wake a backgrounded/killed wearer phone and trigger a BLE sync? |
 
 ### v3 — versionCode 3 — superseded, do not ship
