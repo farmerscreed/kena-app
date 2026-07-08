@@ -51,7 +51,7 @@ describe('Learn articles — voice-lint', () => {
       }
       // Surface soft hits as a warning, but keep the build green.
       if (result.softHits.length > 0) {
-        // eslint-disable-next-line no-console
+         
         console.warn(
           `[voice-lint soft] ${article.name}\n` +
             formatVoiceHits(result.softHits),

@@ -134,17 +134,17 @@ function main(): void {
   const result = build();
 
   for (const w of result.warnings) {
-    // eslint-disable-next-line no-console
+     
     console.warn(w);
   }
 
   if (result.errors.length > 0) {
-    // eslint-disable-next-line no-console
+     
     console.error('\nBuild failed:\n');
     for (const e of result.errors) {
-      // eslint-disable-next-line no-console
+       
       console.error(e);
-      // eslint-disable-next-line no-console
+       
       console.error('');
     }
     process.exit(1);
@@ -153,7 +153,7 @@ function main(): void {
   const out = emit(result.compiled);
   fs.writeFileSync(OUTPUT_FILE, out, 'utf8');
 
-  // eslint-disable-next-line no-console
+   
   console.log(
     `Wrote ${OUTPUT_FILE} — ${result.compiled.length} article(s), ${result.warnings.length} soft warning(s).`,
   );
