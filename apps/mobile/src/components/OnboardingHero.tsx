@@ -25,7 +25,7 @@
 // CTA labels. No layout decisions belong on individual screens.
 
 import { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import Animated, {
@@ -135,8 +135,15 @@ export function OnboardingHero({
       style={[styles.root, { backgroundColor: theme.colors.surface.base }]}
       edges={['top', 'bottom']}
     >
-      <View
-        style={[
+      {/* Scrollable so the CTA is always reachable. With contentContainerStyle
+          flexGrow:1, the flex:1 spacer bottom-anchors the CTA when there's room;
+          when the hero + headline + body overflow a short viewport (small phone
+          or large OS font) the screen scrolls instead of pushing the CTA
+          off-screen. This was the onboarding-blocking bug on smaller devices. */}
+      <ScrollView
+        testID="onboarding-hero-scroll"
+        style={styles.root}
+        contentContainerStyle={[
           styles.content,
           {
             paddingHorizontal: theme.spacing.xxl,
@@ -144,6 +151,8 @@ export function OnboardingHero({
             paddingBottom: theme.spacing.xxl,
           },
         ]}
+        showsVerticalScrollIndicator={false}
+        alwaysBounceVertical={false}
       >
         {/* Hero block — glow + icon, centered. */}
         <Animated.View
@@ -254,7 +263,7 @@ export function OnboardingHero({
             </Button>
           ) : null}
         </Animated.View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -267,7 +276,7 @@ export function OnboardingHero({
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  content: { flex: 1, alignItems: 'center' },
+  content: { flexGrow: 1, alignItems: 'center' },
   heroBlock: {
     width: HERO_SIZE,
     height: HERO_SIZE,
