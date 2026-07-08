@@ -18,6 +18,7 @@ export function CaregiverIntro3Screen({
       pageCurrent={3}
       pageTotal={3}
       pagerTestID="caregiver-intro-pager"
+      onBack={() => navigation.goBack()}
       primary={{
         label: 'Continue',
         onPress: () => navigation.navigate('FamilyYou'),

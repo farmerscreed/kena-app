@@ -18,6 +18,7 @@ export function SelfBuyerIntro2Screen({
       pageCurrent={2}
       pageTotal={3}
       pagerTestID="self-buyer-intro-pager"
+      onBack={() => navigation.goBack()}
       primary={{
         label: 'Continue',
         onPress: () => navigation.navigate('Intro3'),

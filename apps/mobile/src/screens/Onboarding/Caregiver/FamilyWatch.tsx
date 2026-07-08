@@ -5,11 +5,11 @@
 // off until the Shopify integration ships in a later sprint.
 
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 import { AcceptInviteSheet } from '../../../components/AcceptInviteSheet';
 import { Card } from '../../../components/Card';
 import { OnboardingEyebrow } from '../../../components/OnboardingEyebrow';
+import { OnboardingScaffold } from '../../../components/OnboardingScaffold';
 import { Pill } from '../../../components/Pill';
 import { useTheme } from '../../../theme';
 import { useAuth } from '../../../state/auth';
@@ -66,42 +66,17 @@ export function CaregiverFamilyWatchScreen({
   };
 
   return (
-    <SafeAreaView
-      style={[styles.root, { backgroundColor: theme.colors.surface.base }]}
-      edges={['top', 'bottom']}
-    >
-      <ScrollView
-        contentContainerStyle={[
-          styles.scroll,
-          {
-            paddingHorizontal: theme.spacing.xxl,
-            paddingTop: theme.spacing.xxl,
-            paddingBottom: theme.spacing.xxl,
-          },
-        ]}
+    <>
+      <OnboardingScaffold
+        onBack={() => navigation.goBack()}
+        keyboardAware={false}
+        scrollTestID="family-watch-scroll"
       >
-        <Pressable
-          onPress={() => navigation.goBack()}
-          accessibilityRole="button"
-          accessibilityLabel="Back"
-          hitSlop={theme.spacing.m}
-          style={{ alignSelf: 'flex-start', marginBottom: theme.spacing.xxl }}
-        >
-          <Text
-            style={{
-              color: theme.colors.brand.primary,
-              fontSize: body.size,
-              fontFamily: body.family,
-            }}
-          >
-            Back
-          </Text>
-        </Pressable>
-
         <OnboardingEyebrow persona="Caregiver" step={3} total={3} />
 
         <Text
           accessibilityRole="header"
+          maxFontSizeMultiplier={1.3}
           style={{
             color: theme.colors.text.primary,
             fontSize: headline.size,
@@ -115,6 +90,7 @@ export function CaregiverFamilyWatchScreen({
         </Text>
 
         <Text
+          maxFontSizeMultiplier={1.5}
           style={{
             color: theme.colors.text.secondary,
             fontSize: body.size,
@@ -147,6 +123,7 @@ export function CaregiverFamilyWatchScreen({
             I have the watch with me
           </Text>
           <Text
+            maxFontSizeMultiplier={1.5}
             style={{
               color: theme.colors.text.secondary,
               fontSize: body.size,
@@ -200,6 +177,7 @@ export function CaregiverFamilyWatchScreen({
             <Pill variant="info">Coming soon</Pill>
           </View>
           <Text
+            maxFontSizeMultiplier={1.5}
             style={{
               color: theme.colors.text.secondary,
               fontSize: body.size,
@@ -232,6 +210,7 @@ export function CaregiverFamilyWatchScreen({
             Someone invited me
           </Text>
           <Text
+            maxFontSizeMultiplier={1.5}
             style={{
               color: theme.colors.text.secondary,
               fontSize: body.size,
@@ -277,6 +256,7 @@ export function CaregiverFamilyWatchScreen({
             Add a watch later
           </Text>
           <Text
+            maxFontSizeMultiplier={1.5}
             style={{
               color: theme.colors.text.secondary,
               fontSize: body.size,
@@ -305,6 +285,7 @@ export function CaregiverFamilyWatchScreen({
           <Text
             accessibilityLiveRegion="polite"
             testID="family-watch-error"
+            maxFontSizeMultiplier={1.5}
             style={{
               color: theme.colors.state.urgent,
               fontSize: body.size,
@@ -315,7 +296,7 @@ export function CaregiverFamilyWatchScreen({
             {finalizeError}
           </Text>
         ) : null}
-      </ScrollView>
+      </OnboardingScaffold>
       {/* Sprint 16.6 Issue #1 — accept-invite sheet for invited
           caregivers. showSuccessState=false so the sheet closes
           immediately on success and we finalize onboarding atomically
@@ -338,11 +319,6 @@ export function CaregiverFamilyWatchScreen({
         }}
         testID="family-watch-accept"
       />
-    </SafeAreaView>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1 },
-  scroll: { flexGrow: 1 },
-});

@@ -11,19 +11,10 @@
 // watch for a parent in NYC, etc.).
 
 import { useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button } from '../../../components/Button';
 import { OnboardingEyebrow } from '../../../components/OnboardingEyebrow';
+import { OnboardingScaffold } from '../../../components/OnboardingScaffold';
 import { Pill } from '../../../components/Pill';
 import { TimezonePicker } from '../../../components/TimezonePicker';
 import { useTheme } from '../../../theme';
@@ -78,211 +69,177 @@ export function CaregiverFamilyParentScreen({
   };
 
   return (
-    <SafeAreaView
-      style={[styles.root, { backgroundColor: theme.colors.surface.base }]}
-      edges={['top', 'bottom']}
-    >
-      <KeyboardAvoidingView
-        style={styles.fill}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={[
-            styles.scroll,
-            {
-              paddingHorizontal: theme.spacing.xxl,
-              paddingTop: theme.spacing.xxl,
-              paddingBottom: theme.spacing.xxl,
-            },
-          ]}
-          keyboardShouldPersistTaps="handled"
+    <OnboardingScaffold
+      onBack={() => navigation.goBack()}
+      scrollTestID="family-parent-scroll"
+      footer={
+        <Button
+          variant="primary"
+          onPress={handleContinue}
+          disabled={!valid}
+          testID="family-parent-continue"
+          style={{ width: '100%' }}
         >
-          <Pressable
-            onPress={() => navigation.goBack()}
-            accessibilityRole="button"
-            accessibilityLabel="Back"
-            hitSlop={theme.spacing.m}
-            style={{ alignSelf: 'flex-start', marginBottom: theme.spacing.xxl }}
-          >
-            <Text
-              style={{
-                color: theme.colors.brand.primary,
-                fontSize: body.size,
-                fontFamily: body.family,
-              }}
+          Continue
+        </Button>
+      }
+    >
+      <OnboardingEyebrow persona="Caregiver" step={2} total={3} />
+
+      <Text
+        accessibilityRole="header"
+        maxFontSizeMultiplier={1.3}
+        style={{
+          color: theme.colors.text.primary,
+          fontSize: headline.size,
+          lineHeight: headline.lineHeight,
+          fontWeight: headline.weight as '700',
+          fontFamily: headline.family,
+          marginBottom: theme.spacing.s,
+        }}
+      >
+        Who are you looking after?
+      </Text>
+
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: body.size,
+          lineHeight: body.lineHeight,
+          fontFamily: body.family,
+          marginBottom: theme.spacing.xxl,
+        }}
+      >
+        We'll use this name in updates so the family circle stays personal.
+      </Text>
+
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: label.size,
+          fontWeight: label.weight as '500',
+          fontFamily: label.family,
+          marginBottom: theme.spacing.s,
+        }}
+      >
+        Their name
+      </Text>
+      <TextInput
+        value={name}
+        onChangeText={setName}
+        placeholder="Mama Linda"
+        placeholderTextColor={theme.colors.text.secondary}
+        autoCapitalize="words"
+        autoCorrect={false}
+        returnKeyType="next"
+        accessibilityLabel="The name you call them"
+        testID="family-parent-name"
+        style={{
+          backgroundColor: theme.colors.surface.elevated,
+          borderRadius: theme.radii.m,
+          paddingHorizontal: theme.spacing.l,
+          paddingVertical: theme.spacing.m,
+          fontSize: body.size,
+          fontFamily: body.family,
+          color: theme.colors.text.primary,
+          borderWidth: 1,
+          borderColor: theme.colors.border.default,
+          minHeight: theme.minTapTarget,
+          marginBottom: theme.spacing.xxl,
+        }}
+      />
+
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: label.size,
+          fontWeight: label.weight as '500',
+          fontFamily: label.family,
+          marginBottom: theme.spacing.s,
+        }}
+      >
+        Who are they to you?
+      </Text>
+      <View
+        accessible
+        accessibilityRole="radiogroup"
+        accessibilityLabel="Relationship"
+        style={styles.chipsRow}
+      >
+        {CHIPS.map((chip) => {
+          const selected = relationship === chip.value;
+          return (
+            <View
+              key={chip.value}
+              style={{ marginRight: theme.spacing.s, marginBottom: theme.spacing.s }}
             >
-              Back
-            </Text>
-          </Pressable>
+              <Pill
+                selected={selected}
+                onPress={() => setRelationship(chip.value)}
+                accessibilityLabel={chip.label}
+                testID={`family-parent-chip-${chip.value}`}
+              >
+                {chip.label}
+              </Pill>
+            </View>
+          );
+        })}
+      </View>
 
-          <OnboardingEyebrow persona="Caregiver" step={2} total={3} />
+      {customRequired ? (
+        <TextInput
+          value={customLabel}
+          onChangeText={setCustomLabel}
+          placeholder="Aunt Tola, Godmother, …"
+          placeholderTextColor={theme.colors.text.secondary}
+          autoCapitalize="words"
+          autoCorrect={false}
+          accessibilityLabel="Custom relationship"
+          testID="family-parent-custom"
+          style={{
+            backgroundColor: theme.colors.surface.elevated,
+            borderRadius: theme.radii.m,
+            paddingHorizontal: theme.spacing.l,
+            paddingVertical: theme.spacing.m,
+            fontSize: body.size,
+            fontFamily: body.family,
+            color: theme.colors.text.primary,
+            borderWidth: 1,
+            borderColor: theme.colors.border.default,
+            minHeight: theme.minTapTarget,
+            marginBottom: theme.spacing.l,
+          }}
+        />
+      ) : null}
 
-          <Text
-            accessibilityRole="header"
-            style={{
-              color: theme.colors.text.primary,
-              fontSize: headline.size,
-              lineHeight: headline.lineHeight,
-              fontWeight: headline.weight as '700',
-              fontFamily: headline.family,
-              marginBottom: theme.spacing.s,
-            }}
-          >
-            Who are you looking after?
-          </Text>
+      <View style={{ height: theme.spacing.l }} />
 
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: body.size,
-              lineHeight: body.lineHeight,
-              fontFamily: body.family,
-              marginBottom: theme.spacing.xxl,
-            }}
-          >
-            We'll use this name in updates so the family circle stays personal.
-          </Text>
-
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: label.size,
-              fontWeight: label.weight as '500',
-              fontFamily: label.family,
-              marginBottom: theme.spacing.s,
-            }}
-          >
-            Their name
-          </Text>
-          <TextInput
-            value={name}
-            onChangeText={setName}
-            placeholder="Mama Linda"
-            placeholderTextColor={theme.colors.text.secondary}
-            autoCapitalize="words"
-            autoCorrect={false}
-            returnKeyType="next"
-            accessibilityLabel="The name you call them"
-            testID="family-parent-name"
-            style={{
-              backgroundColor: theme.colors.surface.elevated,
-              borderRadius: theme.radii.m,
-              paddingHorizontal: theme.spacing.l,
-              paddingVertical: theme.spacing.m,
-              fontSize: body.size,
-              fontFamily: body.family,
-              color: theme.colors.text.primary,
-              borderWidth: 1,
-              borderColor: theme.colors.border.default,
-              minHeight: theme.minTapTarget,
-              marginBottom: theme.spacing.xxl,
-            }}
-          />
-
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: label.size,
-              fontWeight: label.weight as '500',
-              fontFamily: label.family,
-              marginBottom: theme.spacing.s,
-            }}
-          >
-            Who are they to you?
-          </Text>
-          <View
-            accessible
-            accessibilityRole="radiogroup"
-            accessibilityLabel="Relationship"
-            style={styles.chipsRow}
-          >
-            {CHIPS.map((chip) => {
-              const selected = relationship === chip.value;
-              return (
-                <View
-                  key={chip.value}
-                  style={{ marginRight: theme.spacing.s, marginBottom: theme.spacing.s }}
-                >
-                  <Pill
-                    selected={selected}
-                    onPress={() => setRelationship(chip.value)}
-                    accessibilityLabel={chip.label}
-                    testID={`family-parent-chip-${chip.value}`}
-                  >
-                    {chip.label}
-                  </Pill>
-                </View>
-              );
-            })}
-          </View>
-
-          {customRequired ? (
-            <TextInput
-              value={customLabel}
-              onChangeText={setCustomLabel}
-              placeholder="Aunt Tola, Godmother, …"
-              placeholderTextColor={theme.colors.text.secondary}
-              autoCapitalize="words"
-              autoCorrect={false}
-              accessibilityLabel="Custom relationship"
-              testID="family-parent-custom"
-              style={{
-                backgroundColor: theme.colors.surface.elevated,
-                borderRadius: theme.radii.m,
-                paddingHorizontal: theme.spacing.l,
-                paddingVertical: theme.spacing.m,
-                fontSize: body.size,
-                fontFamily: body.family,
-                color: theme.colors.text.primary,
-                borderWidth: 1,
-                borderColor: theme.colors.border.default,
-                minHeight: theme.minTapTarget,
-                marginBottom: theme.spacing.l,
-              }}
-            />
-          ) : null}
-
-          <View style={{ height: theme.spacing.l }} />
-
-          <Text
-            style={{
-              color: theme.colors.text.secondary,
-              fontSize: label.size,
-              fontWeight: label.weight as '500',
-              fontFamily: label.family,
-              marginBottom: theme.spacing.s,
-            }}
-          >
-            Where do they live?
-          </Text>
-          <TimezonePicker
-            value={timezone}
-            onChange={setTimezone}
-            fieldA11yPrefix="Their timezone"
-            sheetTitle="Choose their timezone"
-            testID="family-parent-zone"
-          />
-
-          <View style={{ height: theme.spacing.xxxl }} />
-
-          <Button
-            variant="primary"
-            onPress={handleContinue}
-            disabled={!valid}
-            testID="family-parent-continue"
-            style={{ width: '100%' }}
-          >
-            Continue
-          </Button>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <Text
+        maxFontSizeMultiplier={1.5}
+        style={{
+          color: theme.colors.text.secondary,
+          fontSize: label.size,
+          fontWeight: label.weight as '500',
+          fontFamily: label.family,
+          marginBottom: theme.spacing.s,
+        }}
+      >
+        Where do they live?
+      </Text>
+      <TimezonePicker
+        value={timezone}
+        onChange={setTimezone}
+        fieldA11yPrefix="Their timezone"
+        sheetTitle="Choose their timezone"
+        testID="family-parent-zone"
+      />
+    </OnboardingScaffold>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1 },
-  fill: { flex: 1 },
-  scroll: { flexGrow: 1 },
   chipsRow: { flexDirection: 'row', flexWrap: 'wrap' },
 });
