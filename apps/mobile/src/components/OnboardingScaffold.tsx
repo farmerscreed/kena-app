@@ -21,7 +21,7 @@
 //       * when content overflows, the whole screen scrolls and every
 //         control stays reachable.
 
-import { type ReactNode } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -32,8 +32,17 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { CaretLeftIcon } from 'phosphor-react-native';
 import { useTheme } from '../theme';
+import { useReducedMotion } from '../theme/useReducedMotion';
+
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export interface OnboardingScaffoldProps {
   children: ReactNode;
@@ -68,10 +77,23 @@ export function OnboardingScaffold({
   const theme = useTheme();
   const body = theme.type('bodyL');
 
+  // Subtle entrance: fade + a tiny rise on mount. Honors OS Reduce Motion
+  // (renders at final state, no animation, when it's on).
+  const reduceMotion = useReducedMotion();
+  const enter = useSharedValue(reduceMotion ? 1 : 0);
+  useEffect(() => {
+    if (reduceMotion) return;
+    enter.value = withTiming(1, { duration: 320, easing: Easing.out(Easing.cubic) });
+  }, [reduceMotion, enter]);
+  const enterStyle = useAnimatedStyle(() => ({
+    opacity: enter.value,
+    transform: [{ translateY: (1 - enter.value) * 8 }],
+  }));
+
   const scroll = (
-    <ScrollView
+    <AnimatedScrollView
       testID={scrollTestID}
-      style={styles.fill}
+      style={[styles.fill, enterStyle]}
       contentContainerStyle={[
         styles.content,
         center && styles.center,
@@ -125,7 +147,7 @@ export function OnboardingScaffold({
           {footer}
         </>
       ) : null}
-    </ScrollView>
+    </AnimatedScrollView>
   );
 
   return (
