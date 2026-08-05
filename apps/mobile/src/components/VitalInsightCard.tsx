@@ -28,6 +28,7 @@ import { SparkleIcon } from 'phosphor-react-native';
 import { useTheme } from '../theme';
 import { vitalTheme } from '../utils/vitalThemes';
 import type { VitalType } from './VitalRing';
+import { MAX_FONT_SCALE_PROSE } from '../theme/fontScaling';
 
 export interface VitalInsightCardProps {
   vital: VitalType;
@@ -78,7 +79,7 @@ export function VitalInsightCard({
           <SparkleIcon size={11} color={vitalColor} weight="fill" />
         </View>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_PROSE}
           style={{
             fontFamily: labelStyle.family,
             fontSize: labelStyle.size,

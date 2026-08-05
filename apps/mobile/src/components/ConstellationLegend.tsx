@@ -36,6 +36,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../theme';
 import { STATUS_LABEL_FOR, StatusPill, type Status } from './StatusPill';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export interface LegendPerson {
   id: string;
@@ -157,7 +158,7 @@ export function ConstellationLegend({
                 }}
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                   style={{
                     fontFamily: theme.fontFamilies.editorial,
                     fontSize: 15,
@@ -169,7 +170,7 @@ export function ConstellationLegend({
                   {firstName(p.fullName)}
                 </Text>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: 9,
@@ -183,7 +184,7 @@ export function ConstellationLegend({
                 </Text>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 style={{

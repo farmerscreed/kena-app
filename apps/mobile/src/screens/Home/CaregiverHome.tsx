@@ -99,6 +99,7 @@ import type {
 } from '../../services/families/fetchParentSummaries';
 import type { LocalReading } from '../../state/readings';
 import { type CaregiverPerson } from '../../utils/caregiverPerson';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import {
   buildConstellationNodes,
   hasSelfNode,
@@ -737,7 +738,7 @@ function DetailedView({ people, onSelectPerson, theme }: DetailedViewProps) {
     <View testID="caregiver-home-detailed">
       <View style={{ paddingHorizontal: theme.spacing.s, marginBottom: theme.spacing.l }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: headlineStyle.size,
@@ -818,7 +819,7 @@ function SharedHeader({
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9.5,
@@ -833,7 +834,7 @@ function SharedHeader({
           style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.m }}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.numeric,
               fontSize: 9.5,
@@ -858,7 +859,7 @@ function SharedHeader({
             style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontSize: 18,
                 color: theme.colors.brand.coral,
@@ -879,7 +880,7 @@ function SharedHeader({
             {/* Phosphor GearSix lands when icons sweep through screens.
                 Plain glyph until then — affordance still reads. */}
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontSize: 18,
                 color: theme.colors.text.tertiary,
@@ -905,7 +906,7 @@ function SharedHeader({
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9,
@@ -994,7 +995,7 @@ function EmptyNoFamily({
       }}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.editorial,
           fontSize: headline.size,

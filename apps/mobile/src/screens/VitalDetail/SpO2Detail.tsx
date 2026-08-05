@@ -85,6 +85,7 @@ import { formatStalenessCaption } from '../../utils/stalenessCaption';
 import { useTheme } from '../../theme';
 import type { ClassificationTier } from '../../utils/classification';
 import type { SpO2Sample } from '../../types/vitals';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 export interface SpO2DetailProps {
   onBack: () => void;
@@ -779,7 +780,7 @@ function EmptyChartHelper() {
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: captionStyle.size,

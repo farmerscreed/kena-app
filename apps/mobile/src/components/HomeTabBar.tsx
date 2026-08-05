@@ -11,6 +11,7 @@
 
 import { Pressable, Text, View } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export type HomeTab = 'home' | 'trends' | 'take_reading' | 'learn' | 'settings';
 
@@ -57,7 +58,7 @@ export function HomeTabBar({ onSelect, active = 'home', testID }: HomeTabBarProp
         })}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           numberOfLines={1}
           style={{
             fontFamily: labelStyle.family,
@@ -123,7 +124,7 @@ export function HomeTabBar({ onSelect, active = 'home', testID }: HomeTabBarProp
         })}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           style={{
             fontFamily: theme.fontFamilies.display,
             fontSize: 26,

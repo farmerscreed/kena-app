@@ -26,6 +26,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { useTheme } from '../theme';
 import { vitalTheme } from '../utils/vitalThemes';
 import type { VitalType } from './VitalRing';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export interface DetailHeaderProps {
   vital: VitalType;
@@ -84,7 +85,7 @@ export function DetailHeader({
       <Text
         accessibilityRole="header"
         accessibilityLabel={displayName}
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,

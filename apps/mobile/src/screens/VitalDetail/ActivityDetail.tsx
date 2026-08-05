@@ -76,6 +76,7 @@ import { BaselineReference } from '../../components/BaselineReference';
 import { StalenessHintRow } from '../../components/StalenessHintRow';
 import { LoadingState } from '../../components/LoadingState';
 import { ErrorState } from '../../components/ErrorState';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import {
   activityBaseline,
   formatActivityBaseline,
@@ -491,7 +492,7 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
   return (
     <View>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -526,7 +527,7 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
       >
         <View style={{ flex: 1 }}>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.editorial,
               fontSize: valueStyle.size,
@@ -537,7 +538,7 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
             {currentGoal.toLocaleString()}
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.numeric,
               fontSize: 11,
@@ -551,7 +552,7 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
           </Text>
         </View>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 22,
@@ -867,7 +868,7 @@ function WeeklyCaloriesRow({ kcal }: WeeklyCaloriesRowProps) {
       testID="activity-detail-weekly-calories"
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -880,7 +881,7 @@ function WeeklyCaloriesRow({ kcal }: WeeklyCaloriesRowProps) {
         Weekly calories
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.editorial,
           fontSize: valueStyle.size,

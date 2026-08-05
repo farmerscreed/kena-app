@@ -18,6 +18,7 @@ import { BottomSheet } from './BottomSheet';
 import { Button } from './Button';
 import { useTheme } from '../theme';
 import { createConnect } from '../services/families/manageInvites';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export interface CareInviteSheetProps {
   visible: boolean;
@@ -111,7 +112,7 @@ export function CareInviteSheet({ visible, onDismiss, testID = 'care-invite-shee
               }}
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 accessibilityLabel={`Invite code, ${code.split('').join(' ')}`}
                 style={{ fontFamily: numeric.family, fontSize: 32, letterSpacing: 4, color: theme.colors.text.primary }}
                 testID="care-invite-code"

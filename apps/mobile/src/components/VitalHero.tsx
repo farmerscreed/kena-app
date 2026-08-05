@@ -47,6 +47,7 @@ import { VitalRing, type VitalType } from './VitalRing';
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { opacity } from '../theme/tokens';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 const VITAL_ICON: Record<VitalType, PhosphorIcon> = {
   bp: DropIcon,
@@ -196,7 +197,7 @@ export function VitalHero({
         </View>
         <View style={{ flex: 1, minWidth: 0, marginLeft: theme.spacing.l }}>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,
@@ -212,7 +213,7 @@ export function VitalHero({
           </Text>
           <View style={styles.valueRow}>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontFamily: theme.fontFamilies.editorial,
                 fontSize: numericXl.size,
@@ -226,7 +227,7 @@ export function VitalHero({
             </Text>
             {secondary ? (
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.editorial,
                   fontSize: numericM.size,
@@ -242,7 +243,7 @@ export function VitalHero({
           </View>
           {range ? (
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 fontSize: captionStyle.size,
@@ -271,7 +272,7 @@ export function VitalHero({
                 ]}
               />
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.numeric,
                   fontSize: 9,

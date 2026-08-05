@@ -315,7 +315,7 @@ export function ConstellationField({
             pointerEvents="none"
             style={{
               fontFamily: theme.fontFamilies.numeric,
-              fontSize: 8.5,
+              fontSize: 11,
               lineHeight: 11,
               letterSpacing: 1.7,
               fontWeight: '500',
@@ -345,7 +345,7 @@ export function ConstellationField({
               // (~1.7pt at 8.5pt). The earlier 11pt bump made the
               // label compete with the orb portraits for attention;
               // small + quiet is the intent.
-              fontSize: 8.5,
+              fontSize: 11,
               lineHeight: 11,
               letterSpacing: 1.7,
               fontWeight: '500',

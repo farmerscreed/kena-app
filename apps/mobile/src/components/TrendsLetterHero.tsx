@@ -15,6 +15,7 @@ import { type ReactNode } from 'react';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
 import { parseNarrativeSpans } from '../services/ai/trendsNarration';
+import { MAX_FONT_SCALE_PROSE } from '../theme/fontScaling';
 
 export interface TrendsLetterHeroProps {
   /**
@@ -54,7 +55,7 @@ export function TrendsLetterHero({
     <View style={[styles.root, style]} testID={testID}>
       {eyebrow ? (
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_PROSE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 10,
@@ -101,7 +102,7 @@ export function TrendsLetterHero({
 
       {signOff ? (
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_PROSE}
           style={{
             fontFamily: theme.fontFamilies.editorialItalic,
             fontStyle: 'italic',
@@ -118,7 +119,7 @@ export function TrendsLetterHero({
 
       {freshnessCaption ? (
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_PROSE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 10,

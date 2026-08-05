@@ -58,6 +58,7 @@ import { VitalRing, type VitalRingState, type VitalType } from './VitalRing';
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { opacity } from '../theme/tokens';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 import {
   dailyPulseRevealNarrationOpacity,
   dailyPulseRevealOpacity,
@@ -438,7 +439,7 @@ export function DailyPulseHero({
             />
             <View pointerEvents="none" style={styles.bpCentre}>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                 style={{
                   fontFamily: labelStyle.family,
                   fontSize: labelStyle.size,
@@ -452,7 +453,7 @@ export function DailyPulseHero({
                 {central.label}
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 style={{
@@ -475,7 +476,7 @@ export function DailyPulseHero({
               </Text>
               {central.sub ? (
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: captionStyle.size,
@@ -498,10 +499,10 @@ export function DailyPulseHero({
                     style={[styles.liveDot, { backgroundColor: bpColor }]}
                   />
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                     style={{
                       fontFamily: theme.fontFamilies.numeric,
-                      fontSize: 9,
+                      fontSize: 11,
                       letterSpacing: 1.4,
                       color: bpColor,
                       textTransform: 'uppercase',
@@ -555,7 +556,7 @@ export function DailyPulseHero({
                 />
                 <View pointerEvents="none" style={styles.satCentre}>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                     style={{
                       fontFamily: theme.fontFamilies.editorial,
                       fontSize: def.size > 70 ? numericM.size : numericM.size - 4,
@@ -568,10 +569,10 @@ export function DailyPulseHero({
                     {state.display}
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                     style={{
                       fontFamily: theme.fontFamilies.numeric,
-                      fontSize: 8,
+                      fontSize: 11,
                       letterSpacing: 0.5,
                       color: vitalColor,
                       textTransform: 'uppercase',

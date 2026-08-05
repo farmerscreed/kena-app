@@ -65,13 +65,40 @@ const caregiver = {
 } as const satisfies Record<string, TypeStyle>;
 
 // Parent overrides (D12 §3.3) — body steps up ~12%, line height ~10%.
-// Display, numeric, label-uppercase tokens unchanged.
+//
+// Sprint 19 (audit D12 P0-6): the original override set covered only
+// body/title/label/caption. That left `numericS`, `numericM`,
+// `labelUppercase` and `caption`-adjacent chrome untouched — i.e. the
+// large-text mode did not enlarge a single NUMBER. For an app whose
+// wearer persona is 55–80 and whose primary content is a blood-pressure
+// reading, a large-text mode that skips the reading is not a large-text
+// mode.
+//
+// The big display numerics (numericHero 80pt, numericXl 56pt, numericL
+// 36pt) are deliberately still unchanged: they are already well past
+// any legibility floor, and several of them sit inside fixed-diameter
+// rings that cannot grow. The small ones — the values in lists, stat
+// trios, chart labels and tiles — are where the gain is.
 const parent = {
   bodyL: { size: 19, lineHeight: 26, weight: '400', family: fontFamilies.body },
   bodyM: { size: 17, lineHeight: 24, weight: '400', family: fontFamilies.body },
   title: { size: 20, lineHeight: 26, weight: '600', family: fontFamilies.bodySemiBold },
   label: { size: 15, lineHeight: 18, weight: '500', family: fontFamilies.bodyMedium },
   caption: { size: 13, lineHeight: 18, weight: '400', family: fontFamilies.body },
+  // Numerics that appear in dense contexts — reading lists, stat trios,
+  // chart axes, vital tiles.
+  numericS: { size: 17, lineHeight: 22, weight: '500', family: fontFamilies.numeric },
+  numericM: { size: 25, lineHeight: 31, weight: '500', family: fontFamilies.numeric },
+  // The only uppercase variant in the system; used for vital tile
+  // labels, eyebrows and chart legends. 11pt is the floor at caregiver
+  // scale, so parent scale lifts it clear of it.
+  labelUppercase: {
+    size: 13,
+    lineHeight: 16,
+    weight: '500',
+    family: fontFamilies.bodyMedium,
+    letterSpacing: 0.65,
+  },
 } as const satisfies Record<string, TypeStyle>;
 
 export const typeScale = { caregiver, parent } as const;

@@ -69,6 +69,7 @@ import {
 import { useAuth } from '../../state/auth';
 import { useOnboarding } from '../../state/onboarding';
 import { ViewAllHistoryLink } from '../../components/ViewAllHistoryLink';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 const RANGE_TO_DAYS: Record<TrendRange, number> = {
   '7d': 7,
@@ -625,7 +626,7 @@ export function BPDetail({
                 ]}
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: theme.type('labelUppercase').family,
                     fontSize: theme.type('labelUppercase').size,
@@ -662,7 +663,7 @@ export function BPDetail({
                     // The chart card frame stays so the screen doesn't
                     // jump; the body explains why there's no line yet.
                     <Text
-                      allowFontScaling={false}
+                      maxFontSizeMultiplier={MAX_FONT_SCALE}
                       testID="bp-detail-chart-empty-today"
                       style={[
                         theme.type('bodyM'),
@@ -820,7 +821,7 @@ function ShareWithDoctorRow({ onPress }: ShareWithDoctorRowProps) {
     >
       <View style={{ flex: 1 }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: labelStyle.family,
             fontSize: labelStyle.size,
@@ -834,7 +835,7 @@ function ShareWithDoctorRow({ onPress }: ShareWithDoctorRowProps) {
           Share
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: valueStyle.family,
             fontSize: valueStyle.size,
@@ -846,7 +847,7 @@ function ShareWithDoctorRow({ onPress }: ShareWithDoctorRowProps) {
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 22,

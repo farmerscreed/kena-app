@@ -77,6 +77,7 @@ import {
   type DayMoment,
 } from '../../utils/dayMoments';
 import type { SelfBuyerStackParamList } from '../../navigation/types';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 type Nav = NativeStackNavigationProp<SelfBuyerStackParamList>;
 
@@ -533,7 +534,7 @@ function PulseHeader({ theme, eyebrow, greeting, name, onAvatarPress }: PulseHea
     >
       <View style={{ flex: 1 }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: eyebrowStyle.family,
             fontSize: eyebrowStyle.size,
@@ -547,7 +548,7 @@ function PulseHeader({ theme, eyebrow, greeting, name, onAvatarPress }: PulseHea
           {eyebrow}
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: greetingStyle.size,
@@ -588,7 +589,7 @@ function PulseHeader({ theme, eyebrow, greeting, name, onAvatarPress }: PulseHea
             "Settings". Phosphor GearSix lands when the icon library
             sweep ships. */}
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontSize: 18,
             color: theme.colors.text.secondary,
@@ -638,7 +639,7 @@ function PairWatchPrompt({ theme, onPair }: PairWatchPromptProps) {
       })}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -712,7 +713,7 @@ function NarrationCard({ theme, text }: NarrationCardProps) {
       testID="self-buyer-home-narration"
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -776,7 +777,7 @@ function AskLeikoFAB({ theme, onPress }: AskLeikoFABProps) {
       })}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -858,7 +859,7 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
           })}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,
@@ -900,7 +901,7 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
         })}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.display,
             fontSize: 26,
@@ -929,7 +930,7 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
           })}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,

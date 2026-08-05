@@ -14,6 +14,7 @@ import { ARTICLES_BY_ID } from '../learn/articleIndex.gen';
 import { DEFER_TEMPLATES } from '../services/ai/deferTemplates';
 import { TIER_B_PLACEHOLDER_TEXT } from '../services/ai/tierBPlaceholder';
 import type { IntentMatch } from '../services/ai/types';
+import { MAX_FONT_SCALE_PROSE } from '../theme/fontScaling';
 
 export interface AIResponseRendererProps {
   result: IntentMatch;
@@ -134,7 +135,7 @@ function CardLinkRow({ cardId, onPress, labelStyle, bodyStyle }: CardLinkRowProp
       })}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_PROSE}
         style={{
           color: theme.colors.text.tertiary,
           fontSize: labelStyle.size,

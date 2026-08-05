@@ -33,6 +33,7 @@ import Svg, {
 } from 'react-native-svg';
 import { useTheme } from '../theme';
 import type { VitalType } from './VitalRing';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 const CHART_W = 320;
 const CHART_H = 110;
@@ -138,7 +139,7 @@ export function TrendsEvidenceCard({
       <View style={styles.headerRow}>
         <View style={{ flex: 1 }}>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.numeric,
               fontSize: 9,
@@ -152,7 +153,7 @@ export function TrendsEvidenceCard({
             The evidence
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.bodyMedium,
               fontSize: 13,
@@ -166,7 +167,7 @@ export function TrendsEvidenceCard({
           </Text>
         </View>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: 22,
@@ -261,7 +262,7 @@ export function TrendsEvidenceCard({
 
       <View style={styles.axisRow}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9,
@@ -273,7 +274,7 @@ export function TrendsEvidenceCard({
           {axisStart ?? ''}
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9,

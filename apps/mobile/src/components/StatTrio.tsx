@@ -18,6 +18,7 @@
 
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export interface StatTrioItem {
   /** Mono-uppercase label ("7-day avg", "Lowest", etc.). */
@@ -63,7 +64,7 @@ export function StatTrio({ items, testID, style }: StatTrioProps) {
             testID={testID ? `${testID}-${idx}` : undefined}
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
                 fontFamily: labelStyle.family,
                 fontSize: labelStyle.size,
@@ -77,7 +78,7 @@ export function StatTrio({ items, testID, style }: StatTrioProps) {
               {item.label}
             </Text>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
                 fontFamily: theme.fontFamilies.editorial,
                 fontSize: valueStyle.size,
@@ -89,7 +90,7 @@ export function StatTrio({ items, testID, style }: StatTrioProps) {
             </Text>
             {item.unit ? (
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                 style={{
                   fontFamily: theme.fontFamilies.numeric,
                   fontSize: captionStyle.size,

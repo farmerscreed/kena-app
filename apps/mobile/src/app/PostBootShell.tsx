@@ -18,6 +18,7 @@ import { ComponentGallery } from '../dev/ComponentGallery';
 import { DebugLauncher } from '../dev/DebugLauncher';
 import { RootNavigator } from '../navigation/RootNavigator';
 import { ThemeProvider, type ThemeMode } from '../theme';
+import { useLargeTextMode } from '../theme/useLargeTextMode';
 
 const DEV_GALLERY_ENABLED = process.env.EXPO_PUBLIC_DEV_GALLERY === 'true';
 
@@ -43,10 +44,15 @@ function DevGallery() {
 }
 
 function Root() {
+  // Sprint 19 (audit D12 P0-6) — was hardcoded `mode="caregiver"`, which
+  // meant the 'parent' large-text scale could never activate no matter
+  // what the user did. Now resolved from the Settings preference plus
+  // the OS font scale. See theme/useLargeTextMode.
+  const { typeMode } = useLargeTextMode();
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <ThemeProvider mode="caregiver">
+        <ThemeProvider mode={typeMode}>
           <RootNavigator />
           <DebugLauncher />
           <StatusBar style="auto" />

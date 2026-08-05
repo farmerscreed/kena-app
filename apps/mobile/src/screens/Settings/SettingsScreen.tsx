@@ -77,6 +77,7 @@ import {
 import { useTheme } from '../../theme';
 import type { CaregiverScreenProps } from '../../navigation/types';
 import type { Gender, HypertensionStatus, UserRow, UserUpdate } from '../../types/database';
+import { useLargeTextMode } from '../../theme/useLargeTextMode';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const appConfig: { expo?: { version?: string } } = require('../../../app.json');
 
@@ -202,6 +203,8 @@ type NavParamList = {
 
 export function SettingsScreen({ navigation }: Props) {
   const theme = useTheme();
+  // Sprint 19 (audit D12 P0-6) — large-text opt-in.
+  const largeText = useLargeTextMode();
   const stackNavigation = useNavigation<NativeStackNavigationProp<NavParamList>>();
   const profile = useAuth((s) => s.profile);
   const userId = useAuth((s) => s.session?.user.id ?? null);
@@ -974,6 +977,39 @@ export function SettingsScreen({ navigation }: Props) {
             }
             showDivider={false}
             testID="settings-ai-tier"
+          />
+        </SettingsSection>
+
+        {/* Accessibility ------------------------------------------------
+            Sprint 19 (audit D12 P0-6). The app shipped with 191
+            `allowFontScaling={false}` and a 'parent' large-text scale
+            that nothing could ever reach. This is the manual opt-in;
+            `theme/useLargeTextMode` also auto-enables it when the OS
+            font scale is already turned up. -------------------------- */}
+        <SettingsSection title="Accessibility" testID="settings-section-accessibility">
+          <ListRow
+            variant="toggle"
+            title="Larger text"
+            subtitle={
+              largeText.preference === 'auto'
+                ? largeText.typeMode === 'parent'
+                  ? 'On, following your phone\u2019s text size.'
+                  : 'Following your phone\u2019s text size. Turn on to make Leiko\u2019s text bigger anyway.'
+                : largeText.preference === 'on'
+                  ? 'Bigger text throughout Leiko.'
+                  : 'Off, even if your phone\u2019s text size is turned up.'
+            }
+            switchValue={largeText.typeMode === 'parent'}
+            onSwitchChange={(next) => largeText.setPreference(next ? 'on' : 'off')}
+            testID="settings-a11y-large-text"
+          />
+          <ListRow
+            variant="navigation"
+            title="Follow my phone\u2019s text size"
+            subtitle="Let Leiko decide from your phone settings."
+            onPress={() => largeText.setPreference('auto')}
+            showDivider={false}
+            testID="settings-a11y-large-text-auto"
           />
         </SettingsSection>
 

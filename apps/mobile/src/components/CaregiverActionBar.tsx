@@ -28,6 +28,7 @@
 import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export interface CaregiverActionBarProps {
   /** Number of people in the family circle. */
@@ -90,7 +91,7 @@ export function CaregiverActionBar({
           color: theme.colors.text.tertiary,
           textTransform: 'uppercase',
         }}
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
       >
         {countText}
       </Text>
@@ -111,7 +112,7 @@ export function CaregiverActionBar({
               letterSpacing: 0.46, // ~0.04em at 11.5pt
               color: theme.colors.brand.coral,
             }}
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           >
             + Add someone
           </Text>

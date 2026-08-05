@@ -21,6 +21,7 @@ import { Platform, Pressable, Text, View } from 'react-native';
 import { useTheme } from '../theme';
 import type { CompiledArticle } from '../services/learn/ast';
 import type { BlockNode, InlineNode } from '../services/learn/ast';
+import { MAX_FONT_SCALE_PROSE } from '../theme/fontScaling';
 
 export interface HomeLearnCardProps {
   article: CompiledArticle;
@@ -80,7 +81,7 @@ export function HomeLearnCard({
           }}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE_PROSE}
             style={{
               color: theme.colors.text.tertiary,
               fontSize: eyebrowStyle.size,

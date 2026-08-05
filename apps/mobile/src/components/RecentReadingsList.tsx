@@ -25,6 +25,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../theme';
 import type { VitalType } from './VitalRing';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export interface RecentReading {
   /** Stable id for keys + tests. Optional id for navigation purposes. */
@@ -135,7 +136,7 @@ export function RecentReadingsList({
             />
             <View style={{ flex: 1, marginLeft: theme.spacing.m }}>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                 style={{
                   fontFamily: theme.fontFamilies.editorial,
                   fontSize: valueStyle.size,
@@ -146,7 +147,7 @@ export function RecentReadingsList({
                 {r.value}
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                 style={{
                   fontFamily: contextStyle.family,
                   fontSize: contextStyle.size,
@@ -161,7 +162,7 @@ export function RecentReadingsList({
               </Text>
             </View>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 fontSize: timeStyle.size,

@@ -97,6 +97,17 @@ export const STORAGE_KEYS = {
   // Default 'system' (follow OS appearance). User-facing toggle ships in
   // Sprint 10 Settings; ThemeProvider reads/writes this key directly.
   themeColorMode: 'leiko.theme.colorMode',
+  // Large-text (parent) type mode — Sprint 19 (audit D12 P0-6).
+  // Values: 'on' | 'off' | 'auto'. Default 'auto' = follow the OS font
+  // scale (see LARGE_TEXT_AUTO_THRESHOLD).
+  //
+  // This lives in MMKV rather than on the profile deliberately.
+  // `account_type` is immutable after onboarding (CLAUDE.md, D8a §14.1)
+  // and every account is currently created as 'self_buyer', so the
+  // persona can never carry this preference. Accessibility must not be
+  // gated behind an irreversible choice made at signup by a different
+  // person than the one wearing the watch.
+  typeModeLargeText: 'leiko.theme.largeText',
   // Caregiver Family Constellation view preference — Sprint 7.7a/b.
   // Values: 'birds' (bird's-eye constellation) | 'cards' (editorial card
   // stack — lands in 7.7b). Default 'birds'. Plumbed in 7.7a; toggle UI

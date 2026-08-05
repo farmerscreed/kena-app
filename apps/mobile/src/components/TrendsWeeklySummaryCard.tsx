@@ -20,6 +20,7 @@ import { buildWeeklySummary } from '../services/ai/trendsTierC';
 import type { TrendsData } from '../utils/trends-aggregate';
 import type { AccountType, CorrelationRow } from '../types/database';
 import type { BPBaseline } from '../utils/vitalBaselines';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export const TRENDS_WEEKLY_EYEBROW_FALLBACK = 'Weekly summary';
 export const TRENDS_WEEKLY_BODY_FALLBACK =
@@ -83,7 +84,7 @@ export function TrendsWeeklySummaryCard({
       testID={testID}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 9,

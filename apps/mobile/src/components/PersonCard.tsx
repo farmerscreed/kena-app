@@ -44,6 +44,7 @@ import Animated, {
 import { Portrait } from './Portrait';
 import { STATUS_LABEL_FOR, StatusPill, type Status } from './StatusPill';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 import {
   buttonPressInScale,
   buttonPressOutScale,
@@ -204,7 +205,7 @@ export function PersonCard({
           <Portrait initial={initial} accent={accent} size="md" />
           <View style={[styles.headerNameCol, { marginLeft: theme.spacing.m }]}>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 // tertiary resolves to warm bright grey-cream — sits
@@ -220,7 +221,7 @@ export function PersonCard({
               {eyebrowText}
             </Text>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
                 fontFamily: theme.fontFamilies.editorial,
                 fontSize: 19,
@@ -237,7 +238,7 @@ export function PersonCard({
 
         {/* Editorial italic headline */}
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           style={{
             fontFamily: theme.fontFamilies.editorialItalic,
             fontStyle: 'italic',
@@ -256,7 +257,7 @@ export function PersonCard({
             paragraph visibly under the italic headline while staying
             unambiguously bright. */}
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           style={{
             fontFamily: theme.fontFamilies.body,
             fontSize: 13.5,
@@ -328,7 +329,7 @@ export function PersonCard({
           ]}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
             style={{
               fontFamily: theme.fontFamilies.numeric,
               // tertiary resolves to warm bright grey-cream — footer
@@ -344,7 +345,7 @@ export function PersonCard({
           </Text>
           <View style={styles.footerOpenRow}>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 fontSize: 11,
@@ -356,7 +357,7 @@ export function PersonCard({
               Open
             </Text>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 fontSize: 13,
@@ -405,7 +406,7 @@ function VitalCol({
       ]}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
         style={{
           fontFamily: valueFamily,
           fontSize: 18,
@@ -417,7 +418,7 @@ function VitalCol({
         {value}
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
         style={{
           fontFamily: labelFamily,
           // Back to design's 9pt mono uppercase letter-spacing 0.10em

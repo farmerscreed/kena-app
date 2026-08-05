@@ -11,6 +11,7 @@ import { StyleSheet, Text, TextInput, View, type StyleProp, type ViewStyle } fro
 import Svg, { Path } from 'react-native-svg';
 import { useTheme } from '../theme';
 import type { AccountType } from '../types/database';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export const DOCTOR_NOTE_EYEBROW = 'A line for the cover (optional)';
 
@@ -62,7 +63,7 @@ export function DoctorNoteField({
       ]}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 9,

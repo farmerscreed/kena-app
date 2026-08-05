@@ -93,6 +93,7 @@ import type { CaregiverStackParamList } from '../../navigation/types';
 import type { ParentSummary } from '../../services/families/fetchParentSummaries';
 import type { DailyPulseData } from '../../state/dailyPulse';
 import type { HRSample, SleepSession } from '../../types/vitals';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 type Nav = NativeStackNavigationProp<CaregiverStackParamList>;
 type Route = RouteProp<CaregiverStackParamList, 'ParentDashboard'>;
@@ -540,7 +541,7 @@ function PulseHeader({ theme, eyebrow, parentName, onBack }: PulseHeaderProps) {
         })}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: 18,
@@ -552,7 +553,7 @@ function PulseHeader({ theme, eyebrow, parentName, onBack }: PulseHeaderProps) {
       </Pressable>
       <View style={{ flex: 1 }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: eyebrowStyle.family,
             fontSize: eyebrowStyle.size,
@@ -566,7 +567,7 @@ function PulseHeader({ theme, eyebrow, parentName, onBack }: PulseHeaderProps) {
           {eyebrow}
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: greetingStyle.size,
@@ -649,7 +650,7 @@ function RemoteRefreshNudgeRow({
           })}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,
@@ -684,7 +685,7 @@ function NarrationCard({ theme, text }: NarrationCardProps) {
       testID="parent-dashboard-narration"
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,

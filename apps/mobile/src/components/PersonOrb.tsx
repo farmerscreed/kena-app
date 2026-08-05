@@ -49,6 +49,7 @@ import { Portrait } from './Portrait';
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { STATUS_LABEL_FOR, type Status } from './StatusPill';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export interface PersonOrbProps {
   initial: string;
@@ -317,7 +318,7 @@ export function PersonOrb({
             >
               <Text
                 allowFontScaling={false}
-                style={{ fontSize: 9, color: accent, lineHeight: 11 }}
+                style={{ fontSize: 11, color: theme.colors.text.secondary, lineHeight: 13 }}
               >
                 {'☾' /* ☾ */}
               </Text>
@@ -338,8 +339,12 @@ export function PersonOrb({
             alignItems: 'center',
           }}
         >
+          {/* Sprint 19 (audit D12 P0-6) — this label block is absolutely
+              positioned BELOW the orb with left:0/right:0, so unlike the
+              text inside the ring it is not geometry-trapped and can
+              scale with the user's Dynamic Type setting. */}
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
             style={{
               // Instrument Serif 14pt per the design. text.primary
               // resolves to the single warm bone-cream #F9F6EE
@@ -355,17 +360,22 @@ export function PersonOrb({
             {fullName.split(' ')[0]}
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
             style={{
               fontFamily: theme.fontFamilies.numeric,
-              // Sprint 16.6 — back to design's 10pt for the BP label.
-              // The earlier 12pt bump compensated for unreadable
-              // contrast that the bg + halo + palette work has now
-              // resolved at the source.
-              fontSize: 10,
-              lineHeight: 12,
+              // Sprint 19 (audit D12 P0-6) — was 10pt, below the 11pt
+              // floor, for the wearer's own blood pressure. Raised.
+              fontSize: 11,
+              lineHeight: 13,
               fontWeight: '500',
-              color: accent,
+              // Sprint 19 (audit D12 P1-1) — was `accent`, i.e.
+              // person[n], which is byte-identical to brand.coral: the
+              // colour of the active tab and the Take-a-reading FAB.
+              // A measurement painted in the interactive colour, inside
+              // a Pressable, is the strongest possible false affordance
+              // — and person[3] #7B67CC computed 4.41:1 at 10pt, under
+              // AA. Person identity is carried by the orb ring/halo.
+              color: theme.colors.text.secondary,
               letterSpacing: 0.4,
               marginTop: 1,
             }}

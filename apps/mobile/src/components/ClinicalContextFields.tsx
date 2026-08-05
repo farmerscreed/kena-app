@@ -28,6 +28,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../theme';
 import type { AccountType } from '../types/database';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export const CLINICAL_FIELDS_EYEBROW = 'Clinical context (optional)';
 export const CLINICAL_FIELDS_HELPER =
@@ -109,7 +110,7 @@ export function ClinicalContextFields({
       testID={testID}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 9,
@@ -123,7 +124,7 @@ export function ClinicalContextFields({
         {CLINICAL_FIELDS_EYEBROW}
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.editorialItalic,
           fontSize: 12,
