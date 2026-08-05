@@ -10,7 +10,10 @@
 //   {parent_label}      — "Mum" / "Dad" / "your parent" / "you"
 //   {bp_value}          — e.g. "124/79"
 //   {bp_week_avg}       — e.g. "121/77"
-//   {bp_delta}          — small number, signed, e.g. "+6" or "-3"
+//   {bp_delta}          — a COMPLETE predicate, e.g. "six above the
+//                         week's average" / "higher than usual". Templates
+//                         must end at this slot and never add their own
+//                         trailing phrase (audit D12 P0-7).
 //   {hr_resting}        — e.g. "62"
 //   {sleep_total}       — e.g. "7h 24m"
 //   {steps_today}       — e.g. "6,200"
@@ -136,7 +139,7 @@ const BP_CALM_CONCERNED: NarrationTemplateEntry[] = [
   t(
     'bp-cc.single',
     'BP single calm-concerned reading, others in pattern',
-    "{parent_label}'s morning number is {bp_delta} above her week. Worth a closer look later.",
+    "{parent_label}'s morning number is {bp_delta}. Worth a closer look later.",
     120,
     (c) =>
       c.bp === 'calm_concerned' &&
@@ -147,7 +150,7 @@ const BP_CALM_CONCERNED: NarrationTemplateEntry[] = [
   t(
     'bp-cc.with-light-sleep',
     'BP calm-concerned with a light night',
-    "{parent_label}'s morning number is {bp_delta} above her week. Sleep was lighter — these often pair.",
+    "{parent_label}'s morning number is {bp_delta}. Sleep was lighter — these often pair.",
     125,
     (c) => c.bp === 'calm_concerned' && c.sleep === 'calm_concerned',
   ),
@@ -177,7 +180,7 @@ const HR_DRIFT: NarrationTemplateEntry[] = [
   t(
     'hr-cu.resting-far-from-baseline',
     'HR confirmed-urgent — calm escalation, no alarm copy',
-    "{parent_label}'s resting heart rate has lifted further from her baseline this week. Worth mentioning at the next visit.",
+    "{parent_label}'s resting heart rate has lifted further from their baseline this week. Worth mentioning at the next visit.",
     150,
     (c) => c.hr === 'confirmed_urgent',
   ),
@@ -194,7 +197,7 @@ const SPO2_DIPS: NarrationTemplateEntry[] = [
   t(
     'spo2-cu.sustained-low',
     'SpO2 confirmed-urgent — direct to doctor framing',
-    "{parent_label}'s overnight oxygen has been lower across several nights. Worth a chat with her doctor.",
+    "{parent_label}'s overnight oxygen has been lower across several nights. Worth a chat with their doctor.",
     150,
     (c) => c.spo2 === 'confirmed_urgent',
   ),
@@ -223,7 +226,7 @@ const ACTIVITY_PATTERNS: NarrationTemplateEntry[] = [
   t(
     'activity.streak-positive',
     'Step target hit several days in a row',
-    "{parent_label} hit her step goal {steps_target_hits}. Resting heart rate is two below her week.",
+    "{parent_label} hit their step goal {steps_target_hits}. Resting heart rate is two below the week's average.",
     120,
     (c) =>
       c.activityStreak === true &&
@@ -252,7 +255,7 @@ const CORRELATION_LEAD: NarrationTemplateEntry[] = [
   t(
     'corr.activity-hr',
     'Lead with the activity-and-HR correlation',
-    "{parent_label}'s consistent walking this week has nudged her resting heart rate down.",
+    "{parent_label}'s consistent walking this week has nudged their resting heart rate down.",
     130,
     (c) => c.hasMeaningfulCorrelation === 'activity_hr',
   ),

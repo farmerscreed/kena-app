@@ -116,7 +116,7 @@ function renderHrAnomaly(
     if (recipient === 'caregiver') {
       return {
         title: `Please call ${p.parentLabel}`,
-        body: `${p.parentLabel}'s resting heart rate is outside her usual range. We recommend reaching out now.`,
+        body: `${p.parentLabel}'s resting heart rate is outside their usual range. We recommend reaching out now.`,
       };
     }
     return {
@@ -147,7 +147,7 @@ function renderSpO2Anomaly(
     if (recipient === 'caregiver') {
       return {
         title: `Please call ${p.parentLabel}`,
-        body: `${p.parentLabel}'s overnight oxygen has dipped low three nights running. Worth a call to her doctor today.`,
+        body: `${p.parentLabel}'s overnight oxygen has dipped low three nights running. Worth a call to their doctor today.`,
       };
     }
     return {
@@ -198,7 +198,7 @@ export function renderDailySummary(
   }
   const bp = p.sys != null && p.dia != null ? `${p.sys}/${p.dia}` : '';
   if (recipient === 'caregiver') {
-    const sleep = p.sleepHours != null ? ` She slept ${p.sleepHours} hours.` : '';
+    const sleep = p.sleepHours != null ? ` ${p.parentLabel} slept ${p.sleepHours} hours.` : '';
     return {
       title: 'Good morning',
       body: `${p.parentLabel}'s reading was ${bp}.${sleep}`.trim(),
@@ -206,7 +206,7 @@ export function renderDailySummary(
   }
   return {
     title: 'Your morning reading',
-    body: `${bp}, in pattern. Have a good day.`,
+    body: `${bp}, in range. Have a good day.`,
   };
 }
 
@@ -237,7 +237,7 @@ export function renderWatchLowBattery(
   if (recipient === 'caregiver') {
     return {
       title: 'Watch battery low',
-      body: `${p.parentLabel}'s watch is at ${p.batteryPct}%. She'll need to charge it soon.`,
+      body: `${p.parentLabel}'s watch is at ${p.batteryPct}%. It will need charging soon.`,
     };
   }
   return {

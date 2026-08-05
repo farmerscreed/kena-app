@@ -119,31 +119,73 @@ interface RangeCopy {
 }
 
 /**
+ * Observed overnight facts used to build the Insight body. Every field is
+ * derived from the user's own samples — never assumed.
+ */
+interface OvernightFacts {
+  /** Lowest overnight percent in the selected range, or null when none. */
+  lowestPercent: number | null;
+  /**
+   * Clock label for `lowestPercent` (e.g. "4 am"), or the literal
+   * 'overnight' when the lowest value came from the pre-baked slice and
+   * we have no time for it.
+   */
+  lowestTime: string;
+}
+
+/**
+ * Renders the observed low as a clause, or an empty string when we have
+ * no low to report. Never invents a value or a time.
+ *
+ * Sprint 19 (audit D12 P0-1) — the previous implementation hardcoded
+ * "one brief dip around 4 am" into the in_pattern branch and fixed
+ * thresholds ("below 92%", "below 90") into the concerned branches.
+ * Those strings rendered for every user regardless of their data,
+ * asserting a physiological event that may not have happened. All
+ * specifics now come from `OvernightFacts` or are omitted entirely.
+ */
+function lowestClause(facts: OvernightFacts): string {
+  if (facts.lowestPercent === null) return '';
+  const when =
+    facts.lowestTime === 'overnight' ? 'overnight' : `around ${facts.lowestTime}`;
+  return `${facts.lowestPercent}% ${when}`;
+}
+
+/**
  * Tier → copy. Every string here passes the docs/05-voice-and-claims.md
  * rules. The confirmed-urgent line still uses the calm Direct tone (D5
  * §3.5 Tone D) — it does not say "dangerous" or "critical".
+ *
+ * Specifics (percentages, times) are interpolated from `facts` only when
+ * we actually observed them. With no observation the copy stays true but
+ * general — it never fills the gap with an example.
  */
 function copyForTier(
   tier: ClassificationTier | null | undefined,
+  facts: OvernightFacts,
 ): RangeCopy {
+  const low = lowestClause(facts);
   switch (tier) {
     case 'in_pattern':
       return {
         hero: 'Steady through the night',
-        insight:
-          "Your oxygen saturation held steady through the night with one brief dip around 4 am — nothing unusual. Healthy sleep often shows small, transient dips like this.",
+        insight: low
+          ? `Your oxygen held in your usual range through the night, with a low of ${low}. Small, brief dips like this are common in healthy sleep.`
+          : 'Your oxygen held in your usual range through the night. Small, brief dips are common in healthy sleep.',
       };
     case 'calm_concerned':
       return {
         hero: 'Worth a look — share with your doctor at your next visit',
-        insight:
-          'Your overnight oxygen has held below 92% on a few recent nights. Worth mentioning at your next doctor visit.',
+        insight: low
+          ? `Your overnight oxygen has been running below your usual, with a low of ${low}. Worth mentioning at your next doctor visit.`
+          : 'Your overnight oxygen has been running below your usual on recent nights. Worth mentioning at your next doctor visit.',
       };
     case 'confirmed_urgent':
       return {
         hero: 'We recommend talking to your doctor soon',
-        insight:
-          'Your overnight oxygen has held below 90 on a few recent nights — worth mentioning at your next doctor visit.',
+        insight: low
+          ? `Your overnight oxygen has been running well below your usual, with a low of ${low}. Worth talking to your doctor soon.`
+          : 'Your overnight oxygen has been running well below your usual on recent nights. Worth talking to your doctor soon.',
       };
     default:
       return {
@@ -378,7 +420,6 @@ export function SpO2Detail({
     spo2Staleness === 'stale'
       ? formatStalenessCaption(data.spo2.latestSampleSec)
       : null;
-  const range = copyForTier(tier);
 
   const allSamples = useMemo(
     () => [...spo2Pending, ...spo2Recent],
@@ -430,6 +471,13 @@ export function SpO2Detail({
   const lowest =
     lowestSampleInRange?.percent ?? overnightLowsRangeMin ?? null;
   const lowestUnit = lowestSampleInRange?.time ?? 'overnight';
+  // Sprint 19 (audit D12 P0-1) — tier copy is built AFTER `lowest` /
+  // `lowestUnit` so the Insight body can quote the user's own observed
+  // low instead of a hardcoded example. Keep this ordering.
+  const range = copyForTier(tier, {
+    lowestPercent: lowest,
+    lowestTime: lowestUnit,
+  });
   const awakeAvg = useMemo(
     () => computeAwakeAverage(rangedSamples),
     [rangedSamples],

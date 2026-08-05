@@ -57,6 +57,7 @@ import Svg, { Line } from 'react-native-svg';
 import { VitalRing, type VitalRingState, type VitalType } from './VitalRing';
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
+import { opacity } from '../theme/tokens';
 import {
   dailyPulseRevealNarrationOpacity,
   dailyPulseRevealOpacity,
@@ -125,6 +126,13 @@ const BP_STROKE = 9;
 const STAGGER_MS = 80;
 const OPACITY_REVEAL_MS = 200; // duration.normal — see motion/patterns.ts
 const GLOW_BREATHE_DURATION_MS = 4500;
+/**
+ * Rendered opacity of the ambient glow disc behind the BP ring. Sourced
+ * from the shared opacity tokens — see the rationale and contrast
+ * ceiling documented on `opacity.glowRest` / `opacity.glowPeak`.
+ */
+const GLOW_OPACITY_REST = opacity.glowRest;
+const GLOW_OPACITY_PEAK = opacity.glowPeak;
 
 interface SatelliteDef {
   vital: 'hr' | 'spo2' | 'sleep' | 'activity';
@@ -310,16 +318,24 @@ export function DailyPulseHero({
   const bpColor = theme.colors.vital.bp;
 
   // Ambient breathing glow under the BP ring. Reduced motion → static.
-  const glowOpacity = useSharedValue(reduceMotion ? 0.55 : 0.55);
+  //
+  // Sprint 19 (audit D12 P0-5): this animated style is applied after
+  // `styles.glow`, so these values — not the stylesheet's — are what
+  // renders. See GLOW_OPACITY_REST/PEAK in VitalHero for the rationale
+  // and the contrast ceiling.
+  const glowOpacity = useSharedValue<number>(GLOW_OPACITY_REST);
   useEffect(() => {
-    if (reduceMotion) return;
+    if (reduceMotion) {
+      glowOpacity.value = GLOW_OPACITY_REST;
+      return;
+    }
     glowOpacity.value = withRepeat(
       withSequence(
-        withTiming(0.75, {
+        withTiming(GLOW_OPACITY_PEAK, {
           duration: GLOW_BREATHE_DURATION_MS / 2,
           easing: Easing.inOut(Easing.ease),
         }),
-        withTiming(0.55, {
+        withTiming(GLOW_OPACITY_REST, {
           duration: GLOW_BREATHE_DURATION_MS / 2,
           easing: Easing.inOut(Easing.ease),
         }),
@@ -591,7 +607,9 @@ const styles = StyleSheet.create({
     width: 260,
     height: 260,
     borderRadius: 130,
-    opacity: 0.18,
+    // Overridden at runtime by the animated glow style (see GLOW_OPACITY_*).
+    // Kept in sync so a static render matches the animated rest state.
+    opacity: opacity.glowRest,
   },
   svgOverlay: {
     position: 'absolute',

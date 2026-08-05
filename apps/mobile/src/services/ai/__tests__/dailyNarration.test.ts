@@ -145,15 +145,21 @@ it('formats steps_today with thousands separator', () => {
   expect(slots.steps_today).toBe('12,345');
 });
 
-it('formats bp_delta in words ("six below her week")', () => {
+// Sprint 19 (audit D12 P0-7) — bp_delta is a COMPLETE predicate. It used
+// to be a fragment ("six below her week") substituted into templates that
+// ALSO said "above her week", composing to "…is six below her week above
+// her week." The slot-level assertions below are kept, but see the
+// composition suite at the bottom of this file: asserting the slot in
+// isolation is exactly what let the broken sentence ship green.
+it('formats bp_delta as a complete predicate in words', () => {
   const slots = buildNarrationSlots({
     data: makeData(),
     parentLabel: 'Mum',
     weekAverageSystolic: 130,
     weekAverageDiastolic: 80,
   });
-  // 124 - 130 = -6 → "six below her week"
-  expect(slots.bp_delta).toBe('six below her week');
+  // 124 - 130 = -6
+  expect(slots.bp_delta).toBe("six below the week's average");
 });
 
 it('formats bp_delta as "in line" when within 1', () => {
@@ -163,12 +169,26 @@ it('formats bp_delta as "in line" when within 1', () => {
     weekAverageSystolic: 124,
     weekAverageDiastolic: 79,
   });
-  expect(slots.bp_delta).toBe('in line with her week');
+  expect(slots.bp_delta).toBe("in line with the week's average");
 });
 
-it('falls back to "in pattern" for bp_delta when no week average', () => {
+it('falls back to a non-numeric predicate when there is no week average', () => {
   const slots = buildNarrationSlots({ data: makeData(), parentLabel: 'Mum' });
-  expect(slots.bp_delta).toBe('in pattern');
+  // Never invents a magnitude; the templates consuming this slot only
+  // fire on a calm_concerned BP tier, so this is true by construction.
+  expect(slots.bp_delta).toBe('higher than usual');
+});
+
+it('never emits gendered pronouns in bp_delta (parent may be "Dad")', () => {
+  for (const weekAvg of [130, 124, 118, undefined]) {
+    const slots = buildNarrationSlots({
+      data: makeData(),
+      parentLabel: 'Dad',
+      weekAverageSystolic: weekAvg,
+      weekAverageDiastolic: 80,
+    });
+    expect(slots.bp_delta).not.toMatch(/\b(her|his|she|he)\b/i);
+  }
 });
 
 it('formats steps_target_hits in words', () => {

@@ -67,7 +67,10 @@ import { useParentVitalsRecent } from '../../hooks/useParentVitalsRecent';
 import { useOnboarding } from '../../state/onboarding';
 import { useHRRangeSummary } from '../../hooks/useHRRangeSummary';
 import { hrFill } from '../../utils/vitalThemes';
-import { checkStaleness } from '../../utils/classification';
+import {
+  checkStaleness,
+  vitalRangeCopyForTier,
+} from '../../utils/classification';
 import { formatStalenessCaption } from '../../utils/stalenessCaption';
 import type { HRSample, SleepSession } from '../../types/vitals';
 
@@ -635,11 +638,16 @@ export function HRDetail({
   const heroSub =
     staleCaption ??
     (hasHero ? (isLive ? 'Latest reading' : 'Now · resting') : 'Heart rate');
+  // Sprint 19 (audit D12 P0-4) — this used to gate on `baseline !== null`
+  // and render "bpm · within your range" for EVERY classified tier,
+  // contradicting the anomaly banner above it. The verdict now comes
+  // from the classification, via the same helper BPDetail uses.
+  const hrTier = data.hr.classification?.tier ?? null;
   const heroRange = hasHero
     ? isLive
       ? 'bpm · latest'
-      : baseline !== null
-        ? 'bpm · within your range'
+      : hrTier !== null
+        ? vitalRangeCopyForTier('bpm', hrTier)
         : 'bpm · resting'
     : 'Wear the watch to start tracking your heart rate.';
 

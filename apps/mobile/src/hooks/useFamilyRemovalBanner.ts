@@ -67,7 +67,11 @@ function writePersisted(map: PersistedMap): void {
 }
 
 function labelFor(parent: ParentSummary): string {
-  return parent.parentDisplayName?.trim() || 'your loved one';
+  // Sprint 19 (audit D12 P0-8) — "loved one" is a HARD FAIL in
+  // docs/05-voice-and-claims.md §87 and was reaching the removal banner
+  // whenever the display name was missing. "your family member" is the
+  // sanctioned generic.
+  return parent.parentDisplayName?.trim() || 'your family member';
 }
 
 export function buildCurrentMap(parents: ParentSummary[]): PersistedMap {
