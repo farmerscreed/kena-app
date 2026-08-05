@@ -42,6 +42,25 @@ export const paletteDark = {
   //                                    offline status tone.
   stone: { 300: '#857F7A', 500: '#6B6862' },
   amber: { 400: '#F5B47A', 500: '#E8A063', 600: '#C5824A' },
+  // Sprint 19 (audit D12 P1-1) — colour quarantine.
+  //
+  // `brand.primary`, `vital.bp` and `state.warning` all resolved to the
+  // SAME hex (#E8A063). Contrast between "this is tappable", "this is
+  // your blood pressure" and "this is a calm-concerned anomaly" was
+  // 1.00:1 — the colour language was ambiguous by construction, so it
+  // could not be learned. D12 §2.4 mandated it ("BP ring/tile uses
+  // brand accent — BP is the headline vital"), so this reverses a
+  // spec-level decision, not implementation drift.
+  //
+  // The fork stays inside the amber family so the screens keep their
+  // warmth; only the ROLE separation is new. Interactive keeps the
+  // canonical 500; data goes lighter; the anomaly state goes deeper.
+  //
+  // [DESIGNER] These two steps are the audit's recommendation, not a
+  // designer's. The relationships (data lighter than CTA, warning
+  // deeper than CTA) should hold even if the exact hexes move.
+  vitalBp: '#F0B384',   // data tone — lighter than the CTA amber
+  warningAmber: '#D89150', // anomaly tone — deeper than the CTA amber
   // Coral — caregiver-mode brand accent (Sprint 7.7). Distinct from the
   // existing `coral.500 #D6745A` used for HR vital chromatic; this is
   // brighter / warmer to read as the caregiver brand colour against
@@ -105,6 +124,12 @@ export const paletteLight = {
   // review pending before launch — single hex to edit if the
   // founder/designer wants a different shade.
   amber: { 500: '#B4742E' },
+  // Sprint 19 (audit D12 P1-1) — light-mode counterparts to the dark
+  // fork. Same rule: data lighter than the CTA, warning deeper. Both
+  // verified >= 3:1 against linen surfaces (the light-mode amber floor
+  // that Sprint 14.5 established).
+  vitalBp: '#C98A45',
+  warningAmber: '#A6641F',
   coral: { 500: '#C95F44' },
   teal: { 500: '#3F8888' },
   violet: { 500: '#5A5887' },
@@ -226,7 +251,8 @@ export const semanticColorsDark: SemanticColors = {
     rim: paletteDark.rim[20],
   },
   vital: {
-    bp: paletteDark.amber[500],
+    // Sprint 19 (audit D12 P1-1) — forked off brand.primary.
+    bp: paletteDark.vitalBp,
     hr: paletteDark.coral[500],
     spo2: paletteDark.teal[500],
     sleep: paletteDark.violet[500],
@@ -234,7 +260,8 @@ export const semanticColorsDark: SemanticColors = {
   },
   state: {
     success: paletteDark.success[500],
-    warning: paletteDark.warning[500],
+    // Sprint 19 (audit D12 P1-1) — forked off brand.primary.
+    warning: paletteDark.warningAmber,
     urgent: paletteDark.crimson[700],
   },
   person: {
@@ -297,7 +324,8 @@ export const semanticColorsLight: SemanticColors = {
     rim: 'transparent',
   },
   vital: {
-    bp: paletteLight.amber[500],
+    // Sprint 19 (audit D12 P1-1) — forked off brand.primary.
+    bp: paletteLight.vitalBp,
     hr: paletteLight.coral[500],
     spo2: paletteLight.teal[500],
     sleep: paletteLight.violet[500],
@@ -305,7 +333,8 @@ export const semanticColorsLight: SemanticColors = {
   },
   state: {
     success: paletteLight.success[500],
-    warning: paletteLight.warning[500],
+    // Sprint 19 (audit D12 P1-1) — forked off brand.primary.
+    warning: paletteLight.warningAmber,
     urgent: paletteLight.crimson[700],
   },
   // Person + status reuse the dark-mode hexes — caregiver home is

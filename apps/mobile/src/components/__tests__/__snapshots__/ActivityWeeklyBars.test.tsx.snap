@@ -2,6 +2,9 @@
 
 exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
 <View
+  accessibilityLabel="This week vs goal. 7 days shown. Steps ranged from 2,140 to 9,100. 2 of them reached the goal of 8,000 steps."
+  accessibilityRole="image"
+  accessible={true}
   testID="weekly"
 >
   <Text
@@ -39,6 +42,8 @@ exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
     }
   >
     <View
+      accessibilityElementsHidden={true}
+      importantForAccessibility="no-hide-descendants"
       style={
         [
           {

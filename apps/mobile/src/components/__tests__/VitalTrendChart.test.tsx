@@ -67,3 +67,29 @@ describe('VitalTrendChart — render', () => {
     expect(toJSON()).toMatchSnapshot();
   });
 });
+
+// ── Audit P1-6 ───────────────────────────────────────────────────────
+// The composed label was on a View with no `accessible` prop, so iOS was
+// not guaranteed to expose it at all.
+
+describe('VitalTrendChart — accessibility (audit P1-6)', () => {
+  it('marks the labelled root explicitly accessible and gives it an image role', () => {
+    render(
+      withTheme(
+        <VitalTrendChart
+          vital="hr"
+          data={[60, 72, 78, 88, 76, 70, 64]}
+          range={[60, 95]}
+          caption="Today · resting HR"
+          peak
+          trough
+          testID="chart"
+        />,
+      ),
+    );
+    const root = screen.getByTestId('chart');
+    expect(root.props.accessible).toBe(true);
+    expect(root.props.accessibilityRole).toBe('image');
+    expect(root.props.accessibilityLabel).toBeTruthy();
+  });
+});

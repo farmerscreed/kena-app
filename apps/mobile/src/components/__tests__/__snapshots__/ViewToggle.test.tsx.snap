@@ -227,7 +227,7 @@ exports[`ViewToggle — value × colorMode snapshot matrix renders value=birds c
         </RNSVGGroup>
       </RNSVGSvgView>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#FFFFFF",
@@ -421,7 +421,7 @@ exports[`ViewToggle — value × colorMode snapshot matrix renders value=birds c
         </RNSVGGroup>
       </RNSVGSvgView>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#FFFFFF",
@@ -667,7 +667,7 @@ exports[`ViewToggle — value × colorMode snapshot matrix renders value=birds c
         </RNSVGGroup>
       </RNSVGSvgView>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#FFFFFF",
@@ -861,7 +861,7 @@ exports[`ViewToggle — value × colorMode snapshot matrix renders value=birds c
         </RNSVGGroup>
       </RNSVGSvgView>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#FFFFFF",
@@ -1107,7 +1107,7 @@ exports[`ViewToggle — value × colorMode snapshot matrix renders value=cards c
         </RNSVGGroup>
       </RNSVGSvgView>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#FFFFFF",
@@ -1301,7 +1301,7 @@ exports[`ViewToggle — value × colorMode snapshot matrix renders value=cards c
         </RNSVGGroup>
       </RNSVGSvgView>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#FFFFFF",
@@ -1547,7 +1547,7 @@ exports[`ViewToggle — value × colorMode snapshot matrix renders value=cards c
         </RNSVGGroup>
       </RNSVGSvgView>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#FFFFFF",
@@ -1741,7 +1741,7 @@ exports[`ViewToggle — value × colorMode snapshot matrix renders value=cards c
         </RNSVGGroup>
       </RNSVGSvgView>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#FFFFFF",

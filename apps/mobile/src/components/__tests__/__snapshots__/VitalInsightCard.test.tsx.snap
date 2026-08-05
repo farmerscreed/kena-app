@@ -120,7 +120,7 @@ exports[`VitalInsightCard matches snapshot 1`] = `
       </RNSVGSvgView>
     </View>
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={2}
       style={
         {
           "color": "#7C7AAB",

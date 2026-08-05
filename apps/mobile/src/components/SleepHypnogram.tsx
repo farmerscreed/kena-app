@@ -268,6 +268,10 @@ export function SleepHypnogram({
         {eyebrow}
       </Text>
       <View
+        // Audit P1-6 — `accessible` added explicitly. A View carrying a
+        // composed accessibilityLabel without it is not guaranteed to be
+        // exposed as a single element on iOS, which would silence the label.
+        accessible
         accessibilityRole="image"
         accessibilityLabel={`Sleep stages from ${startLabel} to ${endLabel}.`}
         style={[

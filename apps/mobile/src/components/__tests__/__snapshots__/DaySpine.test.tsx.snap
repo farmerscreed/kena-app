@@ -33,7 +33,7 @@ exports[`DaySpine — empty state matches snapshot in the empty state 1`] = `
       }
     />
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.3}
       style={
         {
           "color": "#857F7A",
@@ -110,7 +110,7 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
       }
     />
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.3}
       style={
         {
           "color": "#857F7A",
@@ -201,7 +201,7 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
       testID="spine-moment-sleep-1"
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#857F7A",
@@ -248,7 +248,7 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#FFFFFF",
@@ -318,7 +318,7 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
       testID="spine-moment-bp-1"
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
             "color": "#857F7A",
@@ -346,8 +346,8 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
         <View
           style={
             {
-              "backgroundColor": "#E8A063",
-              "borderColor": "#E8A063",
+              "backgroundColor": "#F0B384",
+              "borderColor": "#F0B384",
               "borderRadius": 4.5,
               "borderWidth": 1.5,
               "height": 9,
@@ -365,7 +365,7 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#FFFFFF",

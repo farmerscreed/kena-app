@@ -34,6 +34,7 @@ import { Pill } from '../../components/Pill';
 import { TimezonePicker } from '../../components/TimezonePicker';
 import { addAnotherFamily } from '../../services/families/addAnotherFamily';
 import { useTheme } from '../../theme';
+import { useAnnounceOnChange } from '../../hooks/useAnnounce';
 import type { CaregiverScreenProps } from '../../navigation/types';
 
 type ParentRelationship = 'mother' | 'father' | 'aunt' | 'uncle' | 'other';
@@ -96,6 +97,10 @@ export function AddPersonScreen({ navigation }: CaregiverScreenProps<'AddPerson'
   const [tz, setTz] = useState(defaultTimezone());
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Audit P1-7 — accessibilityLiveRegion on the inline error below is
+  // Android-only, so on iOS the error was never spoken. This is the iOS half.
+  useAnnounceOnChange(error);
 
   const parentCustomRequired = parentRel === 'other';
   const parentCustomValid = !parentCustomRequired || parentRelCustom.trim().length > 0;

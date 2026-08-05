@@ -4,6 +4,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
 <View
   accessibilityLabel="Today, 6,250 steps. 100% of 6,000."
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {

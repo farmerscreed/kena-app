@@ -188,17 +188,17 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
           {
             "borderRadius": 130,
             "height": 260,
-            "opacity": 0.18,
+            "opacity": 0.14,
             "position": "absolute",
             "width": 260,
           },
           {
-            "backgroundColor": "#E8A063",
+            "backgroundColor": "#F0B384",
             "left": 50,
             "top": 100,
           },
           {
-            "opacity": 0.55,
+            "opacity": 0.14,
           },
         ]
       }
@@ -504,7 +504,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={105.5}
                 stroke={
                   {
-                    "payload": 4293435491,
+                    "payload": 4293964676,
                     "type": 0,
                   }
                 }
@@ -538,7 +538,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={105.5}
                 stroke={
                   {
-                    "payload": 4293435491,
+                    "payload": 4293964676,
                     "type": 0,
                   }
                 }
@@ -590,10 +590,10 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#E8A063",
+                "color": "#F0B384",
                 "fontFamily": "Inter_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.55,
@@ -607,13 +607,16 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
           </Text>
           <Text
             adjustsFontSizeToFit={true}
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             numberOfLines={1}
             style={
               {
                 "color": "#FFFFFF",
-                "fontFamily": "InstrumentSerif_400Regular",
+                "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 56,
+                "fontVariant": [
+                  "tabular-nums",
+                ],
                 "letterSpacing": -0.5,
                 "lineHeight": 60,
                 "maxWidth": 196,
@@ -625,7 +628,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             128/82
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#857F7A",
@@ -858,13 +861,16 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             numberOfLines={1}
             style={
               {
                 "color": "#FFFFFF",
-                "fontFamily": "InstrumentSerif_400Regular",
+                "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 22,
+                "fontVariant": [
+                  "tabular-nums",
+                ],
                 "letterSpacing": -0.3,
                 "lineHeight": 28,
               }
@@ -873,12 +879,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             64
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#D6745A",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 8,
+                "fontSize": 11,
                 "letterSpacing": 0.5,
                 "marginTop": 2,
                 "textTransform": "uppercase",
@@ -1105,13 +1111,16 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             numberOfLines={1}
             style={
               {
                 "color": "#FFFFFF",
-                "fontFamily": "InstrumentSerif_400Regular",
+                "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 18,
+                "fontVariant": [
+                  "tabular-nums",
+                ],
                 "letterSpacing": -0.3,
                 "lineHeight": 24,
               }
@@ -1120,12 +1129,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             98
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#5FA8A8",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 8,
+                "fontSize": 11,
                 "letterSpacing": 0.5,
                 "marginTop": 2,
                 "textTransform": "uppercase",
@@ -1352,13 +1361,16 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             numberOfLines={1}
             style={
               {
                 "color": "#FFFFFF",
-                "fontFamily": "InstrumentSerif_400Regular",
+                "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 18,
+                "fontVariant": [
+                  "tabular-nums",
+                ],
                 "letterSpacing": -0.3,
                 "lineHeight": 24,
               }
@@ -1367,12 +1379,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             7:42
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#7C7AAB",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 8,
+                "fontSize": 11,
                 "letterSpacing": 0.5,
                 "marginTop": 2,
                 "textTransform": "uppercase",
@@ -1599,13 +1611,16 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             numberOfLines={1}
             style={
               {
                 "color": "#FFFFFF",
-                "fontFamily": "InstrumentSerif_400Regular",
+                "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 22,
+                "fontVariant": [
+                  "tabular-nums",
+                ],
                 "letterSpacing": -0.3,
                 "lineHeight": 28,
               }
@@ -1614,12 +1629,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             4,166
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#7CA56F",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 8,
+                "fontSize": 11,
                 "letterSpacing": 0.5,
                 "marginTop": 2,
                 "textTransform": "uppercase",
@@ -1730,7 +1745,7 @@ exports[`Reduced motion — end-state snapshots VitalRing state="filling" render
         r={40}
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -1764,7 +1779,7 @@ exports[`Reduced motion — end-state snapshots VitalRing state="filling" render
         r={40}
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }

@@ -142,6 +142,10 @@ export function ActivityRingsHero({
 
   return (
     <View
+      // Audit P1-6 — `accessible` added explicitly. A View carrying a
+      // composed accessibilityLabel without it is not guaranteed to be
+      // exposed as a single element on iOS, which would silence the label.
+      accessible
       accessibilityRole="text"
       accessibilityLabel={a11yLabel}
       style={[styles.root, style]}

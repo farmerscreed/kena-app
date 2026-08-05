@@ -7,12 +7,23 @@
 // the bottom. Includes a two-line legend explaining systolic vs
 // diastolic in plain language ("the first number").
 //
-// The diastolic dot color is the BP vital color at 0.6 opacity — the
-// design's `oklch(... calc(l - .15) ...)` formulation has no cross-
-// platform RN equivalent, and Skia's color-math utilities aren't on the
-// dependency list. A 0.6 opacity render reads as "lower lightness" on
-// both warm-charcoal and linen surfaces (visually checked against the
-// design prototype, leiko-detail-screens.jsx lines 60-65).
+// Audit P1-6 — the two series used to be separated by alpha alone: the
+// same hue, same radius, same shape, with diastolic at 0.6 opacity. That
+// is a WCAG 1.4.1 failure (colour/lightness as the sole carrier of
+// meaning) and it fails outright for anyone with low vision or a
+// greyscale display. Systolic is now a FILLED dot and diastolic a HOLLOW
+// ring at full opacity — a shape difference that survives greyscale,
+// contrast filters, and small type sizes. The legend mirrors the same two
+// shapes so the key and the plot agree.
+//
+// (Provenance: the design prototype, leiko-detail-screens.jsx lines
+// 60-65, drew diastolic as the same hue at lower lightness —
+// `oklch(... calc(l - .15) ...)`, which we approximated with 0.6 alpha.
+// The shape change replaces that approximation rather than tuning it.)
+//
+// Audit P1-6 — the chart also carried zero accessibility props. It now
+// exposes one composed sentence (range, count, the day's salient
+// movement) and hides the decorative SVG layer beneath it.
 //
 // react-native-svg only — matches the pattern in VitalTrendChart +
 // CorrelationStrip + VitalRing.
@@ -48,7 +59,8 @@ const DOT_RADIUS = 3;
 const CONNECTOR_OPACITY = 0.25;
 const CONNECTOR_WIDTH = 6;
 const RANGE_BAND_OPACITY = 0.08;
-const DIA_OPACITY = 0.6;
+// Audit P1-6 — diastolic is drawn as a hollow ring, not a faded dot.
+const DIA_STROKE_WIDTH = 1.5;
 
 export interface BPTwinLineChartProps {
   /** Locked to "bp" — included so the API matches our other chart components. */
@@ -145,6 +157,63 @@ export function buildBPTwinGeometry(
   };
 }
 
+/**
+ * Audit P1-6 — composes the chart's spoken description.
+ *
+ * A screen reader can't see dots, so the label carries what the sighted
+ * user gets at a glance: how many readings there are, the span each number
+ * covered, and where the day ended up relative to where it started. Plain
+ * language before clinical terms per docs/05-voice-and-claims.md — "the
+ * first number", not "systolic".
+ *
+ * Exported so the sentence can be unit-tested without mounting SVG.
+ */
+export function composeBPTwinAccessibilityLabel(
+  sys: (number | null)[],
+  dia: (number | null)[],
+  hourLabels: string[] = [],
+): string {
+  const points = Math.min(sys.length, dia.length);
+  const pairs: { sys: number; dia: number; label: string }[] = [];
+  for (let i = 0; i < points; i++) {
+    const s = sys[i];
+    const d = dia[i];
+    if (s === null || s === undefined || d === null || d === undefined) continue;
+    pairs.push({ sys: s, dia: d, label: hourLabels[i] ?? '' });
+  }
+
+  if (pairs.length === 0) {
+    return (
+      'Blood pressure through the day. No readings for this day yet — ' +
+      'they appear here as soon as the watch syncs.'
+    );
+  }
+
+  if (pairs.length === 1) {
+    const only = pairs[0];
+    const when = only.label ? ` at ${only.label}` : '';
+    return `Blood pressure through the day. One reading${when}: ${only.sys} over ${only.dia}.`;
+  }
+
+  const sysValues = pairs.map((p) => p.sys);
+  const diaValues = pairs.map((p) => p.dia);
+  const spread =
+    `The first number ranged from ${Math.min(...sysValues)} to ${Math.max(...sysValues)}, ` +
+    `the second number from ${Math.min(...diaValues)} to ${Math.max(...diaValues)}.`;
+
+  const delta = pairs[pairs.length - 1].sys - pairs[0].sys;
+  let movement: string;
+  if (Math.abs(delta) < 5) {
+    movement = 'The first number held steady across the day.';
+  } else if (delta > 0) {
+    movement = `The first number finished the day ${delta} higher than it started.`;
+  } else {
+    movement = `The first number finished the day ${Math.abs(delta)} lower than it started.`;
+  }
+
+  return `Blood pressure through the day. ${pairs.length} readings. ${spread} ${movement}`;
+}
+
 export function BPTwinLineChart({
   vital,
   sys,
@@ -165,13 +234,30 @@ export function BPTwinLineChart({
     [sys, dia, range, width, height],
   );
 
+  // Audit P1-6.
+  const a11yLabel = composeBPTwinAccessibilityLabel(sys, dia, hourLabels);
+
   return (
-    <View style={style} testID={testID}>
+    // Audit P1-6 — one accessible element carrying one composed sentence.
+    // `accessible` is explicit: a View with a label but without it is not
+    // guaranteed to be exposed as a single element on iOS, which would
+    // silence the label entirely.
+    <View
+      style={style}
+      testID={testID}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={a11yLabel}
+    >
       <Svg
         width="100%"
         height={height}
         viewBox={`0 0 ${width} ${height}`}
         testID={testID ? `${testID}-svg` : undefined}
+        // Audit P1-6 — the plot is decoration once the label above says
+        // what it shows; don't let its child nodes surface separately.
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
       >
         {/* Range band (systolic 110–130 by default) */}
         {geometry.rangeRect.w > 0 ? (
@@ -222,7 +308,9 @@ export function BPTwinLineChart({
           );
         })}
 
-        {/* Diastolic dots — skipped for slots with no reading. */}
+        {/* Diastolic dots — hollow rings, so the two series differ by
+            SHAPE and not only by alpha (audit P1-6, WCAG 1.4.1).
+            Skipped for slots with no reading. */}
         {geometry.xs.map((x, i) => {
           const dy = geometry.diaY[i];
           if (dy === null) return null;
@@ -232,8 +320,9 @@ export function BPTwinLineChart({
               cx={x}
               cy={dy}
               r={DOT_RADIUS}
-              fill={vitalColor}
-              fillOpacity={DIA_OPACITY}
+              fill="none"
+              stroke={vitalColor}
+              strokeWidth={DIA_STROKE_WIDTH}
               testID={testID ? `${testID}-dia-dot-${i}` : undefined}
             />
           );
@@ -273,11 +362,13 @@ export function BPTwinLineChart({
         testID={testID ? `${testID}-legend` : undefined}
       >
         <View style={styles.legendItem}>
+          {/* Audit P1-6 — filled dot, mirroring the systolic marker. */}
           <View
             style={[
               styles.legendSwatch,
               { backgroundColor: vitalColor },
             ]}
+            testID={testID ? `${testID}-legend-sys-swatch` : undefined}
           />
           <Text
             allowFontScaling={false}
@@ -294,14 +385,19 @@ export function BPTwinLineChart({
           </Text>
         </View>
         <View style={styles.legendItem}>
+          {/* Audit P1-6 — hollow ring, mirroring the diastolic marker on
+              the plot. The key and the chart now agree on shape, not just
+              on colour. */}
           <View
             style={[
               styles.legendSwatch,
               {
-                backgroundColor: vitalColor,
-                opacity: DIA_OPACITY,
+                backgroundColor: 'transparent',
+                borderWidth: DIA_STROKE_WIDTH,
+                borderColor: vitalColor,
               },
             ]}
+            testID={testID ? `${testID}-legend-dia-swatch` : undefined}
           />
           <Text
             allowFontScaling={false}

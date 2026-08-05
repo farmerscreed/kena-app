@@ -70,7 +70,7 @@ exports[`TimeRangePills matches snapshot 1`] = `
     testID="pills-7d"
   >
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.3}
       style={
         {
           "color": "#FFFFFF",
@@ -134,7 +134,7 @@ exports[`TimeRangePills matches snapshot 1`] = `
     testID="pills-30d"
   >
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.3}
       style={
         {
           "color": "#857F7A",
@@ -198,7 +198,7 @@ exports[`TimeRangePills matches snapshot 1`] = `
     testID="pills-90d"
   >
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.3}
       style={
         {
           "color": "#857F7A",

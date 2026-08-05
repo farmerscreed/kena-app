@@ -12,6 +12,10 @@
 import { Pressable, Text, View } from 'react-native';
 import { useTheme } from '../theme';
 import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
+// Sprint 19 (audit P1-3) — the bar's height and its distance from the
+// bottom edge are shared with the screens that must scroll clear of it.
+// See homeLayout.ts for the stack model.
+import { HOME_TAB_BAR_HEIGHT, homeFurnitureBottom } from './homeLayout';
 
 export type HomeTab = 'home' | 'trends' | 'take_reading' | 'learn' | 'settings';
 
@@ -82,8 +86,11 @@ export function HomeTabBar({ onSelect, active = 'home', testID }: HomeTabBarProp
         position: 'absolute',
         left: theme.spacing.m,
         right: theme.spacing.m,
-        bottom: theme.spacing.xxl,
-        height: 60,
+        // Sprint 19 (audit P1-3) — was `bottom: theme.spacing.xxl` +
+        // `height: 60`, duplicated by CaregiverHome as a bare `60`.
+        // Both now come from the shared stack model.
+        bottom: homeFurnitureBottom('tabBar', { tabBar: true }),
+        height: HOME_TAB_BAR_HEIGHT,
         borderRadius: 28,
         backgroundColor: theme.colors.surface.warmElevated,
         borderWidth: 0.5,

@@ -83,6 +83,7 @@ import { useTheme, type Theme } from '../../theme';
 import {
   buildHeroVitals,
   buildCentralSub,
+  buildCentralUnit,
 } from './SelfBuyerHome';
 import {
   deriveDayMoments,
@@ -354,6 +355,14 @@ export function ParentDashboard() {
                 central.priority === 'bp' ? 'Blood pressure' : central.label,
               value: central.value,
               sub: buildCentralSub(data, central.priority),
+              unit: buildCentralUnit(central.priority),
+              // Sprint 19 (audit P1-5) — same tier `deriveParentBanner`
+              // reads below; it never reached the hero value itself.
+              // Only meaningful when the cascade resolved to BP.
+              tier:
+                central.priority === 'bp'
+                  ? data.bp.classification?.tier ?? null
+                  : null,
               live: false,
             }}
             onSelectVital={handleVitalPress}

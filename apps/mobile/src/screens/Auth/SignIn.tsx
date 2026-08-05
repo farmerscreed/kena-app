@@ -18,6 +18,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '../../components/Button';
 import { useTheme } from '../../theme';
+import { useAnnounceOnChange } from '../../hooks/useAnnounce';
 import { useAuth } from '../../state/auth';
 import type { AuthScreenProps } from '../../navigation/types';
 
@@ -58,6 +59,10 @@ export function SignInScreen({ navigation }: AuthScreenProps<'SignIn'>) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestSignUp, setSuggestSignUp] = useState(false);
+
+  // Audit P1-7 — accessibilityLiveRegion on the inline error below is
+  // Android-only, so on iOS the error was never spoken. This is the iOS half.
+  useAnnounceOnChange(error);
 
   const trimmed = email.trim();
   const valid = EMAIL_RE.test(trimmed);

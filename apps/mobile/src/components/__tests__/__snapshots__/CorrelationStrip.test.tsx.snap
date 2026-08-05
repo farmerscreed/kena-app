@@ -2,6 +2,9 @@
 
 exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMode=dark 1`] = `
 <View
+  accessibilityLabel="Sleep × Morning BP. Over the last 7 days. sleep, solid line, 7 points, from 6.2 to 8.1. blood pressure, dashed line, 7 points, from 119 to 132."
+  accessibilityRole="image"
+  accessible={true}
   testID="strip"
 >
   <Text
@@ -24,10 +27,12 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
     Sleep × Morning BP
   </Text>
   <RNSVGSvgView
+    accessibilityElementsHidden={true}
     bbHeight={96}
     bbWidth={320}
     focusable={false}
     height={96}
+    importantForAccessibility="no-hide-descendants"
     style={
       [
         {
@@ -100,7 +105,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         d="M 4,92 L 4,31.07692307692308 L 56,58.15384615384616 L 108,78.46153846153847 L 160,4 L 212,44.61538461538462 L 264,92 L 316,71.69230769230768 L 316,92 Z"
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -126,7 +131,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -147,6 +152,9 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
 
 exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMode=light 1`] = `
 <View
+  accessibilityLabel="Sleep × Morning BP. Over the last 7 days. sleep, solid line, 7 points, from 6.2 to 8.1. blood pressure, dashed line, 7 points, from 119 to 132."
+  accessibilityRole="image"
+  accessible={true}
   testID="strip"
 >
   <Text
@@ -169,10 +177,12 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
     Sleep × Morning BP
   </Text>
   <RNSVGSvgView
+    accessibilityElementsHidden={true}
     bbHeight={96}
     bbWidth={320}
     focusable={false}
     height={96}
+    importantForAccessibility="no-hide-descendants"
     style={
       [
         {
@@ -245,7 +255,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         d="M 4,92 L 4,31.07692307692308 L 56,58.15384615384616 L 108,78.46153846153847 L 160,4 L 212,44.61538461538462 L 264,92 L 316,71.69230769230768 L 316,92 Z"
         fill={
           {
-            "payload": 4290016302,
+            "payload": 4291398213,
             "type": 0,
           }
         }
@@ -271,7 +281,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         }
         stroke={
           {
-            "payload": 4290016302,
+            "payload": 4291398213,
             "type": 0,
           }
         }

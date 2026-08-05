@@ -105,6 +105,48 @@ function buildDayGrid(
   return grid;
 }
 
+/** Turns minutes into "7 hours 40 minutes" / "40 minutes" / "8 hours". */
+function spokenDuration(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = Math.round(minutes % 60);
+  const hourPart = h === 1 ? '1 hour' : `${h} hours`;
+  const minPart = m === 1 ? '1 minute' : `${m} minutes`;
+  if (h === 0) return minPart;
+  if (m === 0) return hourPart;
+  return `${hourPart} ${minPart}`;
+}
+
+/**
+ * Audit P1-6 — composes the chart's spoken description.
+ *
+ * This chart previously carried `accessibilityRole="image"` with NO label,
+ * which is worse than carrying no role at all: it tells the screen reader
+ * "there is a picture here" and then gives it nothing to say. The label
+ * below reports the window, how many nights were actually tracked, and the
+ * span of the nights that were.
+ *
+ * Exported so the sentence is unit-testable without a full render.
+ */
+export function composeSleepNightlyAccessibilityLabel(
+  totals: number[],
+  slotCount: number,
+  range: TrendRange,
+): string {
+  const window =
+    range === '7d' ? 'the last 7 nights' : range === '30d' ? 'the last 30 nights' : 'the last 90 nights';
+  if (totals.length === 0) {
+    return `Nightly sleep across ${window}. No nights tracked yet in this window — nights appear here as the watch syncs.`;
+  }
+  const low = Math.min(...totals);
+  const high = Math.max(...totals);
+  const tracked = `${totals.length} of ${slotCount} nights tracked.`;
+  const spread =
+    low === high
+      ? `Each was ${spokenDuration(low)}.`
+      : `From ${spokenDuration(low)} to ${spokenDuration(high)}.`;
+  return `Nightly sleep across ${window}. ${tracked} ${spread}`;
+}
+
 export function SleepNightlyBars({ sessions, range, width, testID, style }: SleepNightlyBarsProps) {
   const theme = useTheme();
   const sleepColor = theme.colors.vital.sleep;
@@ -134,6 +176,15 @@ export function SleepNightlyBars({ sessions, range, width, testID, style }: Slee
   // Count of nights with actual sleep data in the window — surfaced as
   // a caption so the user can see at a glance "5 of 7 nights tracked".
   const trackedCount = grid.filter((d) => d.session !== null).length;
+
+  // Audit P1-6.
+  const a11yLabel = composeSleepNightlyAccessibilityLabel(
+    grid
+      .map((d) => d.session?.totalMinutes)
+      .filter((m): m is number => typeof m === 'number'),
+    slotCount,
+    range,
+  );
 
   // First / last day labels for the axis.
   const firstLabel = formatAxisLabel(grid[0]?.dayKey ?? '');
@@ -187,8 +238,17 @@ export function SleepNightlyBars({ sessions, range, width, testID, style }: Slee
 
       {/* Chart with y-axis hour ticks on the left + bar grid on the
           right. The ticks reference 0/3/6/9 hours so the user can read
-          each bar's height at a glance regardless of range. */}
-      <View style={[styles.chartFrame, { height: CHART_HEIGHT }]}>
+          each bar's height at a glance regardless of range.
+
+          Audit P1-6 — the frame is the one accessible element and carries
+          the composed sentence. `accessible` is explicit so iOS exposes it
+          as a single element rather than skipping the label. */}
+      <View
+        style={[styles.chartFrame, { height: CHART_HEIGHT }]}
+        accessible
+        accessibilityRole="image"
+        accessibilityLabel={a11yLabel}
+      >
         {/* Y-axis labels + dashed grid lines. */}
         <View style={styles.yAxis}>
           {[9, 6, 3, 0].map((h) => (
@@ -224,9 +284,14 @@ export function SleepNightlyBars({ sessions, range, width, testID, style }: Slee
               }}
             />
           ))}
+          {/* Audit P1-6 — this View used to carry accessibilityRole="image"
+              with no label at all. The role now lives on the chart frame
+              above, with a real sentence; the bars themselves are
+              decoration. */}
           <View
             style={[styles.chart, { height: CHART_HEIGHT, gap }]}
-            accessibilityRole="image"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
           >
             {grid.map((slot, idx) => {
           if (slot.session === null) {
