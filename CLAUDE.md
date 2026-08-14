@@ -105,7 +105,12 @@ From docs/02-design-tokens.md and docs/04-screens/. Do not:
   encrypt at rest and in transit. Per D3.
 - Offline-first: every reading is saved to MMKV before any sync attempt.
   Sync is best-effort. The app must function with no network.
-- Family invites use email + 6-digit code, never URL tokens. Per D8a §10.
+- Connect invites are a single-use 6-digit code: 7-day expiry, accept
+  attempts rate-limited server-side (invite_accept_attempts). There is
+  NO email-match gate at accept time (founder decision 2026-08-14,
+  Connect Phase A — reverses the 2026-06-02 call). Share messages are
+  code-first; /join URL-token links are dormant until Phase C fixes the
+  whole link chain end-to-end.
  
 ## Testing standard
  
