@@ -1,7 +1,7 @@
 // /connect-accept — ADR-0007 unified connect, accepter side.
 //
-// The accepter enters the code (+ their email, matched against the
-// invite). We resolve DIRECTION from who actually wears a watch:
+// The accepter enters the code. We resolve DIRECTION from who actually
+// wears a watch:
 //
 //   sharer wears, accepter doesn't  -> accepter follows sharer
 //   accepter wears, sharer doesn't  -> sharer follows accepter
@@ -9,15 +9,25 @@
 //                                      response flags canFollowBack so the
 //                                      sharer can be OFFERED follow-back
 //                                      (NOT auto-mutual, per ADR-0007)
-//   neither wears                   -> pending: nothing to wire yet;
-//                                      resolves when one pairs (handled by
-//                                      the existing resolve-on-home path)
+//   neither wears                   -> pending: the accepter is recorded
+//                                      on the invite (consuming the code)
+//                                      and the connect completes in the DB
+//                                      the moment either party pairs — see
+//                                      resolve_pending_connects_on_pairing
+//                                      (migration 0051)
 //
 // "Following" = a caregiver family_members row on the WEARER's circle.
 // The wearer's existing per-vital visibility controls are unchanged.
 //
-// Replaces accept-family-invite + resolve-care-invite. Keeps the email
-// match guard. Voice + data rules: no PHI logged.
+// Connect Phase A (founder decision 2026-08-14): the email-match gate is
+// DROPPED — it compared a typed email against the invite, not the
+// authenticated user, and its usability cost (typo lockouts, wrong-prefill
+// silent 403s) outweighed its value. Codes are single-use, expire in
+// 7 days, and guesses are rate-limited per authenticated user via
+// invite_accept_attempts.
+//
+// Replaces accept-family-invite + resolve-care-invite.
+// Voice + data rules: no PHI logged.
 
 // deno-lint-ignore-file no-explicit-any
 import { createClient, type SupabaseClient } from 'jsr:@supabase/supabase-js@2';
@@ -25,7 +35,9 @@ import { corsHeaders } from '../_shared/cors.ts';
 
 interface RequestBody {
   code: string;
-  email: string;
+  /** Ignored since Phase A (gate dropped); optional for back-compat with
+   *  clients that still send it. */
+  email?: string;
   /** Optional per-relationship label the accepter sets for the wearer. */
   caregiverRelationshipLabel?: string;
 }
@@ -40,6 +52,12 @@ interface ResponseShape {
   /** True when BOTH wear watches and the sharer may be offered follow-back. */
   canFollowBack: boolean;
 }
+
+// Code-guess rate limit: failures per authenticated user per window.
+// Generous for a human retyping a smudged code; hostile to enumeration
+// of the 6-digit keyspace.
+const ATTEMPT_WINDOW_MS = 60 * 60 * 1000;
+const ATTEMPT_MAX_FAILURES = 10;
 
 function json(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
@@ -71,11 +89,13 @@ async function watchCircleOf(
 }
 
 // Add `follower` as a caregiver of `circleId` (idempotent — skips if
-// already an active member). Optional relationship label.
+// already an active member). `inviterId` is the OTHER party — real
+// attribution, not the legacy self-attribution. Optional label.
 async function addFollower(
   serviceClient: SupabaseClient,
   circleId: string,
   followerId: string,
+  inviterId: string,
   label?: string,
 ): Promise<string | null> {
   const { data: existing } = await serviceClient
@@ -89,7 +109,7 @@ async function addFollower(
     family_id: circleId,
     user_id: followerId,
     role: 'caregiver',
-    invited_by: followerId,
+    invited_by: inviterId,
     joined_at: new Date().toISOString(),
     removed_at: null,
     removed_reason: null,
@@ -126,34 +146,69 @@ Deno.serve(async (req: Request) => {
     return json({ error: 'invalid_json' }, 400);
   }
   const code = (body?.code ?? '').trim();
-  const email = (body?.email ?? '').trim();
   const label = (body?.caregiverRelationshipLabel ?? '').trim();
   if (!/^\d{6}$/.test(code)) return json({ error: 'invalid_code' }, 400);
-  if (!email.includes('@')) return json({ error: 'invalid_email' }, 400);
 
   const serviceClient: SupabaseClient = createClient(supabaseUrl, serviceKey);
+
+  // Rate limit BEFORE the lookup so lockout can't be probed around.
+  const windowStart = new Date(Date.now() - ATTEMPT_WINDOW_MS).toISOString();
+  const { count: recentFailures } = await serviceClient
+    .from('invite_accept_attempts')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', accepterId)
+    .gte('attempted_at', windowStart);
+  if ((recentFailures ?? 0) >= ATTEMPT_MAX_FAILURES) {
+    return json({ error: 'too_many_attempts' }, 429);
+  }
+
+  // A failed code probe costs one attempt; a valid accept costs none.
+  const recordFailure = async () => {
+    try {
+      await serviceClient.from('invite_accept_attempts').insert({ user_id: accepterId });
+    } catch {
+      // Best-effort — never block the real error response on this.
+    }
+  };
 
   // Look up the invite by code (connect uses kind 'parent_pairing'; also
   // accept legacy 'caregiver' rows during the back-compat window).
   const { data: invitation, error: lookupErr } = await serviceClient
     .from('invitations')
-    .select('id, invited_by, invitee_email, family_id, expires_at, accepted_at, cancelled_at')
+    .select(
+      'id, invited_by, family_id, expires_at, accepted_at, cancelled_at, pending_accepted_by',
+    )
     .eq('pairing_code', code)
     .maybeSingle();
 
   if (lookupErr) return json({ error: 'lookup_failed', detail: lookupErr.message }, 500);
-  if (!invitation) return json({ error: 'invitation_not_found' }, 404);
-  if (invitation.cancelled_at) return json({ error: 'invitation_cancelled' }, 410);
-  if (invitation.accepted_at) return json({ error: 'invitation_already_accepted' }, 409);
+  if (!invitation) {
+    await recordFailure();
+    return json({ error: 'invitation_not_found' }, 404);
+  }
+  if (invitation.cancelled_at) {
+    await recordFailure();
+    return json({ error: 'invitation_cancelled' }, 410);
+  }
+  if (invitation.accepted_at) {
+    await recordFailure();
+    return json({ error: 'invitation_already_accepted' }, 409);
+  }
+  // A pending accept consumed the code for everyone but its own accepter
+  // (whose retry stays idempotent).
+  if (
+    invitation.pending_accepted_by &&
+    invitation.pending_accepted_by !== accepterId
+  ) {
+    await recordFailure();
+    return json({ error: 'invitation_already_accepted' }, 409);
+  }
   if (
     invitation.expires_at &&
     new Date(invitation.expires_at as string).getTime() < Date.now()
   ) {
+    await recordFailure();
     return json({ error: 'invitation_expired' }, 410);
-  }
-  const inviteeEmail = (invitation.invitee_email as string | null) ?? '';
-  if (inviteeEmail.toLowerCase() !== email.toLowerCase()) {
-    return json({ error: 'email_mismatch' }, 403);
   }
 
   const sharerId = invitation.invited_by as string;
@@ -170,13 +225,13 @@ Deno.serve(async (req: Request) => {
 
   if (sharerCircle && !accepterCircle) {
     // Sharer wears, accepter doesn't -> accepter follows sharer.
-    const err = await addFollower(serviceClient, sharerCircle, accepterId, label);
+    const err = await addFollower(serviceClient, sharerCircle, accepterId, sharerId, label);
     if (err) return json({ error: 'membership_insert_failed', detail: err }, 500);
     outcome = 'accepter_follows';
     familyId = sharerCircle;
   } else if (!sharerCircle && accepterCircle) {
     // Accepter wears, sharer doesn't -> sharer follows accepter.
-    const err = await addFollower(serviceClient, accepterCircle, sharerId);
+    const err = await addFollower(serviceClient, accepterCircle, sharerId, accepterId);
     if (err) return json({ error: 'membership_insert_failed', detail: err }, 500);
     outcome = 'sharer_follows';
     familyId = accepterCircle;
@@ -184,16 +239,31 @@ Deno.serve(async (req: Request) => {
     // Both wear -> accepter follows sharer now; offer follow-back (ADR-0007:
     // ask, don't auto-mutual). The sharer's follow-back is a separate
     // explicit action (a second connect/accept or an in-app prompt).
-    const err = await addFollower(serviceClient, sharerCircle, accepterId, label);
+    const err = await addFollower(serviceClient, sharerCircle, accepterId, sharerId, label);
     if (err) return json({ error: 'membership_insert_failed', detail: err }, 500);
     outcome = 'accepter_follows';
     familyId = sharerCircle;
     canFollowBack = true;
   }
-  // else: neither wears a watch -> pending; leave the invite OPEN so it can
-  // resolve once one of them pairs (do NOT mark accepted).
 
-  if (outcome !== 'pending') {
+  if (outcome === 'pending') {
+    // Neither wears a watch yet. Record the accepter on the invite so
+    // (a) the code is consumed — no other account can claim it — and
+    // (b) the devices trigger (migration 0051) completes the connect the
+    // moment either party pairs. Whoever pairs first becomes the wearer.
+    const upd = await serviceClient
+      .from('invitations')
+      .update({
+        pending_accepted_by: accepterId,
+        pending_accepted_at: new Date().toISOString(),
+        pending_relationship_label: label || null,
+      })
+      .eq('id', invitation.id)
+      .is('accepted_at', null);
+    if (upd.error) {
+      return json({ error: 'pending_record_failed', detail: upd.error.message }, 500);
+    }
+  } else {
     const upd = await serviceClient
       .from('invitations')
       .update({
