@@ -69,6 +69,7 @@ import {
   reconcileFromAuditLog,
 } from '../../services/ai/quotaCounter';
 import { usePlusEntitlement } from '../../hooks/usePlusEntitlement';
+import { useBatteryOptimizationStatus } from '../../hooks/useBatteryOptimizationStatus';
 import {
   getLastSyncSec,
   watchTimestampToUtcSec,
@@ -390,6 +391,7 @@ export function SettingsScreen({ navigation }: Props) {
   );
 
   const lastSyncDisplay = useLastSyncDisplay(pairedDevice?.bleId ?? null);
+  const batteryOpt = useBatteryOptimizationStatus();
 
   const headlineStyle = theme.type('displayM');
   const bodyStyle = theme.type('bodyL');
@@ -527,6 +529,28 @@ export function SettingsScreen({ navigation }: Props) {
                 value={lastSyncDisplay}
                 testID="settings-watch-last-sync"
               />
+              {/* Without the Doze exemption Android throttles the
+                  15-minute background sync and the silent remote-refresh
+                  push, so readings only reach the family when the wearer
+                  opens the app. The post-pairing nudge is dismissible;
+                  this row is where a wearer can still find it. */}
+              {batteryOpt.supported && batteryOpt.exempt !== null && (
+                <ListRow
+                  // 'select' (not 'action') when actionable: only data /
+                  // select rows render a trailing value, and the
+                  // On/Restricted state is the point of the row.
+                  variant={batteryOpt.exempt ? 'data' : 'select'}
+                  title="Background updates"
+                  subtitle={
+                    batteryOpt.exempt
+                      ? undefined
+                      : 'Battery optimisation is delaying syncs. Tap to allow Leiko to run in the background.'
+                  }
+                  value={batteryOpt.exempt ? 'On' : 'Restricted'}
+                  onPress={batteryOpt.exempt ? undefined : () => void batteryOpt.request()}
+                  testID="settings-watch-battery-opt"
+                />
+              )}
               <ListRow
                 variant="action"
                 title="Pair another watch"

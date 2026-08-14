@@ -68,6 +68,11 @@ export type AnalyticsEvent =
   | { name: 'sync_completed'; props?: { trigger: string; batches: number; hitBatchCap: boolean; pulled: number } }
   | { name: 'sync_skipped'; props?: { trigger: string; reason: 'no_paired_device' | 'take_reading_active' | 'too_recent' | 'already_running' } }
   | { name: 'sync_failed'; props?: { trigger: string; reason: string } }
+  // A prior run held status connecting/syncing past the stale deadline —
+  // presumed dead (Android freezes JS timers in background, so a
+  // backgrounded run's own timeouts may never fire). The new trigger
+  // reclaims the engine and proceeds.
+  | { name: 'sync_stale_reset'; props?: { trigger: string; stuckStatus: string; stuckForMs: number } }
   // Remote-refresh (silent push → background watch sync; or a tapped
   // visible sync-nudge → foreground sync).
   | { name: 'remote_refresh_received'; props?: { source: 'background' | 'foreground' | 'tap' } }

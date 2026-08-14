@@ -18,6 +18,7 @@
 // Errors carry codes only.
 
 import { supabase } from '../supabase';
+import { SYNC_UPLOAD_TIMEOUT_MS, withTimeout } from './withTimeout';
 import type { MultiVitalsPayload } from '../../types/vitals';
 
 export interface MultiVitalsCounts {
@@ -39,9 +40,12 @@ export interface MultiVitalsResponse {
 export async function postMultiVitals(
   payload: MultiVitalsPayload,
 ): Promise<MultiVitalsResponse> {
-  const { data, error } = await supabase.functions.invoke<MultiVitalsResponse>(
-    'sync',
-    { body: payload },
+  // Bounded: invoke() never times out on its own, and an unbounded upload
+  // wedges the whole sync run (see withTimeout.ts for the 2026-08-14 case).
+  const { data, error } = await withTimeout(
+    supabase.functions.invoke<MultiVitalsResponse>('sync', { body: payload }),
+    SYNC_UPLOAD_TIMEOUT_MS,
+    '/sync multi-vitals upload',
   );
   if (error) {
     // Sprint 16.5b — surface the upstream failure so the orchestrator

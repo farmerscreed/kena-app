@@ -179,6 +179,38 @@ describe('useSyncOrchestrator.runSync', () => {
     }
   });
 
+  it('reclaims the engine when a prior run is stuck past the stale deadline', async () => {
+    // Wedge a run in 'connecting'. Its own timeouts never fire here,
+    // mirroring the real case: Android freezes JS timers once a
+    // background wake-up's budget expires, so the run hangs forever.
+    mockConnectToUrion.mockImplementationOnce(() => new Promise(() => {}));
+    void useSyncOrchestrator.getState().runSync('cold_start');
+    await Promise.resolve();
+    expect(useSyncOrchestrator.getState().status).toBe('connecting');
+
+    // Inside the deadline the mutex still holds.
+    jest.advanceTimersByTime(60_000);
+    expect(await useSyncOrchestrator.getState().runSync('background')).toBe(
+      'skipped',
+    );
+
+    // Past it, the new trigger presumes the run dead and proceeds.
+    jest.advanceTimersByTime(3 * 60_000);
+    expect(await useSyncOrchestrator.getState().runSync('background')).toBe('ran');
+    expect(mockSyncBacklogToCompletion).toHaveBeenCalledTimes(1);
+  });
+
+  it('disconnects instead of holding the live window on a background run', async () => {
+    const device = fakeDevice();
+    mockConnectToUrion.mockResolvedValueOnce(device);
+    const result = await useSyncOrchestrator.getState().runSync('background');
+    expect(result).toBe('ran');
+    // No live window: link closed, no notification subscription left open.
+    expect((device as { disconnect: jest.Mock }).disconnect).toHaveBeenCalled();
+    expect(mockSubscribeToNotifications).not.toHaveBeenCalled();
+    expect(useSyncOrchestrator.getState().status).toBe('idle');
+  });
+
   it('idle timer disconnects the device after IDLE_DISCONNECT_MS', async () => {
     const device = fakeDevice();
     mockConnectToUrion.mockResolvedValueOnce(device);

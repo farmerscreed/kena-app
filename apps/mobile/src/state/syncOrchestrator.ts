@@ -54,6 +54,17 @@ const IDLE_DISCONNECT_MS = 45_000;
 // queue 2-3 redundant runs.
 const MIN_SYNC_INTERVAL_MS = 5_000;
 
+// Watchdog for a dead run. A sync interrupted by backgrounding can hang
+// forever: its connect/idle timeouts are JS setTimeout calls, and Android
+// freezes RN timers while the app is off-screen — so status stays
+// 'connecting'/'syncing' and every later trigger (including the 15-min
+// background fetch) skips with already_running until the app is next
+// foregrounded. Observed 2026-08-14: one interrupted live_notify run
+// blocked background sync for 47 minutes. A healthy full run (backlog +
+// multi-vitals) finishes well under a minute; 3 min is comfortably past
+// any legitimate run without risking a reset mid-flight.
+const STALE_RUN_RESET_MS = 3 * 60_000;
+
 export type SyncTrigger =
   | 'cold_start'
   | 'app_foreground'
@@ -99,6 +110,8 @@ interface SyncOrchestratorState {
   _lastBtState: BluetoothState | null;
   /** Last known AppStateStatus — drives foreground-edge detection. */
   _lastAppState: AppStateStatus | null;
+  /** When the in-flight run claimed the engine — drives the stale watchdog. */
+  _runStartedAt: number | null;
 
   start: () => void;
   stop: () => void;
@@ -124,6 +137,7 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
   _unsubNotify: null,
   _lastBtState: null,
   _lastAppState: null,
+  _runStartedAt: null,
 
   start: () => {
     if (get()._started) return;
@@ -172,6 +186,7 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
       _idleTimer: null,
       _unsubNotify: null,
       _device: null,
+      _runStartedAt: null,
       status: 'idle',
     });
   },
@@ -186,8 +201,32 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
       return 'skipped';
     }
     if (get().status === 'connecting' || get().status === 'syncing') {
-      logger.track('sync_skipped', { trigger, reason: 'already_running' });
-      return 'skipped';
+      const startedAt = get()._runStartedAt;
+      const stuckForMs = startedAt === null ? null : nowMs() - startedAt;
+      if (stuckForMs === null || stuckForMs < STALE_RUN_RESET_MS) {
+        logger.track('sync_skipped', { trigger, reason: 'already_running' });
+        return 'skipped';
+      }
+      // The claimed run is past the stale deadline — presume it dead,
+      // release its resources, and let this trigger proceed. If it was
+      // somehow still alive its device handle is disconnected here, so
+      // it fails fast rather than fighting the new run for the GATT link.
+      logger.track('sync_stale_reset', {
+        trigger,
+        stuckStatus: get().status,
+        stuckForMs,
+      });
+      const { _idleTimer, _unsubNotify, _device } = get();
+      if (_idleTimer) clearTimeout(_idleTimer);
+      if (_unsubNotify) _unsubNotify();
+      if (_device) void _device.disconnect().catch(() => {});
+      set({
+        status: 'idle',
+        _device: null,
+        _idleTimer: null,
+        _unsubNotify: null,
+        _runStartedAt: null,
+      });
     }
     const last = get().lastSyncAt;
     // Manual force-sync and remote-refresh bypass the debounce — both are
@@ -219,7 +258,7 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
     }
 
     logger.track('sync_started', { trigger });
-    set({ status: 'connecting', lastError: null });
+    set({ status: 'connecting', lastError: null, _runStartedAt: nowMs() });
     let device: UrionDevice | null = null;
     try {
       device = await connectToUrion(paired.bleId);
@@ -287,6 +326,28 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
         });
       }
 
+      // Sprint 16: a successful sync clears the failure streak that
+      // drives the 24h reassurance banner.
+      clearSyncFailure();
+
+      // An OS-woken run has no user watching, so the live window buys
+      // nothing — and it costs. Its 45s disconnect is a JS timer, which
+      // Android freezes once the wake-up's budget expires: observed
+      // 2026-08-14, a background run left the GATT link open for 20
+      // minutes until the OS killed the process. Close the link here and
+      // let the next wake-up reconnect.
+      if (trigger === 'background' || trigger === 'remote_refresh') {
+        await device.disconnect().catch(() => {});
+        set({
+          status: 'idle',
+          _device: null,
+          lastSyncAt: nowMs(),
+          lastError: null,
+          _runStartedAt: null,
+        });
+        return 'ran';
+      }
+
       // Stay live for the idle window: if the user takes a fresh
       // reading on the watch right now, we catch it via 0x73 0x02
       // and pull immediately instead of waiting for the next trigger.
@@ -310,15 +371,13 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
         });
       }, IDLE_DISCONNECT_MS);
 
-      // Sprint 16: a successful sync clears the failure streak that
-      // drives the 24h reassurance banner.
-      clearSyncFailure();
       set({
         status: 'live',
         _unsubNotify: unsub,
         _idleTimer: idleTimer,
         lastSyncAt: nowMs(),
         lastError: null,
+        _runStartedAt: null,
       });
       return 'ran';
     } catch (e) {
@@ -340,6 +399,7 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
         status: 'error',
         _device: null,
         lastError: reason,
+        _runStartedAt: null,
         // lastSyncAt deliberately NOT updated — a failed run shouldn't
         // gate the next trigger on the debounce window.
       });
@@ -360,6 +420,7 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
       _unsubNotify: null,
       _lastBtState: null,
       _lastAppState: null,
+      _runStartedAt: null,
     });
   },
 }));
@@ -375,4 +436,5 @@ export type PublicSyncOrchestratorState = Omit<
   | '_unsubNotify'
   | '_lastBtState'
   | '_lastAppState'
+  | '_runStartedAt'
 >;

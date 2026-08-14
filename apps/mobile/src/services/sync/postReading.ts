@@ -21,6 +21,7 @@
 
 import { getOrCreateClientDeviceId } from '../storage';
 import { supabase } from '../supabase';
+import { SYNC_UPLOAD_TIMEOUT_MS, withTimeout } from './withTimeout';
 import type { LocalReading } from '../../state/readings';
 
 export interface PostReadingResponse {
@@ -99,9 +100,12 @@ export async function postReading(
     },
   };
 
-  const { data, error } = await supabase.functions.invoke<PostReadingResponse>(
-    'sync',
-    { body },
+  // Bounded for the same reason as postMultiVitals: invoke() has no
+  // timeout, and a stalled upload here blocks the whole sync run.
+  const { data, error } = await withTimeout(
+    supabase.functions.invoke<PostReadingResponse>('sync', { body }),
+    SYNC_UPLOAD_TIMEOUT_MS,
+    '/sync reading upload',
   );
   if (error) throw new Error(`/sync invoke failed: ${error.message}`);
   if (!data) throw new Error('/sync returned no body');
