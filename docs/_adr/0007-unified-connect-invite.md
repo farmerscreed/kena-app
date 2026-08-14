@@ -1,5 +1,15 @@
 # ADR-0007: Unified "Connect" invite — one code, backend infers direction
 
+> **2026-08-14 — completed and amended by ADR-0012** (Connect one-door
+> simplification). The two-symmetric-rows UX this ADR called for is now
+> shipped; resolved decision #2 (keep the email-match gate) is REVERSED
+> (replaced by single-use + expiry + server-side rate limiting); the
+> open question on the legacy-function back-compat window is closed —
+> the four legacy functions are deleted from the hosted project; and
+> pending connects now resolve via a database trigger at watch pairing.
+> Read `docs/_adr/0012-connect-one-door.md` and
+> `docs/04-screens/connect-invite.md` for current state.
+
 - **Status**: Accepted (founder sign-off 2026-06-02; built + device-verified)
 - **Date**: 2026-06-02
 - **Amends / supersedes**: ADR-0006 §3 (the two-direction invite design)

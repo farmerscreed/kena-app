@@ -300,30 +300,52 @@ create table public.subscriptions (
 ```
 
 ### invitations
-**Family invites use email + 6-digit code, never URL tokens** (D8a §10 — already in CLAUDE.md). The `url_token` column exists for the parent-pairing handshake, not for caregiver invites.
+**Connect invites are a single-use 6-digit code** (ADR-0012, 2026-08-14):
+7-day expiry, accept attempts rate-limited server-side via
+`invite_accept_attempts`, **no accept-time email gate** (dropped by
+ADR-0012, reversing ADR-0007 decision #2). `invitee_email` is optional
+delivery metadata (Resend); `invitee_phone` and `url_token` are
+vestigial — nothing reads them. Direction is resolved at accept time by
+`connect-accept` from watch ownership; when neither party wears a watch
+the accept is recorded in `pending_accepted_by` (consuming the code) and
+the `devices_resolve_pending_connects` trigger (0051) completes the
+connect when either party pairs.
 
 ```sql
 create type public.invitation_kind as enum ('caregiver','parent_pairing');
+-- 'caregiver' is legacy (pre-ADR-0007); all connects insert 'parent_pairing'.
 
 create table public.invitations (
   id              uuid primary key default gen_random_uuid(),
-  family_id       uuid not null references public.families(id) on delete cascade,
+  family_id       uuid references public.families(id) on delete cascade,  -- nullable since 0029; sharer's watch-circle hint or resolution stamp
   invited_by      uuid not null references public.users(id),
   kind            public.invitation_kind not null,
   invitee_label   text,
-  invitee_email   text,
-  invitee_phone   text,
-  pairing_code    text unique,                       -- 6-digit code for parent_pairing
-  url_token       text not null unique default encode(gen_random_bytes(24),'base64'),  -- PG encode() doesn't accept 'base64url'; URL-safety enforced at the Edge Function that generates invite links
+  invitee_email   text,                              -- optional since ADR-0012 (delivery only)
+  invitee_phone   text,                              -- never used
+  pairing_code    text unique,                       -- 6-digit connect code (global unique)
+  url_token       text not null unique default encode(gen_random_bytes(24),'base64'),  -- vestigial: generated, never read (ADR-0012); join links carry ?code= instead
   expires_at      timestamptz not null,
   accepted_at     timestamptz,
   accepted_by     uuid references public.users(id),
   cancelled_at    timestamptz,
-  created_at      timestamptz not null default now()
+  created_at      timestamptz not null default now(),
+  -- 0051 — pending connect (neither party wore a watch at accept time):
+  pending_accepted_by         uuid references public.users(id),
+  pending_accepted_at         timestamptz,
+  pending_relationship_label  text
 );
 create index invitations_family_active
   on public.invitations (family_id) where accepted_at is null and cancelled_at is null;
+-- 0029: invitations_pending_by_inviter; CHECK family_id required for kind='caregiver'.
+-- 0051: invitations_pending_open_by_sharer / _by_accepter (pairing-time resolution).
+-- 0052: the inviter-update RLS policy carries WITH CHECK mirroring USING.
 ```
+
+Companion (0051): `invite_accept_attempts (id, user_id, attempted_at)` —
+one row per FAILED code probe; `connect-accept` returns 429 after 10
+failures/hour/user; pruned daily by the `invite-attempts-prune` cron.
+RLS enabled with **no policies** (service-role only by design).
 
 ### ai_conversations / ai_messages
 ```sql

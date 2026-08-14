@@ -1,33 +1,29 @@
-# Screen — Connect / Invite
+# Screen — Connect (share a code / enter a code)
 
-Sourced from **ADR-0007** (unified "Connect" invite — one code, backend infers
-direction), which supersedes the two-direction invite UX of **ADR-0006 §3**
-(its wearer-consent + pending-invite plumbing are retained). This documents the
-**shipped** flow: one code to share, one sheet to accept, and server-side
-direction resolution from watch ownership.
+Sourced from **ADR-0007** (unified "Connect" — one code, backend infers
+direction) as completed by **ADR-0012** (Connect one-door simplification,
+Phases A–C, founder-approved 2026-08-14). This documents the **shipped**
+flow. The whole model is one sentence:
 
-> Divergence note (code vs ADR): ADR-0007 calls for the family invite surface
-> to collapse to exactly **two symmetric rows** — "Connect with someone" and
-> "Enter a code" — with direction-free copy. The **client** still ships the
-> ADR-0006 visual shell: the share row is labelled "Invite someone to follow"
-> (gated on the viewer wearing a watch) and the accept row is "Care for
-> another person"; Home keeps a separate "+ Add someone I care for"
-> (`CareInviteSheet`). **What changed under the hood:** both share sheets now
-> call `createConnect` and the accept sheet calls `acceptConnect`, so direction
-> is resolved server-side regardless of which button was pressed. The copy
-> relabel is not yet done. Spec below documents the **code**.
+> One person shares a code. The other types it in. Leiko figures out the
+> rest.
+
+Two components, two labels, everywhere:
+- **ConnectShareSheet** — "Connect with someone". Zero inputs: opening it
+  generates a 6-digit code to share.
+- **AcceptInviteSheet** — "Enter a code". Code + optional relationship
+  chip; success copy tells the truth per outcome.
 
 ---
 
 ## Audience
-- Caregiver (sharing a code, or entering one to follow someone)
-- Self-buyer (sharing a code so family can follow them)
-- Either party of a symmetric "connect" — direction is never chosen by the user
+- Anyone. Share and accept are both ungated — direction is resolved
+  server-side from who wears a watch, so no role, ownership, or
+  account_type gate applies to either action.
 
 ## Purpose
-Let any two users link their accounts with **one code**. The user never declares
-who-follows-whom; the backend infers it from who actually wears a watch at
-accept time.
+Link any two accounts with **one code**. The user never declares
+who-follows-whom.
 
 ---
 
@@ -35,231 +31,173 @@ accept time.
 
 | Entry | Where | Opens | Calls |
 | --- | --- | --- | --- |
-| Home "+ Add someone I care for" | `CaregiverHome` empty-state / add CTA (`apps/mobile/src/screens/Home/CaregiverHome.tsx:613,691`) | `CareInviteSheet` (share a code) | `createConnect` |
-| Home "Enter a code" / "Someone invited me" | `CaregiverHome` empty-state CTA (`CaregiverHome.tsx:472,520,679`) | `AcceptInviteSheet` | `acceptConnect` |
-| Settings → "Invite someone to follow" | `SettingsScreen.tsx:806` (only shown when the viewer wears a watch — `wornCircle`) | inline invite `BottomSheet` (share a code) | `createConnect` (`SettingsScreen.tsx:1555`) |
-| Settings → "Care for another person" | `SettingsScreen.tsx:865` ("Add someone" section, always shown) | `AcceptInviteSheet` (`settings-accept`) | `acceptConnect` |
-| Onboarding "Someone invited me" | `screens/Onboarding/Caregiver/FamilyWatch.tsx:323` | `AcceptInviteSheet` | `acceptConnect` |
-| Deep link `…/join?token=…` | parsed by `deepLinkParser.ts`, dispatched by `deepLinks.ts:83` | routes to Settings with code/email prefilled → `AcceptInviteSheet` auto-opens | `acceptConnect` |
+| Home action bar "+ Connect" | `CaregiverHome` (`CaregiverActionBar`, always shown when the bar renders) | `ConnectShareSheet` | `createConnect` |
+| Home empty state "Enter a code" | `CaregiverHome` empty state (primary) | `AcceptInviteSheet` | `acceptConnect` |
+| Home empty state "Or share your own code →" | `CaregiverHome` empty state (secondary) | `ConnectShareSheet` | `createConnect` |
+| Removal banner "I have a new invite code" | `FamilyRemovalBanner` on `CaregiverHome` | `AcceptInviteSheet` | `acceptConnect` |
+| Settings → Connect → "Connect with someone" | `SettingsScreen`, always-visible **Connect** section | `ConnectShareSheet` | `createConnect` |
+| Settings → Connect → "Enter a code" | same section | `AcceptInviteSheet` (`settings-accept`) | `acceptConnect` |
+| Onboarding "Someone invited me" | `Onboarding/Caregiver/FamilyWatch.tsx` | `AcceptInviteSheet` (prefilled from the join-link stash when present) | `acceptConnect` |
+| Link `leiko.app/join?code=NNNNNN` | website landing page + `deepLinkParser`/`deepLinks` | Settings with the accept sheet auto-opened + prefilled; stashed for onboarding when signed out | `acceptConnect` |
 
-The share/accept components: `apps/mobile/src/components/CareInviteSheet.tsx`,
-`apps/mobile/src/components/AcceptInviteSheet.tsx`. Client service wrappers:
+Components: `apps/mobile/src/components/ConnectShareSheet.tsx`,
+`apps/mobile/src/components/AcceptInviteSheet.tsx`. Service wrappers:
 `apps/mobile/src/services/families/manageInvites.ts` (`createConnect`,
-`acceptConnect`). Edge functions: `supabase/functions/connect-create/index.ts`,
-`supabase/functions/connect-accept/index.ts`.
+`acceptConnect`, `followBackConnect`). Edge functions:
+`supabase/functions/connect-create`, `connect-accept`,
+`connect-follow-back`.
 
----
+Removed in Phase B (do not resurrect): `CareInviteSheet`, the Settings
+inline invite sheet (with its never-transmitted permission radios),
+`AddSomeoneChooserSheet`, `AddPersonScreen`/`addAnotherFamily`, the four
+legacy invite wrappers, and the labels "Add someone you care for" /
+"Invite someone to follow" / "Care for another person" / "Join a family
+circle".
 
-## Share flow (generate one code)
+## Share flow (zero inputs)
 
-The sharer enters the **invitee's email** (required) and an optional first-name
-label, then taps the send button. `createConnect` → `connect-create` does:
+Opening `ConnectShareSheet` immediately calls `createConnect()` — no
+email, no name, no permission picker. Each open mints a fresh
+single-use code. `connect-create`:
 
-1. Generates a 6-digit numeric code (`000000`–`999999`, retried up to 6× on
-   collision) and a `url_token`.
-2. Records the inviter and their **current** watch-circle (if they wear a
-   watch) as a hint on the `invitations` row; `family_id` is **nullable** when
-   the sharer has no watch yet — direction is still resolved at accept time.
-3. Inserts with `kind = 'parent_pairing'` (a single connect kind; the
-   `caregiver` / `parent_pairing` split no longer drives direction).
-4. Sets `expires_at` = **7 days** from now.
-5. Best-effort emails the code to the invitee via Resend (when
-   `RESEND_API_KEY` + `RESEND_FROM_EMAIL` are set); returns `emailSent`.
-6. Audit-logs `connect.created` with **email domain only** (no PHI, no full
-   address) per the no-PHI rule.
+1. Requires only a signed-in caller (no owner/wearer check).
+2. Generates a 6-digit code (retried ≤6× on collision); 7-day expiry.
+3. Records the caller's current watch-circle as a nullable hint
+   (`family_id`); direction is still resolved at accept time.
+4. `inviteeEmail` is **optional** (Phase B): when an older client sends
+   one, the code is also emailed via Resend; the zero-input sheet sends
+   nothing.
+5. Audits `connect.created` (email domain only, when present).
 
-Returns: `{ invitationId, pairingCode, urlToken, expiresAt, emailSent }`.
-
-The sheet then shows the code and a **"Share invite"** button that opens the OS
-share sheet with **dual delivery** — a tappable link **and** the 6-digit code in
-one message, so the sharer needn't know whether the recipient already has Leiko:
+Share message (code-first AND a working link):
 
 ```
-Tap to join: https://leiko.app/join?token=<urlToken>
-Already have Leiko? Enter code <code>. Works for 7 days.
+Let's stay connected on Leiko.
+
+Tap to join me: https://leiko.app/join?code=<code>
+
+Or open Leiko and enter code <code>. It works for 7 days.
 ```
 
-(`CareInviteSheet.tsx:79`; `SettingsScreen.tsx:1372`.)
+The `leiko.app/join?code=` page (website repo, `src/lib/app-links.ts`)
+**displays the code on the page** and hands off `leiko://join?code=` —
+so the invite survives even if every automated layer fails: worst case
+the person installs Leiko and types six digits.
 
----
+## Accept flow (code only)
 
-## Accept flow (enter a code)
+`AcceptInviteSheet` collects the **6-digit code** and an optional
+"Who are they to you?" relationship chip. There is **no email field**:
+the accept-time email-match gate was dropped in Phase A (ADR-0012
+decision 1) — it compared a typed email, not the authenticated user,
+and its usability cost outweighed its value. Code security = single-use
++ 7-day expiry + a server-side rate limit (10 failed attempts/hour per
+authenticated user via `invite_accept_attempts`; error
+`too_many_attempts`, 429).
 
-`AcceptInviteSheet` collects:
-- **Email** — must match the email the sharer entered (the email-match guard).
-- **6-digit code**.
-- Optional **"Who are they to you?"** relationship chip (Mum / Dad / Aunt /
-  Uncle / Spouse / Friend / Other-with-custom). Encoded and passed as
-  `caregiverRelationshipLabel`; stored on the resulting `family_members` row,
-  preferred over `families.parent_relationship` for display.
-
-`acceptConnect` → `connect-accept` validates the code shape, looks up the
-invite by `pairing_code`, and rejects with a specific error for: not found
-(404), cancelled (410), already accepted (409), expired (410), email mismatch
-(403), self-invite (400). **Single-use**: a successful non-pending accept sets
-`accepted_at` / `accepted_by`, so the code can't be reused.
+`connect-accept` errors: not found (404), cancelled (410), already
+accepted (409 — including a pending accept by a *different* account),
+expired (410), self-invite (400), too many attempts (429).
 
 ### Server-side direction resolution
 
-Direction is **re-derived at accept time** from current watch ownership (not
-trusted from the stored `family_id`, since either party may have paired since
-the code was created). "Wears a watch" = the user owns a self-circle
-(`families.parent_user_id = user`) with an active, paired device
-(`devices.unpaired_at IS NULL`).
+Re-derived at accept time from current watch ownership ("wears a
+watch" = owns a self-circle with an active paired device):
 
-| Sharer wears? | Accepter wears? | Outcome (`outcome`) | What's wired | `familyId` | `canFollowBack` |
-| --- | --- | --- | --- | --- | --- |
-| Yes | No | `accepter_follows` | Accepter added as **caregiver** of sharer's circle | sharer's circle | false |
-| No | Yes | `sharer_follows` | Sharer added as **caregiver** of accepter's circle | accepter's circle | false |
-| Yes | Yes | `accepter_follows` | Accepter follows sharer **now**; sharer is **offered** follow-back (NOT auto-mutual, per ADR-0007 resolved decision #1) | sharer's circle | **true** |
-| No | No | `pending` | Nothing wired; invite left **open** (not marked accepted) | `null` | false |
+| Sharer wears? | Accepter wears? | `outcome` | What's wired | `canFollowBack` |
+| --- | --- | --- | --- | --- |
+| Yes | No | `accepter_follows` | accepter becomes caregiver on sharer's circle | false |
+| No | Yes | `sharer_follows` | sharer becomes caregiver on accepter's circle | false |
+| Yes | Yes | `accepter_follows` | as above, plus one-tap follow-back offer | **true** |
+| No | No | `pending` | accepter recorded on the invite (code consumed); completes at pairing | false |
 
-"Following" = a `role = 'caregiver'` row on the **wearer's** circle
-(`family_members`), inserted idempotently (skipped if already an active
-member). The wearer's existing per-vital visibility controls are unchanged —
-following grants membership, not unrestricted visibility.
+`family_members.invited_by` records the **other party** (real
+attribution, not self-attribution). The response carries
+`invitationId` for the follow-back call.
 
-Audit-logs `connect.accepted` with `{ invitation_id, outcome, can_follow_back }`
-(no PHI).
+### Success copy tells the truth per outcome
 
-### Pending resolution (neither wears a watch)
+- `accepter_follows`: "You've joined the circle. Their readings will
+  appear on your home screen."
+- `sharer_follows`: "You're connected. They can now follow your
+  readings — you choose what they see in Settings."
+- `pending`: "You're connected. Readings will start sharing once one of
+  you pairs a watch."
+- Sheet title on success: "You're connected".
 
-When neither party wears a watch, the invite is **held open** and the relationship
-resolves once one of them pairs a watch — whoever pairs first becomes the wearer,
-the other their follower. Under ADR-0007 a stashed deep-link code can **no longer
-be silently auto-resolved** (accept now requires the accepter's email for the
-match guard, which a link doesn't carry reliably): `tryResolvePendingCareInvite`
-is now a no-op (`apps/mobile/src/services/families/pendingCareInvite.ts:36`). The
-person finishes by entering the code **with their email** in the "Enter a code"
-sheet.
+### Follow-back (both wear watches)
 
----
+When `canFollowBack` is true the success state offers **"Let them see
+your readings too"** — one tap calls `connect-follow-back`
+(`followBackConnect({ invitationId })`), which verifies the caller
+accepted that invitation and owns an active watch-circle, then adds the
+sharer as a caregiver on the caller's circle. ADR-0007's "ask, don't
+auto-mutual" stands.
+
+### Pending resolution (neither wears a watch — the gifted-watch flow)
+
+The pending accept is recorded ON the invitation
+(`pending_accepted_by/_at/_label`), which consumes the code for anyone
+else. The moment **either** party pairs a watch, the database trigger
+`devices_resolve_pending_connects` (migration 0051) completes the
+connect: whoever paired becomes the wearer, the other becomes their
+caregiver follower, the invite is stamped accepted, and
+`connect.resolved_on_pairing` is audited. No client involvement — the
+old client-side resolver is gone. In onboarding, a pending accept
+completes onboarding without a current family (`completeViaInvite(null)`);
+home shows its empty state until pairing resolves the connect.
+
+### Acceptance push
+
+A completed (non-pending) accept fires a best-effort `send-push` to the
+sharer using the existing **`family`** template ("<name> accepted your
+invite" / "<name> can now see your readings" per recipient type), with
+its `family_activity` opt-out, voice lint, and rate limits.
 
 ## Deep-link `join` route
 
-`https://leiko.app/join?token=<urlToken>` (and `leiko://join?...`) is parsed by
-`parseDeepLink` into `category: 'join'` carrying `inviteToken` / `inviteCode` /
-`inviteEmail` (`apps/mobile/src/services/notifications/deepLinkParser.ts:50`).
-Dispatch (`deepLinks.ts:83`):
-1. Stashes any `code` (`stashPendingCareInvite`) for the pre-pairing case.
-2. Navigates to **Settings** with `{ inviteCode, inviteEmail, inviteToken }`.
-3. `SettingsScreen` reads `route.params` (`SettingsScreen.tsx:268`) and
-   auto-opens `AcceptInviteSheet` with the code + email prefilled.
+`https://leiko.app/join?code=NNNNNN` / `leiko://join?code=NNNNNN` — the
+**code is the only credential** (exactly 6 digits or the link parses as
+`unknown`; legacy `token`/`email` params are ignored). Dispatch always
+**stashes the code first** (`stashPendingCareInvite`), then navigates to
+Settings `{ inviteCode }`, which auto-opens the accept sheet prefilled.
+Signed-out / mid-onboarding: the navigate is a silent no-op but the
+stash survives — the "Someone invited me" onboarding path opens the
+accept sheet prefilled from it. The sheet clears the stash on any
+successful accept.
 
-The share link carries only a `token`; the code variant (`?code=…`) is also
-parsed if present, but generated share messages use the token form plus the
-plain code in the body.
+## Voice (key strings)
 
----
-
-## States
-
-| State | Sheet behaviour |
-| --- | --- |
-| `idle` (share) | Email + optional label inputs; "Send invite" |
-| `code ready` (share) | Code displayed in a framed block; "Share invite" + "Done" |
-| `idle` (accept) | Email + code inputs + relationship chips; "Join family circle" |
-| `success` (accept) | "You're in" confirmation; family appears on Home via realtime; "Done". Onboarding consumers skip this state (`showSuccessState=false`) to finalize atomically. |
-| `error` (accept) | Inline, code-specific message (see Voice) |
-| `pending` | `familyId` is `null`; consumers that need an id ignore it until the connection resolves on pairing |
-
-State resets every time a sheet opens, so a dismissed-but-incomplete prior
-attempt doesn't leak (`AcceptInviteSheet.tsx:108`, `CareInviteSheet.tsx:40`).
-
----
-
-## Voice
-
-Per `docs/05-voice-and-claims.md` — copy is calm, plain, no "patient" / fear
-language, and direction-free analogies ("keep a gentle eye on each other"):
-
-- Share intro (Settings): *"Let my daughter keep an eye on me."* / *"We'll
-  create a 6-digit code you can share. They enter it in their own Leiko app to
-  follow your readings."*
-- Share intro (Care): *"Let me keep an eye on Mum."* / *"Invite someone whose
-  readings you'd like to follow."*
-- Accept intro: *"Type the email the inviter used and the 6-digit code they
-  shared with you."*
-- Accept success: *"You've joined the circle. Their readings will appear on
-  your home screen."*
-- Email body: *"…would like to connect with you on Leiko so you can keep a
-  gentle eye on each other's readings."*
-- Error copy maps server codes to plain language: not-found → *"We couldn't
-  find that code. Double-check and try again."*; email mismatch → *"That email
-  doesn't match the invite."*; expired → *"That code has expired. Ask for a new
-  one."*; already used → *"That code has already been used."*
-
----
-
-## Accessibility
-
-- Code display: `accessibilityLabel` spells the digits individually
-  (`"Invite code, 1 2 3 4 5 6"`) so VoiceOver reads it cleanly
-  (`CareInviteSheet.tsx:115`, `SettingsScreen.tsx:1348`).
-- Relationship chips: wrapped in `accessibilityRole="radiogroup"` labelled
-  "Your relationship to the wearer" (`AcceptInviteSheet.tsx:269`).
-- Accept submit button: `accessibilityLabel="Join family circle"`.
-
----
+- Share sheet body: "Share this code with the person you want to stay
+  connected with. When they enter it in their Leiko app, you're
+  connected — whoever wears a watch shares their readings, and the
+  other follows." + "The code works once and expires in 7 days."
+- Accept intro: "Type the 6-digit code they shared with you."
+- Rate limit: "Too many tries for now. Wait a little while, then try
+  again."
+- Email body (when an email is sent): "Open the Leiko app, go to
+  Settings → Enter a code…  New to Leiko? Choose 'Someone invited me'
+  during setup."
 
 ## Data rules
 
-- Invitee **email is required** at create time and matched (case-insensitive)
-  at accept time — the email-match guard against mistyped/forwarded codes
-  (ADR-0007 resolved decision #2).
-- Codes are **single-use** and **expire in 7 days**.
-- Reading values never appear in any analytics event; audit logs carry email
-  **domain** only, never the full address or any vital.
-- `account_type` is untouched by connect — following grants a caregiver
-  membership, not a type change.
+- Codes are single-use, expire in 7 days, and accept attempts are
+  rate-limited server-side. No accept-time email gate (ADR-0012).
+- Audit logs carry email **domain** only (when an email exists at all);
+  reading values never appear in analytics or audit metadata.
+- `account_type` is untouched by connect.
 
----
+## Files (this doc reflects the code as of 2026-08-14)
 
-## Open / not-yet-done
-
-- **Copy + row consolidation** to ADR-0007's two symmetric rows ("Connect with
-  someone" / "Enter a code") is **not shipped**; the client keeps ADR-0006
-  labels and the watch-gated "Invite someone to follow" row.
-- **Follow-back UX**: `connect-accept` returns `canFollowBack: true` when both
-  wear watches, but the in-app prompt offering the sharer the follow-back is a
-  separate explicit action (second connect/accept) — no dedicated UI documented
-  here.
-- **Back-compat window**: the four legacy edge functions
-  (`send-family-invite`, `accept-family-invite`, `send-care-invite`,
-  `resolve-care-invite`) and their wrappers in `manageInvites.ts` remain for
-  already-issued codes; removal length is the ADR's open question.
-
----
-
-## Files read (this doc reflects the code as of 2026-06-02)
-
-- `docs/_adr/0007-unified-connect-invite.md` — the design.
-- `docs/_adr/0006-unified-caregiver-self-buyer-model.md` §3 (Decision item 3) —
-  superseded invite/consent context + retained pending plumbing.
-- `supabase/functions/connect-create/index.ts` — code generation, 7-day
-  expiry, email, watch-circle hint, audit.
-- `supabase/functions/connect-accept/index.ts` — email-match guard, direction
-  resolution table, follow-back flag, pending case.
-- `apps/mobile/src/components/CareInviteSheet.tsx` — Home share sheet
-  (`createConnect`).
-- `apps/mobile/src/components/AcceptInviteSheet.tsx` — accept sheet
-  (`acceptConnect`), relationship chips.
-- `apps/mobile/src/services/families/manageInvites.ts` — `createConnect` /
-  `acceptConnect` wrappers (+ retained legacy wrappers).
-- `apps/mobile/src/services/families/pendingCareInvite.ts` — stash + no-op
-  resolve under unified connect.
-- `apps/mobile/src/screens/Settings/SettingsScreen.tsx` — "Invite someone to
-  follow" + "Care for another person" rows, dual-delivery share, deep-link
-  prefill.
-- `apps/mobile/src/screens/Home/CaregiverHome.tsx` — "+ Add someone I care
-  for" + "Enter a code" entry points.
-- `apps/mobile/src/services/notifications/deepLinkParser.ts` +
-  `deepLinks.ts` — `join` route parse + dispatch.
-- `docs/04-screens/reading-detail.md` — house format.
-- `docs/05-voice-and-claims.md` — voice rules applied to quoted copy.
-
-**Confirmation:** every behaviour above was read from the cited source. Where the
-shipped client diverges from ADR-0007 (row labels / copy not yet consolidated,
-Settings invite row still watch-gated, follow-back prompt absent), this doc
-documents the **code** and flags the divergence in the note at the top and the
-"Open / not-yet-done" section.
+- `docs/_adr/0012-connect-one-door.md` — the Phase A–C decisions.
+- `supabase/functions/connect-create|connect-accept|connect-follow-back`
+- `supabase/migrations/0051_connect_pending_resolution.sql` (pending
+  columns, pairing trigger, rate-limit table),
+  `0052_invitations_update_with_check.sql`
+- `apps/mobile/src/components/ConnectShareSheet.tsx`, `AcceptInviteSheet.tsx`
+- `apps/mobile/src/services/families/manageInvites.ts`, `pendingCareInvite.ts`
+- `apps/mobile/src/services/notifications/deepLinkParser.ts`, `deepLinks.ts`
+- `apps/mobile/src/screens/Settings/SettingsScreen.tsx` (Connect section),
+  `Home/CaregiverHome.tsx`, `Onboarding/Caregiver/FamilyWatch.tsx`
+- Website repo `leiko/src/lib/app-links.ts` + `src/server.ts` — the
+  `/join?code=` landing page (branch `claude/join-code-landing`).

@@ -1,5 +1,20 @@
 # Start here — vitals correctness + physical testing + report delivery (2026-06-05)
 
+> **⏩ 2026-08-14 update (read FIRST):** the Connect/invite system was
+> simplified end-to-end (Phases A–C, ADR-0012). Prod DB is fully
+> migrated (0051 + 0052) and the four legacy invite functions are
+> DELETED from the hosted project; the mobile + backend work sits on
+> branch **`claude/connect-phase-a`** (7 commits, all gates green)
+> awaiting founder deploys + merge + the versionCode 8 build. The
+> website's `/join?code=` landing page is on the leiko repo branch
+> `claude/join-code-landing`. **Read
+> `plans/session-2026-08-14-connect-phases-abc.md`** — it has the
+> founder punch list and a ⚠️ critical warning: `db-migrate.yml` will
+> break on the next migrations-touching merge to main until remote
+> migration history is repaired for 0036–0050 (steps in the handoff).
+> This clears the old "dormant invite functions / no join page"
+> deferrals below.
+>
 > **⏩ 2026-06-12 update (read first):** vc5 **built, signed, and validated on
 > two real phones** — silent-first remote refresh works end-to-end (silent
 > doesn't wake a backgrounded Pixel; the visible "Send a reminder" nudge
@@ -126,8 +141,9 @@ migration **0035** is already applied + recorded in prod
 - Release APK rebuild + untethered test (`npm run release:android:apk`,
   needs founder's `LEIKO_RELEASE_*` keystore env).
 - iOS verification of the share/download paths once an iOS build exists.
-- Pre-existing deferrals from the 2026-06-02 handoff (dormant old invite
-  functions; store listing/join page; inert `account_type` column).
+- Pre-existing deferrals from the 2026-06-02 handoff — 2026-08-14: the
+  dormant invite functions are now DELETED and the join page EXISTS
+  (ADR-0012); only the inert `account_type` column removal remains.
 
 ## Hard-won operational notes
 
