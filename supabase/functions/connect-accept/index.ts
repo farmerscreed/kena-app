@@ -32,6 +32,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { createClient, type SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { withInternalHeader } from '../_shared/internal-auth.ts';
 
 interface RequestBody {
   code: string;
@@ -51,6 +52,9 @@ interface ResponseShape {
   outcome: 'accepter_follows' | 'sharer_follows' | 'pending';
   /** True when BOTH wear watches and the sharer may be offered follow-back. */
   canFollowBack: boolean;
+  /** Phase C — lets the client offer one-tap follow-back
+   *  (/connect-follow-back verifies the caller accepted this invite). */
+  invitationId: string;
 }
 
 // Code-guess rate limit: failures per authenticated user per window.
@@ -288,6 +292,38 @@ Deno.serve(async (req: Request) => {
     // ignore
   }
 
-  const resp: ResponseShape = { ok: true, familyId, outcome, canFollowBack };
+  // Phase C — tell the sharer their code was accepted. Best-effort:
+  // the connection stands whether or not the push lands. send-push's
+  // existing 'family' template renders "<name> accepted your invite" /
+  // "<name> can now see your readings" per recipient type, applies the
+  // family_activity opt-out, voice lint, and rate limits.
+  if (outcome !== 'pending') {
+    try {
+      const { data: accepterProfile } = await serviceClient
+        .from('users')
+        .select('display_name')
+        .eq('id', accepterId)
+        .maybeSingle();
+      await serviceClient.functions.invoke('send-push', {
+        body: {
+          category: 'family',
+          userId: sharerId,
+          caregiverName:
+            (accepterProfile?.display_name as string | undefined) || 'Someone',
+        },
+        headers: withInternalHeader(),
+      });
+    } catch {
+      // ignore — never fail an accept over a notification
+    }
+  }
+
+  const resp: ResponseShape = {
+    ok: true,
+    familyId,
+    outcome,
+    canFollowBack,
+    invitationId: invitation.id as string,
+  };
   return json(resp, 200);
 });
