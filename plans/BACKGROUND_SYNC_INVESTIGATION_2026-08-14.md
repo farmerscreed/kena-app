@@ -3,9 +3,19 @@
 **Question asked:** "is the sync feature properly set up — the one that lets the app
 sync with the watch even when the app isn't open but the watch is in proximity?"
 
-**Answer as of this session:** it was not. Four separate defects, all now fixed and
-committed. Three are verified on-device; the fourth (the deepest one) was still
-mid-verification when the session ended. **Read §6 first if you are picking this up.**
+**Answer as of this session: YES — verified working from a fully cold start.** It was
+badly broken in four independent ways; all four are fixed, committed, and confirmed on
+the bench. One contained bug remains (§6e). **Read §6 first if you are picking this up.**
+
+The proof, 21:37 with the app killed (`am kill`) and no screen ever rendered:
+
+```
+21:37:27  Android wakes the app from nothing (fresh pid)
+21:37:31  sync_started            trigger=background
+21:37:32  BLE connect  → dumpsys AppRecord(21:37:32 ~ 21:45:04)
+21:37:34  sync_completed          trigger=background  pulled=1
+21:37:35  hr + 13× spo2 + activity + calories pulled
+```
 
 Nothing here is theory: every claim below is backed by a device log, a system
 `dumpsys`, or a PostHog event, and the source of each is named.
@@ -188,25 +198,66 @@ deferrable. Worth checking on any device that reports missed syncs.
 
 | Item | Status |
 |---|---|
-| D1 stale-run watchdog | ✅ verified on-device (795 s run reclaimed) |
-| D2 upload timeout | ✅ root-caused from events; code + unit tests. Not yet re-observed in the wild |
-| D3 headless hydration | ⚠️ code + tests; **cannot be exercised until D4 works** |
-| D4 entry registration | ⚠️ **built, installed, test was still pending** |
-| Normal-boot data check after D4 | ❌ **NOT DONE — do this first, see below** |
-| Committed + pushed to `main` | ✅ `5419e88`, `d9b629c`, `a76d8a0` |
+| D1 stale-run watchdog | ✅ verified twice — a 795 s run reclaimed, and again unprompted at 21:45 (`sync_stale_reset trigger=cold_start`) |
+| D2 upload timeout | ✅ root-caused from events; code + unit tests. No stalled upload observed since |
+| D3 headless hydration | ✅ implied by the cold run finding the watch at all — `pairedDevice` came from MMKV with no UI |
+| D4 entry registration | ✅ **VERIFIED — see the trace at the top** |
+| Normal-boot data check after D4 | ✅ `sec1_boot_completed {encrypted:true, status:completed}` + `sec1_legacy_deleted`; readings/pairing intact |
+| Committed + pushed to `main` | ✅ `5419e88`, `d9b629c`, `a76d8a0`, doc `e75bf47` |
+| **Headless BP upload (§6e)** | ❌ **open — the one thing still broken** |
 | Play/AAB | ❌ not built. Users are still on the old broken build |
 
 Full suite green: **2527 tests / 219 suites**, typecheck clean.
 
-### 6a. FIRST THING IN THE NEXT SESSION
-`a76d8a0` touches the boot path that guards the **encrypted-storage key**. Before
-anything else, open the app normally and confirm **readings, pairing and settings are
-all intact**. If they are not, suspect `registerHeadlessTasks` importing something
-storage-dependent too early, and check with:
+### 6e. THE ONE REMAINING BUG — headless BP upload *(start here)*
+
+In the verified cold run, one line spoils an otherwise clean sweep:
+
 ```
-adb logcat -d | grep -iE "sec1|mmkv|secureBoot"
+21:37:34  reading_sync_failed
+          "postReading: no paired device on file for a watch reading"
 ```
-PostHog `sec1_boot_completed {encrypted, status}` is the authoritative signal.
+
+The reading **was** pulled off the watch and saved locally; only its upload failed. It
+went up at 21:45 when the app was next opened (`reading_sync_success`), so this is a
+delay, not data loss — but it defeats the point of the feature for the BP reading
+itself, which is the one thing a caregiver is waiting for.
+
+**Cause — the same root as D4, in a second place I missed.** `services/sync/postReading`
+does not read the pairing store directly (its header explains why: importing it would
+drag react-native into the pure jest project). Instead it takes an injected lookup via
+`setDeviceMetaProvider(...)`, and that injection lives in **RootNavigator's module
+scope** — which, per D4, never executes on a headless wake. So the provider is unset,
+`postReading` finds no device metadata, and throws. `postMultiVitals` is unaffected
+because it receives its metadata as an explicit argument from the orchestrator, which
+is why HR/SpO2/activity/calories all uploaded fine.
+
+**Recommended fix** (small, mirrors what already works):
+
+1. Extract the closure currently inlined in `RootNavigator.tsx` into
+   `state/wireDeviceMetaProvider.ts` — it needs `usePairing`, `inferModel` and
+   `getOrCreateClientDeviceId`, all storage-dependent, so it must stay lazy-imported.
+2. Call it from **`state/hydrateForHeadlessRun.ts`**. That function is already the
+   single "prepare the stores for a run with no UI" hook and is already invoked by both
+   headless paths (background fetch and `triggerRemoteRefresh`), so one call site covers
+   both. `setDeviceMetaProvider` just assigns a module-level function, so calling it
+   again from RootNavigator is harmless — leave that call in place.
+3. Test: assert `hydrateForHeadlessRun()` leaves `postReading` able to resolve device
+   meta with no navigator mounted. Then re-run §6b and expect
+   `reading_sync_success` **inside** the background run rather than at the next open.
+
+Worth a sweep while you are in there: `setDeviceMetaProvider` is one instance of a
+general pattern — *anything wired in RootNavigator module scope is invisible to a
+headless run*. Grep that file's module scope for other one-time wiring and decide, for
+each, whether a background run needs it.
+
+### 6a. Encrypted-storage check — DONE, passed
+`a76d8a0` touches the boot path guarding the **MMKV encryption key**, so this was
+checked before anything else: PostHog shows
+`sec1_boot_completed {encrypted:true, status:completed}` plus `sec1_legacy_deleted` on
+the 21:45 open, and readings/pairing/settings were all intact. If a future change to
+the entry path is suspected, that event is the authoritative signal; also
+`adb logcat -d | grep -iE "sec1|mmkv|secureBoot"`.
 
 ### 6b. How to run the cold-start test (the one that matters)
 ```powershell
@@ -230,7 +281,7 @@ to flush telemetry and expect `sync_started` / `sync_completed {trigger:backgrou
 ideally `pulled>0`. Keep the watch physically next to the phone — out-of-range produces
 the same "no connection" symptom as a code bug and will waste an hour.
 
-### 6c. If the cold run still does nothing
+### 6c. If a cold run does nothing (kept for reference — this is now the PASSING path)
 Ordered suspects, cheapest first:
 1. **Was the task actually defined?** `adb shell "dumpsys activity providers | grep -i taskmanager"` is weak;
    better, add a one-line Sentry breadcrumb at the top of the task body — Sentry
@@ -245,13 +296,19 @@ Ordered suspects, cheapest first:
 4. `no_paired_device` — would mean D3's hydration is not taking effect.
 
 ### 6d. Known-good reference
-The single proven end-to-end success today, for comparison:
+Backgrounded-but-alive (process still had the UI loaded):
 ```
-17:26:39 sync_started background        (app closed, process alive w/ UI loaded)
+17:26:39 sync_started background
 17:26:44 sync_completed background pulled=1
 ```
-A reading taken on the watch minutes earlier reached the server with the app closed,
-and the next foreground sync found nothing left to pull.
+Fully cold (process killed, no UI ever rendered) — the case that never worked before:
+see the trace at the top of this doc, plus
+`dumpsys bluetooth_manager` → `AppRecord(21:37:32 ~ 21:45:04 … com.leiko.care)`.
+
+**Timing trap when judging a run:** at 21:40 that connection did NOT yet appear in the
+Bluetooth dump and PostHog was empty, which looked like a failure. Both showed up once
+the app was foregrounded at 21:45. Give a cold run a few minutes and flush telemetry by
+opening the app before concluding anything.
 
 ---
 
