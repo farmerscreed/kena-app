@@ -62,6 +62,7 @@ import { useOnboarding } from '../state/onboarding';
 import { usePairing } from '../state/pairing';
 import { useReadings } from '../state/readings';
 import { useSyncOrchestrator } from '../state/syncOrchestrator';
+import { hydrateForHeadlessRun } from '../state/hydrateForHeadlessRun';
 import {
   startHealthPlatformBackgroundFetch,
   stopHealthPlatformBackgroundFetch,
@@ -91,6 +92,11 @@ import { navigationRef } from './navigationRef';
 // runSync at fire time — not at definition time — so the latest
 // orchestrator instance handles the wake-up.
 defineBackgroundSyncTask(async () => {
+  // The wake-up may land in a bare JS context with no component mounted,
+  // so the mount effect below has not run. Load pairing + readings first
+  // or the run finds no watch and syncPending persists empty arrays over
+  // stored readings — see hydrateForHeadlessRun.
+  hydrateForHeadlessRun();
   try {
     const result = await useSyncOrchestrator.getState().runSync('background');
     return result === 'ran' ? 'ran' : 'skipped';

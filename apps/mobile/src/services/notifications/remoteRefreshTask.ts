@@ -11,7 +11,7 @@
 //
 // Per CLAUDE.md: the push carries NO PHI; we read only its { type }.
 
-import { usePairing } from '../../state/pairing';
+import { hydrateForHeadlessRun } from '../../state/hydrateForHeadlessRun';
 import { useSyncOrchestrator } from '../../state/syncOrchestrator';
 import { logger } from '../analytics/logger';
 
@@ -79,20 +79,18 @@ export function isRemoteRefreshData(taskData: unknown): boolean {
 }
 
 /**
- * Hydrate pairing (a cold headless wake may not have run RootNavigator's
- * hydrate yet) then run the watch sync. Safe to call from either path.
+ * Hydrate the stores (a cold headless wake may not have run
+ * RootNavigator's hydrate yet) then run the watch sync. Safe to call from
+ * either path.
  */
 export async function triggerRemoteRefresh(
   source: 'background' | 'foreground' | 'tap',
 ): Promise<void> {
   logger.track('remote_refresh_received', { source });
-  try {
-    if (!usePairing.getState().pairedDevice) {
-      usePairing.getState().hydrate();
-    }
-  } catch {
-    // best-effort; runSync will simply skip if no paired device
-  }
+  // Covers readings as well as pairing: syncPending() rewrites its
+  // pending/recent arrays from in-memory state, so an unhydrated headless
+  // run would persist empty arrays over stored readings.
+  hydrateForHeadlessRun();
   try {
     await useSyncOrchestrator.getState().runSync('remote_refresh');
   } catch (e) {
