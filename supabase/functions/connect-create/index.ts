@@ -8,8 +8,13 @@
 // later pairing is reflected.
 //
 // Replaces send-family-invite + send-care-invite. No family_owner check —
-// anyone can offer to connect. invitee email is required (kept for the
-// accept-time email-match guard, per ADR-0007).
+// anyone can offer to connect.
+//
+// Connect Phase B (2026-08-14): inviteeEmail is now OPTIONAL. The
+// accept-time email gate was dropped in Phase A, so the only remaining
+// use of an email here is best-effort Resend delivery of the code. The
+// zero-input Connect sheet sends no email at all; older clients that
+// still send one get delivery as before.
 //
 // Voice + data rules: no PHI logged; audit records only email domain.
 
@@ -18,7 +23,8 @@ import { createClient, type SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
 
 interface RequestBody {
-  inviteeEmail: string;
+  /** Optional: when present, the code is also emailed via Resend. */
+  inviteeEmail?: string;
   inviteeLabel?: string;
 }
 
@@ -56,7 +62,7 @@ async function sendInviteEmail(args: {
     '',
     `Your code: ${args.code}`,
     '',
-    'Open the Leiko app, go to Settings → Care for another person, and enter this code. New to Leiko? Choose "Someone invited me" during setup. The code works for 7 days.',
+    'Open the Leiko app, go to Settings → Enter a code, and type this in. New to Leiko? Choose "Someone invited me" during setup. The code works for 7 days.',
     '',
     "If you weren't expecting this, you can ignore the email.",
     '',
@@ -74,7 +80,7 @@ async function sendInviteEmail(args: {
         <span style="font-size: 14px; color: #6B6B6B; display: block;">Your code</span>
         <span style="font-size: 32px; letter-spacing: 4px; font-weight: 600; color: #1A1A1A;">${args.code}</span>
       </p>
-      <p>Open the Leiko app, go to <strong>Settings → Care for another person</strong>, and enter this code. New to Leiko? Choose <strong>Someone invited me</strong> during setup. The code works for 7 days.</p>
+      <p>Open the Leiko app, go to <strong>Settings → Enter a code</strong>, and type this in. New to Leiko? Choose <strong>Someone invited me</strong> during setup. The code works for 7 days.</p>
       <p style="color: #6B6B6B; font-size: 14px;">If you weren't expecting this, you can ignore the email.</p>
       <p style="color: #6B6B6B; font-size: 14px;">— The Leiko team</p>
     </div>
@@ -149,8 +155,8 @@ Deno.serve(async (req: Request) => {
   } catch {
     return json({ error: 'invalid_json' }, 400);
   }
-  const inviteeEmail = (body?.inviteeEmail ?? '').trim();
-  if (!inviteeEmail || !inviteeEmail.includes('@')) {
+  const inviteeEmail = (body?.inviteeEmail ?? '').trim() || null;
+  if (inviteeEmail && !inviteeEmail.includes('@')) {
     return json({ error: 'invalid_email' }, 400);
   }
   const inviteeLabel = (body?.inviteeLabel ?? '').trim() || null;
@@ -194,16 +200,18 @@ Deno.serve(async (req: Request) => {
 
     // Phase A: email_attempted previously hard-coded true even when the
     // Resend env vars were unset (sendInviteEmail bails early). Report
-    // what actually happened.
+    // what actually happened. No email address -> no attempt at all.
     const emailConfigured = Boolean(
       Deno.env.get('RESEND_API_KEY') && Deno.env.get('RESEND_FROM_EMAIL'),
     );
-    const emailSent = await sendInviteEmail({
-      toEmail: inviteeEmail,
-      code,
-      inviterDisplayName: inviterName,
-      inviteeLabel,
-    });
+    const emailSent = inviteeEmail
+      ? await sendInviteEmail({
+          toEmail: inviteeEmail,
+          code,
+          inviterDisplayName: inviterName,
+          inviteeLabel,
+        })
+      : false;
 
     try {
       await serviceClient.from('audit_log').insert({
@@ -211,10 +219,10 @@ Deno.serve(async (req: Request) => {
         family_id: watchCircle,
         action: 'connect.created',
         metadata: {
-          invitee_email_domain: inviteeEmail.split('@')[1] ?? null,
+          invitee_email_domain: inviteeEmail ? inviteeEmail.split('@')[1] ?? null : null,
           has_label: inviteeLabel !== null,
           caller_wears_watch: watchCircle !== null,
-          email_attempted: emailConfigured,
+          email_attempted: emailConfigured && inviteeEmail !== null,
           email_sent: emailSent,
         },
       });
