@@ -74,10 +74,33 @@ audit; founder approved all recommendations 2026-08-14.
    0040 0041 0042 0043 0044 0045 0046 0047 0048 0049 0050`
    (repair takes multiple versions). After that, `db push` becomes a
    no-op for everything already applied and the workflow is safe again.
-4. **Merge `claude/connect-phase-a` → main** after the demo. The June
+3c. **Merged to main 2026-08-14** (fast-forward, 2ee3f42..da29683,
+   pushed). Post-merge workflow status — BOTH failures pre-existing,
+   nothing to do with the Connect work:
+   - **CI**: Lint/Typecheck/Test all PASSED; only the `npm audit
+     --omit=dev --audit-level=high` step fails (pre-existing since at
+     least July: @babel/core GHSA-4x5r-pxfx-6jf8 + brace-expansion DoS
+     advisories in transitive deps; `npm audit fix` is suggested but
+     bumping versions needs founder sign-off per the pin rule).
+   - **db-migrate**: fails BEFORE applying anything — the 19
+     remote-only TIMESTAMPED history entries (June-Aug live-applies)
+     have no local files. DB untouched; 0051/0052 already applied +
+     recorded. Fix (founder, one command — the workflow's own
+     suggestion): `npx supabase migration repair --status reverted
+     20260606201634 20260606201908 20260606211525 20260607235313
+     20260608000919 20260608004510 20260608004523 20260608104906
+     20260608111951 20260608114818 20260608135604 20260608200916
+     20260609214034 20260609231811 20260609231942 20260718125739
+     20260720233547 20260808002149 20260808010616` — bookkeeping only
+     (deletes history rows, schema untouched; their DDL is codified in
+     local 0036-0050 which are recorded as applied). Then re-run the
+     workflow via gh run rerun / workflow_dispatch to confirm green.
+4. ~~Merge~~ done (see 3c). The June 3-phone connect matrix
+   (`plans/comprehensive-test.md`) is now passable end-to-end including
+   Stage 4's pending case. Build **versionCode 8** — the new UI ships
+   with it; until then installed The June
    3-phone connect matrix (`plans/comprehensive-test.md`) is now
    passable end-to-end including Stage 4's pending case. Build
-   **versionCode 8** — the new UI ships with it; until then installed
    clients run the old UI against the new backend (compatible: the
    backend ignores the email field old clients still send).
 5. **Website:** merge `claude/join-code-landing` → main, then the
