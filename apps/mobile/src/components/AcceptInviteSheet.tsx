@@ -32,7 +32,8 @@ import { ScrollView, Text, TextInput, View } from 'react-native';
 import { BottomSheet } from './BottomSheet';
 import { Button } from './Button';
 import { Pill } from './Pill';
-import { acceptConnect } from '../services/families/manageInvites';
+import { acceptConnect, followBackConnect } from '../services/families/manageInvites';
+import { clearPendingCareInvite } from '../services/families/pendingCareInvite';
 import { useTheme } from '../theme';
 
 type RelationshipChip =
@@ -85,7 +86,7 @@ export interface AcceptInviteSheetProps {
   testID?: string;
 }
 
-const SHEET_TITLE_IDLE = 'Join a family circle';
+const SHEET_TITLE_IDLE = 'Enter a code';
 const SHEET_TITLE_SUCCESS = "You're connected";
 
 type ConnectOutcome = 'accepter_follows' | 'sharer_follows' | 'pending';
@@ -120,6 +121,10 @@ export function AcceptInviteSheet({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [outcome, setOutcome] = useState<ConnectOutcome | null>(null);
+  // Phase C — one-tap follow-back when both parties wear watches
+  // (ADR-0007: ask, don't auto-mutual).
+  const [followBackId, setFollowBackId] = useState<string | null>(null);
+  const [followBack, setFollowBack] = useState<'idle' | 'pending' | 'done' | 'error'>('idle');
 
   // Reset on open so a dismissed previous attempt doesn't leak.
   useEffect(() => {
@@ -131,6 +136,8 @@ export function AcceptInviteSheet({
       setError(null);
       setSuccess(false);
       setOutcome(null);
+      setFollowBackId(null);
+      setFollowBack('idle');
     }
   }, [visible, initialCode]);
 
@@ -145,9 +152,15 @@ export function AcceptInviteSheet({
         code,
         ...(labelEncoded ? { caregiverRelationshipLabel: labelEncoded } : {}),
       });
+      // A join-link code may be stashed for the onboarding path; once
+      // any code is accepted the stash has served its purpose.
+      clearPendingCareInvite();
       if (showSuccessState) {
         setSuccess(true);
         setOutcome(result.outcome);
+        if (result.canFollowBack && result.invitationId) {
+          setFollowBackId(result.invitationId);
+        }
       }
       // familyId is null only for the pending case (neither wears a watch
       // yet); consumers that need an id can ignore until it resolves.
@@ -199,6 +212,58 @@ export function AcceptInviteSheet({
             >
               {SUCCESS_COPY[outcome ?? 'accepter_follows']}
             </Text>
+            {followBackId ? (
+              followBack === 'done' ? (
+                <Text
+                  accessibilityLiveRegion="polite"
+                  style={{
+                    color: theme.colors.text.secondary,
+                    fontSize: bodyStyle.size,
+                    lineHeight: bodyStyle.lineHeight,
+                    fontFamily: bodyStyle.family,
+                    marginBottom: theme.spacing.m,
+                  }}
+                  testID={`${testID}-follow-back-done`}
+                >
+                  Done — they can now see your readings too. You choose what
+                  they see in Settings.
+                </Text>
+              ) : (
+                <View style={{ marginBottom: theme.spacing.m }}>
+                  {followBack === 'error' ? (
+                    <Text
+                      style={{
+                        color: theme.colors.text.secondary,
+                        fontSize: theme.type('label').size,
+                        fontFamily: theme.type('label').family,
+                        marginBottom: theme.spacing.s,
+                      }}
+                      testID={`${testID}-follow-back-error`}
+                    >
+                      That didn&apos;t go through. Try again in a moment.
+                    </Text>
+                  ) : null}
+                  <Button
+                    variant="secondary"
+                    loading={followBack === 'pending'}
+                    disabled={followBack === 'pending'}
+                    onPress={async () => {
+                      setFollowBack('pending');
+                      try {
+                        await followBackConnect({ invitationId: followBackId });
+                        setFollowBack('done');
+                      } catch {
+                        setFollowBack('error');
+                      }
+                    }}
+                    accessibilityLabel="Let them see your readings too"
+                    testID={`${testID}-follow-back`}
+                  >
+                    Let them see your readings too
+                  </Button>
+                </View>
+              )
+            ) : null}
             <Button
               variant="primary"
               onPress={onDismiss}
@@ -326,10 +391,10 @@ export function AcceptInviteSheet({
               disabled={pending || code.length !== 6}
               loading={pending}
               onPress={handleSubmit}
-              accessibilityLabel="Join family circle"
+              accessibilityLabel="Connect"
               testID={`${testID}-join`}
             >
-              Join family circle
+              Connect
             </Button>
             <View style={{ marginTop: theme.spacing.s }}>
               <Button

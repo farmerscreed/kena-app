@@ -19,11 +19,11 @@ export interface ParsedDeepLink {
     | 'unknown';
   readingId?: string;
   vital?: 'bp' | 'hr' | 'spo2' | 'sleep' | 'activity';
-  /** ADR-0006 — invite acceptance via a shared link.
-   *  https://leiko.app/join?token=...&code=...&email=... */
-  inviteToken?: string;
+  /** Connect — invite acceptance via a shared link.
+   *  https://leiko.app/join?code=482913. The code is the whole story:
+   *  url_token links were never redeemable (no backend read them) and
+   *  the email param died with the accept-time email gate (Phase A). */
   inviteCode?: string;
-  inviteEmail?: string;
 }
 
 // Minimal query-string parser (URLSearchParams isn't reliably available
@@ -48,15 +48,10 @@ export function parseDeepLink(url: string): ParsedDeepLink {
   const [first, second] = segments;
   switch (first) {
     case 'join': {
-      // Invite link. Carries at least a token (or a code); email optional.
+      // Invite link — must carry the 6-digit connect code.
       const params = parseQuery(url);
-      if (!params.token && !params.code) return { category: 'unknown' };
-      return {
-        category: 'join',
-        inviteToken: params.token || undefined,
-        inviteCode: params.code || undefined,
-        inviteEmail: params.email || undefined,
-      };
+      if (!/^\d{6}$/.test(params.code ?? '')) return { category: 'unknown' };
+      return { category: 'join', inviteCode: params.code };
     }
     case 'home':
     case undefined:

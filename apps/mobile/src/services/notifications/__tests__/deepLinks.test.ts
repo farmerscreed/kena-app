@@ -64,29 +64,37 @@ describe('parseDeepLink', () => {
     });
   });
 
-  it('routes https://leiko.app/join with token + code + email', () => {
+  // Connect Phase C — the code is the only join credential. Token links
+  // were never redeemable and the email param died with the accept-time
+  // email gate; legacy params are simply ignored.
+  it('routes https://leiko.app/join?code=', () => {
+    expect(parseDeepLink('https://leiko.app/join?code=482910')).toEqual({
+      category: 'join',
+      inviteCode: '482910',
+    });
+  });
+
+  it('ignores legacy token/email params but keeps the code', () => {
     expect(
       parseDeepLink(
         'https://leiko.app/join?token=abc%2F123&code=482910&email=me%40x.com',
       ),
     ).toEqual({
       category: 'join',
-      inviteToken: 'abc/123',
       inviteCode: '482910',
-      inviteEmail: 'me@x.com',
     });
   });
 
-  it('routes leiko://join with just a token', () => {
-    expect(parseDeepLink('leiko://join?token=xyz')).toEqual({
-      category: 'join',
-      inviteToken: 'xyz',
-      inviteCode: undefined,
-      inviteEmail: undefined,
-    });
+  it('returns unknown for a token-only join link', () => {
+    expect(parseDeepLink('leiko://join?token=xyz').category).toBe('unknown');
   });
 
-  it('returns unknown for a join link with no token or code', () => {
+  it('returns unknown for a malformed code', () => {
+    expect(parseDeepLink('leiko://join?code=12345').category).toBe('unknown');
+    expect(parseDeepLink('leiko://join?code=notdigits').category).toBe('unknown');
+  });
+
+  it('returns unknown for a join link with no code', () => {
     expect(parseDeepLink('leiko://join').category).toBe('unknown');
   });
 

@@ -198,7 +198,8 @@ export function CaregiverVisibilityScreen({ navigation }: Props) {
             }}
             testID="caregiver-visibility-empty"
           >
-            No caregivers yet. Invite one from Settings → Family.
+            No one follows your readings yet. Share a code from Settings →
+            Connect with someone.
           </Text>
         ) : (
           caregivers.map((caregiver) => (

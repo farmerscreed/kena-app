@@ -182,13 +182,13 @@ describe('<CaregiverHome /> — empty state', () => {
     render(withProviders(<CaregiverHome />));
     expect(screen.getByText('Your family circle is quiet for now')).toBeTruthy();
     expect(
-      screen.getByText(/Has someone shared an invite code with you/),
+      screen.getByText(/Has someone shared a Leiko code with you/),
     ).toBeTruthy();
     expect(
-      screen.getByRole('button', { name: 'I have an invite code' }),
+      screen.getByRole('button', { name: 'Enter a code' }),
     ).toBeTruthy();
     expect(
-      screen.getByRole('button', { name: 'Or invite someone yourself' }),
+      screen.getByRole('button', { name: 'Or share your own code' }),
     ).toBeTruthy();
   });
 
@@ -510,9 +510,9 @@ describe('<CaregiverHome /> — voice rules', () => {
     // invite-code-first CTA. Body explains the incoming-caregiver
     // path; primary CTA opens the AcceptInviteSheet; secondary text
     // link drops to Settings → Family for outgoing invites.
-    /Has someone shared an invite code with you/,
-    'I have an invite code',
-    /Or invite someone yourself/,
+    /Has someone shared a Leiko code with you/,
+    'Enter a code',
+    /Or share your own code/,
     'Good morning',
     'Leiko · Family',
   ])('voice-rule clean string present: %s', (text) => {

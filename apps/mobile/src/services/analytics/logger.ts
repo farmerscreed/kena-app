@@ -134,6 +134,10 @@ export type AnalyticsEvent =
   | { name: 'connect_accept_started' }
   | { name: 'connect_accept_completed'; props?: { outcome: string } }
   | { name: 'connect_accept_failed'; props?: { reason: string } }
+  // Connect Phase C — one-tap follow-back when both parties wear watches.
+  | { name: 'connect_follow_back_started' }
+  | { name: 'connect_follow_back_completed' }
+  | { name: 'connect_follow_back_failed'; props?: { reason: string } }
   // Sprint 19 — Care for another person (caregiver-side create_family).
   | { name: 'family_add_another_started' }
   | { name: 'family_add_another_completed' }

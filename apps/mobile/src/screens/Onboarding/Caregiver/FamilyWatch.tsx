@@ -13,6 +13,7 @@ import { OnboardingScaffold } from '../../../components/OnboardingScaffold';
 import { Pill } from '../../../components/Pill';
 import { useTheme } from '../../../theme';
 import { useOnboarding } from '../../../state/onboarding';
+import { getPendingCareInvite } from '../../../services/families/pendingCareInvite';
 import type { CaregiverOnboardingScreenProps } from '../../../navigation/types';
 
 export function CaregiverFamilyWatchScreen({
@@ -25,10 +26,15 @@ export function CaregiverFamilyWatchScreen({
   const finalizeError = useOnboarding((s) => s.finalizeError);
 
   const [pressed, setPressed] = useState<'have' | 'later' | 'invited' | null>(null);
+  // Connect Phase C — a join link tapped while signed out or before
+  // onboarding stashes its code; surface it here so the person who
+  // arrived via a link lands straight in the Enter-a-code sheet with
+  // the code filled in. The sheet clears the stash on accept.
+  const [stashedCode] = useState<string | null>(() => getPendingCareInvite());
   // Sprint 16.6 Issue #1 — third onboarding path for caregivers who
   // were invited to an existing family. Opens AcceptInviteSheet; on
   // success calls completeViaInvite (no create_family).
-  const [inviteSheetOpen, setInviteSheetOpen] = useState(false);
+  const [inviteSheetOpen, setInviteSheetOpen] = useState(stashedCode !== null);
 
   const headline = theme.type('displayM');
   const body = theme.type('bodyL');
@@ -302,6 +308,7 @@ export function CaregiverFamilyWatchScreen({
       <AcceptInviteSheet
         visible={inviteSheetOpen}
         onDismiss={() => setInviteSheetOpen(false)}
+        initialCode={stashedCode ?? ''}
         showSuccessState={false}
         onSuccess={async ({ familyId }) => {
           setInviteSheetOpen(false);

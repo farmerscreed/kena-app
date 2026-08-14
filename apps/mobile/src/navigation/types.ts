@@ -64,11 +64,9 @@ export type CaregiverStackParamList = {
     title: string;
   };
   Pairing: undefined;
-  // ADR-0006 — optional invite params so a tapped join-link can deep-link
-  // into Settings and auto-open the accept-invite sheet, prefilled.
-  Settings:
-    | { inviteCode?: string; inviteEmail?: string; inviteToken?: string }
-    | undefined;
+  // Connect — optional invite param so a tapped join-link can deep-link
+  // into Settings and auto-open the Enter-a-code sheet, prefilled.
+  Settings: { inviteCode?: string } | undefined;
   // Sprint 6 — Take Reading + Reading Detail. ReadingDetail receives
   // the local id of the reading to display (UUIDv4 minted client-side
   // by the readings store; serverId is filled in once /sync acks).
@@ -106,13 +104,6 @@ export type CaregiverStackParamList = {
   // Sprint 11 — minimal "Ask Leiko" surface for the local intent
   // router. Sprint 12 layers Tier-B over the Tier-B placeholder.
   AskLeiko: undefined;
-  // Sprint 19 — add-another-parent flow. Reuses the FamilyParent input
-  // shape (name + relationship + timezone) but as a stand-alone screen
-  // outside the onboarding stack. Calls the `create_family` RPC to
-  // provision a second (or third…) family for the caregiver. Reached
-  // from the CaregiverHome action-bar chooser sheet + Settings →
-  // Family.
-  AddPerson: undefined;
   // Sprint 19 — account switcher. Lists every email that has signed
   // in on this device; tap to sign out + OTP-in another. Reached
   // from Settings → Profile → "Switch account" and from the
@@ -148,11 +139,9 @@ export type SelfBuyerStackParamList = {
   SelfBuyerHome: undefined;
   SelfBuyerHomePlaceholder: undefined;
   Pairing: undefined;
-  // ADR-0006 — optional invite params so a tapped join-link can deep-link
-  // into Settings and auto-open the accept-invite sheet, prefilled.
-  Settings:
-    | { inviteCode?: string; inviteEmail?: string; inviteToken?: string }
-    | undefined;
+  // Connect — optional invite param so a tapped join-link can deep-link
+  // into Settings and auto-open the Enter-a-code sheet, prefilled.
+  Settings: { inviteCode?: string } | undefined;
   TakeReading: undefined;
   ReadingDetail: { readingLocalId: string };
   // Sprint 17a — optional `familyId` for caregiver entry. When set, the
@@ -203,12 +192,6 @@ export type SelfBuyerStackParamList = {
   // Sprint 11 — minimal "Ask Leiko" surface for the local intent
   // router. Sprint 12 layers Tier-B over the Tier-B placeholder.
   AskLeiko: undefined;
-  // Sprint 19 — add-another-parent flow, mirrored from the caregiver
-  // stack so a hybrid-mode self-buyer with caregiving aspirations can
-  // also create a second family. Self-buyers won't typically reach
-  // this without the chooser sheet, but registering it keeps the
-  // navigator type unions symmetric.
-  AddPerson: undefined;
   // Sprint 19 — account switcher, mirrored from the caregiver stack.
   AccountSwitch: undefined;
 };

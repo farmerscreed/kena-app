@@ -285,7 +285,7 @@ export function FamilyMembersScreen({ navigation }: Props) {
             }}
             testID="family-members-empty"
           >
-            No one here yet. Invite someone from Settings → Family.
+            No one here yet. Connect with someone from Settings → Connect.
           </Text>
         ) : (
           <>

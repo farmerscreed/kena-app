@@ -560,31 +560,33 @@ describe('<SettingsScreen /> — Privacy (Sprint 10b.3)', () => {
   });
 });
 
-describe('<SettingsScreen /> — Family invite (Sprint 10c.1)', () => {
+describe('<SettingsScreen /> — Connect (Phase B)', () => {
   beforeEach(() => {
     mockCreateConnect.mockReset();
     mockAcceptConnect.mockReset();
   });
 
-  it('renders the invite + accept rows for a caregiver', () => {
+  it('renders the Connect section with share + enter-code rows', () => {
     renderScreen();
+    expect(screen.getByTestId('settings-section-connect')).toBeTruthy();
     expect(screen.getByTestId('settings-family-invite')).toBeTruthy();
     expect(screen.getByTestId('settings-family-accept')).toBeTruthy();
   });
 
   describe('role-aware family sections (ADR-0006 Phase 4)', () => {
-    it('shows "Following your readings" with invite when the viewer wears a circle', () => {
+    it('shows "Following your readings" when the viewer wears a circle', () => {
       mockParents = [{ familyId: 'fam-1', parentDisplayName: 'Lawrence', parentRelationship: 'self', viewerRole: 'family_owner' }];
       renderScreen();
       expect(screen.getByTestId('settings-section-following-you')).toBeTruthy();
-      expect(screen.getByTestId('settings-family-invite')).toBeTruthy();
     });
 
-    it('hides "Following your readings" when the viewer wears no circle', () => {
+    it('hides "Following your readings" for a non-wearer, but Connect stays', () => {
       mockParents = [{ familyId: 'mum', parentRelationship: 'Mom' }];
       renderScreen();
       expect(screen.queryByTestId('settings-section-following-you')).toBeNull();
-      expect(screen.queryByTestId('settings-family-invite')).toBeNull();
+      // Phase B — connect is for everyone; the old wearer gate is gone.
+      expect(screen.getByTestId('settings-family-invite')).toBeTruthy();
+      expect(screen.getByTestId('settings-family-accept')).toBeTruthy();
     });
 
     it('lists circles the viewer follows under "People you care for"', () => {
@@ -597,58 +599,44 @@ describe('<SettingsScreen /> — Family invite (Sprint 10c.1)', () => {
       expect(screen.getByTestId('settings-followed-mum')).toBeTruthy();
       expect(screen.getByText('Marian')).toBeTruthy();
     });
-
-    it('always offers "Care for another person" (join with a code)', () => {
-      mockParents = [{ familyId: 'me', parentDisplayName: 'Lawrence', parentRelationship: 'self', viewerRole: 'family_owner' }];
-      renderScreen();
-      expect(screen.getByTestId('settings-section-add')).toBeTruthy();
-      expect(screen.getByTestId('settings-family-accept')).toBeTruthy();
-    });
   });
 
-  it('shows the unified invite subtitle (wearer controls visibility)', () => {
+  it('shows the Connect share subtitle', () => {
     renderScreen();
     expect(
-      screen.getByText('They’ll see your readings. You choose what they can see.'),
+      screen.getByText("Get a code to share. When they enter it, you're connected."),
     ).toBeTruthy();
   });
 
-  it('opens the invite sheet, sends the invite, and surfaces the code', async () => {
+  it('opens the share sheet, which generates a code with zero inputs', async () => {
     mockCreateConnect.mockResolvedValue({
       invitationId: 'inv-1',
       pairingCode: '482910',
       expiresAt: '2026-05-16T00:00:00Z',
     });
     renderScreen();
-    fireEvent.press(screen.getByTestId('settings-family-invite'));
-    fireEvent.changeText(screen.getByTestId('settings-invite-email-input'), 'sister@example.com');
     await act(async () => {
-      fireEvent.press(screen.getByTestId('settings-invite-send'));
+      fireEvent.press(screen.getByTestId('settings-family-invite'));
     });
     await waitFor(() => {
-      expect(mockCreateConnect).toHaveBeenCalledWith({
-        inviteeEmail: 'sister@example.com',
-        inviteeLabel: undefined,
-      });
+      // Zero-input: the sheet asks for nothing before minting a code.
+      expect(mockCreateConnect).toHaveBeenCalledWith();
     });
-    expect(screen.getByTestId('settings-invite-code')).toBeTruthy();
+    expect(screen.getByTestId('settings-connect-code')).toBeTruthy();
     expect(screen.getByText('482910')).toBeTruthy();
+    expect(screen.getByTestId('settings-connect-share')).toBeTruthy();
   });
 
-  it('surfaces a friendly error when the email is invalid', async () => {
-    mockCreateConnect.mockRejectedValue(new Error('invalid_email'));
+  it('surfaces a calm error with retry when code generation fails', async () => {
+    mockCreateConnect.mockRejectedValue(new Error('boom'));
     renderScreen();
-    fireEvent.press(screen.getByTestId('settings-family-invite'));
-    fireEvent.changeText(screen.getByTestId('settings-invite-email-input'), 'sister@example.com');
     await act(async () => {
-      fireEvent.press(screen.getByTestId('settings-invite-send'));
+      fireEvent.press(screen.getByTestId('settings-family-invite'));
     });
     await waitFor(() => {
-      expect(screen.getByTestId('settings-invite-error')).toBeTruthy();
+      expect(screen.getByTestId('settings-connect-error')).toBeTruthy();
     });
-    expect(
-      screen.getByText('That email doesn’t look right. Check it and try again.'),
-    ).toBeTruthy();
+    expect(screen.getByTestId('settings-connect-retry')).toBeTruthy();
   });
 
   it('opens the accept sheet, joins the family, and shows the success state', async () => {

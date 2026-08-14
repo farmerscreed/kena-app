@@ -21,7 +21,6 @@ import {
   Linking,
   Pressable,
   ScrollView,
-  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -40,8 +39,8 @@ import {
   deleteAccount,
   exportFamilyData,
 } from '../../services/users/accountActions';
-import { createConnect } from '../../services/families/manageInvites';
 import { AcceptInviteSheet } from '../../components/AcceptInviteSheet';
+import { ConnectShareSheet } from '../../components/ConnectShareSheet';
 import { EditFamilyDetailsSheet } from '../../components/EditFamilyDetailsSheet';
 import { listCaregivers } from '../../services/families/visibility';
 import { useFamilyReadings } from '../../hooks/useFamilyReadings';
@@ -196,7 +195,6 @@ type NavParamList = {
   ForYourDoctor: { range?: '7d' | '30d' | '90d' | '1y' | 'all_time' } | undefined;
   Pairing: undefined;
   Settings: undefined;
-  AddPerson: undefined;
   AccountSwitch: undefined;
 };
 
@@ -242,16 +240,9 @@ export function SettingsScreen({ navigation }: Props) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [exportPaywallOpen, setExportPaywallOpen] = useState(false);
 
-  // Family invite flow.
+  // Connect Phase B — sharing a code lives in the shared zero-input
+  // ConnectShareSheet; the only state left here is its visibility.
   const [inviteSheetOpen, setInviteSheetOpen] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteLabel, setInviteLabel] = useState('');
-  const [invitePermission, setInvitePermission] = useState<'readings' | 'readings_notes'>(
-    'readings',
-  );
-  const [invitePending, setInvitePending] = useState(false);
-  const [inviteError, setInviteError] = useState<string | null>(null);
-  const [inviteCode, setInviteCode] = useState<string | null>(null);
 
   // Sprint 16.6 — accept-invite UI lives in the shared AcceptInviteSheet
   // component now. Only `acceptSheetOpen` + `acceptSuccess` remain here:
@@ -793,25 +784,36 @@ export function SettingsScreen({ navigation }: Props) {
 
             Plus a single "Join with a code" action for accepting an
             invite to follow someone else. */}
+        {/* Connect Phase B — ONE pair of actions, same labels as Home:
+            share a code, or enter one. Always visible; direction is
+            resolved at accept time by who wears a watch, so neither row
+            is gated on being a wearer or an owner. */}
+        <SettingsSection title="Connect" testID="settings-section-connect">
+          <ListRow
+            variant="action"
+            title="Connect with someone"
+            subtitle="Get a code to share. When they enter it, you're connected."
+            onPress={() => setInviteSheetOpen(true)}
+            testID="settings-family-invite"
+          />
+          <ListRow
+            variant="action"
+            title="Enter a code"
+            subtitle="Got a code from someone? Enter it here."
+            onPress={() => {
+              setAcceptSuccess(false);
+              setAcceptSheetOpen(true);
+            }}
+            showDivider={false}
+            testID="settings-family-accept"
+          />
+        </SettingsSection>
+
         {wornCircle ? (
           <SettingsSection
             title="Following your readings"
             testID="settings-section-following-you"
           >
-            <ListRow
-              variant="action"
-              title="Invite someone to follow"
-              subtitle="They’ll see your readings. You choose what they can see."
-              onPress={() => {
-                setInviteEmail('');
-                setInviteLabel('');
-                setInvitePermission('readings');
-                setInviteError(null);
-                setInviteCode(null);
-                setInviteSheetOpen(true);
-              }}
-              testID="settings-family-invite"
-            />
             {(caregiverCount ?? 0) > 0 ? (
               <ListRow
                 variant="navigation"
@@ -854,20 +856,6 @@ export function SettingsScreen({ navigation }: Props) {
             ))}
           </SettingsSection>
         ) : null}
-
-        <SettingsSection title="Add someone" testID="settings-section-add">
-          <ListRow
-            variant="action"
-            title="Care for another person"
-            subtitle="Enter the code they shared to follow their readings."
-            onPress={() => {
-              setAcceptSuccess(false);
-              setAcceptSheetOpen(true);
-            }}
-            showDivider={false}
-            testID="settings-family-accept"
-          />
-        </SettingsSection>
 
         {/* Share ------------------------------------------------------ */}
         <SettingsSection title="Share" testID="settings-section-share">
@@ -1307,276 +1295,13 @@ export function SettingsScreen({ navigation }: Props) {
         </View>
       </BottomSheet>
 
-      {/* Invite a family member */}
-      <BottomSheet
+      {/* Connect Phase B — the shared zero-input share sheet (same
+          component Home uses). Opening it generates a code immediately. */}
+      <ConnectShareSheet
         visible={inviteSheetOpen}
         onDismiss={() => setInviteSheetOpen(false)}
-        size="default"
-        surface="solid"
-        title={inviteCode ? 'Invite ready' : 'Invite a family member'}
-        testID="settings-invite-sheet"
-      >
-        <View style={{ paddingHorizontal: theme.spacing.l, paddingBottom: theme.spacing.l }}>
-          {inviteCode ? (
-            <>
-              <Text
-                style={{
-                  color: theme.colors.text.secondary,
-                  fontSize: bodyStyle.size,
-                  lineHeight: bodyStyle.lineHeight,
-                  fontFamily: bodyStyle.family,
-                  marginBottom: theme.spacing.m,
-                }}
-              >
-                Share this code with{' '}
-                {inviteEmail ? inviteEmail : 'them'}. It works for the next 7 days.
-              </Text>
-              <View
-                style={{
-                  alignItems: 'center',
-                  paddingVertical: theme.spacing.l,
-                  borderWidth: 1,
-                  borderColor: theme.colors.border.subtle,
-                  borderRadius: theme.radii.m,
-                  marginBottom: theme.spacing.m,
-                }}
-                accessibilityRole="text"
-                accessibilityLabel={`Invite code, ${inviteCode.split('').join(' ')}`}
-                testID="settings-invite-code"
-              >
-                <Text
-                  style={{
-                    color: theme.colors.text.primary,
-                    fontSize: theme.type('displayM').size,
-                    lineHeight: theme.type('displayM').lineHeight,
-                    fontFamily: theme.type('displayM').family,
-                    fontWeight: '700',
-                    letterSpacing: 4,
-                  }}
-                >
-                  {inviteCode}
-                </Text>
-              </View>
-              <Button
-                variant="primary"
-                onPress={() => {
-                  // Code-first (Phase A): the code is the one thing that
-                  // works everywhere. The old primary CTA was a
-                  // leiko.app/join?token= link that could not be redeemed
-                  // at any layer; links return in Phase C, fixed properly.
-                  const message = `Follow my readings on Leiko.\n\nEnter invite code ${inviteCode} in the Leiko app and you'll be connected to me.\n\nNew to Leiko? Get it at https://leiko.app/app, then enter the code. It works for 7 days.`;
-                  void Share.share({ title: 'Leiko invite', message });
-                }}
-                accessibilityLabel="Share invite"
-                testID="settings-invite-share"
-              >
-                Share invite
-              </Button>
-              <View style={{ marginTop: theme.spacing.s }}>
-                <Button
-                  variant="ghost"
-                  onPress={() => setInviteSheetOpen(false)}
-                  accessibilityLabel="Done"
-                  testID="settings-invite-done"
-                >
-                  Done
-                </Button>
-              </View>
-            </>
-          ) : (
-            <>
-              <Text
-                style={{
-                  color: theme.colors.text.primary,
-                  fontSize: bodyStyle.size,
-                  lineHeight: bodyStyle.lineHeight,
-                  fontFamily: bodyStyle.family,
-                  fontStyle: 'italic',
-                  marginBottom: theme.spacing.s,
-                }}
-              >
-                &ldquo;Let my daughter keep an eye on me.&rdquo;
-              </Text>
-              <Text
-                style={{
-                  color: theme.colors.text.secondary,
-                  fontSize: bodyStyle.size,
-                  lineHeight: bodyStyle.lineHeight,
-                  fontFamily: bodyStyle.family,
-                  marginBottom: theme.spacing.m,
-                }}
-              >
-                We&apos;ll create a 6-digit code you can share. They enter it in
-                their own Leiko app to follow your readings.
-              </Text>
-              <TextInput
-                value={inviteLabel}
-                onChangeText={setInviteLabel}
-                placeholder="Their first name (optional)"
-                placeholderTextColor={theme.colors.text.tertiary}
-                style={{
-                  borderWidth: 1,
-                  borderColor: theme.colors.border.subtle,
-                  borderRadius: theme.radii.m,
-                  paddingHorizontal: theme.spacing.m,
-                  paddingVertical: theme.spacing.s,
-                  color: theme.colors.text.primary,
-                  fontSize: bodyStyle.size,
-                  fontFamily: bodyStyle.family,
-                  marginBottom: theme.spacing.m,
-                }}
-                testID="settings-invite-label-input"
-              />
-              <TextInput
-                value={inviteEmail}
-                onChangeText={setInviteEmail}
-                placeholder="Their email"
-                placeholderTextColor={theme.colors.text.tertiary}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                style={{
-                  borderWidth: 1,
-                  borderColor: theme.colors.border.subtle,
-                  borderRadius: theme.radii.m,
-                  paddingHorizontal: theme.spacing.m,
-                  paddingVertical: theme.spacing.s,
-                  color: theme.colors.text.primary,
-                  fontSize: bodyStyle.size,
-                  fontFamily: bodyStyle.family,
-                  marginBottom: theme.spacing.m,
-                }}
-                testID="settings-invite-email-input"
-              />
-              <View
-                style={{ flexDirection: 'row', gap: theme.spacing.s, marginBottom: theme.spacing.m }}
-              >
-                <Pressable
-                  onPress={() => setInvitePermission('readings')}
-                  accessibilityRole="radio"
-                  accessibilityState={{ selected: invitePermission === 'readings' }}
-                  style={{
-                    flex: 1,
-                    paddingVertical: theme.spacing.m,
-                    borderRadius: theme.radii.m,
-                    borderWidth: 1,
-                    borderColor:
-                      invitePermission === 'readings'
-                        ? theme.colors.brand.primary
-                        : theme.colors.border.subtle,
-                    backgroundColor:
-                      invitePermission === 'readings'
-                        ? theme.colors.brand.primary
-                        : 'transparent',
-                    alignItems: 'center',
-                  }}
-                  testID="settings-invite-perm-readings"
-                >
-                  <Text
-                    style={{
-                      color:
-                        invitePermission === 'readings'
-                          ? theme.colors.text.onBrand
-                          : theme.colors.text.secondary,
-                      fontSize: theme.type('label').size,
-                      fontFamily: theme.type('label').family,
-                      fontWeight: invitePermission === 'readings' ? '600' : '400',
-                    }}
-                  >
-                    Can see readings
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setInvitePermission('readings_notes')}
-                  accessibilityRole="radio"
-                  accessibilityState={{ selected: invitePermission === 'readings_notes' }}
-                  style={{
-                    flex: 1,
-                    paddingVertical: theme.spacing.m,
-                    borderRadius: theme.radii.m,
-                    borderWidth: 1,
-                    borderColor:
-                      invitePermission === 'readings_notes'
-                        ? theme.colors.brand.primary
-                        : theme.colors.border.subtle,
-                    backgroundColor:
-                      invitePermission === 'readings_notes'
-                        ? theme.colors.brand.primary
-                        : 'transparent',
-                    alignItems: 'center',
-                  }}
-                  testID="settings-invite-perm-readings-notes"
-                >
-                  <Text
-                    style={{
-                      color:
-                        invitePermission === 'readings_notes'
-                          ? theme.colors.text.onBrand
-                          : theme.colors.text.secondary,
-                      fontSize: theme.type('label').size,
-                      fontFamily: theme.type('label').family,
-                      fontWeight: invitePermission === 'readings_notes' ? '600' : '400',
-                    }}
-                  >
-                    Readings + notes
-                  </Text>
-                </Pressable>
-              </View>
-              {inviteError ? (
-                <Text
-                  style={{
-                    color: theme.colors.text.secondary,
-                    fontSize: theme.type('label').size,
-                    fontFamily: theme.type('label').family,
-                    marginBottom: theme.spacing.m,
-                  }}
-                  testID="settings-invite-error"
-                >
-                  {inviteError}
-                </Text>
-              ) : null}
-              <Button
-                variant="primary"
-                disabled={invitePending || inviteEmail.trim().length === 0}
-                loading={invitePending}
-                onPress={async () => {
-                  setInviteError(null);
-                  setInvitePending(true);
-                  try {
-                    const result = await createConnect({
-                      inviteeEmail: inviteEmail.trim(),
-                      inviteeLabel: inviteLabel.trim() || undefined,
-                    });
-                    setInviteCode(result.pairingCode);
-                  } catch (e) {
-                    const msg = e instanceof Error ? e.message : '';
-                    setInviteError(
-                      /invalid_email/i.test(msg)
-                        ? 'That email doesn’t look right. Check it and try again.'
-                        : "We couldn't send the invite. Try again in a moment.",
-                    );
-                  } finally {
-                    setInvitePending(false);
-                  }
-                }}
-                accessibilityLabel="Send invite"
-                testID="settings-invite-send"
-              >
-                Send invite
-              </Button>
-              <View style={{ marginTop: theme.spacing.s }}>
-                <Button
-                  variant="ghost"
-                  onPress={() => setInviteSheetOpen(false)}
-                  accessibilityLabel="Cancel"
-                  testID="settings-invite-cancel"
-                >
-                  Cancel
-                </Button>
-              </View>
-            </>
-          )}
-        </View>
-      </BottomSheet>
+        testID="settings-connect"
+      />
 
       {/* Accept invite — Sprint 16.6, extracted into AcceptInviteSheet so
           CaregiverHome empty-state + FamilyWatch onboarding can reuse it.

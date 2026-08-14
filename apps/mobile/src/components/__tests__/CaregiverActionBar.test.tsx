@@ -28,25 +28,25 @@ describe('CaregiverActionBar — render', () => {
 });
 
 describe('CaregiverActionBar — invite affordance', () => {
-  it('hides "+ Add someone" by default (canInvite undefined)', () => {
+  it('hides "+ Connect" by default (canInvite undefined)', () => {
     render(withTheme(<CaregiverActionBar count={3} />));
-    expect(screen.queryByText('+ Add someone')).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Add someone' })).toBeNull();
+    expect(screen.queryByText('+ Connect')).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Connect with someone' })).toBeNull();
   });
 
-  it('hides "+ Add someone" when canInvite is explicitly false', () => {
+  it('hides "+ Connect" when canInvite is explicitly false', () => {
     render(withTheme(<CaregiverActionBar count={3} canInvite={false} />));
-    expect(screen.queryByText('+ Add someone')).toBeNull();
+    expect(screen.queryByText('+ Connect')).toBeNull();
   });
 
-  it('shows "+ Add someone" when canInvite={true}', () => {
+  it('shows "+ Connect" when canInvite={true}', () => {
     render(
       withTheme(
         <CaregiverActionBar count={3} canInvite onInvitePress={() => undefined} />,
       ),
     );
-    expect(screen.getByText('+ Add someone')).toBeTruthy();
-    const button = screen.getByRole('button', { name: 'Add someone' });
+    expect(screen.getByText('+ Connect')).toBeTruthy();
+    const button = screen.getByRole('button', { name: 'Connect with someone' });
     expect(button).toBeTruthy();
   });
 
@@ -61,7 +61,7 @@ describe('CaregiverActionBar — invite affordance', () => {
         />,
       ),
     );
-    fireEvent.press(screen.getByRole('button', { name: 'Add someone' }));
+    fireEvent.press(screen.getByRole('button', { name: 'Connect with someone' }));
     expect(onInvitePress).toHaveBeenCalledTimes(1);
   });
 });
@@ -83,7 +83,7 @@ describe('CaregiverActionBar — accessibility', () => {
     );
     const buttons = screen.queryAllByRole('button');
     expect(buttons).toHaveLength(1);
-    expect(buttons[0].props.accessibilityLabel).toBe('Add someone');
+    expect(buttons[0].props.accessibilityLabel).toBe('Connect with someone');
   });
 });
 

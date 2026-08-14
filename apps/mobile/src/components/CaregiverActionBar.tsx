@@ -97,7 +97,7 @@ export function CaregiverActionBar({
       {canInvite ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Add someone"
+          accessibilityLabel="Connect with someone"
           onPress={onInvitePress}
           hitSlop={8}
           style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
@@ -113,7 +113,7 @@ export function CaregiverActionBar({
             }}
             allowFontScaling={false}
           >
-            + Add someone
+            + Connect
           </Text>
         </Pressable>
       ) : null}

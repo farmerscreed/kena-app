@@ -17,21 +17,25 @@ import type { CaregiverOnboardingScreenProps } from '../../navigation/types';
 const mockComplete = jest.fn();
 
 jest.mock('../../state/onboarding', () => {
-  const actual = jest.requireActual('../../state/onboarding');
+  // Lazy requireActual: state/onboarding and state/auth import each
+  // other, so resolving the real module at factory time re-enters this
+  // factory mid-definition (which import wins depends on the import
+  // order of the screen under test). Deferring to first USE lets the
+  // cycle finish loading first.
+  const getActual = () =>
+    jest.requireActual('../../state/onboarding') as typeof import('../../state/onboarding');
+  const getStateWithMock = () => ({
+    ...getActual().useOnboarding.getState(),
+    completeWithWatchInHand: mockComplete,
+  });
   return {
-    ...actual,
     useOnboarding: Object.assign(
-      <T,>(selector: (s: ReturnType<typeof actual.useOnboarding.getState>) => T) =>
-        selector({
-          ...actual.useOnboarding.getState(),
-          completeWithWatchInHand: mockComplete,
-        }),
+      <T,>(selector: (s: ReturnType<typeof getStateWithMock>) => T) =>
+        selector(getStateWithMock()),
       {
-        getState: () => ({
-          ...actual.useOnboarding.getState(),
-          completeWithWatchInHand: mockComplete,
-        }),
-        setState: actual.useOnboarding.setState,
+        getState: getStateWithMock,
+        setState: (...args: unknown[]) =>
+          (getActual().useOnboarding.setState as (...a: unknown[]) => void)(...args),
       },
     ),
   };

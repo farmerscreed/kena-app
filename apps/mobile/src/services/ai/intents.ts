@@ -462,7 +462,7 @@ const HOWTO_INTENTS: Intent[] = [
     ],
     responseMode: 'ANSWER',
     answerTemplate:
-      "Open Settings → Family → Invite. Choose the streams you want to share — BP is always shared; HR, SpO2, sleep, and activity are individual toggles. The person you invite gets a six-digit code; they enter it in their copy of Leiko to join.",
+      'Open Settings → Connect with someone. Leiko creates a six-digit code; share it, and when they enter it in their Leiko app you two are connected. Blood pressure is always shared; you choose HR, SpO2, sleep, and activity per person in Settings → Who sees my readings.',
   },
   {
     id: 'how-to.add-family-member',
@@ -475,7 +475,7 @@ const HOWTO_INTENTS: Intent[] = [
     ],
     responseMode: 'ANSWER',
     answerTemplate:
-      'Open Settings → Family. Tap Invite. The app generates a six-digit code and an email link; share either with the person you want to add. They tap the link or paste the code to join.',
+      'Open Settings → Connect with someone to get a six-digit code to share, or Settings → Enter a code if they sent you one. Whoever wears the watch shares their readings; the other follows.',
   },
   {
     id: 'how-to.export-data',

@@ -81,19 +81,17 @@ export function dispatchDeepLink(parsed: ParsedDeepLink): void {
       navigationRef.navigate('FamilyMembers' as never);
       return;
     case 'join':
-      // ADR-0006 — a tapped invite link. Stash the code so that once the
-      // wearer has paired (their circle exists), the pending care invite
-      // resolves and the inviter is attached as a follower. Also route to
-      // Settings with the code prefilled, so an already-set-up user can
-      // accept immediately via the accept sheet.
+      // Connect Phase C — a tapped invite link. Stash the code FIRST:
+      // when the user is signed out or mid-onboarding the Settings
+      // route below doesn't exist and the navigate is a silent no-op,
+      // but the stash survives to prefill the "Someone invited me"
+      // onboarding path. Signed-in users on the main stack land in
+      // Settings with the Enter-a-code sheet opened and prefilled; the
+      // sheet clears the stash on a successful accept.
       if (parsed.inviteCode) stashPendingCareInvite(parsed.inviteCode);
       (navigationRef as unknown as { navigate: (n: string, p: unknown) => void }).navigate(
         'Settings',
-        {
-          inviteCode: parsed.inviteCode,
-          inviteEmail: parsed.inviteEmail,
-          inviteToken: parsed.inviteToken,
-        },
+        { inviteCode: parsed.inviteCode },
       );
       return;
     case 'unknown':

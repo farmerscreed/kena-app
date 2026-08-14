@@ -62,10 +62,10 @@ export const STORAGE_KEYS = {
   // This UUID is generated once (getOrCreateClientDeviceId) and reused for
   // every sync so the server can key device identity on something stable.
   clientDeviceId: 'leiko.ble.clientDeviceId',
-  // ADR-0006 — a 6-digit care-invite code captured from a tapped join
-  // link before the wearer has onboarded/paired. After they pair (their
-  // circle exists), resolveCareInvite is called with this code to attach
-  // the inviter as a follower, then the key is cleared.
+  // Connect Phase C — a 6-digit connect code captured from a tapped
+  // join link while signed out or mid-onboarding. The "Someone invited
+  // me" onboarding path prefills the Enter-a-code sheet from it and
+  // clears it once the code is accepted.
   pendingCareInviteCode: 'leiko.invite.pendingCareCode',
   // ADR-0006 — one-shot flag set by onboarding "I have the watch" so the
   // home navigator opens the Pairing screen immediately after the

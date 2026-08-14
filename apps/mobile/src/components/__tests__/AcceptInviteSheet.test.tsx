@@ -14,8 +14,15 @@ import { ThemeProvider } from '../../theme';
 import { AcceptInviteSheet } from '../AcceptInviteSheet';
 
 const mockAcceptConnect = jest.fn();
+const mockFollowBack = jest.fn();
 jest.mock('../../services/families/manageInvites', () => ({
   acceptConnect: (...args: unknown[]) => mockAcceptConnect(...args),
+  followBackConnect: (...args: unknown[]) => mockFollowBack(...args),
+}));
+
+const mockClearStash = jest.fn();
+jest.mock('../../services/families/pendingCareInvite', () => ({
+  clearPendingCareInvite: () => mockClearStash(),
 }));
 
 function withProviders(ui: ReactNode) {
@@ -47,6 +54,8 @@ async function enterCodeAndJoin(code = '482910') {
 
 beforeEach(() => {
   mockAcceptConnect.mockReset();
+  mockFollowBack.mockReset();
+  mockClearStash.mockClear();
 });
 
 describe('AcceptInviteSheet', () => {
@@ -115,5 +124,46 @@ describe('AcceptInviteSheet', () => {
     fireEvent.changeText(screen.getByTestId('accept-invite-sheet-code-input'), '123');
     fireEvent.press(screen.getByTestId('accept-invite-sheet-join'));
     expect(mockAcceptConnect).not.toHaveBeenCalled();
+  });
+
+  it('clears the join-link stash once a code is accepted', async () => {
+    mockAcceptConnect.mockResolvedValue(connectResult('accepter_follows', 'fam-1'));
+    render(withProviders(<AcceptInviteSheet visible onDismiss={jest.fn()} />));
+    await enterCodeAndJoin();
+    expect(mockClearStash).toHaveBeenCalled();
+  });
+
+  it('offers one-tap follow-back when both wear watches (Phase C)', async () => {
+    mockAcceptConnect.mockResolvedValue({
+      ok: true,
+      familyId: 'fam-1',
+      outcome: 'accepter_follows',
+      canFollowBack: true,
+      invitationId: 'inv-9',
+    });
+    mockFollowBack.mockResolvedValue({ ok: true, familyId: 'my-circle' });
+    render(withProviders(<AcceptInviteSheet visible onDismiss={jest.fn()} />));
+    await enterCodeAndJoin();
+    const btn = screen.getByTestId('accept-invite-sheet-follow-back');
+    await act(async () => {
+      fireEvent.press(btn);
+    });
+    await waitFor(() => {
+      expect(mockFollowBack).toHaveBeenCalledWith({ invitationId: 'inv-9' });
+    });
+    expect(screen.getByTestId('accept-invite-sheet-follow-back-done')).toBeTruthy();
+  });
+
+  it('hides follow-back when the server does not offer it', async () => {
+    mockAcceptConnect.mockResolvedValue({
+      ok: true,
+      familyId: 'fam-1',
+      outcome: 'accepter_follows',
+      canFollowBack: false,
+      invitationId: 'inv-9',
+    });
+    render(withProviders(<AcceptInviteSheet visible onDismiss={jest.fn()} />));
+    await enterCodeAndJoin();
+    expect(screen.queryByTestId('accept-invite-sheet-follow-back')).toBeNull();
   });
 });

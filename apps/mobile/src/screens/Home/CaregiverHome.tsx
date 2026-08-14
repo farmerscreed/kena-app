@@ -72,8 +72,7 @@ import { PersonCard } from '../../components/PersonCard';
 import { ViewToggle } from '../../components/ViewToggle';
 import { useCaregiverFamily } from '../../hooks/useCaregiverFamily';
 import { AcceptInviteSheet } from '../../components/AcceptInviteSheet';
-import { CareInviteSheet } from '../../components/CareInviteSheet';
-import { tryResolvePendingCareInvite } from '../../services/families/pendingCareInvite';
+import { ConnectShareSheet } from '../../components/ConnectShareSheet';
 import { FamilyRemovalBanner } from '../../components/FamilyRemovalBanner';
 import { ProfileDetailsNudge } from '../../components/ProfileDetailsNudge';
 import { useProfileDetailsNudge } from '../../hooks/useProfileDetailsNudge';
@@ -162,21 +161,6 @@ export function CaregiverHome() {
   useHydrateHRFromServer();
   useHydrateSpO2FromServer();
 
-  // ADR-0006 — close the pending-care-invite loop. If the wearer arrived
-  // via a join link, the code was stashed; by the time they reach home
-  // their circle exists (onboarding paired the watch), so resolve it now
-  // and refresh so the new follower shows. No-op when nothing is stashed.
-  useEffect(() => {
-    let cancelled = false;
-    void tryResolvePendingCareInvite().then((familyId) => {
-      if (!cancelled && familyId) refresh();
-    });
-    return () => {
-      cancelled = true;
-    };
-    // Run once on mount; refresh identity is stable from the query hook.
-  }, []);
-
   // Owning-phone first-paint merge: if local latest is newer than the
   // server view, prepend it. Same logic the legacy screen used.
   const merged = useMemo(
@@ -220,16 +204,10 @@ export function CaregiverHome() {
   // on success we refresh the family list so the constellation
   // populates without a manual reload.
   const [acceptInviteVisible, setAcceptInviteVisible] = useState(false);
-  // ADR-0006 — "+ Add someone I care for" opens the caregiver-initiated
-  // pending-invite sheet (invite someone not yet on Leiko). The empty-
-  // state "enter a code" paths use AcceptInviteSheet (joining an existing
-  // circle) — a distinct action.
+  // Connect Phase B — "+ Connect" opens the one shared ConnectShareSheet
+  // (zero-input code to share); "Enter a code" paths use
+  // AcceptInviteSheet. Two actions, everywhere the same.
   const [careInviteVisible, setCareInviteVisible] = useState(false);
-  // ADR-0006 Phase 3 — "+ Add someone" now goes straight to the AddPerson
-  // flow (set up a circle for someone you care for). The old two-option
-  // chooser (which routed "Invite a caregiver" into Settings) was
-  // confusing in the unified model; inviting a caregiver to follow YOU is
-  // a wearer-settings concern, not part of "add someone I care for".
 
   // Sprint 14.5 task 3 — home-seeded "Worth a read" Learn card. Same
   // priority cascade as Self-Buyer Home; renders below the
@@ -681,13 +659,11 @@ export function CaregiverHome() {
         }}
         testID="caregiver-home-accept"
       />
-      {/* ADR-0006 — caregiver-initiated pending invite. "+ Add someone I
-          care for" opens this; it creates a pending invite + share link
-          for someone not yet on Leiko. */}
-      <CareInviteSheet
+      {/* Connect Phase B — the shared zero-input share sheet. */}
+      <ConnectShareSheet
         visible={careInviteVisible}
         onDismiss={() => setCareInviteVisible(false)}
-        testID="caregiver-home-care-invite"
+        testID="caregiver-home-connect"
       />
       <QuietHoursAffirmSlot />
     </SafeAreaView>
@@ -1012,21 +988,21 @@ function EmptyNoFamily({
           marginBottom: theme.spacing.xxl,
         }}
       >
-        Has someone shared an invite code with you? Enter it now to join
-        their circle.
+        Has someone shared a Leiko code with you? Enter it and you&apos;re
+        connected.
       </Text>
       <Button
         variant="primary"
         onPress={onEnterCode}
-        accessibilityLabel="I have an invite code"
+        accessibilityLabel="Enter a code"
         testID="caregiver-home-enter-code"
       >
-        I have an invite code
+        Enter a code
       </Button>
       <Pressable
         onPress={onInviteOthers}
         accessibilityRole="button"
-        accessibilityLabel="Or invite someone yourself"
+        accessibilityLabel="Or share your own code"
         hitSlop={8}
         testID="caregiver-home-invite-someone"
         style={({ pressed }) => ({
@@ -1042,7 +1018,7 @@ function EmptyNoFamily({
             fontFamily: label.family,
           }}
         >
-          Or invite someone yourself →
+          Or share your own code →
         </Text>
       </Pressable>
     </View>
