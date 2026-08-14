@@ -71,8 +71,8 @@ import {
   startBackgroundSync,
   stopBackgroundSync,
 } from '../services/sync/backgroundSync';
-import { getOrCreateClientDeviceId, mmkv, STORAGE_KEYS } from '../services/storage';
-import { inferModel, setDeviceMetaProvider } from '../services/sync/postReading';
+import { mmkv, STORAGE_KEYS } from '../services/storage';
+import { wireDeviceMetaProvider } from '../state/wireDeviceMetaProvider';
 import { startBleForegroundService } from '../services/ble/foregroundService';
 import { scheduleNextLearnedTimeReminder } from '../services/reminders/dispatcher';
 import { configureNotificationHandler } from '../services/notifications';
@@ -95,23 +95,13 @@ import { navigationRef } from './navigationRef';
 // below): that needs to happen once per install and is fine to do from
 // the UI, since the OS persists it across sessions.
 
-// Wire postReading's device-meta provider once at app boot. The
-// pairing store can't be imported by postReading directly without
-// pulling react-native into pure-project test loads — so the lookup
-// gets injected here, where the navigator already imports the
-// pairing store. Per-call resolution always returns the latest paired
-// device.
-setDeviceMetaProvider(() => {
-  const paired = usePairing.getState().pairedDevice;
-  if (!paired) return null;
-  return {
-    bleId: paired.bleId,
-    macSuffix: paired.macSuffix,
-    name: paired.name,
-    model: inferModel(paired.name),
-    clientDeviceId: getOrCreateClientDeviceId(),
-  };
-});
+// Wire postReading's device-meta provider for the UI path. The shared
+// implementation lives in state/wireDeviceMetaProvider so the headless
+// path (hydrateForHeadlessRun) can wire it too — this module scope
+// never executes on an OS wake-up, and relying on it alone left
+// background runs unable to upload watch readings (§6e,
+// plans/BACKGROUND_SYNC_INVESTIGATION_2026-08-14.md).
+wireDeviceMetaProvider();
 import type {
   AuthStackParamList,
   CaregiverOnboardingStackParamList,

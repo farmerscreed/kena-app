@@ -121,6 +121,17 @@ for (const k of runtimeOptional) {
   if (process.env[k]) ok(`${k}: set`);
   else console.log(`  ⚠ ${k}: NOT set (feature will silently no-op in this build)`);
 }
+// PostHog accepts only project keys (phc_...) for ingest. A personal
+// key (phx_...) initialises the client fine and then 401s on every
+// capture — a build that looks instrumented and reports nothing
+// (2026-08-14: every locally-built APK shipped blind this way).
+const posthogKey = process.env.EXPO_PUBLIC_POSTHOG_API_KEY;
+if (posthogKey && !posthogKey.startsWith('phc_')) {
+  fail(
+    `EXPO_PUBLIC_POSTHOG_API_KEY must be a project key (phc_...), got "${posthogKey.slice(0, 4)}...".\n` +
+      'A personal (phx_) key is rejected by PostHog ingest with 401 — the build would ship with dead analytics.',
+  );
+}
 
 // ---------- 3) Resolve versionName / versionCode -----------------------------
 step('Resolving version');

@@ -31,8 +31,16 @@
 
 import { usePairing } from './pairing';
 import { useReadings } from './readings';
+import { wireDeviceMetaProvider } from './wireDeviceMetaProvider';
 
 export function hydrateForHeadlessRun(): void {
+  // postReading resolves watch-reading device meta through an injected
+  // provider that the UI path wires in RootNavigator's module scope —
+  // which never evaluates on an OS wake-up. Without this, a headless
+  // run pulls the reading off the watch and saves it, but the upload
+  // throws "no paired device on file" and worse, syncPending bails on
+  // that first failure, so any offline backlog behind it stalls too.
+  wireDeviceMetaProvider();
   // Best-effort per store: a corrupt blob in one must not stop the other
   // from loading, and must never take the sync run down with it.
   try {
