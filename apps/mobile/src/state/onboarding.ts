@@ -84,9 +84,11 @@ interface OnboardingState {
   /** Sprint 16.6 Issue #1 — invited-caregiver onboarding finalization.
    *  Same shape as completeWithWatchInHand but does NOT call the
    *  create_family RPC (no new family record); the familyId comes
-   *  from the accept-family-invite Edge Function result. The
-   *  caregiver joins the existing family they were invited to. */
-  completeViaInvite: (familyId: string) => Promise<void>;
+   *  from the connect-accept result. Null when the outcome was
+   *  'pending' (neither party wears a watch yet) — onboarding still
+   *  completes without a current family, and the connect resolves in
+   *  the database when either party pairs (migration 0051). */
+  completeViaInvite: (familyId: string | null) => Promise<void>;
   completeSelfBuyer: () => Promise<void>;
 }
 
@@ -265,15 +267,12 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
     }
   },
 
-  async completeViaInvite(familyId: string) {
+  async completeViaInvite(familyId: string | null) {
     const { caregiver } = get();
     const profile = useAuth.getState().profile;
 
     if (!profile) {
       throw new Error('Not signed in. Sign in and try again.');
-    }
-    if (!familyId) {
-      throw new Error('Missing familyId from invite acceptance.');
     }
 
     set({ finalizing: true, finalizeError: null });
@@ -296,10 +295,14 @@ export const useOnboarding = create<OnboardingState>((set, get) => ({
         if (updateError) throw updateError;
       }
 
-      // Persist + flip the navigator gate. The accept-family-invite
-      // Edge Function has already created the family_members row for
-      // this user, so no additional RPC is needed here.
-      mmkv.set(STORAGE_KEYS.currentFamilyId, familyId);
+      // Persist + flip the navigator gate. connect-accept has already
+      // created the family_members row for this user (or recorded a
+      // pending connect), so no additional RPC is needed here. On a
+      // 'pending' outcome there is no circle yet — skip currentFamilyId
+      // and let home show its empty state until pairing resolves it.
+      if (familyId) {
+        mmkv.set(STORAGE_KEYS.currentFamilyId, familyId);
+      }
       mmkv.set(STORAGE_KEYS.caregiverOnboardingComplete, true);
 
       // Sprint 18 bench bug — refresh useAuth.profile so Settings →

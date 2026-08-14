@@ -1,14 +1,16 @@
-// CareInviteSheet — ADR-0006 caregiver-initiated PENDING invite.
+// CareInviteSheet — "+ Add someone" connect sheet (ADR-0007).
 //
-// "+ Add someone I care for" opens this. The caregiver types the email of
-// the person they want to follow (who is NOT yet on Leiko), we create a
-// pending invite via sendCareInvite, and present a shareable link + code.
-// The recipient installs Leiko, pairs their watch (creating their circle),
-// and enters the code — at which point the caregiver is attached as a
-// follower (resolve-care-invite).
+// The caregiver types the email of the person whose readings they want
+// to follow; createConnect generates a 6-digit code to share. The
+// recipient enters the code in their own Leiko app and connect-accept
+// resolves direction from watch ownership; if neither wears a watch
+// yet, the connect completes automatically when either pairs
+// (migration 0051).
 //
-// Mirrors the wearer-initiated invite UI (email → send → share), but uses
-// the pending-invite service so no circle need exist yet.
+// Phase A 2026-08-14: the share message is CODE-FIRST. The old primary
+// CTA was a leiko.app/join?token= link that could not be redeemed at
+// any layer (web fallback drops the query; the app only acts on code=;
+// no backend reads url_token). Links return in Phase C, fixed properly.
 //
 // Voice rules: calm, plain, no "patient"/fear language.
 
@@ -35,7 +37,6 @@ export function CareInviteSheet({ visible, onDismiss, testID = 'care-invite-shee
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [code, setCode] = useState<string | null>(null);
-  const [urlToken, setUrlToken] = useState<string | null>(null);
 
   useEffect(() => {
     if (visible) {
@@ -44,7 +45,6 @@ export function CareInviteSheet({ visible, onDismiss, testID = 'care-invite-shee
       setPending(false);
       setError(null);
       setCode(null);
-      setUrlToken(null);
     }
   }, [visible]);
 
@@ -63,7 +63,6 @@ export function CareInviteSheet({ visible, onDismiss, testID = 'care-invite-shee
         inviteeLabel: label.trim() || undefined,
       });
       setCode(result.pairingCode);
-      setUrlToken(result.urlToken ?? null);
     } catch (e) {
       const msg = e instanceof Error ? e.message : '';
       setError(
@@ -77,12 +76,10 @@ export function CareInviteSheet({ visible, onDismiss, testID = 'care-invite-shee
   };
 
   const handleShare = () => {
-    const link = urlToken
-      ? `https://leiko.app/join?token=${encodeURIComponent(urlToken)}`
-      : null;
-    const message = link
-      ? `I'd love to keep a gentle eye on your readings with Leiko.\n\nTap to set up: ${link}\n\nAlready have Leiko? Enter code ${code}. Works for 7 days.`
-      : `Set up Leiko and enter invite code ${code} so I can follow your readings. Works for 7 days.`;
+    // Code-first (Phase A): the code is the one thing that works
+    // everywhere. The install link points at the download hub, not the
+    // broken /join deep link.
+    const message = `I'd love to keep a gentle eye on your readings with Leiko.\n\nEnter invite code ${code} in the Leiko app and we'll be connected.\n\nNew to Leiko? Get it at https://leiko.app/app, then enter the code. It works for 7 days.`;
     void Share.share({ title: 'Leiko invite', message });
   };
 
@@ -132,8 +129,8 @@ export function CareInviteSheet({ visible, onDismiss, testID = 'care-invite-shee
               “Let me keep an eye on Mum.”
             </Text>
             <Text style={{ color: theme.colors.text.secondary, fontSize: body.size, lineHeight: body.lineHeight, fontFamily: body.family }}>
-              Invite someone whose readings you’d like to follow. We’ll send a
-              link and a code; they set up their own watch and approve.
+              Invite someone whose readings you’d like to follow. We’ll create
+              a 6-digit code to share; they enter it in their own Leiko app.
             </Text>
             <TextInput
               value={label}

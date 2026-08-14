@@ -12,7 +12,6 @@ import { OnboardingEyebrow } from '../../../components/OnboardingEyebrow';
 import { OnboardingScaffold } from '../../../components/OnboardingScaffold';
 import { Pill } from '../../../components/Pill';
 import { useTheme } from '../../../theme';
-import { useAuth } from '../../../state/auth';
 import { useOnboarding } from '../../../state/onboarding';
 import type { CaregiverOnboardingScreenProps } from '../../../navigation/types';
 
@@ -24,7 +23,6 @@ export function CaregiverFamilyWatchScreen({
   const completeViaInvite = useOnboarding((s) => s.completeViaInvite);
   const finalizing = useOnboarding((s) => s.finalizing);
   const finalizeError = useOnboarding((s) => s.finalizeError);
-  const profileEmail = useAuth((s) => s.profile?.email ?? '');
 
   const [pressed, setPressed] = useState<'have' | 'later' | 'invited' | null>(null);
   // Sprint 16.6 Issue #1 — third onboarding path for caregivers who
@@ -304,13 +302,16 @@ export function CaregiverFamilyWatchScreen({
       <AcceptInviteSheet
         visible={inviteSheetOpen}
         onDismiss={() => setInviteSheetOpen(false)}
-        initialEmail={profileEmail}
         showSuccessState={false}
         onSuccess={async ({ familyId }) => {
           setInviteSheetOpen(false);
           setPressed('invited');
           try {
-            await completeViaInvite(familyId);
+            // Phase A: familyId is '' on a 'pending' outcome (neither
+            // party wears a watch yet). Onboarding still completes —
+            // the connect resolves in the database when either party
+            // pairs (migration 0051).
+            await completeViaInvite(familyId || null);
           } catch {
             // finalizeError surfaces via the inline error message
             // beneath the cards.

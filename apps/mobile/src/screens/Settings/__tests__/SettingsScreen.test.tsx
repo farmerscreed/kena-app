@@ -660,7 +660,7 @@ describe('<SettingsScreen /> — Family invite (Sprint 10c.1)', () => {
     });
     renderScreen();
     fireEvent.press(screen.getByTestId('settings-family-accept'));
-    fireEvent.changeText(screen.getByTestId('settings-accept-email-input'), 'me@example.com');
+    // Phase A: no email field — the accept-time email gate is gone.
     fireEvent.changeText(screen.getByTestId('settings-accept-code-input'), '482910');
     await act(async () => {
       fireEvent.press(screen.getByTestId('settings-accept-join'));
@@ -668,10 +668,9 @@ describe('<SettingsScreen /> — Family invite (Sprint 10c.1)', () => {
     await waitFor(() => {
       expect(mockAcceptConnect).toHaveBeenCalledWith({
         code: '482910',
-        email: 'me@example.com',
       });
     });
-    expect(screen.getByText("You're in")).toBeTruthy();
+    expect(screen.getByText("You're connected")).toBeTruthy();
   });
 
   it('surfaces the not-found error message on a wrong code', async () => {
@@ -679,7 +678,6 @@ describe('<SettingsScreen /> — Family invite (Sprint 10c.1)', () => {
     mockAcceptConnect.mockRejectedValue(new Error('invitation_not_found'));
     renderScreen();
     fireEvent.press(screen.getByTestId('settings-family-accept'));
-    fireEvent.changeText(screen.getByTestId('settings-accept-email-input'), 'me@example.com');
     fireEvent.changeText(screen.getByTestId('settings-accept-code-input'), '111111');
     await act(async () => {
       fireEvent.press(screen.getByTestId('settings-accept-join'));

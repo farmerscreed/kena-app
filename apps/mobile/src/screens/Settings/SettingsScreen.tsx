@@ -252,7 +252,6 @@ export function SettingsScreen({ navigation }: Props) {
   const [invitePending, setInvitePending] = useState(false);
   const [inviteError, setInviteError] = useState<string | null>(null);
   const [inviteCode, setInviteCode] = useState<string | null>(null);
-  const [inviteUrlToken, setInviteUrlToken] = useState<string | null>(null);
 
   // Sprint 16.6 — accept-invite UI lives in the shared AcceptInviteSheet
   // component now. Only `acceptSheetOpen` + `acceptSuccess` remain here:
@@ -261,17 +260,14 @@ export function SettingsScreen({ navigation }: Props) {
   const [acceptSheetOpen, setAcceptSheetOpen] = useState(false);
   const [acceptSuccess, setAcceptSuccess] = useState(false);
   // ADR-0006 — a tapped invite link deep-links to Settings with the code
-  // prefilled; this seeds the accept sheet.
+  // prefilled; this seeds the accept sheet. Phase A: the email gate is
+  // gone, so only the code matters here.
   const [acceptPrefillCode, setAcceptPrefillCode] = useState('');
-  const [acceptPrefillEmail, setAcceptPrefillEmail] = useState('');
   const route = useRoute();
   useEffect(() => {
-    const params = route.params as
-      | { inviteCode?: string; inviteEmail?: string }
-      | undefined;
-    if (params?.inviteCode || params?.inviteEmail) {
-      setAcceptPrefillCode(params.inviteCode ?? '');
-      setAcceptPrefillEmail(params.inviteEmail ?? '');
+    const params = route.params as { inviteCode?: string } | undefined;
+    if (params?.inviteCode) {
+      setAcceptPrefillCode(params.inviteCode);
       setAcceptSuccess(false);
       setAcceptSheetOpen(true);
     }
@@ -812,7 +808,6 @@ export function SettingsScreen({ navigation }: Props) {
                 setInvitePermission('readings');
                 setInviteError(null);
                 setInviteCode(null);
-                setInviteUrlToken(null);
                 setInviteSheetOpen(true);
               }}
               testID="settings-family-invite"
@@ -1365,17 +1360,11 @@ export function SettingsScreen({ navigation }: Props) {
               <Button
                 variant="primary"
                 onPress={() => {
-                  // ADR-0006 dual delivery: include a tappable link (for a
-                  // not-yet-installed recipient) AND the 6-digit code (for
-                  // someone who already has Leiko). The link carries the
-                  // invite's url_token; the deep-link handler routes it to
-                  // the accept flow after install.
-                  const link = inviteUrlToken
-                    ? `https://leiko.app/join?token=${encodeURIComponent(inviteUrlToken)}`
-                    : null;
-                  const message = link
-                    ? `Follow my readings on Leiko.\n\nTap to join: ${link}\n\nAlready have Leiko? Enter code ${inviteCode} (for ${inviteEmail}). Works for 7 days.`
-                    : `Your Leiko invite code is ${inviteCode}. Open Leiko, tap Settings → Care for another person, and enter ${inviteEmail}.`;
+                  // Code-first (Phase A): the code is the one thing that
+                  // works everywhere. The old primary CTA was a
+                  // leiko.app/join?token= link that could not be redeemed
+                  // at any layer; links return in Phase C, fixed properly.
+                  const message = `Follow my readings on Leiko.\n\nEnter invite code ${inviteCode} in the Leiko app and you'll be connected to me.\n\nNew to Leiko? Get it at https://leiko.app/app, then enter the code. It works for 7 days.`;
                   void Share.share({ title: 'Leiko invite', message });
                 }}
                 accessibilityLabel="Share invite"
@@ -1558,7 +1547,6 @@ export function SettingsScreen({ navigation }: Props) {
                       inviteeLabel: inviteLabel.trim() || undefined,
                     });
                     setInviteCode(result.pairingCode);
-                    setInviteUrlToken(result.urlToken ?? null);
                   } catch (e) {
                     const msg = e instanceof Error ? e.message : '';
                     setInviteError(
@@ -1597,7 +1585,6 @@ export function SettingsScreen({ navigation }: Props) {
       <AcceptInviteSheet
         visible={acceptSheetOpen}
         onDismiss={() => setAcceptSheetOpen(false)}
-        initialEmail={acceptPrefillEmail || profile?.email || ''}
         initialCode={acceptPrefillCode}
         onSuccess={() => setAcceptSuccess(true)}
         testID="settings-accept"

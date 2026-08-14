@@ -192,9 +192,11 @@ export async function createConnect(
 }
 
 /** Accept a connect code. The backend wires the relationship by watch
- *  ownership and returns the outcome (+ canFollowBack when both wear). */
+ *  ownership and returns the outcome (+ canFollowBack when both wear).
+ *  Phase A 2026-08-14: `email` dropped — the accept-time email-match
+ *  gate is gone (codes are single-use, expiring, rate-limited). */
 export async function acceptConnect(
-  input: { code: string; email: string; caregiverRelationshipLabel?: string },
+  input: { code: string; caregiverRelationshipLabel?: string },
   client: SupabaseClient<Database> = defaultSupabase,
 ): Promise<AcceptConnectResult> {
   logger.track('connect_accept_started');

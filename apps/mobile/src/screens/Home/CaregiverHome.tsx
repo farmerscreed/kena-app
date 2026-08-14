@@ -78,7 +78,6 @@ import { FamilyRemovalBanner } from '../../components/FamilyRemovalBanner';
 import { ProfileDetailsNudge } from '../../components/ProfileDetailsNudge';
 import { useProfileDetailsNudge } from '../../hooks/useProfileDetailsNudge';
 import { useFamilyRemovalBanner } from '../../hooks/useFamilyRemovalBanner';
-import { useAuth } from '../../state/auth';
 import {
   useCaregiverViewMode,
   type CaregiverViewMode,
@@ -106,16 +105,6 @@ import {
 } from '../../utils/constellationNodes';
 
 type Nav = NativeStackNavigationProp<CaregiverStackParamList>;
-
-// Sprint 19 — "+ Add someone" is now gated on the viewer being the
-// family_owner of at least one family in their circle. Co-caregivers
-// can't issue new invites; the send-family-invite Edge Function would
-// 403 anyway (it requires family_owner). Pre-Sprint-19 the gate was a
-// static `true`, which let the button render for invited caregivers
-// only for them to silently fail when tapped.
-function viewerCanInvite(parents: ReadonlyArray<{ viewerRole?: string }>): boolean {
-  return parents.some((p) => p.viewerRole === 'family_owner');
-}
 
 // Cinematic-transition timing. Outgoing view scales+fades out; incoming
 // scales+fades in. ~320ms total — short enough to feel snappy, long
@@ -241,7 +230,6 @@ export function CaregiverHome() {
   // chooser (which routed "Invite a caregiver" into Settings) was
   // confusing in the unified model; inviting a caregiver to follow YOU is
   // a wearer-settings concern, not part of "add someone I care for".
-  const profileEmail = useAuth((s) => s.profile?.email ?? '');
 
   // Sprint 14.5 task 3 — home-seeded "Worth a read" Learn card. Same
   // priority cascade as Self-Buyer Home; renders below the
@@ -515,10 +503,14 @@ export function CaregiverHome() {
         {isLoading ? (
           <Skeleton theme={theme} />
         ) : merged.length === 0 ? (
+          // Connect Phase A — "invite someone yourself" used to punt to
+          // Settings, where the invite row is hidden from anyone who
+          // doesn't wear a watch: a dead end for exactly the people on
+          // this empty state. Open the connect sheet right here.
           <EmptyNoFamily
             theme={theme}
             onEnterCode={() => setAcceptInviteVisible(true)}
-            onInviteOthers={() => navigation.navigate('Settings')}
+            onInviteOthers={() => setCareInviteVisible(true)}
           />
         ) : (
           // Mount only the active view at rest; both render briefly during
@@ -607,9 +599,14 @@ export function CaregiverHome() {
               : theme.spacing.xxl,
           }}
         >
+          {/* Connect Phase A — the old family_owner gate here was built
+              for send-family-invite (which 403'd non-owners). The bar
+              now opens the connect sheet, and connect-create is open to
+              any signed-in user (ADR-0007: anyone can offer to connect),
+              so co-caregivers get the affordance too. */}
           <CaregiverActionBar
             count={merged.length}
-            canInvite={viewerCanInvite(merged)}
+            canInvite
             onInvitePress={() => setCareInviteVisible(true)}
             testID="caregiver-home-action-bar"
           />
@@ -679,7 +676,6 @@ export function CaregiverHome() {
       <AcceptInviteSheet
         visible={acceptInviteVisible}
         onDismiss={() => setAcceptInviteVisible(false)}
-        initialEmail={profileEmail}
         onSuccess={() => {
           refresh();
         }}
@@ -1209,7 +1205,7 @@ export function mergeLocalLatest(
   return [merged, ...parents.slice(1)];
 }
 
-export { pickAnomalyForBanner, viewerCanInvite };
+export { pickAnomalyForBanner };
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
