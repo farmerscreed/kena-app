@@ -62,14 +62,12 @@ import { useOnboarding } from '../state/onboarding';
 import { usePairing } from '../state/pairing';
 import { useReadings } from '../state/readings';
 import { useSyncOrchestrator } from '../state/syncOrchestrator';
-import { hydrateForHeadlessRun } from '../state/hydrateForHeadlessRun';
 import {
   startHealthPlatformBackgroundFetch,
   stopHealthPlatformBackgroundFetch,
 } from '../services/health-platform/backgroundFetch';
 import { configurePurchases } from '../services/purchases';
 import {
-  defineBackgroundSyncTask,
   startBackgroundSync,
   stopBackgroundSync,
 } from '../services/sync/backgroundSync';
@@ -79,10 +77,7 @@ import { startBleForegroundService } from '../services/ble/foregroundService';
 import { scheduleNextLearnedTimeReminder } from '../services/reminders/dispatcher';
 import { configureNotificationHandler } from '../services/notifications';
 import { startNotificationListeners } from '../services/notifications/listeners';
-import {
-  defineRemoteRefreshTask,
-  registerRemoteRefreshTask,
-} from '../services/notifications/remoteRefreshTask';
+import { registerRemoteRefreshTask } from '../services/notifications/remoteRefreshTask';
 import { usePushRegistration } from '../hooks/usePushRegistration';
 import { navigationRef } from './navigationRef';
 
@@ -91,26 +86,14 @@ import { navigationRef } from './navigationRef';
 // guaranteed pre-render hook. The runner reads the orchestrator's
 // runSync at fire time — not at definition time — so the latest
 // orchestrator instance handles the wake-up.
-defineBackgroundSyncTask(async () => {
-  // The wake-up may land in a bare JS context with no component mounted,
-  // so the mount effect below has not run. Load pairing + readings first
-  // or the run finds no watch and syncPending persists empty arrays over
-  // stored readings — see hydrateForHeadlessRun.
-  hydrateForHeadlessRun();
-  try {
-    const result = await useSyncOrchestrator.getState().runSync('background');
-    return result === 'ran' ? 'ran' : 'skipped';
-  } catch {
-    return 'errored';
-  }
-});
-
-// Define the remote-refresh notification task at module load too (same
-// TaskManager-no-redefinition reason). It fires when a silent
-// 'sync_refresh' push arrives while the app is backgrounded/killed and
-// triggers a watch sync. registerRemoteRefreshTask() (in the boot effect)
-// attaches it to expo-notifications.
-defineRemoteRefreshTask();
+// Both OS-woken tasks are DEFINED at app entry (index.js →
+// services/tasks/registerHeadlessTasks), not here. This module only
+// evaluates once a screen renders, which never happens on a headless
+// wake-up — defining them here meant a cold background fetch found no
+// runner at all. What stays here is REGISTRATION with the OS
+// (startBackgroundSync / registerRemoteRefreshTask, in the boot effect
+// below): that needs to happen once per install and is fine to do from
+// the UI, since the OS persists it across sessions.
 
 // Wire postReading's device-meta provider once at app boot. The
 // pairing store can't be imported by postReading directly without

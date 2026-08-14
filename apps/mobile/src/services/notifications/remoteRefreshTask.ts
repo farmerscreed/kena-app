@@ -15,7 +15,11 @@ import { hydrateForHeadlessRun } from '../../state/hydrateForHeadlessRun';
 import { useSyncOrchestrator } from '../../state/syncOrchestrator';
 import { logger } from '../analytics/logger';
 
-export const REMOTE_REFRESH_TASK = 'leiko.notifications.remoteRefresh';
+// Defined at entry by services/tasks/registerHeadlessTasks; re-exported
+// here so existing callers and tests keep one source of truth.
+import { REMOTE_REFRESH_TASK } from '../tasks/taskNames';
+
+export { REMOTE_REFRESH_TASK };
 
 let nativeAvailable: boolean | null = null;
 let defined = false;

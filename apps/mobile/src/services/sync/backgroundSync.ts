@@ -26,8 +26,11 @@
 // emits {result, reason} pairs.
 
 import { logger } from '../analytics/logger';
+import { BACKGROUND_SYNC_TASK } from '../tasks/taskNames';
 
-const TASK_NAME = 'leiko.sync.backgroundFetch';
+// Shared with services/tasks/registerHeadlessTasks, which defines the
+// task body at entry. Both sides must name the same task.
+const TASK_NAME = BACKGROUND_SYNC_TASK;
 const MIN_INTERVAL_SECONDS = 15 * 60; // 15 min; OS may delay further
 
 let registered = false;
