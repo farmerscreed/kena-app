@@ -51,12 +51,17 @@ audit; founder approved all recommendations 2026-08-14.
 
 ## Founder punch list (in order)
 
-1. **Deploy the three functions** (from a checkout containing the
-   branch): `npx supabase functions deploy connect-create`,
-   `... connect-accept`, `... connect-follow-back`.
-   (Claude sessions are blocked from `functions deploy/delete` and
-   `migration repair` by the permission classifier — founder runs these.)
-2. `npx supabase migration repair --status applied 0052`
+1. ~~Deploy the three functions~~ **DONE 2026-08-14**: connect-create
+   v11, connect-accept v11, connect-follow-back v1 — verified deployed.
+   (Claude sessions are blocked from `functions deploy/delete`,
+   `migration repair`, and `wrangler deploy` by the permission
+   classifier — founder runs these.)
+2. ~~migration repair 0052~~ **DONE 2026-08-14** — 0051 and 0052 both
+   recorded in remote history.
+2b. **Website deploy** — main is merged + pushed (450ef11) and the
+   build artifact exists in `dist/server`; only
+   `npx wrangler deploy -c dist/server/wrangler.json` remains
+   (classifier-blocked for Claude; retry on "fetch failed").
 3. **⚠️ BEFORE merging this branch to main, defuse `db-migrate.yml`.**
    The workflow runs `supabase db push` on every main push touching
    `supabase/migrations/`. Remote history records 0001–0035 + 0051
