@@ -58,11 +58,12 @@ audit; founder approved all recommendations 2026-08-14.
    classifier — founder runs these.)
 2. ~~migration repair 0052~~ **DONE 2026-08-14** — 0051 and 0052 both
    recorded in remote history.
-2b. **Website deploy** — main is merged + pushed (450ef11) and the
-   build artifact exists in `dist/server`; only
-   `npx wrangler deploy -c dist/server/wrangler.json` remains
-   (classifier-blocked for Claude; retry on "fetch failed").
-3. **⚠️ BEFORE merging this branch to main, defuse `db-migrate.yml`.**
+2b. ~~Website deploy~~ **DONE 2026-08-14** — leiko.app/join?code=
+   verified live (page shows the code + leiko://join?code= handoff).
+3. ~~db-migrate.yml defused~~ **DONE 2026-08-14** — 0036-0050 repaired
+   into remote history (verified: no unrecorded local migrations).
+   Original warning kept for the record: **⚠️ BEFORE merging this branch
+   to main, defuse `db-migrate.yml`.**
    The workflow runs `supabase db push` on every main push touching
    `supabase/migrations/`. Remote history records 0001–0035 + 0051
    (+0052 after step 2), but **local 0036–0050 were applied to prod
