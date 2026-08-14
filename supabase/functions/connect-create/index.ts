@@ -56,7 +56,7 @@ async function sendInviteEmail(args: {
     '',
     `Your code: ${args.code}`,
     '',
-    'Open the Leiko app, tap Settings → Enter a code, and type this in. It expires in 7 days.',
+    'Open the Leiko app, go to Settings → Care for another person, and enter this code. New to Leiko? Choose "Someone invited me" during setup. The code works for 7 days.',
     '',
     "If you weren't expecting this, you can ignore the email.",
     '',
@@ -74,7 +74,7 @@ async function sendInviteEmail(args: {
         <span style="font-size: 14px; color: #6B6B6B; display: block;">Your code</span>
         <span style="font-size: 32px; letter-spacing: 4px; font-weight: 600; color: #1A1A1A;">${args.code}</span>
       </p>
-      <p>Open the Leiko app, tap <strong>Settings → Enter a code</strong>, and type this in. It expires in 7 days.</p>
+      <p>Open the Leiko app, go to <strong>Settings → Care for another person</strong>, and enter this code. New to Leiko? Choose <strong>Someone invited me</strong> during setup. The code works for 7 days.</p>
       <p style="color: #6B6B6B; font-size: 14px;">If you weren't expecting this, you can ignore the email.</p>
       <p style="color: #6B6B6B; font-size: 14px;">— The Leiko team</p>
     </div>
@@ -192,6 +192,12 @@ Deno.serve(async (req: Request) => {
       .maybeSingle();
     inviterName = (inviter?.display_name as string | undefined) ?? null;
 
+    // Phase A: email_attempted previously hard-coded true even when the
+    // Resend env vars were unset (sendInviteEmail bails early). Report
+    // what actually happened.
+    const emailConfigured = Boolean(
+      Deno.env.get('RESEND_API_KEY') && Deno.env.get('RESEND_FROM_EMAIL'),
+    );
     const emailSent = await sendInviteEmail({
       toEmail: inviteeEmail,
       code,
@@ -208,7 +214,7 @@ Deno.serve(async (req: Request) => {
           invitee_email_domain: inviteeEmail.split('@')[1] ?? null,
           has_label: inviteeLabel !== null,
           caller_wears_watch: watchCircle !== null,
-          email_attempted: true,
+          email_attempted: emailConfigured,
           email_sent: emailSent,
         },
       });
