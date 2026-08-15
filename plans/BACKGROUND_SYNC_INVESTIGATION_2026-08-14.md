@@ -473,11 +473,23 @@ watch stops answering, dead timers turn a 5 s recovery into an infinite hang.
    staleness = 3 min of *silence*, not 3 min of *age* — long legitimate drains (a full
    day of vitals) survive; genuinely dead runs still get reaped.
 
-**Verification plan:** rebuild, reinstall, power-cycle watch, cold fire →
-expect either a completed drain (vitals rows land ≤ minutes after the fire) or a
-CLEAN failure within seconds (timeouts finally firing → `sync_failed`, FGS released,
-retry next cycle). Both outcomes prove the timer fix; the drain additionally clears
-the watch-wedge hypothesis.
+**VERIFIED 2026-08-15 ~16:20 (commit `5137c2d`).** The cold fire at 15:55:59 produced
+a **40-second** clean session (AppRecord 15:56:35 ~ 15:57:15): `ble_fg_started` →
+`sync_started` → `device_config_flushed` → `sync_completed` → **17 × vital_persisted**
+→ `multi_vitals_sync_failed` (some legs timed out — the timeouts FIRING is the fix
+working) → clean disconnect → `ble_fg_stopped`. Compare: the same situation on the
+§8-only build was a 20+ minute hang holding the FGS. The next cycle (16:13:56, 28 s)
+plus the app-open sync pulled the remainder and uploaded — 7 × `vital_sync_accepted`,
+`reading_sync_success`. **The founder opened the app and the day's data was already
+on screen** — background runs had persisted it to MMKV; the UI read local truth
+instantly. The watch-wedge hypothesis was partly wrong: the watch answers, but
+slowly/partially per session; with §9's clean per-leg timeouts the system now
+CONVERGES across 15-minute cycles instead of hanging on the first mute exchange.
+
+Watch-list (not blockers): `multi_vitals_sync_failed` legs per-run (converges next
+cycle, but a chronically slow vital type deserves a look); `reading_sync_failed`
+reason at run-start (succeeded on retry — click the event in PostHog for the reason
+string if it recurs).
 
 **Bench traps learned 2026-08-14/15, in one place:**
 - `am kill` CANNOT kill the process once the UI has run — BLE FGS / TaskService hold
