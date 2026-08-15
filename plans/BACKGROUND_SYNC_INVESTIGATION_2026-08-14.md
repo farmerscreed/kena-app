@@ -491,6 +491,64 @@ cycle, but a chronically slow vital type deserves a look); `reading_sync_failed`
 reason at run-start (succeeded on retry — click the event in PostHog for the reason
 string if it recurs).
 
+## 10. HEADLESS UPLOADS 401 — no Supabase session in a background run (2026-08-15 evening)
+
+**Symptom.** With §8+§9 in, background runs became textbook-clean (cold wake → connect
+in ~4 s → work → clean disconnect → freeze only AFTER "Finished task"), and the watch
+reads WORKED — yet nothing reached the server for hours. Founder walked around + took a
+BP with the app closed; five clean sessions 19:10–20:20 uploaded nothing.
+
+**The split that solved it.** Founder opened the app and reported:
+- BP reading **already on screen instantly** → it had been pulled and persisted locally.
+- Steps **took time to appear** → the activity slice only moves samples pending →
+  `recent` after a successful POST, so a failed upload leaves the UI stale.
+
+Cross-referenced with PostHog: a pure background run (15:56) emitted
+`reading_sync_failed` AND `multi_vitals_sync_failed`; the app-open run (16:16,
+`sec1_boot_completed`) emitted `reading_sync_success` AND `vital_sync_accepted` ×7.
+**Every upload fails headless; every upload succeeds foregrounded.** A BP upload is one
+row — so this is not payload size / Edge Function CPU. It is auth.
+
+Note `multi_vitals_sync_failed` is emitted ONLY from the catch around
+`postMultiVitalsChunked` — the UPLOAD leg. BLE read failures land in `errors.hr` etc.
+and surface as `sync_failed: multi_vitals:<keys>`. Read the two apart carefully.
+
+**Root cause (structural, confirmed in code):**
+1. `services/supabase.ts` sets `autoRefreshToken: true`, but **nothing anywhere calls
+   `startAutoRefresh`/`stopAutoRefresh`** — the AppState wiring Supabase's own RN guide
+   requires. The refresh loop is therefore driven only by an internal `setInterval`,
+   which §9 proved never fires headless, and by an 'active' event a background process
+   never sees. An expired token is never renewed.
+2. `supabase.auth.getSession()` is called from exactly ONE place — `state/auth.ts`
+   `hydrate()`, reached only from RootNavigator's mount effect. `hydrateForHeadlessRun`
+   never touched auth, so a **cold** headless process uploads before the client has
+   finished recovering its session from expo-secure-store.
+
+(2) explains the apparent inconsistency in the evidence: the 15:56 and 20:20 runs were
+COLD ("Creating ReactInstance" in logcat) and failed every upload; the 16:13 run reused
+a WARM process and succeeded. (1) explains the BP reading that sat unsent 09:46 → 16:13.
+
+**Fix (commit this session).** `ensureSessionForHeadlessRun()` in
+`state/hydrateForHeadlessRun.ts`, awaited before `runSync` in BOTH headless entries
+(`registerHeadlessTasks.runWatchSync`, `remoteRefreshTask.triggerRemoteRefresh`):
+awaits `getSession()` (forces the cold-start recovery to complete), and force-refreshes
+when the token has <5 min left — `getSession()` only renews an ALREADY-expired token,
+which would still 401 a multi-minute drain halfway through. Best-effort by design: it
+never blocks the run, because pulling with a dead token still persists to MMKV and the
+next cycle retries the upload. New events `headless_session_missing` /
+`headless_session_refreshed` / `headless_session_refresh_failed` make the next bench
+trace answer "was it the token?" in one glance.
+
+**Also found, not yet fixed:** `requestConnectionPriority` is never called anywhere in
+the codebase. In the 20:20 trace the link degraded to `interval=99 latency=4` nine
+seconds after connecting and stayed there — a low-power link that throttles bulk vitals
+transfer badly. Worth adding (`device.requestConnectionPriority(1)` right after
+connect, via ble-plx) but it is NOT the upload blocker; reads were landing.
+
+**Verify:** cold fire with the app closed → expect `headless_session_refreshed` (or a
+plain success), then `vital_sync_accepted` / `reading_sync_success` INSIDE the
+background run, and today's rows in `vitals_other` with `created_at` ≈ the fire.
+
 **Bench traps learned 2026-08-14/15, in one place:**
 - `am kill` CANNOT kill the process once the UI has run — BLE FGS / TaskService hold
   it at `oom_score_adj 0`. Reinstall the same APK (`adb install -r`) instead: kills
