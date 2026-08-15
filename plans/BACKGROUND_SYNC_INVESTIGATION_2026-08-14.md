@@ -421,6 +421,64 @@ TOKEN=$(grep SUPABASE_ACCESS_TOKEN /c/Users/admin/secrets/leiko-release.ps1 | se
 
 (Same shape against `public.readings` for BP. Times are UTC; phone is UTC+1.)
 
+## 9. THE DEEPEST ROOT CAUSE — JS timers never fire headless (found 2026-08-15)
+
+**§8's freezer fix worked — and unmasked this.** With the process alive indefinitely,
+background runs *still* hung forever and nothing uploaded after 03:37. The hang is not
+an unbounded await: the io layer is fully bounded (connect 15 s race, `sendCommand`
+5 s, `sendCommandStream` 10 s, uploads 30 s via `withTimeout`). Runs hung 20+ minutes
+anyway. Only one explanation fits:
+
+**React Native's TimingModule dispatches `setTimeout` callbacks off the activity
+lifecycle. An OS-woken headless process has NEVER had a resumed activity, so its JS
+timers are queued and never fire.** Every timeout in the app is silently disarmed in
+exactly the context background sync runs in. The freezer (§8) was the first-order
+excuse; even unfrozen, the timers are dead. D1's "47-minute wedge" and the doc's §4
+line "Android freezes RN timers" were this, incompletely understood.
+
+Evidence (raw logcat capture of the 15:09:36 fire, `fire3-logcat.txt`):
+
+```
+15:09:36.532  TaskService: Handling intent 'leiko.sync.backgroundFetch'
+15:09:36.7xx  stale reset disconnects run #2's GATT (held since 14:52)
+15:09:36.864  new GATT connect (300 ms!)  → discoverServices
+15:09:40.463  onSearchComplete → notifications enabled 15:09:40.477
+…then NOTHING: zero writeCharacteristic, zero recovery, connection demoted
+to idle intervals. A live 5–10 s command timeout would have acted by
+15:09:50. Four+ minutes of silence on tape.
+```
+
+Also observed: every run today connected fine (300 ms–4 s) and then stalled on the
+protocol exchange. Working hypothesis for the stall itself: **the watch's protocol
+state is wedged** after a day of half-finished transfers being force-cut mid-stream
+(pre-fix freezer kills at 13:31/13:51/14:00/14:17, then stale resets every 15 min).
+Happy-path syncs are fully notification-driven (no timers needed), which is why
+2026-08-14's runs succeeded with dead timers: the watch answered promptly. When the
+watch stops answering, dead timers turn a 5 s recovery into an infinite hang.
+**Test: power-cycle the watch, then re-run §6b.**
+
+**The fix (in progress this session):**
+1. `LeikoBleForegroundServiceModule.delay(ms)` — native `Handler.postDelayed` on the
+   main looper; the OS drives it, not RN. ~10 Kotlin lines on the module we own.
+2. `services/ble/headlessDelay.ts` — `headlessDelay(ms)` (native on Android, falls
+   back to `setTimeout` on iOS/jest/dev so existing fake-timer suites are untouched)
+   and `raceWithHeadlessTimeout(promise, ms, makeError)`.
+3. Swapped in everywhere a timeout guards the sync path: `withTimeout` (uploads),
+   `UrionDevice.awaitResponse` + `sendCommandStream` (commands), `connectToUrion`
+   (connect + service discovery — discovery was genuinely unbounded).
+4. FGS ownership refcount: a stale reset hands the engine to a new run while the old
+   run's `withBleForegroundService` finally-block would stop the service under it (or
+   leak it forever if the old run never settles). Hold-count fixes both.
+5. Watchdog heartbeat: every received BLE packet refreshes `_runStartedAt`, so
+   staleness = 3 min of *silence*, not 3 min of *age* — long legitimate drains (a full
+   day of vitals) survive; genuinely dead runs still get reaped.
+
+**Verification plan:** rebuild, reinstall, power-cycle watch, cold fire →
+expect either a completed drain (vitals rows land ≤ minutes after the fire) or a
+CLEAN failure within seconds (timeouts finally firing → `sync_failed`, FGS released,
+retry next cycle). Both outcomes prove the timer fix; the drain additionally clears
+the watch-wedge hypothesis.
+
 **Bench traps learned 2026-08-14/15, in one place:**
 - `am kill` CANNOT kill the process once the UI has run — BLE FGS / TaskService hold
   it at `oom_score_adj 0`. Reinstall the same APK (`adb install -r`) instead: kills
