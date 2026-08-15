@@ -204,8 +204,8 @@ deferrable. Worth checking on any device that reports missed syncs.
 | D4 entry registration | ✅ **VERIFIED — see the trace at the top** |
 | Normal-boot data check after D4 | ✅ `sec1_boot_completed {encrypted:true, status:completed}` + `sec1_legacy_deleted`; readings/pairing intact |
 | Committed + pushed to `main` | ✅ `5419e88`, `d9b629c`, `a76d8a0`, doc `e75bf47` |
-| **Headless BP upload (§6e)** | ❌ **open — the one thing still broken** |
-| Play/AAB | ❌ not built. Users are still on the old broken build |
+| **Headless BP upload (§6e)** | ✅ **FIXED (`bb72c51`, 2026-08-14) + VERIFIED end-to-end 2026-08-15 — see the addendum in §6e** |
+| Play/AAB | ❌ not built. Founder deferred it 2026-08-15 — more app changes wanted before the vc6 AAB. Users are still on the old broken build |
 
 Full suite green: **2527 tests / 219 suites**, typecheck clean.
 
@@ -250,6 +250,36 @@ Worth a sweep while you are in there: `setDeviceMetaProvider` is one instance of
 general pattern — *anything wired in RootNavigator module scope is invisible to a
 headless run*. Grep that file's module scope for other one-time wiring and decide, for
 each, whether a background run needs it.
+
+**ADDENDUM 2026-08-15 — FIXED AND VERIFIED END-TO-END.** The fix above shipped as
+`bb72c51` (`state/wireDeviceMetaProvider.ts`, called from both `hydrateForHeadlessRun`
+and RootNavigator; tests in `state/__tests__/`). The sweep found no other module-scope
+wiring of this shape anywhere in `src/`. Proof, from `public.readings` via the Supabase
+Management API (times UTC; local = UTC+1):
+
+```
+id 8699d683…  source=watch  measured_at 2026-08-14 21:51:17Z
+              created_at   2026-08-14 22:43:13Z   ← headless upload, app closed
+```
+
+The reading was taken at 22:51 local with the app killed shortly after; the row landed
+at 23:43 local — a background cycle, with the app never opened (confirmed: the process
+had no UI since the 22:54 reinstall). Note it landed on the cycle *after* the 23:18
+fire that pulled it: the cached-app freezer stopped the 23:18 run before its upload
+finished (the §7 freezer caveat — delay, not loss), and the next headless cycle's
+`syncPending` flushed it. Pre-fix, that flush would have thrown `no paired device on
+file` on every background cycle forever and the row would only exist after an app
+open. Also re-verified on the fixed build: cold-start fire + BLE connect ≤1 s
+(22:36:08 and 23:18:16 GATT records), and post-reboot cycling on 08-15 (13:31, 13:51 —
+`startOnBoot` works).
+
+Bench notes added the hard way: `am kill` cannot kill the process after the UI has
+run (BLE FGS/TaskService hold it at oom_adj 0) — reinstall the same APK instead, which
+avoids FLAG_STOPPED and re-arms the alarm; and windowed alarms routinely fire 4–10 min
+past `origWhen`, so judge nothing before the 11m15s window closes. The `phx_` PostHog
+read key is gone from `leiko-release.ps1` (scrubbed with the ingest-key fix), so
+server-row `created_at` is now the authoritative post-run readout; the release driver
+also now hard-rejects non-`phc_` ingest keys (`release-android.js`).
 
 ### 6a. Encrypted-storage check — DONE, passed
 `a76d8a0` touches the boot path guarding the **MMKV encryption key**, so this was
