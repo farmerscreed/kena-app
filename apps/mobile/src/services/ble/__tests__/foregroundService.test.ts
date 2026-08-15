@@ -25,6 +25,7 @@ jest.mock('../../analytics/logger', () => ({
 import { NativeModules, Platform } from 'react-native';
 import {
   _resetBleForegroundServiceForTests,
+  _resetBleForegroundServiceHoldsForTests,
   isBleForegroundServiceRunning,
   startBleForegroundService,
   stopBleForegroundService,
@@ -36,6 +37,7 @@ const mockStop = NativeModules.LeikoBleForegroundService.stop as jest.Mock;
 
 beforeEach(() => {
   _resetBleForegroundServiceForTests();
+  _resetBleForegroundServiceHoldsForTests();
   mockStart.mockClear();
   mockStop.mockClear();
 });
@@ -118,5 +120,42 @@ describe('withBleForegroundService', () => {
     expect(fn).toHaveBeenCalledTimes(1);
     // Never started, so nothing to stop.
     expect(mockStop).not.toHaveBeenCalled();
+  });
+
+  it('overlapping scopes release only when the LAST one exits', async () => {
+    // The stale-reset handoff: run #1 hangs, run #2 claims the engine,
+    // run #1's finally fires later. A boolean guard let run #1 stop the
+    // service under run #2; the hold-count must not.
+    let releaseA!: () => void;
+    const gateA = new Promise<void>((r) => { releaseA = r; });
+    let releaseB!: () => void;
+    const gateB = new Promise<void>((r) => { releaseB = r; });
+    const scopeA = withBleForegroundService(() => gateA);
+    const scopeB = withBleForegroundService(() => gateB);
+    releaseA();
+    await scopeA;
+    // Scope B still holds — the service must survive scope A's exit.
+    expect(mockStop).not.toHaveBeenCalled();
+    expect(isBleForegroundServiceRunning()).toBe(true);
+    releaseB();
+    await scopeB;
+    expect(mockStop).toHaveBeenCalledTimes(1);
+    expect(isBleForegroundServiceRunning()).toBe(false);
+  });
+
+  it('a fresh scope-group re-evaluates UI ownership after a UI stop', async () => {
+    // UI starts the service, a scope runs under it (leaves it alone),
+    // the UI stops it — a later scope must own and release its own hold
+    // rather than inherit the stale uiOwned latch and leak the service.
+    await startBleForegroundService();
+    await withBleForegroundService(async () => undefined);
+    expect(mockStop).not.toHaveBeenCalled();
+    await stopBleForegroundService();
+    mockStart.mockClear();
+    mockStop.mockClear();
+    await withBleForegroundService(async () => undefined);
+    expect(mockStart).toHaveBeenCalledTimes(1);
+    expect(mockStop).toHaveBeenCalledTimes(1);
+    expect(isBleForegroundServiceRunning()).toBe(false);
   });
 });

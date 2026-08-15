@@ -64,10 +64,20 @@ export function isBleForegroundServiceRunning(): boolean {
   return running;
 }
 
+// Number of in-flight withBleForegroundService scopes. A stale reset
+// (state/syncOrchestrator) hands the sync engine to a NEW run while the
+// old run's finally-block is still pending — a boolean was-running guard
+// let whichever scope finished first stop the service under the
+// survivor. The hold-count releases only when the LAST scope exits.
+let holds = 0;
+// True when the service was started outside any scope (RootNavigator's
+// boot effect); scopes then never stop it — the UI owns its lifetime.
+let uiOwned = false;
+
 /**
- * Run `fn` while holding the foreground service, then release it —
- * unless it was already running (a UI flow owns it), in which case it
- * is left untouched.
+ * Run `fn` while holding the foreground service, releasing it when the
+ * last concurrent holder exits — unless a UI flow started the service
+ * first, in which case it is left untouched.
  *
  * Why: Android freezes cached processes shortly after a background
  * wake — observed on Pixel 8 / Android 17: frozen 9–18 s in, every
@@ -84,13 +94,23 @@ export function isBleForegroundServiceRunning(): boolean {
  * runs under today's freezer budget instead.
  */
 export async function withBleForegroundService<T>(fn: () => Promise<T>): Promise<T> {
-  const wasRunning = isBleForegroundServiceRunning();
+  // Re-evaluated whenever a new scope-group begins (holds 0 → 1), so a
+  // UI stop between groups doesn't leave a stale ownership latch.
+  if (holds === 0) uiOwned = isBleForegroundServiceRunning();
+  holds++;
   await startBleForegroundService();
   try {
     return await fn();
   } finally {
-    if (!wasRunning) await stopBleForegroundService();
+    holds--;
+    if (holds === 0 && !uiOwned) await stopBleForegroundService();
   }
+}
+
+/** Test surface */
+export function _resetBleForegroundServiceHoldsForTests(): void {
+  holds = 0;
+  uiOwned = false;
 }
 
 /** Test surface */

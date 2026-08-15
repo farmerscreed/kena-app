@@ -13,6 +13,8 @@
 // released, and the still-pending rows go out on the next sync (every
 // upload is idempotent, so a late-arriving duplicate is absorbed).
 
+import { raceWithHeadlessTimeout } from '../ble/headlessDelay';
+
 export class TimeoutError extends Error {
   constructor(label: string, ms: number) {
     super(`${label} timed out after ${ms}ms`);
@@ -20,18 +22,17 @@ export class TimeoutError extends Error {
   }
 }
 
+// Deadline via raceWithHeadlessTimeout, NOT a bare setTimeout: RN's
+// TimingModule never dispatches timers in an OS-woken headless process
+// (no activity has ever resumed), so a setTimeout-based race silently
+// never fires exactly where this guard matters most — background sync.
+// See services/ble/headlessDelay.ts (2026-08-15).
 export function withTimeout<T>(
   promise: Promise<T>,
   ms: number,
   label: string,
 ): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | null = null;
-  const timeout = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => reject(new TimeoutError(label, ms)), ms);
-  });
-  return Promise.race([promise, timeout]).finally(() => {
-    if (timer) clearTimeout(timer);
-  }) as Promise<T>;
+  return raceWithHeadlessTimeout(promise, ms, () => new TimeoutError(label, ms));
 }
 
 // 30s is far past a healthy /sync round-trip (1-3s on a normal

@@ -78,7 +78,12 @@ jest.mock('../takeReading', () => ({
 import { useSyncOrchestrator } from '../syncOrchestrator';
 
 function fakeDevice(): unknown {
-  return { disconnect: jest.fn().mockResolvedValue(undefined) };
+  return {
+    disconnect: jest.fn().mockResolvedValue(undefined),
+    // §9 heartbeat — runSync subscribes to refresh the stale watchdog on
+    // every packet; the fake needs the surface, no packets ever arrive.
+    onNotify: jest.fn(() => () => {}),
+  };
 }
 
 beforeEach(() => {

@@ -54,15 +54,15 @@ const IDLE_DISCONNECT_MS = 45_000;
 // queue 2-3 redundant runs.
 const MIN_SYNC_INTERVAL_MS = 5_000;
 
-// Watchdog for a dead run. A sync interrupted by backgrounding can hang
-// forever: its connect/idle timeouts are JS setTimeout calls, and Android
-// freezes RN timers while the app is off-screen — so status stays
-// 'connecting'/'syncing' and every later trigger (including the 15-min
-// background fetch) skips with already_running until the app is next
-// foregrounded. Observed 2026-08-14: one interrupted live_notify run
-// blocked background sync for 47 minutes. A healthy full run (backlog +
-// multi-vitals) finishes well under a minute; 3 min is comfortably past
-// any legitimate run without risking a reset mid-flight.
+// Watchdog for a dead run. Historically a wedged run blocked every later
+// trigger with already_running for as long as 47 minutes (2026-08-14).
+// Since the §8/§9 fixes (freezer exemption + headless-safe timeouts) a
+// run can be LEGITIMATELY long — draining a full day of vitals takes
+// minutes — so staleness is measured from the run's last sign of life,
+// not its start: every received BLE packet refreshes _runStartedAt (see
+// the onNotify heartbeat in runSync). 3 min of SILENCE means every
+// io-level timeout (5-15 s) has long since had its chance to recover;
+// the run is presumed dead and reaped.
 const STALE_RUN_RESET_MS = 3 * 60_000;
 
 export type SyncTrigger =
@@ -260,9 +260,20 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
     logger.track('sync_started', { trigger });
     set({ status: 'connecting', lastError: null, _runStartedAt: nowMs() });
     let device: UrionDevice | null = null;
+    let unsubHeartbeat: (() => void) | null = null;
     try {
       device = await connectToUrion(paired.bleId);
       set({ status: 'syncing', _device: device });
+
+      // §9 heartbeat — every packet from the watch refreshes the run's
+      // claim, so the stale watchdog above measures 3 min of SILENCE
+      // rather than 3 min of age. A long healthy drain (full day of
+      // vitals) keeps itself alive; a run whose device went quiet is
+      // reaped on the next trigger. Guarded on _runStartedAt so a
+      // live-window packet after the run ends can't resurrect a claim.
+      unsubHeartbeat = device.onNotify(() => {
+        if (get()._runStartedAt !== null) set({ _runStartedAt: nowMs() });
+      });
 
       // Sprint 10b.2 — flush user-facing Settings to the watch BEFORE
       // pulling data. setAutoHR / setAutoSpO2 / setUserParams /
@@ -404,6 +415,8 @@ export const useSyncOrchestrator = create<SyncOrchestratorState>((set, get) => (
         // gate the next trigger on the debounce window.
       });
       return 'ran';
+    } finally {
+      unsubHeartbeat?.();
     }
   },
 

@@ -13,6 +13,7 @@ import {
 } from 'react-native-ble-plx';
 import { Platform, PermissionsAndroid } from 'react-native';
 import { URION_ADVERTISING_SERVICE_UUID } from './io';
+import { raceWithHeadlessTimeout } from './headlessDelay';
 import { UrionDevice } from './UrionDevice';
 import { logger } from '../analytics/logger';
 
@@ -103,18 +104,25 @@ export async function connectToUrion(
   const timeoutMs = options.timeoutMs ?? 15_000;
   // ble-plx's connectToDevice has no platform-uniform timeout; on
   // Android it can sit on a stalled GATT handshake indefinitely. Wrap
-  // it so the UI always gets a definite outcome.
+  // it so the caller always gets a definite outcome. The race uses the
+  // headless-safe delay, NOT setTimeout — RN never dispatches JS timers
+  // in an OS-woken process, which made this guard (and every other
+  // timeout in the sync stack) a silent no-op during background sync
+  // (§9, 2026-08-15).
   const connect = mgr.connectToDevice(deviceId, { autoConnect: false, timeout: timeoutMs });
-  const native = await Promise.race([
+  const native = await raceWithHeadlessTimeout(
     connect,
-    new Promise<never>((_, reject) =>
-      setTimeout(
-        () => reject(new Error(`connect timeout after ${timeoutMs}ms`)),
-        timeoutMs,
-      ),
-    ),
-  ]);
-  await native.discoverAllServicesAndCharacteristics();
+    timeoutMs,
+    () => new Error(`connect timeout after ${timeoutMs}ms`),
+  );
+  // Discovery was genuinely unbounded — a stalled GATT session hangs it
+  // forever, and 2026-08-15's wedged-watch runs sat exactly here or one
+  // step later. Same deadline as the connect.
+  await raceWithHeadlessTimeout(
+    native.discoverAllServicesAndCharacteristics(),
+    timeoutMs,
+    () => new Error(`service discovery timeout after ${timeoutMs}ms`),
+  );
   const wrapper = new UrionDevice(native);
   await wrapper.startNotify();
   return wrapper;

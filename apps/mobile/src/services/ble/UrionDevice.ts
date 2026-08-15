@@ -5,6 +5,7 @@
 
 import type { Device, Subscription } from 'react-native-ble-plx';
 import { logger } from '../analytics/logger';
+import { raceWithHeadlessTimeout } from './headlessDelay';
 import {
   CrcError,
   ParsedPacket,
@@ -126,27 +127,34 @@ export class UrionDevice {
       return undefined;
     }
     const response = this.awaitResponse(validator, command, timeoutMs);
+    // Swallow the race's late rejection if the write itself throws and
+    // the caller therefore never awaits `response`.
+    response.catch(() => {});
     await this.writePacket(packet);
     return response;
   }
 
+  // Deadline via raceWithHeadlessTimeout, NOT setTimeout: RN never
+  // dispatches JS timers in an OS-woken headless process, which turned
+  // this 5 s recovery into an infinite hang whenever the watch stopped
+  // answering mid-protocol (§9, 2026-08-15).
   private awaitResponse(
     validator: ResponseValidator,
     command: number,
     timeoutMs: number,
   ): Promise<ParsedPacket> {
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        unsub();
-        reject(new CommandTimeoutError(command, timeoutMs));
-      }, timeoutMs);
-      const unsub = this.onNotify((packet) => {
+    let unsub: () => void = () => {};
+    const matched = new Promise<ParsedPacket>((resolve) => {
+      unsub = this.onNotify((packet) => {
         if (validator(packet)) {
-          clearTimeout(timer);
           unsub();
           resolve(packet);
         }
       });
+    });
+    return raceWithHeadlessTimeout(matched, timeoutMs, () => {
+      unsub();
+      return new CommandTimeoutError(command, timeoutMs);
     });
   }
 
@@ -167,23 +175,28 @@ export class UrionDevice {
     const timeoutMs = options.timeoutMs ?? 10_000;
     const packet = buildPacket(command, payload);
     const collected: ParsedPacket[] = [];
-    const promise = new Promise<ParsedPacket[]>((resolve, reject) => {
-      const timer = setTimeout(() => {
-        unsub();
-        reject(new CommandTimeoutError(command, timeoutMs));
-      }, timeoutMs);
-      const unsub = this.onNotify((p) => {
+    let unsub: () => void = () => {};
+    const stream = new Promise<ParsedPacket[]>((resolve) => {
+      unsub = this.onNotify((p) => {
         if (p.command !== command) return;
         collected.push(p);
         if (isTerminator(p)) {
-          clearTimeout(timer);
           unsub();
           resolve(collected);
         }
       });
     });
-    await this.writePacket(packet);
-    return promise;
+    try {
+      await this.writePacket(packet);
+    } catch (e) {
+      unsub();
+      throw e;
+    }
+    // Same headless-safe deadline rationale as awaitResponse (§9).
+    return raceWithHeadlessTimeout(stream, timeoutMs, () => {
+      unsub();
+      return new CommandTimeoutError(command, timeoutMs);
+    });
   }
 
   async disconnect(): Promise<void> {
