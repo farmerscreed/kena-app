@@ -11,7 +11,10 @@
 //
 // Per CLAUDE.md: the push carries NO PHI; we read only its { type }.
 
-import { hydrateForHeadlessRun } from '../../state/hydrateForHeadlessRun';
+import {
+  ensureSessionForHeadlessRun,
+  hydrateForHeadlessRun,
+} from '../../state/hydrateForHeadlessRun';
 import { useSyncOrchestrator } from '../../state/syncOrchestrator';
 import { logger } from '../analytics/logger';
 import { withBleForegroundService } from '../ble/foregroundService';
@@ -96,6 +99,10 @@ export async function triggerRemoteRefresh(
   // pending/recent arrays from in-memory state, so an unhydrated headless
   // run would persist empty arrays over stored readings.
   hydrateForHeadlessRun();
+  // Same rationale as the background-fetch path: a push-woken process is
+  // headless, so its Supabase session is neither recovered nor refreshed
+  // unless we do it here. Best-effort — never blocks the run.
+  await ensureSessionForHeadlessRun();
   try {
     // Freezer exemption for the run's duration — a headless push-woken
     // process is stopped 9–18 s in otherwise (see withBleForegroundService).

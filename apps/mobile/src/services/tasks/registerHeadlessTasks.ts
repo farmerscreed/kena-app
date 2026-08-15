@@ -67,10 +67,18 @@ async function storageReady(): Promise<boolean> {
 
 /** Run the watch sync. Every import here is deferred past storageReady(). */
 async function runWatchSync(): Promise<TaskResult> {
-  const { hydrateForHeadlessRun } = await import('../../state/hydrateForHeadlessRun');
+  const { hydrateForHeadlessRun, ensureSessionForHeadlessRun } = await import(
+    '../../state/hydrateForHeadlessRun'
+  );
   const { useSyncOrchestrator } = await import('../../state/syncOrchestrator');
   const { withBleForegroundService } = await import('../ble/foregroundService');
   hydrateForHeadlessRun();
+  // Awaited BEFORE the run so uploads have a live token. A cold headless
+  // process has not finished recovering its session from secure storage,
+  // and nothing refreshes an expired one — every upload 401s while the
+  // watch reads succeed, which is exactly what 2026-08-15 looked like.
+  // Best-effort: a false here still lets the run pull and persist.
+  await ensureSessionForHeadlessRun();
   try {
     // Hold the foreground service for the run: the cached-app freezer
     // otherwise stops this process 9–18 s after the wake, which starves

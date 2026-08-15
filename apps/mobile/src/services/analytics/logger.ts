@@ -252,7 +252,16 @@ export type AnalyticsEvent =
       name: 'sec1_migration_failed';
       props?: { mode: 'keychain' | 'copy' | 'limit_reached'; attempt: number; reason: string };
     }
-  | { name: 'sec1_legacy_deleted' };
+  | { name: 'sec1_legacy_deleted' }
+  // Headless-run auth guard (2026-08-15). A background process neither
+  // finishes recovering its Supabase session on a cold start nor ever
+  // refreshes an expired token (no timers, no AppState 'active'), so
+  // watch reads succeeded while every upload 401'd. These three events
+  // are how a future bench trace tells "token was fine" from "token was
+  // the problem" without reproducing the whole investigation.
+  | { name: 'headless_session_missing'; props?: { reason: string } }
+  | { name: 'headless_session_refreshed' }
+  | { name: 'headless_session_refresh_failed'; props?: { reason: string } };
 
 type EventName = AnalyticsEvent['name'];
 
