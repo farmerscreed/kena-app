@@ -69,9 +69,16 @@ async function storageReady(): Promise<boolean> {
 async function runWatchSync(): Promise<TaskResult> {
   const { hydrateForHeadlessRun } = await import('../../state/hydrateForHeadlessRun');
   const { useSyncOrchestrator } = await import('../../state/syncOrchestrator');
+  const { withBleForegroundService } = await import('../ble/foregroundService');
   hydrateForHeadlessRun();
   try {
-    const result = await useSyncOrchestrator.getState().runSync('background');
+    // Hold the foreground service for the run: the cached-app freezer
+    // otherwise stops this process 9–18 s after the wake, which starves
+    // the vitals leg (see withBleForegroundService). A denied start
+    // degrades to today's behaviour; it never throws.
+    const result = await withBleForegroundService(() =>
+      useSyncOrchestrator.getState().runSync('background'),
+    );
     return result === 'ran' ? 'ran' : 'skipped';
   } catch {
     return 'errored';

@@ -14,6 +14,7 @@
 import { hydrateForHeadlessRun } from '../../state/hydrateForHeadlessRun';
 import { useSyncOrchestrator } from '../../state/syncOrchestrator';
 import { logger } from '../analytics/logger';
+import { withBleForegroundService } from '../ble/foregroundService';
 
 // Defined at entry by services/tasks/registerHeadlessTasks; re-exported
 // here so existing callers and tests keep one source of truth.
@@ -96,7 +97,12 @@ export async function triggerRemoteRefresh(
   // run would persist empty arrays over stored readings.
   hydrateForHeadlessRun();
   try {
-    await useSyncOrchestrator.getState().runSync('remote_refresh');
+    // Freezer exemption for the run's duration — a headless push-woken
+    // process is stopped 9–18 s in otherwise (see withBleForegroundService).
+    // If a UI flow already holds the service, it is left running.
+    await withBleForegroundService(() =>
+      useSyncOrchestrator.getState().runSync('remote_refresh'),
+    );
   } catch (e) {
     logger.track('remote_refresh_failed', {
       reason: e instanceof Error ? e.message : 'unknown',

@@ -64,6 +64,35 @@ export function isBleForegroundServiceRunning(): boolean {
   return running;
 }
 
+/**
+ * Run `fn` while holding the foreground service, then release it —
+ * unless it was already running (a UI flow owns it), in which case it
+ * is left untouched.
+ *
+ * Why: Android freezes cached processes shortly after a background
+ * wake — observed on Pixel 8 / Android 17: frozen 9–18 s in, every
+ * cycle, even on USB power. That is enough for the BP-backlog leg but
+ * starves the multi-vitals leg (a full day of HR/steps/sleep chunks
+ * over BLE), so heavy-wear days never drain in the background. A
+ * process hosting a foreground service is exempt from the freezer for
+ * the service's lifetime.
+ *
+ * Failure mode: on Android 12+ a background start is only permitted
+ * for battery-exempt apps (Settings → Watch → "Background updates"
+ * steers users there). startBleForegroundService never throws — a
+ * denied start is tracked as ble_fg_start_failed and the sync simply
+ * runs under today's freezer budget instead.
+ */
+export async function withBleForegroundService<T>(fn: () => Promise<T>): Promise<T> {
+  const wasRunning = isBleForegroundServiceRunning();
+  await startBleForegroundService();
+  try {
+    return await fn();
+  } finally {
+    if (!wasRunning) await stopBleForegroundService();
+  }
+}
+
 /** Test surface */
 export function _resetBleForegroundServiceForTests(): void {
   running = false;

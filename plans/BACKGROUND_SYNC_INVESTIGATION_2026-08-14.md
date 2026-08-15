@@ -348,11 +348,87 @@ opening the app before concluding anything.
   `LEIKO_VERSION_CODE` in `leiko-release.ps1` (currently 5; its comment history is
   stale, it says "bump to 5 before the next build after vc4").
 - Multi-vitals still freezes mid-phase in background — D2 bounds it, but the run may
-  still not finish its vitals leg before the OS pulls the context. HR/sleep catch up on
-  the next cycle. Cosmetic, but it is why `vital_sync_accepted` can be missing.
+  still not finish its vitals leg before the OS pulls the context. ~~HR/sleep catch up
+  on the next cycle. Cosmetic~~ **NOT cosmetic — see §8: on a heavy-wear day the
+  vitals never drain. Root-caused and fixed 2026-08-15.**
 - `SPRINT_18_VERIFICATION.md` Tests 2 + 5 result boxes are still blank and its Test 5
   "KNOWN GAP" is factually wrong now (see §3). `PRODUCTION_READINESS.md` FUN-8 can be
   closed once §6b passes.
 - The `phx_`/`phc_` trap deserves a guard: `release-android.js` should reject a
   `EXPO_PUBLIC_POSTHOG_API_KEY` that does not start with `phc_`. Ten-line change,
-  would have saved this whole detour.
+  would have saved this whole detour. **DONE 2026-08-14 (`bb72c51`).**
+
+---
+
+## 8. The freezer problem — vitals starve in background (found 2026-08-15)
+
+**Symptom.** A full wear day (14 875 steps, a sports session, sleep, all-day HR) never
+reached the server despite background syncs connecting on schedule. Newest
+`vitals_other` row: measured 21:30Z 08-14, uploaded 02:37Z 08-15. Nothing from 08-15
+landed all day. The §7 line "HR/sleep catch up on the next cycle — cosmetic" is
+**wrong on a heavy-wear day**: many cycles passed with no catch-up.
+
+**Root cause — Android's cached-app freezer, measured on the bench** (Pixel 8,
+Android 17, and it freezes even while USB-powered):
+
+```
+13:31:17  BLE connect  →  13:31:26  ActivityManager: freezing <pid>   (9 s)
+13:51:15  BLE connect  →  13:51:33  freezing                          (18 s)
+14:00:06  run ends     →  14:00:15  freezing                          (9 s)
+```
+
+Every OS-woken run gets ~9–18 s of CPU, then the process freezes mid-run with the
+GATT registration left open (those are the mysterious ~10–20 min `AppRecord` holds —
+frozen client, not a leak). The BP-backlog leg fits inside the budget, which is why
+§6e verified clean. The multi-vitals leg — hundreds of HR/steps/sleep chunks over
+BLE — cannot fit, so it dribbles a fragment per cycle and effectively never drains.
+This is also why the D1-era timers froze (§4) — same mechanism, now quantified.
+
+**Fix (commit this session): hold the BLE foreground service for the run.** An FGS-
+hosting process is exempt from the freezer. `LeikoBleForegroundService` already
+existed, manifest-registered with `foregroundServiceType="connectedDevice"` — the
+background path just never started it (§6c predicted exactly this: "the task should
+start LeikoBleForegroundService first, then connect — most likely remaining blocker,
+never tested").
+
+- `services/ble/foregroundService.ts` → `withBleForegroundService(fn)`: start,
+  run fn, stop in `finally` — **unless the service was already running** (a UI flow
+  owns it; leave it).
+- Wrapped around `runSync` in BOTH headless entries:
+  `services/tasks/registerHeadlessTasks.runWatchSync` (dynamic import, SEC-1 ordering
+  preserved) and `services/notifications/remoteRefreshTask.triggerRemoteRefresh`.
+- **Degrades safely for real users:** Android 12+ only allows a background FGS start
+  for battery-exempt apps. `startBleForegroundService` never throws (tracked as
+  `ble_fg_start_failed`), so a denied start just means the sync runs under today's
+  freezer budget. The Settings → Watch → "Background updates" row (§4) is the user's
+  path to the exemption. A brief "Connected to your watch" notification during
+  background syncs is the visible cost.
+
+**How to verify on the bench** (§1/§6b flow, then):
+1. `adb logcat -d | grep "freezing <pid>"` — the freeze must land AFTER the run
+   completes (or minutes later), not 9 s after the wake.
+2. `vitals_other` rows with today's `measured_at` and `created_at` ≈ the cycle time,
+   via the Management API query (below) — the watch backlog should drain in one or
+   two cycles instead of never.
+
+**Readout now that the `phx_` PostHog key is gone** — server rows are ground truth.
+The permission classifier blocks Claude from piping `SUPABASE_ACCESS_TOKEN` into
+curl; the FOUNDER runs it as a `!` one-liner (bash, not PowerShell — `!` runs bash):
+
+```
+TOKEN=$(grep SUPABASE_ACCESS_TOKEN /c/Users/admin/secrets/leiko-release.ps1 | sed 's/.*"\(sbp_[a-f0-9]*\)".*/\1/'); curl -s -X POST "https://api.supabase.com/v1/projects/kqnzxjrpnjnczhgdwdqg/database/query" -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d '{"query":"select vital_type, value_int, measured_at, created_at from public.vitals_other order by created_at desc limit 10"}'
+```
+
+(Same shape against `public.readings` for BP. Times are UTC; phone is UTC+1.)
+
+**Bench traps learned 2026-08-14/15, in one place:**
+- `am kill` CANNOT kill the process once the UI has run — BLE FGS / TaskService hold
+  it at `oom_score_adj 0`. Reinstall the same APK (`adb install -r`) instead: kills
+  without FLAG_STOPPED, and MY_PACKAGE_REPLACED re-registers the alarm (a fresh
+  headless process appears — kill THAT with `am kill` after ~10 s if a truly dead
+  start is needed).
+- Windowed alarms fire 4–10 min past `origWhen` (window `+11m15s`). Judge nothing
+  before the window closes.
+- Logcat's main buffer wraps in ~20 min on this phone — capture fire evidence live
+  (`logcat -T 1 | grep -m1 "Handling intent with task name 'leiko.sync"`), don't
+  expect to find it later with `-d`.

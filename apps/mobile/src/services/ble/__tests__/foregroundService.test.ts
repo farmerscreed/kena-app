@@ -28,6 +28,7 @@ import {
   isBleForegroundServiceRunning,
   startBleForegroundService,
   stopBleForegroundService,
+  withBleForegroundService,
 } from '../foregroundService';
 
 const mockStart = NativeModules.LeikoBleForegroundService.start as jest.Mock;
@@ -70,5 +71,52 @@ describe('ble foreground service wrapper', () => {
     expect(mockStart).not.toHaveBeenCalled();
     expect(isBleForegroundServiceRunning()).toBe(false);
     (Platform as { OS: string }).OS = 'android';
+  });
+});
+
+describe('withBleForegroundService', () => {
+  // Freezer exemption for headless sync runs: the service must be held
+  // for exactly the duration of fn, and released only if this call was
+  // the one that started it.
+
+  it('starts before fn, stops after, and returns the result', async () => {
+    const fn = jest.fn(async () => {
+      expect(isBleForegroundServiceRunning()).toBe(true);
+      return 'ran';
+    });
+    await expect(withBleForegroundService(fn)).resolves.toBe('ran');
+    expect(mockStart).toHaveBeenCalledTimes(1);
+    expect(mockStop).toHaveBeenCalledTimes(1);
+    expect(isBleForegroundServiceRunning()).toBe(false);
+  });
+
+  it('leaves the service running when a UI flow already owns it', async () => {
+    await startBleForegroundService();
+    mockStart.mockClear();
+    await withBleForegroundService(async () => undefined);
+    expect(mockStop).not.toHaveBeenCalled();
+    expect(isBleForegroundServiceRunning()).toBe(true);
+  });
+
+  it('stops the service even when fn throws, and rethrows', async () => {
+    await expect(
+      withBleForegroundService(async () => {
+        throw new Error('sync exploded');
+      }),
+    ).rejects.toThrow('sync exploded');
+    expect(mockStop).toHaveBeenCalledTimes(1);
+    expect(isBleForegroundServiceRunning()).toBe(false);
+  });
+
+  it('still runs fn when the native start is denied', async () => {
+    // Android 12+ denies background FGS starts for non-battery-exempt
+    // apps (ForegroundServiceStartNotAllowedException). The sync must
+    // degrade to the freezer-budget behaviour, not skip.
+    mockStart.mockRejectedValueOnce(new Error('not allowed'));
+    const fn = jest.fn(async () => 'ran');
+    await expect(withBleForegroundService(fn)).resolves.toBe('ran');
+    expect(fn).toHaveBeenCalledTimes(1);
+    // Never started, so nothing to stop.
+    expect(mockStop).not.toHaveBeenCalled();
   });
 });
