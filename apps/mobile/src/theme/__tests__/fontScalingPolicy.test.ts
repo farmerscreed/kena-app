@@ -26,7 +26,6 @@ const SRC = join(__dirname, '..', '..');
 const GEOMETRY_LOCKED = new Set([
   'components/ActivityRingsHero.tsx',
   'components/ActivityWeeklyBars.tsx',
-  'components/BPTwinLineChart.tsx',
   'components/ConstellationField.tsx',
   'components/CorrelationStrip.tsx',
   'components/DoctorCoverPreview.tsx',
@@ -35,7 +34,6 @@ const GEOMETRY_LOCKED = new Set([
   'components/SleepHypnogram.tsx',
   'components/SleepNightlyBars.tsx',
   'components/SleepStagesBar.tsx',
-  'components/VitalTrendChart.tsx',
 ]);
 
 /**

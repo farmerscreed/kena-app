@@ -8,7 +8,7 @@
 //   2. VitalHero (slot)            — 122/78 ring + classification-aware
 //                                    range copy + "Latest · {time}"
 //   3. StatTrio                    — 7-day avg · lowest · highest
-//   4. BPTwinLineChart (in card)   — today's twin sys/dia hourly chart
+//   4. RangeBandChart (in card)    — readings against the personal band
 //   5. VitalInsightCard            — Tier-B placeholder paragraph
 //   6. RecentReadingsList          — last 4 BP readings, tappable
 //
@@ -38,7 +38,8 @@ import { StatTrio, type StatTrioItem } from '../../components/StatTrio';
 import { type RecentReading } from '../../components/RecentReadingsList';
 import { RecentReadingsSection } from '../../components/RecentReadingsSection';
 import { VitalInsightCard } from '../../components/VitalInsightCard';
-import { BPTwinLineChart } from '../../components/BPTwinLineChart';
+import { RangeBandChart } from '../../components/RangeBandChart';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
 import { VitalExplainerAnchor } from '../../components/VitalExplainerAnchor';
 import { BaselineReference } from '../../components/BaselineReference';
 import { StalenessHintRow } from '../../components/StalenessHintRow';
@@ -50,6 +51,8 @@ import { useReadings, type LocalReading } from '../../state/readings';
 import { useParentDailyPulseData } from '../../hooks/useParentDailyPulseData';
 import { useParentVitalsRecent } from '../../hooks/useParentVitalsRecent';
 import { bpRingCalibration, LEARNING_COPY } from '../../utils/calibration';
+import { resolveBpBaselines } from '../../utils/vitalBaselines';
+import { mmkv, STORAGE_KEYS } from '../../services/storage';
 import { useTheme } from '../../theme';
 import {
   checkStaleness,
@@ -96,8 +99,6 @@ function rangeFallbackUnit(range: TrendRange): string {
 // Voice-clean copy
 // ---------------------------------------------------------------------------
 
-const HOUR_LABELS = ['12a', '3a', '6a', '9a', '12p', '3p', '6p', '9p'];
-const SYS_RANGE: [number, number] = [110, 130];
 
 // Sprint 16.5f — deterministic insight body. Replaces the Sprint 8.5
 // hardcoded "morning coffee" paragraph (which was fiction — we didn't
@@ -196,82 +197,9 @@ export function readingsForToday(
   );
 }
 
-/**
- * Bucket today's readings into the 8 hour-of-day slots used by the
- * BPTwinLineChart axis (12a, 3a, 6a, 9a, 12p, 3p, 6p, 9p). Each bucket
- * is the *average* of the readings landing in it.
- *
- * Sprint 16.5f — empty buckets now return `null` (was: mock fallback
- * data). The chart renders no dot for null slots. Previously a user
- * with one morning reading saw a complete fake 24h trace; now they
- * see one honest dot.
- */
-export function bucketReadingsByHour(
-  readings: LocalReading[],
-  timeZone: string,
-): { sys: (number | null)[]; dia: (number | null)[] } {
-  // Slot index = floor(hour / 3) — 8 slots covering 0-23h.
-  const sysSums = new Array(8).fill(0) as number[];
-  const diaSums = new Array(8).fill(0) as number[];
-  const counts = new Array(8).fill(0) as number[];
-  for (const r of readings) {
-    const hour = hourInZone(r.measuredAtSec * 1000, timeZone);
-    const slot = Math.min(7, Math.floor(hour / 3));
-    sysSums[slot] += r.systolic;
-    diaSums[slot] += r.diastolic;
-    counts[slot] += 1;
-  }
-  const sys: (number | null)[] = sysSums.map((sum, i) =>
-    counts[i] > 0 ? Math.round(sum / counts[i]) : null,
-  );
-  const dia: (number | null)[] = diaSums.map((sum, i) =>
-    counts[i] > 0 ? Math.round(sum / counts[i]) : null,
-  );
-  return { sys, dia };
-}
-
-/**
- * Bucket readings into N daily slots over the chosen window. Each bucket
- * is the average sys + dia for that day; days with no readings return
- * null. Used by the BP twin chart in 7d / 30d / 90d range modes.
- */
-export function bucketReadingsByDay(
-  readings: LocalReading[],
-  days: number,
-  timeZone: string,
-  nowMs: number = Date.now(),
-): { sys: (number | null)[]; dia: (number | null)[]; labels: string[] } {
-  const sysSums = new Array(days).fill(0) as number[];
-  const diaSums = new Array(days).fill(0) as number[];
-  const counts = new Array(days).fill(0) as number[];
-  const labels: string[] = [];
-  for (let i = 0; i < days; i++) {
-    const slotMs = nowMs - (days - 1 - i) * 24 * 3_600_000;
-    // Two short label modes: short month-day for 7d (readable), single
-    // char weekday for 30d/90d (avoid label crowding). Weekday read in
-    // the wearer's tz so the axis matches their calendar.
-    labels.push(
-      days <= 7 ? weekdayInZone(slotMs, timeZone, 'short').slice(0, 3) : '',
-    );
-  }
-  for (const r of readings) {
-    const offsetDays = Math.floor(
-      (nowMs - r.measuredAtSec * 1000) / (24 * 3_600_000),
-    );
-    if (offsetDays < 0 || offsetDays >= days) continue;
-    const slot = days - 1 - offsetDays;
-    sysSums[slot] += r.systolic;
-    diaSums[slot] += r.diastolic;
-    counts[slot] += 1;
-  }
-  const sys: (number | null)[] = sysSums.map((sum, i) =>
-    counts[i] > 0 ? Math.round(sum / counts[i]) : null,
-  );
-  const dia: (number | null)[] = diaSums.map((sum, i) =>
-    counts[i] > 0 ? Math.round(sum / counts[i]) : null,
-  );
-  return { sys, dia, labels };
-}
+// D13 PR-6 — the hourly/daily slot bucketers are gone: RangeBandChart
+// plots one point per reading, so the axis can never show eight labels
+// for two dots and never pads empty trailing slots.
 
 /** Pure helper: stats for the chosen window from a list of BP readings.
  *  Pre-16.5e was hardcoded to 7 days; now takes `days` so the stat trio
@@ -429,6 +357,11 @@ export function BPDetail({
     [pendingReadings, recentReadings],
   );
 
+  // Band scope: the caregiver path judges against the PARENT's family
+  // rows; the self path against the signed-in family's cached rows.
+  const bandFamilyId =
+    scopedFamilyId ?? mmkv.getString(STORAGE_KEYS.currentFamilyId) ?? null;
+
   const rangedReadings = useMemo(() => {
     const cutoffMs = Date.now() - RANGE_TO_DAYS[range] * 24 * 3_600_000;
     return allBPReadings.filter((r) => r.measuredAtSec * 1000 >= cutoffMs);
@@ -518,32 +451,43 @@ export function BPDetail({
     () => readingsForToday(allBPReadings, timeZone),
     [allBPReadings, timeZone],
   );
-  const { sys, dia, hourLabels, chartEyebrow } = useMemo(() => {
-    if (range === '7d') {
-      // Default: today's 8-slot hourly chart.
-      const { sys: s, dia: d } = bucketReadingsByHour(todayReadings, timeZone);
-      return {
-        sys: s,
-        dia: d,
-        hourLabels: HOUR_LABELS,
-        chartEyebrow: 'Today · systolic & diastolic',
-      };
-    }
-    // 30d / 90d — daily bins over the window.
-    const days = RANGE_TO_DAYS[range];
-    const { sys: s, dia: d, labels } = bucketReadingsByDay(
-      allBPReadings,
-      days,
-      timeZone,
-      Date.now(),
-    );
+  // D13 PR-6 (§6.3) — the range-aware point builder replaces the slot
+  // bucketers: one point per reading in the window, oldest → newest,
+  // never an empty trailing slot. The eyebrow and the range pill read
+  // from the SAME `range` state, so they cannot disagree.
+  const { chartPoints, chartEyebrow } = useMemo(() => {
+    const source = range === '7d' ? todayReadings : rangedReadings;
+    const sorted = [...source].sort((a, b) => a.measuredAtSec - b.measuredAtSec);
+    const points = sorted.map((r) => ({
+      value: r.systolic,
+      secondary: r.diastolic,
+      label:
+        range === '7d'
+          ? timeInZone(r.measuredAtSec * 1000, timeZone)
+          : dayKeyInZone(r.measuredAtSec * 1000, timeZone).slice(5),
+    }));
     return {
-      sys: s,
-      dia: d,
-      hourLabels: labels,
-      chartEyebrow: `Last ${days} days · daily averages`,
+      chartPoints: points,
+      chartEyebrow:
+        range === '7d'
+          ? 'Today · systolic & diastolic'
+          : `Last ${RANGE_TO_DAYS[range]} days · readings`,
     };
-  }, [allBPReadings, todayReadings, range, timeZone]);
+  }, [todayReadings, rangedReadings, range, timeZone]);
+
+  // The chart's band is the truth layer's: p10–p90 whenever sufficient,
+  // nothing while learning (§4.3 — the ribbon is earned, not assumed).
+  const chartBands = useMemo(() => {
+    const samples = allBPReadings.map((r) => ({
+      systolic: r.systolic,
+      diastolic: r.diastolic,
+      measuredAtSec: r.measuredAtSec,
+    }));
+    const pair = resolveBpBaselines(bandFamilyId ?? '', samples);
+    const bandFor = (row: typeof pair.systolic) =>
+      row && row.isSufficient ? { low: Math.round(row.p10), high: Math.round(row.p90) } : null;
+    return { band: bandFor(pair.systolic), secondaryBand: bandFor(pair.diastolic) };
+  }, [allBPReadings, bandFamilyId]);
 
   // ----- Baseline reference (16.5f) ------------------------------------
   const baseline = useMemo(() => bpBaseline(allBPReadings), [allBPReadings]);
@@ -579,8 +523,7 @@ export function BPDetail({
   // eyebrow. Honest but visually confusing. Show an inline placeholder
   // instead, while still keeping the chart card frame so the layout
   // doesn't jump.
-  const has7dTodayData =
-    range !== '7d' || sys.some((v) => v !== null) || dia.some((v) => v !== null);
+  const has7dTodayData = range !== '7d' || chartPoints.length > 0;
 
   return (
     <DetailShell
@@ -669,14 +612,23 @@ export function BPDetail({
                   }}
                 >
                   {has7dTodayData ? (
-                    <BPTwinLineChart
-                      vital="bp"
-                      sys={sys}
-                      dia={dia}
-                      hourLabels={hourLabels}
-                      range={SYS_RANGE}
-                      testID="bp-detail-chart"
-                    />
+                    <>
+                      <RangeBandChart
+                        vital="bp"
+                        points={chartPoints}
+                        band={chartBands.band}
+                        secondaryBand={chartBands.secondaryBand}
+                        unit="mmHg"
+                        testID="bp-detail-chart"
+                      />
+                      <ViewAsTableLink
+                        rows={chartPoints.map((pt) => ({
+                          label: pt.label ?? '',
+                          value: `${pt.value}/${pt.secondary ?? ''}`,
+                        }))}
+                        testID="bp-detail-table"
+                      />
+                    </>
                   ) : (
                     // Sprint 18 B4 — "no readings today" inline copy.
                     // The chart card frame stays so the screen doesn't
