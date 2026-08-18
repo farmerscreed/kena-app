@@ -35,6 +35,17 @@ function makeFakeClient(rowsByKey: Record<string, unknown[]>) {
         in: jest.fn(() => chain),
         is: jest.fn(() => chain),
         order: jest.fn(() => chain),
+        // D13 PR-1 — the vital_baselines query awaits the chain itself
+        // (.select().eq() with no terminal call), so the chain is
+        // thenable. Other queries end on .limit()/.maybeSingle(), which
+        // return real promises, so this never intercepts them.
+        then: jest.fn(
+          (resolve: (v: unknown) => unknown, reject?: (e: unknown) => unknown) =>
+            Promise.resolve({
+              data: rowsByKey['vital_baselines'] ?? [],
+              error: null,
+            }).then(resolve, reject),
+        ),
         // Wearer-tz lookup ends on .maybeSingle() against family_members.
         maybeSingle: jest.fn(() =>
           Promise.resolve({ data: rowsByKey['owner']?.[0] ?? null, error: null }),
@@ -160,8 +171,9 @@ describe('fetchParentPulseData', () => {
   it('threads the family_id filter into every query', async () => {
     const client = makeFakeClient({});
     await fetchParentPulseData(client, TEST_FAMILY_ID, NOW_SEC);
-    // 1 readings + 5 vitals_other + 1 family_members (wearer tz) = 7.
-    expect((client.from as jest.Mock).mock.calls.length).toBe(7);
+    // 1 readings + 5 vitals_other + 1 family_members (wearer tz)
+    // + 1 vital_baselines (D13 PR-1) = 8.
+    expect((client.from as jest.Mock).mock.calls.length).toBe(8);
     expect((client.from as jest.Mock).mock.calls).toEqual([
       ['readings'],
       ['vitals_other'],
@@ -170,6 +182,7 @@ describe('fetchParentPulseData', () => {
       ['vitals_other'],
       ['vitals_other'],
       ['family_members'],
+      ['vital_baselines'],
     ]);
   });
 });

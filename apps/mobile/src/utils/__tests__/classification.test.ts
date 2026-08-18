@@ -1,133 +1,279 @@
+// BP classification — D13 PR-1 (§4.4). Rewritten from the Sprint 6
+// suite: the cold-start absolute ladder (161/101 → amber before any
+// baseline existed) and the outlier-AND-soft-threshold conjunction are
+// spec-retired. Verdicts now come from the person's own 28-day band;
+// below the §4.3 sufficiency gate everything is the learning state,
+// with the 180/120 absolute floor as the single exception.
+
 import {
   classifyReading,
+  classifyVital,
+  confirmedOutsideBand,
   tierChipText,
   tierPillVariant,
-  type ReadingBaseline,
+  type VitalBaseline,
 } from '../classification';
 
-const baseline: ReadingBaseline = {
-  sys: 124,
-  dia: 78,
-  pulse: 72,
-  sigmaSys: 8,
-  sigmaDia: 5,
-  sigmaPulse: 6,
-  daysOfData: 14,
+// The canonical D13 §10 done-when band: "a user whose band is 118–134
+// sees 140 classified worth_a_look and 130 classified in_range."
+// Display band (p10–p90) 118–134; classification band (mean ± 2σ)
+// 116–136 — so 135 sits on the soft shoulder.
+const sysBaseline: VitalBaseline = {
+  vital: 'bp_systolic',
+  windowDays: 28,
+  sampleCount: 12,
+  mean: 126,
+  sd: 5,
+  p10: 118,
+  p90: 134,
+  contextTag: null,
+  isSufficient: true,
+  computedAt: '2026-08-18T03:00:00Z',
+  provisional: false,
 };
 
-describe('classifyReading — crisis absolute (always confirmed_urgent)', () => {
+const diaBaseline: VitalBaseline = {
+  ...sysBaseline,
+  vital: 'bp_diastolic',
+  mean: 80,
+  sd: 4,
+  p10: 74,
+  p90: 86,
+};
+
+const insufficientSys: VitalBaseline = {
+  ...sysBaseline,
+  sampleCount: 4,
+  isSufficient: false,
+};
+
+const provisionalSys: VitalBaseline = {
+  ...sysBaseline,
+  computedAt: null,
+  provisional: true,
+};
+
+const pair = { systolic: sysBaseline, diastolic: diaBaseline };
+
+describe('classifyVital — rules in §4.4 order', () => {
+  it('140 against the 118–134 band → worth_a_look (outside mean ± 2σ)', () => {
+    const v = classifyVital({ vital: 'bp_systolic', value: 140 }, sysBaseline);
+    expect(v.tier).toBe('worth_a_look');
+    expect(v.reason).toBe('outside_band');
+    expect(v.band).toEqual({ low: 118, high: 134 });
+    expect(v.deviation).toBe(14);
+  });
+
+  it('130 against the 118–134 band → in_range', () => {
+    const v = classifyVital({ vital: 'bp_systolic', value: 130 }, sysBaseline);
+    expect(v.tier).toBe('in_range');
+    expect(v.reason).toBe('inside_band');
+  });
+
+  it('135 sits on the shoulder (between p90 and mean + 2σ) → in_range, never flagged', () => {
+    expect(classifyVital({ vital: 'bp_systolic', value: 135 }, sysBaseline).tier).toBe(
+      'in_range',
+    );
+  });
+
+  it('the shoulder is symmetric below (117 between mean − 2σ and p10) → in_range', () => {
+    expect(classifyVital({ vital: 'bp_systolic', value: 117 }, sysBaseline).tier).toBe(
+      'in_range',
+    );
+  });
+
+  it('band endpoints are inclusive', () => {
+    expect(classifyVital({ vital: 'bp_systolic', value: 118 }, sysBaseline).tier).toBe(
+      'in_range',
+    );
+    expect(classifyVital({ vital: 'bp_systolic', value: 134 }, sysBaseline).tier).toBe(
+      'in_range',
+    );
+  });
+
+  it('below the classification band is also worth_a_look (bands are two-sided)', () => {
+    const v = classifyVital({ vital: 'bp_systolic', value: 110 }, sysBaseline);
+    expect(v.tier).toBe('worth_a_look');
+    expect(v.deviation).toBe(-16);
+  });
+});
+
+describe('classifyVital — the 180/120 absolute floor (§4.3)', () => {
   it.each([
-    [180, 100],
-    [200, 70],
-    [120, 120],
-    [120, 130],
-    [180, 120],
-  ])('sys=%i dia=%i → confirmed_urgent (crisis_absolute)', (systolic, diastolic) => {
-    const c = classifyReading({ systolic, diastolic, pulse: 72 }, baseline);
-    expect(c.tier).toBe('confirmed_urgent');
-    expect(c.reason).toBe('crisis_absolute');
+    ['sufficient baseline', sysBaseline],
+    ['no baseline', null],
+    ['insufficient baseline', insufficientSys],
+    ['provisional baseline', provisionalSys],
+  ])('systolic 185 escalates with %s', (_label, b) => {
+    const v = classifyVital({ vital: 'bp_systolic', value: 185 }, b as VitalBaseline | null);
+    expect(v.tier).toBe('talk_to_doctor');
+    expect(v.reason).toBe('absolute_floor');
   });
 
-  it('crisis fires even with no baseline', () => {
-    const c = classifyReading({ systolic: 185, diastolic: 95 });
-    expect(c.tier).toBe('confirmed_urgent');
+  it('diastolic 125 escalates regardless of band', () => {
+    const v = classifyVital({ vital: 'bp_diastolic', value: 125 }, diaBaseline);
+    expect(v.tier).toBe('talk_to_doctor');
+    expect(v.reason).toBe('absolute_floor');
+  });
+
+  it('the floor is inclusive at exactly 180 / 120', () => {
+    expect(classifyVital({ vital: 'bp_systolic', value: 180 }, null).tier).toBe(
+      'talk_to_doctor',
+    );
+    expect(classifyVital({ vital: 'bp_diastolic', value: 120 }, null).tier).toBe(
+      'talk_to_doctor',
+    );
+  });
+
+  it('179 / 119 do NOT hit the floor', () => {
+    expect(classifyVital({ vital: 'bp_systolic', value: 179 }, null).tier).toBe('learning');
+    expect(classifyVital({ vital: 'bp_diastolic', value: 119 }, null).tier).toBe('learning');
   });
 });
 
-describe('classifyReading — cold-start (no baseline / <14 days)', () => {
-  it('sys=151 dia=80 → in_pattern (≤160 / ≤100 / pulse ≤130)', () => {
-    expect(classifyReading({ systolic: 151, diastolic: 80, pulse: 80 }).tier).toBe('in_pattern');
+describe('classifyVital — learning state (§4.3 sufficiency gate)', () => {
+  it('no baseline at all → learning, no band', () => {
+    const v = classifyVital({ vital: 'bp_systolic', value: 161 }, null);
+    expect(v.tier).toBe('learning');
+    expect(v.reason).toBe('insufficient_data');
+    expect(v.band).toBeNull();
+    expect(v.sampleCount).toBe(0);
   });
 
-  it('sys=161 → calm_concerned (absolute_cold_start)', () => {
-    const c = classifyReading({ systolic: 161, diastolic: 80, pulse: 80 });
-    expect(c.tier).toBe('calm_concerned');
-    expect(c.reason).toBe('absolute_cold_start');
+  it('an insufficient row → learning, even for a formerly-amber value like 161', () => {
+    // The Sprint 6 cold-start ladder amber-flagged 161/101 with no
+    // baseline. D13 §4.3: below threshold no coloured verdict — the
+    // absolute floor at 180/120 is the only exception.
+    const v = classifyVital({ vital: 'bp_systolic', value: 161 }, insufficientSys);
+    expect(v.tier).toBe('learning');
+    expect(v.sampleCount).toBe(4);
   });
 
-  it('dia=101 → calm_concerned', () => {
-    expect(classifyReading({ systolic: 130, diastolic: 101, pulse: 80 }).tier).toBe(
-      'calm_concerned',
+  it('carries the provisional flag through the verdict', () => {
+    expect(classifyVital({ vital: 'bp_systolic', value: 130 }, provisionalSys).provisional).toBe(
+      true,
     );
-  });
-
-  it('pulse=131 → calm_concerned', () => {
-    expect(classifyReading({ systolic: 130, diastolic: 80, pulse: 131 }).tier).toBe(
-      'calm_concerned',
-    );
-  });
-
-  it('boundary sys=160 (NOT >) → in_pattern in cold start', () => {
-    expect(classifyReading({ systolic: 160, diastolic: 80, pulse: 80 }).tier).toBe('in_pattern');
-  });
-
-  it('boundary dia=100 (NOT >) → in_pattern in cold start', () => {
-    expect(classifyReading({ systolic: 130, diastolic: 100, pulse: 80 }).tier).toBe('in_pattern');
-  });
-
-  it('thin baseline (<14 days) takes the cold-start path', () => {
-    const thin: ReadingBaseline = { ...baseline, daysOfData: 7 };
-    expect(classifyReading({ systolic: 161, diastolic: 80, pulse: 80 }, thin).tier).toBe(
-      'calm_concerned',
+    expect(classifyVital({ vital: 'bp_systolic', value: 130 }, sysBaseline).provisional).toBe(
+      false,
     );
   });
 });
 
-describe('classifyReading — hot path (full baseline)', () => {
-  it('within ±2σ AND below soft thresholds → in_pattern', () => {
-    const c = classifyReading({ systolic: 128, diastolic: 80, pulse: 74 }, baseline);
+describe('confirmedOutsideBand — three consecutive, same side, 72h (§4.4)', () => {
+  const H = 3600;
+  const entry = (value: number, hoursAgo: number) => ({
+    value,
+    measuredAtSec: 1_700_000_000 - hoursAgo * H,
+  });
+
+  it('three above mean + 2σ within 72h → confirmed', () => {
+    expect(
+      confirmedOutsideBand([entry(140, 0), entry(139, 24), entry(141, 60)], sysBaseline),
+    ).toBe(true);
+  });
+
+  it('three below mean − 2σ within 72h → confirmed', () => {
+    expect(
+      confirmedOutsideBand([entry(110, 0), entry(112, 20), entry(111, 40)], sysBaseline),
+    ).toBe(true);
+  });
+
+  it('mixed directions never confirm', () => {
+    expect(
+      confirmedOutsideBand([entry(140, 0), entry(110, 24), entry(141, 60)], sysBaseline),
+    ).toBe(false);
+  });
+
+  it('two outliers are not enough', () => {
+    expect(confirmedOutsideBand([entry(140, 0), entry(139, 24)], sysBaseline)).toBe(false);
+  });
+
+  it('a streak wider than 72h does not confirm', () => {
+    expect(
+      confirmedOutsideBand([entry(140, 0), entry(139, 24), entry(141, 80)], sysBaseline),
+    ).toBe(false);
+  });
+
+  it('an in-band reading in the middle breaks the streak', () => {
+    expect(
+      confirmedOutsideBand([entry(140, 0), entry(126, 24), entry(141, 48)], sysBaseline),
+    ).toBe(false);
+  });
+
+  it('never confirms against an insufficient baseline', () => {
+    expect(
+      confirmedOutsideBand([entry(140, 0), entry(139, 24), entry(141, 60)], insufficientSys),
+    ).toBe(false);
+  });
+});
+
+describe('classifyReading — the legacy-shaped adapter', () => {
+  it('in-band reading → in_pattern / within_baseline, verdict carried', () => {
+    const c = classifyReading({ systolic: 128, diastolic: 80, pulse: 74 }, pair);
     expect(c.tier).toBe('in_pattern');
     expect(c.reason).toBe('within_baseline');
+    expect(c.verdict?.tier).toBe('in_range');
   });
 
-  it('outlier alone (sys=151 = +27 vs baseline 124, σ 8) without soft threshold breach → in_pattern', () => {
-    // sys=151 IS an outlier (>2σ over 124) AND >150 soft → should fire
-    const c = classifyReading({ systolic: 151, diastolic: 80, pulse: 74 }, baseline);
+  it('140 systolic → calm_concerned; a single outlier never escalates further', () => {
+    const c = classifyReading({ systolic: 140, diastolic: 80 }, pair);
     expect(c.tier).toBe('calm_concerned');
     expect(c.reason).toBe('outlier_and_soft_threshold');
+    expect(c.verdict?.tier).toBe('worth_a_look');
   });
 
-  it('soft-threshold breach alone without outlier (within ±2σ) → in_pattern', () => {
-    const wide: ReadingBaseline = { ...baseline, sigmaSys: 30 };
-    const c = classifyReading({ systolic: 151, diastolic: 80, pulse: 74 }, wide);
+  it('takes the more severe of systolic and diastolic', () => {
+    // Systolic in range, diastolic outside its 72–88 classification band.
+    const c = classifyReading({ systolic: 128, diastolic: 95 }, pair);
+    expect(c.tier).toBe('calm_concerned');
+  });
+
+  it('185/125 → confirmed_urgent / crisis_absolute with or without baselines', () => {
+    expect(classifyReading({ systolic: 185, diastolic: 125 }, pair).reason).toBe(
+      'crisis_absolute',
+    );
+    expect(classifyReading({ systolic: 185, diastolic: 125 }).tier).toBe('confirmed_urgent');
+  });
+
+  it('no baselines → in_pattern / cold_start (the learning state, uncoloured)', () => {
+    const c = classifyReading({ systolic: 161, diastolic: 101 });
     expect(c.tier).toBe('in_pattern');
+    expect(c.reason).toBe('cold_start');
+    expect(c.verdict?.tier).toBe('learning');
   });
 
-  it('boundary sys=151 with σ=8: |151-124|=27 > 16 → outlier; >150 soft → calm_concerned', () => {
-    expect(
-      classifyReading({ systolic: 151, diastolic: 80, pulse: 74 }, baseline).tier,
-    ).toBe('calm_concerned');
+  it('three consecutive same-side outliers in 72h escalate to confirmed_urgent', () => {
+    const nowSec = 1_700_000_000;
+    const history = [
+      { systolic: 140, diastolic: 80, measuredAtSec: nowSec },
+      { systolic: 139, diastolic: 81, measuredAtSec: nowSec - 24 * 3600 },
+      { systolic: 141, diastolic: 80, measuredAtSec: nowSec - 60 * 3600 },
+    ];
+    const c = classifyReading({ systolic: 140, diastolic: 80 }, pair, history);
+    expect(c.tier).toBe('confirmed_urgent');
+    expect(c.reason).toBe('outside_band_confirmed');
+    expect(c.verdict?.tier).toBe('talk_to_doctor');
   });
 
-  it('boundary sys=150 with σ=8: |150-124|=26 > 16 → outlier; NOT >150 → in_pattern', () => {
-    expect(
-      classifyReading({ systolic: 150, diastolic: 80, pulse: 74 }, baseline).tier,
-    ).toBe('in_pattern');
+  it('a broken streak stays calm_concerned', () => {
+    const nowSec = 1_700_000_000;
+    const history = [
+      { systolic: 140, diastolic: 80, measuredAtSec: nowSec },
+      { systolic: 126, diastolic: 80, measuredAtSec: nowSec - 24 * 3600 },
+      { systolic: 141, diastolic: 80, measuredAtSec: nowSec - 60 * 3600 },
+    ];
+    const c = classifyReading({ systolic: 140, diastolic: 80 }, pair, history);
+    expect(c.tier).toBe('calm_concerned');
   });
 
-  it('boundary dia=96 with σ=5: |96-78|=18 > 10 → outlier; >95 soft → calm_concerned', () => {
-    expect(
-      classifyReading({ systolic: 130, diastolic: 96, pulse: 74 }, baseline).tier,
-    ).toBe('calm_concerned');
-  });
-
-  it('boundary dia=95 with σ=5: |95-78|=17 > 10 → outlier; NOT >95 → in_pattern', () => {
-    expect(
-      classifyReading({ systolic: 130, diastolic: 95, pulse: 74 }, baseline).tier,
-    ).toBe('in_pattern');
-  });
-
-  it('null/undefined pulse is tolerated (not counted)', () => {
-    const c = classifyReading({ systolic: 128, diastolic: 80 }, baseline);
+  it('pulse no longer participates in BP classification', () => {
+    const c = classifyReading({ systolic: 128, diastolic: 80, pulse: 135 }, pair);
     expect(c.tier).toBe('in_pattern');
   });
 });
 
 describe('tier UI helpers', () => {
-  it('tierChipText matches the docs/04-screens/reading-detail.md mapping', () => {
-    // Sprint 19 (audit D12 P2-1) — "In pattern" was the internal enum
-    // name (`in_pattern`) promoted to user copy, competing with five
-    // other phrases for the same idea. Canonical vocabulary now.
+  it('tierChipText keeps the canonical vocabulary', () => {
     expect(tierChipText('in_pattern')).toBe('In your usual range');
     expect(tierChipText('calm_concerned')).toBe('Worth a look');
     expect(tierChipText('confirmed_urgent')).toBe('Talk to your doctor');

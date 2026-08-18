@@ -39,9 +39,13 @@ import {
 } from '../../utils/vitalAggregators';
 import {
   classifyReading,
-  type ReadingBaseline,
 } from '../../utils/classification';
-import { computeReadingBaseline } from '../../utils/readingBaseline';
+import {
+  seedVitalBaselines,
+  resolveBpBaselines,
+  type BpBaselinePair,
+  type VitalBaselineServerRow,
+} from '../../utils/vitalBaselines';
 import type { LocalReading } from '../../state/readings';
 import type {
   HRSample,
@@ -120,15 +124,17 @@ interface VitalsOtherRow {
 
 function mapReading(
   row: ReadingRow,
-  baseline: ReadingBaseline | null,
+  baselines: BpBaselinePair | null,
 ): LocalReading {
-  // Sprint 19 (audit D12 P0-2) — the parent's readings are classified
-  // against the PARENT's own baseline. This is the caregiver path, so
-  // the baseline must come from the fetched rows, never from the
-  // caregiver's own local store.
+  // D13 PR-1 (P0-2) — the parent's readings are classified against the
+  // PARENT's own truth-layer baseline. This is the caregiver path, so
+  // the baseline comes from the parent's server rows (or the
+  // provisional recompute over the parent's fetched readings), never
+  // from the caregiver's own local store. No history: batch
+  // re-classification never runs the confirmation rule.
   const classification = classifyReading(
     { systolic: row.systolic, diastolic: row.diastolic, pulse: row.pulse },
-    baseline,
+    baselines,
   );
   const measuredAtMs = new Date(row.measured_at).getTime();
   return {
@@ -281,8 +287,9 @@ export async function fetchParentPulseData(
   familyId: string,
   nowSec: number = Math.floor(Date.now() / 1000),
 ): Promise<ParentPulseFetchResult> {
-  // Six parallel queries — readings table + five vitals_other slices.
-  // A single vitals_other query with vital_type IN(...) is possible
+  // Seven parallel queries — readings table + five vitals_other slices
+  // + the parent's vital_baselines truth-layer rows (D13 PR-1). A
+  // single vitals_other query with vital_type IN(...) is possible
   // but the per-vital caps diverge wildly (HR/SpO2 dense, sleep/
   // activity per-day), so fanning out keeps the limits tight and the
   // total payload bounded.
@@ -294,6 +301,7 @@ export async function fetchParentPulseData(
     stepsResult,
     caloriesResult,
     ownerResult,
+    baselinesResult,
   ] = await Promise.all([
     client
       .from('readings')
@@ -358,6 +366,12 @@ export async function fetchParentPulseData(
       .eq('role', 'family_owner')
       .is('removed_at', null)
       .maybeSingle(),
+    client
+      .from('vital_baselines')
+      .select(
+        'vital, window_days, sample_count, mean_value, sd_value, p10_value, p90_value, context_tag, is_sufficient, computed_at',
+      )
+      .eq('family_id', familyId),
   ]);
 
   if (readingsResult.error) throw readingsResult.error;
@@ -368,17 +382,28 @@ export async function fetchParentPulseData(
   if (caloriesResult.error) throw caloriesResult.error;
 
   const readingRows = (readingsResult.data ?? []) as ReadingRow[];
-  // Baseline over the parent's own fetched window, computed once so the
-  // whole batch is judged consistently.
-  const readingBaseline = computeReadingBaseline(
+  // D13 PR-1 — the PARENT's truth-layer rows, seeded into the shared
+  // cache so synchronous consumers (caregiverPerson) read the same
+  // band. Baseline failure is non-fatal: the resolver falls back to a
+  // provisional recompute over the parent's own fetched window, never
+  // the caregiver's local store. Resolved once so the whole batch is
+  // judged consistently.
+  if (!baselinesResult.error && baselinesResult.data) {
+    seedVitalBaselines(
+      familyId,
+      baselinesResult.data as unknown as VitalBaselineServerRow[],
+    );
+  }
+  const readingBaselines = resolveBpBaselines(
+    familyId,
     readingRows.map((r) => ({
       measuredAtSec: Math.floor(new Date(r.measured_at).getTime() / 1000),
       systolic: r.systolic,
       diastolic: r.diastolic,
-      pulse: r.pulse,
     })),
+    nowSec,
   );
-  const readings = readingRows.map((r) => mapReading(r, readingBaseline));
+  const readings = readingRows.map((r) => mapReading(r, readingBaselines));
   const hr = ((hrResult.data ?? []) as VitalsOtherRow[]).map(mapHR);
   const spo2 = ((spo2Result.data ?? []) as VitalsOtherRow[]).map(mapSpO2);
   const sleep = ((sleepResult.data ?? []) as VitalsOtherRow[]).map(mapSleep);

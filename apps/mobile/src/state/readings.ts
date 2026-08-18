@@ -21,7 +21,7 @@ import { create } from 'zustand';
 import { mmkv, STORAGE_KEYS } from '../services/storage';
 import { logger } from '../services/analytics/logger';
 import { classifyReading, type Classification } from '../utils/classification';
-import { computeReadingBaseline } from '../utils/readingBaseline';
+import { resolveBpBaselines } from '../utils/vitalBaselines';
 import { postReading } from '../services/sync/postReading';
 import { forwardReadingToPlatform } from '../services/health-platform/syncBridge';
 
@@ -174,18 +174,29 @@ export const useReadings = create<ReadingsState>((set, get) => ({
     if (existing) {
       return existing;
     }
-    // Sprint 19 (audit D12 P0-2) — classify against the wearer's own
-    // 14-day baseline, not the absolute ladder. The baseline is computed
-    // from readings we already hold locally, so this works offline;
-    // `classifyReading` owns the maturity gate and falls back to its
-    // cold-start path when there aren't yet 14 distinct days.
-    const baseline = computeReadingBaseline([
-      ...get().pending,
-      ...get().recent,
-    ]);
+    // D13 PR-1 (P0-2) — classify against the wearer's own 28-day
+    // baseline: the server truth-layer row when the cache has one,
+    // else a provisional local recompute — so this works offline.
+    // `classifyReading` owns the sufficiency gate and renders the
+    // learning state until the §4.3 minimums are met. History (this
+    // reading first) enables the three-consecutive confirmation rule.
+    const held = [...get().pending, ...get().recent];
+    const familyId = mmkv.getString(STORAGE_KEYS.currentFamilyId) ?? '';
+    const baselines = resolveBpBaselines(familyId, held);
     const classification = classifyReading(
       { systolic: input.systolic, diastolic: input.diastolic, pulse: input.pulse },
-      baseline,
+      baselines,
+      [
+        { systolic: input.systolic, diastolic: input.diastolic, measuredAtSec: input.measuredAtSec },
+        ...held
+          .slice()
+          .sort((a, b) => b.measuredAtSec - a.measuredAtSec)
+          .map((r) => ({
+            systolic: r.systolic,
+            diastolic: r.diastolic,
+            measuredAtSec: r.measuredAtSec,
+          })),
+      ],
     );
     const row: LocalReading = {
       ...input,

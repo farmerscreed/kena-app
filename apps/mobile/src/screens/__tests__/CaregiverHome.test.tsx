@@ -301,21 +301,35 @@ describe('<CaregiverHome /> — populated state', () => {
 describe('<CaregiverHome /> — anomaly banner', () => {
   function setupOnePerson(status: 'clear' | 'attention' | 'urgent') {
     // ADR-0006 Phase 2 — status is DERIVED from the reading by
-    // buildConstellationNodes now (not injected via `people`). Use BP
-    // that classifies to the intended tier (classification.ts:
-    // >=180/120 urgent; >160/100 attention; else clear/in_pattern).
+    // buildConstellationNodes now (not injected via `people`). Since
+    // D13 PR-1 the tier comes from the person's OWN band, so the
+    // fixture carries a sufficient recent-readings history (12 readings
+    // over 12 days, sys mean 126 / ±2σ ≈ 117–135): 168/104 is outside
+    // the band (attention); ≥180/120 is the absolute floor (urgent);
+    // 122/78 is inside (clear).
     const bp =
       status === 'urgent'
         ? { systolic: 188, diastolic: 122 }
         : status === 'attention'
           ? { systolic: 168, diastolic: 104 }
           : { systolic: 122, diastolic: 78 };
+    const bandSys = [118, 120, 122, 124, 125, 126, 126, 127, 128, 130, 132, 134];
+    const bandDia = [74, 76, 77, 78, 79, 80, 80, 81, 82, 83, 85, 86];
+    const recent = bandSys.map((sys, i) =>
+      reading({
+        id: `band-${i}`,
+        measuredAt: new Date(Date.now() - (2 + i) * 24 * 3600_000).toISOString(),
+        systolic: sys,
+        diastolic: bandDia[i],
+      }),
+    );
     mockHookResult.parents = [
       parent({
         familyId: 'fam-1',
         parentDisplayName: 'Marian Okeke',
         parentRelationship: 'Mom',
         latestReading: reading({ id: 'r1', ...bp }),
+        recentReadings: recent,
       }),
     ];
   }

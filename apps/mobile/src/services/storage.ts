@@ -52,6 +52,12 @@ export const STORAGE_KEYS = {
   // Family id returned by the create_family RPC. Persisted so a crash
   // mid-flow doesn't orphan the family record.
   currentFamilyId: 'leiko.family.currentId',
+  // D13 PR-1 — cached vital_baselines rows per family (the server
+  // truth layer), JSON blob { [familyId]: { fetchedAtMs, rows } }.
+  // Read synchronously by resolveBpBaselines; refreshed after hydration
+  // and parent fetches. Rows only — never reading values beyond the
+  // aggregate band, and never in analytics.
+  vitalBaselinesByFamily: 'leiko.baselines.byFamily',
   // Paired Urion device for the current user/family. Sprint 5.
   // Stored as JSON: { id, mac, model, deviceId (Supabase row id), pairedAt }.
   pairedDevice: 'leiko.ble.pairedDevice',
