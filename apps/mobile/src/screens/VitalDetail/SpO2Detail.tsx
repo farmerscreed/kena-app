@@ -172,7 +172,7 @@ function copyForTier(
         hero: 'Steady through the night',
         insight: low
           ? `Your oxygen held in your usual range through the night, with a low of ${low}. Small, brief dips like this are common in healthy sleep.`
-          : 'Your oxygen held in your usual range through the night. Small, brief dips are common in healthy sleep.',
+          : 'Your oxygen held in your usual range through the night.',
       };
     case 'calm_concerned':
       return {
