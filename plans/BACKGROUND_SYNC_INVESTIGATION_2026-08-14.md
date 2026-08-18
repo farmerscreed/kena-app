@@ -205,9 +205,23 @@ deferrable. Worth checking on any device that reports missed syncs.
 | Normal-boot data check after D4 | ✅ `sec1_boot_completed {encrypted:true, status:completed}` + `sec1_legacy_deleted`; readings/pairing intact |
 | Committed + pushed to `main` | ✅ `5419e88`, `d9b629c`, `a76d8a0`, doc `e75bf47` |
 | **Headless BP upload (§6e)** | ✅ **FIXED (`bb72c51`, 2026-08-14) + VERIFIED end-to-end 2026-08-15 — see the addendum in §6e** |
-| Play/AAB | ❌ not built. Founder deferred it 2026-08-15 — more app changes wanted before the vc6 AAB. Users are still on the old broken build |
+| **Freezer exemption (§8)** | ✅ FIXED `4b58daf` + VERIFIED — process now freezes only AFTER "Finished task", not 9 s in |
+| **Headless-safe timeouts (§9)** | ✅ FIXED `5137c2d` + VERIFIED 2026-08-15 ~16:20 — 40 s clean cold session, 17 vitals persisted headlessly |
+| **Headless Supabase session (§10)** | ⚠️ **FIXED `03c5b4b` — SHIPPED BUT NEVER VERIFIED ON DEVICE. START HERE.** Suite green, but the bench run never happened: the phone dropped off USB at 21:06 and the session ended. See §10 "Verify". |
+| BLE connection priority | ❌ known defect, not fixed — `requestConnectionPriority` is never called anywhere; link degrades to `interval=99 latency=4` ~9 s in. See end of §10 |
+| Play/AAB | ❌ not built. Founder deferred it 2026-08-15 — more app changes wanted first. Users are still on the old broken build |
 
-Full suite green: **2527 tests / 219 suites**, typecheck clean.
+Full suite green at end of 2026-08-15: **2548 tests / 221 suites**, typecheck clean.
+(Was 2527/219 when §6 was first written.)
+
+### ⚠️ NEXT SESSION, READ THIS FIRST
+§6e, §8 and §9 are fixed AND proven on-device. **§10 is fixed and unit-tested but has
+never run on the bench.** It is the difference between "the watch data reaches the
+phone" (proven working) and "it reaches the server without opening the app" (unproven
+since the §10 build was installed). To verify: leave the app closed, let a cycle fire,
+then run the `vitals_other` query in §10 — if `last_upload` tracks the fire time, §10
+is confirmed and this investigation is fully closed. If not, the new
+`headless_session_missing` / `_refreshed` / `_refresh_failed` events say why.
 
 ### 6e. THE ONE REMAINING BUG — headless BP upload *(start here)*
 
