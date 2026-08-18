@@ -31,7 +31,10 @@ export type Status =
   | 'attention'
   | 'urgent'
   | 'offline'
-  | 'sleeping';
+  | 'sleeping'
+  // D13 PR-4 (§4.3) — data still accumulating; below the sufficiency
+  // gate a person renders grey, never a coloured verdict.
+  | 'learning';
 
 export interface StatusPillProps {
   status: Status;
@@ -45,6 +48,7 @@ export interface StatusPillProps {
 // surfaces (the pill never renders on self surfaces).
 const STATUS_LABEL: Record<Status, string> = {
   clear: 'In their usual range',
+  learning: 'Learning',
   watch: 'Watch',
   attention: 'Needs attention',
   urgent: 'Urgent',

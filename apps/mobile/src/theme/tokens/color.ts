@@ -97,6 +97,10 @@ export const paletteDark = {
     // that red is reserved for confirmed-urgent, calibrated tone.
     urgent: '#DC5631',
     offline: '#857F7A', // grey
+    // D13 PR-4 — the learning state: data still accumulating, no
+    // verdict claimed. Same muted family as offline (grey is the
+    // point); the PR-5 colour fork gives it its own token pair.
+    learning: '#8A837C',
     sleeping: '#7B67CC', // periwinkle (same as person.3)
   },
   glass: {
@@ -214,6 +218,7 @@ export interface SemanticColors {
     urgent: string;
     offline: string;
     sleeping: string;
+    learning: string;
   };
   focus: { ring: string };
 }
@@ -275,6 +280,7 @@ export const semanticColorsDark: SemanticColors = {
     attention: paletteDark.status.attention,
     urgent: paletteDark.status.urgent,
     offline: paletteDark.status.offline,
+    learning: paletteDark.status.learning,
     sleeping: paletteDark.status.sleeping,
   },
   focus: { ring: paletteDark.amber[500] },
@@ -350,6 +356,7 @@ export const semanticColorsLight: SemanticColors = {
     attention: paletteDark.status.attention,
     urgent: paletteDark.status.urgent,
     offline: paletteDark.status.offline,
+    learning: paletteDark.status.learning,
     sleeping: paletteDark.status.sleeping,
   },
   focus: { ring: paletteLight.amber[500] },

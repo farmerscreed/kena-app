@@ -64,6 +64,9 @@ export interface VitalRingProps {
   vitalType: VitalType;
   /** Arc fraction 0..1. Computed by consumer per D13 §7.1 formulas. */
   fill: number;
+  /** D13 PR-4 (§6.2) — overrides the vital colour; used for the grey
+   *  learning state while the §4.3 sufficiency gate is unmet. */
+  colorOverride?: string;
   size?: VitalRingSize;
   /** Custom diameter in pt; overrides `size`'s diameter when set. */
   diameter?: number;
@@ -104,6 +107,7 @@ export function arcDashOffset(circumference: number, fill: number): number {
 export function VitalRing({
   vitalType,
   fill,
+  colorOverride,
   size = 'md',
   diameter: diameterOverride,
   strokeWidth: strokeWidthOverride,
@@ -165,7 +169,7 @@ export function VitalRing({
     opacity: pulseOpacityValue.value,
   }));
 
-  const color = theme.colors.vital[vitalType];
+  const color = colorOverride ?? theme.colors.vital[vitalType];
   const isStale = state === 'stale';
   const baseOpacity = isStale ? STALE_OPACITY : 1;
   const showRim =

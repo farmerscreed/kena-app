@@ -64,6 +64,7 @@ import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 import {
   vitalRangeCopyForTier,
   type ClassificationTier,
+  type Tier,
 } from '../utils/classification';
 import {
   dailyPulseRevealNarrationOpacity,
@@ -115,6 +116,12 @@ export interface DailyPulseHeroCentral {
    * verdict of their own, so they leave it undefined.
    */
   tier?: ClassificationTier | null;
+  /**
+   * D13 PR-4 — verdict-aware tier. When 'learning' the central ring
+   * renders the grey learning colour and the verdict line says so in
+   * the §7.4 fragment; the legacy `tier` alone cannot express it.
+   */
+  canonicalTier?: Tier | null;
   /** When true, a small "live" pill renders below the sub. */
   live?: boolean;
 }
@@ -316,6 +323,10 @@ function NarrationLine({ text, reduceMotion }: NarrationProps) {
 
 function centralVerdict(central: DailyPulseHeroCentral): string | undefined {
   if (!central.unit) return undefined;
+  if (central.canonicalTier === 'learning') {
+    // §7.4 learning fragment, self subject, sub-line form.
+    return `${central.unit} · still learning what's usual for you`;
+  }
   return vitalRangeCopyForTier(central.unit, central.tier);
 }
 
@@ -488,6 +499,11 @@ export function DailyPulseHero({
             <VitalRing
               vitalType="bp"
               fill={bpRing.fill}
+              colorOverride={
+                central.canonicalTier === 'learning'
+                  ? theme.colors.status.learning
+                  : undefined
+              }
               diameter={BP_DIAMETER}
               strokeWidth={BP_STROKE}
               state={bpRingState}

@@ -32,6 +32,8 @@ const STATUS_URGENCY: Record<Status, number> = {
   clear: 0,
   sleeping: 0,
   offline: 0,
+  // D13 PR-4 — learning is calm: accumulating data never pre-empts.
+  learning: 0,
 };
 
 export function statusUrgency(status: Status): number {

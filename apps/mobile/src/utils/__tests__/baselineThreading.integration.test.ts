@@ -252,7 +252,9 @@ describe('one band, one reading, four call sites, one tier', () => {
       0,
       NOW_MS,
     );
-    expect(person.status).toBe('clear');
+    // Since PR-4 the learning state is its own status — grey, honest,
+    // never collapsed into "clear".
+    expect(person.status).toBe('learning');
   });
 
   it('185/125 → confirmed_urgent everywhere, band or no band', async () => {

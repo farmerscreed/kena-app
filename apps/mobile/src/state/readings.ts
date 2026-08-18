@@ -180,9 +180,15 @@ export const useReadings = create<ReadingsState>((set, get) => ({
     // `classifyReading` owns the sufficiency gate and renders the
     // learning state until the §4.3 minimums are met. History (this
     // reading first) enables the three-consecutive confirmation rule.
+    // The provisional sample set INCLUDES the reading being stored —
+    // same batch-inclusive semantics as the hydration path, and the
+    // ring's sufficiency fill counts every reading the account holds.
     const held = [...get().pending, ...get().recent];
     const familyId = mmkv.getString(STORAGE_KEYS.currentFamilyId) ?? '';
-    const baselines = resolveBpBaselines(familyId, held);
+    const baselines = resolveBpBaselines(familyId, [
+      { systolic: input.systolic, diastolic: input.diastolic, measuredAtSec: input.measuredAtSec },
+      ...held,
+    ]);
     const classification = classifyReading(
       { systolic: input.systolic, diastolic: input.diastolic, pulse: input.pulse },
       baselines,

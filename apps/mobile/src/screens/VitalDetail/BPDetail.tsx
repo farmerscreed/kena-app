@@ -49,7 +49,7 @@ import { useDailyPulseData, emptyDailyPulse } from '../../state/dailyPulse';
 import { useReadings, type LocalReading } from '../../state/readings';
 import { useParentDailyPulseData } from '../../hooks/useParentDailyPulseData';
 import { useParentVitalsRecent } from '../../hooks/useParentVitalsRecent';
-import { bpFillFromTier } from '../../utils/vitalThemes';
+import { bpRingCalibration, LEARNING_COPY } from '../../utils/calibration';
 import { useTheme } from '../../theme';
 import {
   checkStaleness,
@@ -435,7 +435,9 @@ export function BPDetail({
   }, [allBPReadings, range]);
 
   const tier = data.bp.classification?.tier ?? null;
-  const ringFill = bpFillFromTier(tier);
+  // D13 PR-4 (§6.2) — stroke encodes data sufficiency, not tier.
+  const ringCalibration = bpRingCalibration(data.bp.classification);
+  const ringFill = ringCalibration.fillFraction;
   const isEmpty = data.bp.latest === null;
   // Sprint 16 — per D13 §6.6, surface a stale caption when the last
   // BP reading is older than 36h. Empty state takes precedence.
@@ -611,6 +613,23 @@ export function BPDetail({
               body={baselineBody}
               caption={`over the last ${baseline?.sampleCount ?? 30} readings`}
               testID="bp-detail-baseline"
+            />
+          ) : null}
+          {/* D13 PR-4 (§7.7) — while the §4.3 gate is unmet the screen
+              says what it is doing instead of leaving the band's absence
+              unexplained. Copy from LEARNING_COPY, verbatim. */}
+          {!isEmpty && ringCalibration.isLearning ? (
+            <BaselineReference
+              eyebrow={LEARNING_COPY.vitalDetail.headline}
+              body={`${ringCalibration.sampleCount} of ${ringCalibration.requiredCount}`}
+              caption={LEARNING_COPY.vitalDetail.body(
+                ringCalibration.sampleCount,
+                ringCalibration.requiredCount,
+                // Name plumbing arrives with the PR-7 rebuild; until
+                // then the §7.4-safe fallbacks carry the sentence.
+                isCaregiverScoped ? 'your family member' : 'you',
+              )}
+              testID="bp-detail-learning"
             />
           ) : null}
           <StalenessHintRow stale={isStale} testID="bp-detail-staleness-hint" />
