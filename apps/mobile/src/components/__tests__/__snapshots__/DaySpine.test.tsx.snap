@@ -230,7 +230,7 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
           style={
             {
               "backgroundColor": "transparent",
-              "borderColor": "#7C7AAB",
+              "borderColor": "#9B93C7",
               "borderRadius": 4.5,
               "borderWidth": 1.5,
               "height": 9,
@@ -346,8 +346,8 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
         <View
           style={
             {
-              "backgroundColor": "#F0B384",
-              "borderColor": "#F0B384",
+              "backgroundColor": "#7EA8C4",
+              "borderColor": "#7EA8C4",
               "borderRadius": 4.5,
               "borderWidth": 1.5,
               "height": 9,

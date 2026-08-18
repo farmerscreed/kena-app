@@ -56,9 +56,12 @@ exports[`StatTrio matches snapshot 1`] = `
       style={
         {
           "color": "#FFFFFF",
-          "fontFamily": "InstrumentSerif_400Regular",
-          "fontSize": 22,
-          "lineHeight": 28,
+          "fontFamily": "JetBrainsMono_500Medium",
+          "fontSize": 17,
+          "fontVariant": [
+            "tabular-nums",
+          ],
+          "lineHeight": 22,
         }
       }
     >
@@ -120,9 +123,12 @@ exports[`StatTrio matches snapshot 1`] = `
       style={
         {
           "color": "#FFFFFF",
-          "fontFamily": "InstrumentSerif_400Regular",
-          "fontSize": 22,
-          "lineHeight": 28,
+          "fontFamily": "JetBrainsMono_500Medium",
+          "fontSize": 17,
+          "fontVariant": [
+            "tabular-nums",
+          ],
+          "lineHeight": 22,
         }
       }
     >
@@ -184,9 +190,12 @@ exports[`StatTrio matches snapshot 1`] = `
       style={
         {
           "color": "#FFFFFF",
-          "fontFamily": "InstrumentSerif_400Regular",
-          "fontSize": 22,
-          "lineHeight": 28,
+          "fontFamily": "JetBrainsMono_500Medium",
+          "fontSize": 17,
+          "fontVariant": [
+            "tabular-nums",
+          ],
+          "lineHeight": 22,
         }
       }
     >

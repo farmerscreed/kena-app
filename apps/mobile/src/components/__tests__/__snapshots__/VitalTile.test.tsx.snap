@@ -40,13 +40,13 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
       [
         {
           "backgroundColor": "#11171F",
-          "borderColor": "#D6745A33",
+          "borderColor": "#C99AB033",
           "borderRadius": 14,
           "borderTopColor": "rgba(255,255,255,0.06)",
           "borderTopWidth": 1,
           "borderWidth": 1,
           "padding": 16,
-          "shadowColor": "#D6745A",
+          "shadowColor": "#C99AB0",
           "shadowOffset": {
             "height": 4,
             "width": 0,
@@ -152,7 +152,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
                 r={18}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -186,7 +186,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
                 r={18}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -235,7 +235,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
           bbHeight={16}
           bbWidth={16}
           className="heart-straight-duotone__svg-icon-phosphor"
-          color="#D6745A"
+          color="#C99AB0"
           fill="currentColor"
           focusable={false}
           height={16}
@@ -281,7 +281,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
               d="M217.36 133.36 128 224l-89.36-90.64a50 50 0 0 1 70.72-70.72L128 80l18.64-17.36a50 50 0 1 1 70.72 70.72"
               fill={
                 {
-                  "payload": 4292244570,
+                  "payload": 4291402416,
                   "type": 0,
                 }
               }
@@ -330,8 +330,8 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
         {
           "color": "#FFFFFF",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 36,
-          "lineHeight": 40,
+          "fontSize": 28,
+          "lineHeight": 34,
         }
       }
     >
@@ -668,8 +668,8 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
         {
           "color": "#0F121C",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 36,
-          "lineHeight": 40,
+          "fontSize": 28,
+          "lineHeight": 34,
         }
       }
     >
@@ -849,7 +849,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=no-data 
                 r={18}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -883,7 +883,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=no-data 
                 r={18}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -912,7 +912,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=no-data 
           bbHeight={16}
           bbWidth={16}
           className="heart-straight-duotone__svg-icon-phosphor"
-          color="#D6745A"
+          color="#C99AB0"
           fill="currentColor"
           focusable={false}
           height={16}
@@ -958,7 +958,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=no-data 
               d="M217.36 133.36 128 224l-89.36-90.64a50 50 0 0 1 70.72-70.72L128 80l18.64-17.36a50 50 0 1 1 70.72 70.72"
               fill={
                 {
-                  "payload": 4292244570,
+                  "payload": 4291402416,
                   "type": 0,
                 }
               }
@@ -1007,8 +1007,8 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=no-data 
         {
           "color": "#FFFFFF",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 36,
-          "lineHeight": 40,
+          "fontSize": 28,
+          "lineHeight": 34,
         }
       }
     >
@@ -1344,8 +1344,8 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=no-data 
         {
           "color": "#0F121C",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 36,
-          "lineHeight": 40,
+          "fontSize": 28,
+          "lineHeight": 34,
         }
       }
     >
@@ -1525,7 +1525,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=normal m
                 r={18}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -1559,7 +1559,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=normal m
                 r={18}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -1608,7 +1608,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=normal m
           bbHeight={16}
           bbWidth={16}
           className="heart-straight-duotone__svg-icon-phosphor"
-          color="#D6745A"
+          color="#C99AB0"
           fill="currentColor"
           focusable={false}
           height={16}
@@ -1654,7 +1654,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=normal m
               d="M217.36 133.36 128 224l-89.36-90.64a50 50 0 0 1 70.72-70.72L128 80l18.64-17.36a50 50 0 1 1 70.72 70.72"
               fill={
                 {
-                  "payload": 4292244570,
+                  "payload": 4291402416,
                   "type": 0,
                 }
               }
@@ -1703,8 +1703,8 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=normal m
         {
           "color": "#FFFFFF",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 36,
-          "lineHeight": 40,
+          "fontSize": 28,
+          "lineHeight": 34,
         }
       }
     >
@@ -2040,8 +2040,8 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=normal m
         {
           "color": "#0F121C",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 36,
-          "lineHeight": 40,
+          "fontSize": 28,
+          "lineHeight": 34,
         }
       }
     >
@@ -2221,7 +2221,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=stale mo
                 r={18}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -2255,7 +2255,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=stale mo
                 r={18}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -2284,7 +2284,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=stale mo
           bbHeight={16}
           bbWidth={16}
           className="heart-straight-duotone__svg-icon-phosphor"
-          color="#D6745A"
+          color="#C99AB0"
           fill="currentColor"
           focusable={false}
           height={16}
@@ -2330,7 +2330,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=stale mo
               d="M217.36 133.36 128 224l-89.36-90.64a50 50 0 0 1 70.72-70.72L128 80l18.64-17.36a50 50 0 1 1 70.72 70.72"
               fill={
                 {
-                  "payload": 4292244570,
+                  "payload": 4291402416,
                   "type": 0,
                 }
               }
@@ -2379,8 +2379,8 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=stale mo
         {
           "color": "#FFFFFF",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 36,
-          "lineHeight": 40,
+          "fontSize": 28,
+          "lineHeight": 34,
         }
       }
     >
@@ -2716,8 +2716,8 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=stale mo
         {
           "color": "#0F121C",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 36,
-          "lineHeight": 40,
+          "fontSize": 28,
+          "lineHeight": 34,
         }
       }
     >

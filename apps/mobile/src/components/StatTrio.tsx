@@ -80,7 +80,8 @@ export function StatTrio({ items, testID, style }: StatTrioProps) {
             <Text
               maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
-                fontFamily: theme.fontFamilies.editorial,
+                fontFamily: theme.fontFamilies.numeric,
+                fontVariant: ['tabular-nums'],
                 fontSize: valueStyle.size,
                 lineHeight: valueStyle.lineHeight,
                 color: theme.colors.text.primary,

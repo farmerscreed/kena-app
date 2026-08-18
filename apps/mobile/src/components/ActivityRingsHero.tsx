@@ -248,7 +248,8 @@ export function ActivityRingsHero({
           <Text
             allowFontScaling={false}
             style={{
-              fontFamily: theme.fontFamilies.editorial,
+              fontFamily: theme.fontFamilies.numeric,
+              fontVariant: ['tabular-nums'],
               fontSize: numericXl.size,
               lineHeight: numericXl.lineHeight,
               color: theme.colors.text.primary,
@@ -365,7 +366,8 @@ function LegendDot({ color, label, value, testID }: LegendDotProps) {
       <Text
         allowFontScaling={false}
         style={{
-          fontFamily: theme.fontFamilies.editorial,
+          fontFamily: theme.fontFamilies.numeric,
+              fontVariant: ['tabular-nums'],
           fontSize: 14,
           color: theme.colors.text.primary,
           marginLeft: 6,

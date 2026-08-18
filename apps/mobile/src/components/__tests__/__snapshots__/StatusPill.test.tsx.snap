@@ -9,8 +9,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#FF735024",
-        "borderColor": "#FF735059",
+        "backgroundColor": "#E8B54F24",
+        "borderColor": "#E8B54F59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -28,14 +28,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     style={
       [
         {
-          "backgroundColor": "#FF7350",
+          "backgroundColor": "#E8B54F",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#FF7350",
+          "shadowColor": "#E8B54F",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -50,7 +50,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#FF7350",
+        "color": "#E8B54F",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -72,8 +72,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#FF735024",
-        "borderColor": "#FF735059",
+        "backgroundColor": "#E8B54F24",
+        "borderColor": "#E8B54F59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -91,14 +91,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     style={
       [
         {
-          "backgroundColor": "#FF7350",
+          "backgroundColor": "#E8B54F",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#FF7350",
+          "shadowColor": "#E8B54F",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -113,7 +113,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#FF7350",
+        "color": "#E8B54F",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -135,8 +135,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#61B56524",
-        "borderColor": "#61B56559",
+        "backgroundColor": "#5FA97E24",
+        "borderColor": "#5FA97E59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -154,14 +154,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     style={
       [
         {
-          "backgroundColor": "#61B565",
+          "backgroundColor": "#5FA97E",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#61B565",
+          "shadowColor": "#5FA97E",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -176,7 +176,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#61B565",
+        "color": "#5FA97E",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -198,8 +198,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#61B56524",
-        "borderColor": "#61B56559",
+        "backgroundColor": "#5FA97E24",
+        "borderColor": "#5FA97E59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -217,14 +217,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     style={
       [
         {
-          "backgroundColor": "#61B565",
+          "backgroundColor": "#5FA97E",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#61B565",
+          "shadowColor": "#5FA97E",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -239,7 +239,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#61B565",
+        "color": "#5FA97E",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -261,8 +261,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#857F7A24",
-        "borderColor": "#857F7A59",
+        "backgroundColor": "#918B8424",
+        "borderColor": "#918B8459",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -280,14 +280,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     style={
       [
         {
-          "backgroundColor": "#857F7A",
+          "backgroundColor": "#918B84",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#857F7A",
+          "shadowColor": "#918B84",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -302,7 +302,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#857F7A",
+        "color": "#918B84",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -324,8 +324,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#857F7A24",
-        "borderColor": "#857F7A59",
+        "backgroundColor": "#918B8424",
+        "borderColor": "#918B8459",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -343,14 +343,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     style={
       [
         {
-          "backgroundColor": "#857F7A",
+          "backgroundColor": "#918B84",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#857F7A",
+          "shadowColor": "#918B84",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -365,7 +365,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#857F7A",
+        "color": "#918B84",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -387,8 +387,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#7B67CC24",
-        "borderColor": "#7B67CC59",
+        "backgroundColor": "#8F7FD424",
+        "borderColor": "#8F7FD459",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -406,7 +406,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     style={
       [
         {
-          "backgroundColor": "#7B67CC",
+          "backgroundColor": "#8F7FD4",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
@@ -419,7 +419,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#7B67CC",
+        "color": "#8F7FD4",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -441,8 +441,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#7B67CC24",
-        "borderColor": "#7B67CC59",
+        "backgroundColor": "#8F7FD424",
+        "borderColor": "#8F7FD459",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -460,7 +460,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     style={
       [
         {
-          "backgroundColor": "#7B67CC",
+          "backgroundColor": "#8F7FD4",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
@@ -473,7 +473,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#7B67CC",
+        "color": "#8F7FD4",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -495,8 +495,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#DC563124",
-        "borderColor": "#DC563159",
+        "backgroundColor": "#E06A7C24",
+        "borderColor": "#E06A7C59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -514,14 +514,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     style={
       [
         {
-          "backgroundColor": "#DC5631",
+          "backgroundColor": "#E06A7C",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#DC5631",
+          "shadowColor": "#E06A7C",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -536,7 +536,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#DC5631",
+        "color": "#E06A7C",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,
@@ -558,8 +558,8 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#DC563124",
-        "borderColor": "#DC563159",
+        "backgroundColor": "#E06A7C24",
+        "borderColor": "#E06A7C59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -577,14 +577,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     style={
       [
         {
-          "backgroundColor": "#DC5631",
+          "backgroundColor": "#E06A7C",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#DC5631",
+          "shadowColor": "#E06A7C",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -599,7 +599,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#DC5631",
+        "color": "#E06A7C",
         "fontFamily": "Inter_500Medium",
         "fontSize": 11,
         "letterSpacing": 0.2,

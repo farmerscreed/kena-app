@@ -41,7 +41,7 @@ exports[`VitalInsightCard matches snapshot 1`] = `
             "width": 18,
           },
           {
-            "backgroundColor": "#7C7AAB26",
+            "backgroundColor": "#9B93C726",
           },
         ]
       }
@@ -51,7 +51,7 @@ exports[`VitalInsightCard matches snapshot 1`] = `
         bbHeight={11}
         bbWidth={11}
         className="sparkle-fill__svg-icon-phosphor"
-        color="#7C7AAB"
+        color="#9B93C7"
         fill="currentColor"
         focusable={false}
         height={11}
@@ -96,7 +96,7 @@ exports[`VitalInsightCard matches snapshot 1`] = `
           <RNSVGGroup
             fill={
               {
-                "payload": 4286347947,
+                "payload": 4288385991,
                 "type": 0,
               }
             }
@@ -123,7 +123,7 @@ exports[`VitalInsightCard matches snapshot 1`] = `
       maxFontSizeMultiplier={2}
       style={
         {
-          "color": "#7C7AAB",
+          "color": "#9B93C7",
           "fontFamily": "Inter_500Medium",
           "fontSize": 11,
           "letterSpacing": 0.55,

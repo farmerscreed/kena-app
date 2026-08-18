@@ -181,7 +181,8 @@ export function SleepStagesBar({
             <Text
               allowFontScaling={false}
               style={{
-                fontFamily: theme.fontFamilies.editorial,
+                fontFamily: theme.fontFamilies.numeric,
+                fontVariant: ['tabular-nums'],
                 fontSize: titleStyle.size,
                 lineHeight: titleStyle.lineHeight,
                 color: sleepColor,
@@ -221,7 +222,8 @@ export function SleepStagesBar({
             <Text
               allowFontScaling={false}
               style={{
-                fontFamily: theme.fontFamilies.editorial,
+                fontFamily: theme.fontFamilies.numeric,
+                fontVariant: ['tabular-nums'],
                 fontSize: titleStyle.size,
                 lineHeight: titleStyle.lineHeight,
                 color: sleepColor,

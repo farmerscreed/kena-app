@@ -27,8 +27,12 @@ export const opacity = {
    * theme/tokens/__tests__/glowContrast.test.ts — above that the
    * tertiary text over the glow drops below the WCAG 2.2 AA 4.5:1 floor.
    */
-  glowRest: 0.14,
-  glowPeak: 0.22,
+  // D13 PR-5 (§5.3) — the designed cycle is 0.12 → 0.20; the 0.22
+  // ceiling in glowContrast.test.ts is the WCAG guardrail above it.
+  glowRest: 0.12,
+  glowPeak: 0.2,
+  /** Static glow under reduced motion (§5.3). */
+  glowStatic: 0.14,
 } as const;
 
 export type OpacityToken = keyof typeof opacity;

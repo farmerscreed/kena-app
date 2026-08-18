@@ -188,17 +188,17 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
           {
             "borderRadius": 130,
             "height": 260,
-            "opacity": 0.14,
+            "opacity": 0.12,
             "position": "absolute",
             "width": 260,
           },
           {
-            "backgroundColor": "#F0B384",
+            "backgroundColor": "#7EA8C4",
             "left": 50,
             "top": 100,
           },
           {
-            "opacity": 0.14,
+            "opacity": 0.12,
           },
         ]
       }
@@ -504,7 +504,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={105.5}
                 stroke={
                   {
-                    "payload": 4293964676,
+                    "payload": 4286490820,
                     "type": 0,
                   }
                 }
@@ -538,7 +538,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={105.5}
                 stroke={
                   {
-                    "payload": 4293964676,
+                    "payload": 4286490820,
                     "type": 0,
                   }
                 }
@@ -593,7 +593,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#F0B384",
+                "color": "#7EA8C4",
                 "fontFamily": "Inter_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.55,
@@ -613,12 +613,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               {
                 "color": "#FFFFFF",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 56,
+                "fontSize": 44,
                 "fontVariant": [
                   "tabular-nums",
                 ],
                 "letterSpacing": -0.5,
-                "lineHeight": 60,
+                "lineHeight": 48,
                 "maxWidth": 196,
                 "textAlign": "center",
               }
@@ -775,7 +775,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={37}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -809,7 +809,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={37}
                 stroke={
                   {
-                    "payload": 4292244570,
+                    "payload": 4291402416,
                     "type": 0,
                   }
                 }
@@ -867,12 +867,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               {
                 "color": "#FFFFFF",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 22,
+                "fontSize": 17,
                 "fontVariant": [
                   "tabular-nums",
                 ],
                 "letterSpacing": -0.3,
-                "lineHeight": 28,
+                "lineHeight": 22,
               }
             }
           >
@@ -882,7 +882,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#D6745A",
+                "color": "#C99AB0",
                 "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.5,
@@ -1025,7 +1025,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={30}
                 stroke={
                   {
-                    "payload": 4284459176,
+                    "payload": 4287610024,
                     "type": 0,
                   }
                 }
@@ -1059,7 +1059,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={30}
                 stroke={
                   {
-                    "payload": 4284459176,
+                    "payload": 4287610024,
                     "type": 0,
                   }
                 }
@@ -1117,12 +1117,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               {
                 "color": "#FFFFFF",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 18,
+                "fontSize": 13,
                 "fontVariant": [
                   "tabular-nums",
                 ],
                 "letterSpacing": -0.3,
-                "lineHeight": 24,
+                "lineHeight": 18,
               }
             }
           >
@@ -1132,7 +1132,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#5FA8A8",
+                "color": "#8FBCA8",
                 "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.5,
@@ -1275,7 +1275,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={30}
                 stroke={
                   {
-                    "payload": 4286347947,
+                    "payload": 4288385991,
                     "type": 0,
                   }
                 }
@@ -1309,7 +1309,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={30}
                 stroke={
                   {
-                    "payload": 4286347947,
+                    "payload": 4288385991,
                     "type": 0,
                   }
                 }
@@ -1367,12 +1367,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               {
                 "color": "#FFFFFF",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 18,
+                "fontSize": 13,
                 "fontVariant": [
                   "tabular-nums",
                 ],
                 "letterSpacing": -0.3,
-                "lineHeight": 24,
+                "lineHeight": 18,
               }
             }
           >
@@ -1382,7 +1382,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#7C7AAB",
+                "color": "#9B93C7",
                 "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.5,
@@ -1525,7 +1525,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={37}
                 stroke={
                   {
-                    "payload": 4286358895,
+                    "payload": 4291080318,
                     "type": 0,
                   }
                 }
@@ -1559,7 +1559,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
                 r={37}
                 stroke={
                   {
-                    "payload": 4286358895,
+                    "payload": 4291080318,
                     "type": 0,
                   }
                 }
@@ -1617,12 +1617,12 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               {
                 "color": "#FFFFFF",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 22,
+                "fontSize": 17,
                 "fontVariant": [
                   "tabular-nums",
                 ],
                 "letterSpacing": -0.3,
-                "lineHeight": 28,
+                "lineHeight": 22,
               }
             }
           >
@@ -1632,7 +1632,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
             maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#7CA56F",
+                "color": "#C4B07E",
                 "fontFamily": "JetBrainsMono_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.5,
@@ -1745,7 +1745,7 @@ exports[`Reduced motion — end-state snapshots VitalRing state="filling" render
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -1779,7 +1779,7 @@ exports[`Reduced motion — end-state snapshots VitalRing state="filling" render
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }

@@ -76,6 +76,7 @@ import { DaySpine } from '../../components/DaySpine';
 import { useDailyPulseData } from '../../state/dailyPulse';
 import { bpRingFill } from '../../utils/vitalThemes';
 import { canonicalTierFor } from '../../utils/classification';
+import { CanvasGradient } from '../../components/CanvasGradient';
 import { useFamilyReadings } from '../../hooks/useFamilyReadings';
 import { FamilyRemovalBanner } from '../../components/FamilyRemovalBanner';
 import { useFamilyRemovalBanner } from '../../hooks/useFamilyRemovalBanner';
@@ -217,6 +218,8 @@ export function SelfBuyerHome() {
       style={[styles.root, { backgroundColor: theme.colors.surface.warmBase }]}
       edges={['top', 'bottom']}
     >
+      {/* D13 PR-5 (§5.4) — canvas gradient under everything. */}
+      <CanvasGradient />
       <ScrollView
         contentContainerStyle={[
           styles.scroll,

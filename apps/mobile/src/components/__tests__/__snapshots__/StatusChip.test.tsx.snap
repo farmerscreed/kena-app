@@ -23,8 +23,8 @@ exports[`StatusChip — tier × subject matrix in_range × fallback renders the 
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#61B56524",
-          "borderColor": "#61B5653D",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -42,7 +42,7 @@ exports[`StatusChip — tier × subject matrix in_range × fallback renders the 
       bbHeight={14}
       bbWidth={14}
       className="check-bold__svg-icon-phosphor"
-      color="#61B565"
+      color="#5FA97E"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -87,7 +87,7 @@ exports[`StatusChip — tier × subject matrix in_range × fallback renders the 
         <RNSVGGroup
           fill={
             {
-              "payload": 4284593509,
+              "payload": 4284459390,
               "type": 0,
             }
           }
@@ -113,7 +113,7 @@ exports[`StatusChip — tier × subject matrix in_range × fallback renders the 
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#61B565",
+          "color": "#5FA97E",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -149,8 +149,8 @@ exports[`StatusChip — tier × subject matrix in_range × named-default-possess
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#61B56524",
-          "borderColor": "#61B5653D",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -168,7 +168,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-default-possess
       bbHeight={14}
       bbWidth={14}
       className="check-bold__svg-icon-phosphor"
-      color="#61B565"
+      color="#5FA97E"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -213,7 +213,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-default-possess
         <RNSVGGroup
           fill={
             {
-              "payload": 4284593509,
+              "payload": 4284459390,
               "type": 0,
             }
           }
@@ -239,7 +239,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-default-possess
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#61B565",
+          "color": "#5FA97E",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -275,8 +275,8 @@ exports[`StatusChip — tier × subject matrix in_range × named-her renders the
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#61B56524",
-          "borderColor": "#61B5653D",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -294,7 +294,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-her renders the
       bbHeight={14}
       bbWidth={14}
       className="check-bold__svg-icon-phosphor"
-      color="#61B565"
+      color="#5FA97E"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -339,7 +339,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-her renders the
         <RNSVGGroup
           fill={
             {
-              "payload": 4284593509,
+              "payload": 4284459390,
               "type": 0,
             }
           }
@@ -365,7 +365,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-her renders the
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#61B565",
+          "color": "#5FA97E",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -401,8 +401,8 @@ exports[`StatusChip — tier × subject matrix in_range × named-his renders the
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#61B56524",
-          "borderColor": "#61B5653D",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -420,7 +420,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-his renders the
       bbHeight={14}
       bbWidth={14}
       className="check-bold__svg-icon-phosphor"
-      color="#61B565"
+      color="#5FA97E"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -465,7 +465,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-his renders the
         <RNSVGGroup
           fill={
             {
-              "payload": 4284593509,
+              "payload": 4284459390,
               "type": 0,
             }
           }
@@ -491,7 +491,7 @@ exports[`StatusChip — tier × subject matrix in_range × named-his renders the
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#61B565",
+          "color": "#5FA97E",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -527,8 +527,8 @@ exports[`StatusChip — tier × subject matrix in_range × self renders the cano
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#61B56524",
-          "borderColor": "#61B5653D",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -546,7 +546,7 @@ exports[`StatusChip — tier × subject matrix in_range × self renders the cano
       bbHeight={14}
       bbWidth={14}
       className="check-bold__svg-icon-phosphor"
-      color="#61B565"
+      color="#5FA97E"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -591,7 +591,7 @@ exports[`StatusChip — tier × subject matrix in_range × self renders the cano
         <RNSVGGroup
           fill={
             {
-              "payload": 4284593509,
+              "payload": 4284459390,
               "type": 0,
             }
           }
@@ -617,7 +617,7 @@ exports[`StatusChip — tier × subject matrix in_range × self renders the cano
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#61B565",
+          "color": "#5FA97E",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -653,8 +653,8 @@ exports[`StatusChip — tier × subject matrix learning × fallback renders the 
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#857F7A24",
-          "borderColor": "#857F7A3D",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -672,7 +672,7 @@ exports[`StatusChip — tier × subject matrix learning × fallback renders the 
       bbHeight={14}
       bbWidth={14}
       className="circle-dashed-bold__svg-icon-phosphor"
-      color="#857F7A"
+      color="#918B84"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -717,7 +717,7 @@ exports[`StatusChip — tier × subject matrix learning × fallback renders the 
         <RNSVGGroup
           fill={
             {
-              "payload": 4286939002,
+              "payload": 4287728516,
               "type": 0,
             }
           }
@@ -743,7 +743,7 @@ exports[`StatusChip — tier × subject matrix learning × fallback renders the 
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#857F7A",
+          "color": "#918B84",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -779,8 +779,8 @@ exports[`StatusChip — tier × subject matrix learning × named-default-possess
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#857F7A24",
-          "borderColor": "#857F7A3D",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -798,7 +798,7 @@ exports[`StatusChip — tier × subject matrix learning × named-default-possess
       bbHeight={14}
       bbWidth={14}
       className="circle-dashed-bold__svg-icon-phosphor"
-      color="#857F7A"
+      color="#918B84"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -843,7 +843,7 @@ exports[`StatusChip — tier × subject matrix learning × named-default-possess
         <RNSVGGroup
           fill={
             {
-              "payload": 4286939002,
+              "payload": 4287728516,
               "type": 0,
             }
           }
@@ -869,7 +869,7 @@ exports[`StatusChip — tier × subject matrix learning × named-default-possess
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#857F7A",
+          "color": "#918B84",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -905,8 +905,8 @@ exports[`StatusChip — tier × subject matrix learning × named-her renders the
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#857F7A24",
-          "borderColor": "#857F7A3D",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -924,7 +924,7 @@ exports[`StatusChip — tier × subject matrix learning × named-her renders the
       bbHeight={14}
       bbWidth={14}
       className="circle-dashed-bold__svg-icon-phosphor"
-      color="#857F7A"
+      color="#918B84"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -969,7 +969,7 @@ exports[`StatusChip — tier × subject matrix learning × named-her renders the
         <RNSVGGroup
           fill={
             {
-              "payload": 4286939002,
+              "payload": 4287728516,
               "type": 0,
             }
           }
@@ -995,7 +995,7 @@ exports[`StatusChip — tier × subject matrix learning × named-her renders the
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#857F7A",
+          "color": "#918B84",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -1031,8 +1031,8 @@ exports[`StatusChip — tier × subject matrix learning × named-his renders the
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#857F7A24",
-          "borderColor": "#857F7A3D",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -1050,7 +1050,7 @@ exports[`StatusChip — tier × subject matrix learning × named-his renders the
       bbHeight={14}
       bbWidth={14}
       className="circle-dashed-bold__svg-icon-phosphor"
-      color="#857F7A"
+      color="#918B84"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -1095,7 +1095,7 @@ exports[`StatusChip — tier × subject matrix learning × named-his renders the
         <RNSVGGroup
           fill={
             {
-              "payload": 4286939002,
+              "payload": 4287728516,
               "type": 0,
             }
           }
@@ -1121,7 +1121,7 @@ exports[`StatusChip — tier × subject matrix learning × named-his renders the
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#857F7A",
+          "color": "#918B84",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -1157,8 +1157,8 @@ exports[`StatusChip — tier × subject matrix learning × self renders the cano
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#857F7A24",
-          "borderColor": "#857F7A3D",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -1176,7 +1176,7 @@ exports[`StatusChip — tier × subject matrix learning × self renders the cano
       bbHeight={14}
       bbWidth={14}
       className="circle-dashed-bold__svg-icon-phosphor"
-      color="#857F7A"
+      color="#918B84"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -1221,7 +1221,7 @@ exports[`StatusChip — tier × subject matrix learning × self renders the cano
         <RNSVGGroup
           fill={
             {
-              "payload": 4286939002,
+              "payload": 4287728516,
               "type": 0,
             }
           }
@@ -1247,7 +1247,7 @@ exports[`StatusChip — tier × subject matrix learning × self renders the cano
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#857F7A",
+          "color": "#918B84",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -1283,8 +1283,8 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × fallback render
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#DC563124",
-          "borderColor": "#DC56313D",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -1302,7 +1302,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × fallback render
       bbHeight={14}
       bbWidth={14}
       className="phone-bold__svg-icon-phosphor"
-      color="#DC5631"
+      color="#E06A7C"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -1347,7 +1347,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × fallback render
         <RNSVGGroup
           fill={
             {
-              "payload": 4292630065,
+              "payload": 4292897404,
               "type": 0,
             }
           }
@@ -1373,7 +1373,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × fallback render
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#DC5631",
+          "color": "#E06A7C",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -1409,8 +1409,8 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-default-p
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#DC563124",
-          "borderColor": "#DC56313D",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -1428,7 +1428,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-default-p
       bbHeight={14}
       bbWidth={14}
       className="phone-bold__svg-icon-phosphor"
-      color="#DC5631"
+      color="#E06A7C"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -1473,7 +1473,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-default-p
         <RNSVGGroup
           fill={
             {
-              "payload": 4292630065,
+              "payload": 4292897404,
               "type": 0,
             }
           }
@@ -1499,7 +1499,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-default-p
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#DC5631",
+          "color": "#E06A7C",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -1535,8 +1535,8 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-her rende
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#DC563124",
-          "borderColor": "#DC56313D",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -1554,7 +1554,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-her rende
       bbHeight={14}
       bbWidth={14}
       className="phone-bold__svg-icon-phosphor"
-      color="#DC5631"
+      color="#E06A7C"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -1599,7 +1599,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-her rende
         <RNSVGGroup
           fill={
             {
-              "payload": 4292630065,
+              "payload": 4292897404,
               "type": 0,
             }
           }
@@ -1625,7 +1625,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-her rende
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#DC5631",
+          "color": "#E06A7C",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -1661,8 +1661,8 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-his rende
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#DC563124",
-          "borderColor": "#DC56313D",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -1680,7 +1680,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-his rende
       bbHeight={14}
       bbWidth={14}
       className="phone-bold__svg-icon-phosphor"
-      color="#DC5631"
+      color="#E06A7C"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -1725,7 +1725,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-his rende
         <RNSVGGroup
           fill={
             {
-              "payload": 4292630065,
+              "payload": 4292897404,
               "type": 0,
             }
           }
@@ -1751,7 +1751,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × named-his rende
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#DC5631",
+          "color": "#E06A7C",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -1787,8 +1787,8 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × self renders th
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#DC563124",
-          "borderColor": "#DC56313D",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -1806,7 +1806,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × self renders th
       bbHeight={14}
       bbWidth={14}
       className="phone-bold__svg-icon-phosphor"
-      color="#DC5631"
+      color="#E06A7C"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -1851,7 +1851,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × self renders th
         <RNSVGGroup
           fill={
             {
-              "payload": 4292630065,
+              "payload": 4292897404,
               "type": 0,
             }
           }
@@ -1877,7 +1877,7 @@ exports[`StatusChip — tier × subject matrix talk_to_doctor × self renders th
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#DC5631",
+          "color": "#E06A7C",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -1913,8 +1913,8 @@ exports[`StatusChip — tier × subject matrix worth_a_look × fallback renders 
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#FF735024",
-          "borderColor": "#FF73503D",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -1932,7 +1932,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × fallback renders 
       bbHeight={14}
       bbWidth={14}
       className="warning-circle-bold__svg-icon-phosphor"
-      color="#FF7350"
+      color="#E8B54F"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -1977,7 +1977,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × fallback renders 
         <RNSVGGroup
           fill={
             {
-              "payload": 4294931280,
+              "payload": 4293440847,
               "type": 0,
             }
           }
@@ -2003,7 +2003,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × fallback renders 
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#FF7350",
+          "color": "#E8B54F",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -2039,8 +2039,8 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-default-pos
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#FF735024",
-          "borderColor": "#FF73503D",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -2058,7 +2058,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-default-pos
       bbHeight={14}
       bbWidth={14}
       className="warning-circle-bold__svg-icon-phosphor"
-      color="#FF7350"
+      color="#E8B54F"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -2103,7 +2103,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-default-pos
         <RNSVGGroup
           fill={
             {
-              "payload": 4294931280,
+              "payload": 4293440847,
               "type": 0,
             }
           }
@@ -2129,7 +2129,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-default-pos
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#FF7350",
+          "color": "#E8B54F",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -2165,8 +2165,8 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-her renders
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#FF735024",
-          "borderColor": "#FF73503D",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -2184,7 +2184,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-her renders
       bbHeight={14}
       bbWidth={14}
       className="warning-circle-bold__svg-icon-phosphor"
-      color="#FF7350"
+      color="#E8B54F"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -2229,7 +2229,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-her renders
         <RNSVGGroup
           fill={
             {
-              "payload": 4294931280,
+              "payload": 4293440847,
               "type": 0,
             }
           }
@@ -2255,7 +2255,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-her renders
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#FF7350",
+          "color": "#E8B54F",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -2291,8 +2291,8 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-his renders
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#FF735024",
-          "borderColor": "#FF73503D",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -2310,7 +2310,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-his renders
       bbHeight={14}
       bbWidth={14}
       className="warning-circle-bold__svg-icon-phosphor"
-      color="#FF7350"
+      color="#E8B54F"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -2355,7 +2355,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-his renders
         <RNSVGGroup
           fill={
             {
-              "payload": 4294931280,
+              "payload": 4293440847,
               "type": 0,
             }
           }
@@ -2381,7 +2381,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × named-his renders
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#FF7350",
+          "color": "#E8B54F",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,
@@ -2417,8 +2417,8 @@ exports[`StatusChip — tier × subject matrix worth_a_look × self renders the 
         {
           "alignItems": "center",
           "alignSelf": "flex-start",
-          "backgroundColor": "#FF735024",
-          "borderColor": "#FF73503D",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
           "borderRadius": 99,
           "borderWidth": 0.5,
           "flexDirection": "row",
@@ -2436,7 +2436,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × self renders the 
       bbHeight={14}
       bbWidth={14}
       className="warning-circle-bold__svg-icon-phosphor"
-      color="#FF7350"
+      color="#E8B54F"
       fill="currentColor"
       focusable={false}
       height={14}
@@ -2481,7 +2481,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × self renders the 
         <RNSVGGroup
           fill={
             {
-              "payload": 4294931280,
+              "payload": 4293440847,
               "type": 0,
             }
           }
@@ -2507,7 +2507,7 @@ exports[`StatusChip — tier × subject matrix worth_a_look × self renders the 
       maxFontSizeMultiplier={1.3}
       style={
         {
-          "color": "#FF7350",
+          "color": "#E8B54F",
           "fontFamily": "Inter_400Regular",
           "fontSize": 13,
           "lineHeight": 17,

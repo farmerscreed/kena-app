@@ -59,7 +59,7 @@ describe('buildTheme — parent + dark', () => {
 
 describe('buildTheme — colorMode dimension (D12 §2.4)', () => {
   it('dark mode resolves brand.primary to amber-500', () => {
-    expect(buildTheme('dark', 'caregiver', false).colors.brand.primary).toBe('#E8A063');
+    expect(buildTheme('dark', 'caregiver', false).colors.brand.primary).toBe('#C96442');
   });
 
   it('light mode resolves brand.primary to the darker amber-500 (Sprint 14.5 contrast fix)', () => {

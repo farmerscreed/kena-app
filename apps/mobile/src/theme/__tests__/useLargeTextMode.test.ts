@@ -50,9 +50,12 @@ describe('parent type scale actually enlarges what matters', () => {
     );
   });
 
-  it('leaves the giant display numerics alone — they are ring-bound', () => {
+  it('scales the display numerics too (D13 §5.5 step 5)', () => {
+    // The old pin froze these as "ring-bound"; geometry-trapped rings
+    // clamp with maxFontSizeMultiplier at the component instead, so
+    // the wearer's own numbers grow with the mode.
     for (const token of ['numericHero', 'numericXl', 'numericL'] as const) {
-      expect(getTypeStyle('parent', token).size).toBe(
+      expect(getTypeStyle('parent', token).size).toBeGreaterThan(
         getTypeStyle('caregiver', token).size,
       );
     }

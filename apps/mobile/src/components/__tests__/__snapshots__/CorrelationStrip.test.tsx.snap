@@ -61,7 +61,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         d="M 4,92 L 4,78.10526315789474 L 56,54.94736842105263 L 108,17.894736842105257 L 160,92 L 212,36.421052631578924 L 264,4 L 316,31.789473684210513 L 316,92 Z"
         fill={
           {
-            "payload": 4286347947,
+            "payload": 4288385991,
             "type": 0,
           }
         }
@@ -87,7 +87,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         }
         stroke={
           {
-            "payload": 4286347947,
+            "payload": 4288385991,
             "type": 0,
           }
         }
@@ -105,7 +105,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         d="M 4,92 L 4,31.07692307692308 L 56,58.15384615384616 L 108,78.46153846153847 L 160,4 L 212,44.61538461538462 L 264,92 L 316,71.69230769230768 L 316,92 Z"
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -131,7 +131,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }

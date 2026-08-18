@@ -169,6 +169,7 @@ const GLOW_BREATHE_DURATION_MS = 4500;
  */
 const GLOW_OPACITY_REST = opacity.glowRest;
 const GLOW_OPACITY_PEAK = opacity.glowPeak;
+const GLOW_OPACITY_STATIC = opacity.glowStatic;
 
 interface SatelliteDef {
   vital: 'hr' | 'spo2' | 'sleep' | 'activity';
@@ -388,7 +389,7 @@ export function DailyPulseHero({
   const glowOpacity = useSharedValue<number>(GLOW_OPACITY_REST);
   useEffect(() => {
     if (reduceMotion) {
-      glowOpacity.value = GLOW_OPACITY_REST;
+      glowOpacity.value = GLOW_OPACITY_STATIC;
       return;
     }
     glowOpacity.value = withRepeat(
