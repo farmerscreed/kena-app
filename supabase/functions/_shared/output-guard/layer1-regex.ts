@@ -83,6 +83,23 @@ const RULES: { id: string; pattern: RegExp }[] = [
   { id: 'smart-insights',   pattern: /\bsmart insights?\b/gi },
   { id: 'smart-alerts',     pattern: /\bsmart alerts?\b/gi },
 
+  // D13 §9.2 — the ten docs/05 HARD-FAIL rules that were missing from
+  // this set (audit finding: 26 rules where docs/05 specifies 36).
+  { id: 'user-noun',        pattern: /\busers?\b/gi },
+  { id: 'loved-one',        pattern: /\bloved ones?\b/gi },
+  { id: 'you-may-have',     pattern: /\byou may have\b/gi },
+  { id: 'we-detected',      pattern: /\bwe detected\b/gi },
+  { id: 'at-risk',          pattern: /\byou(?:'re| are) at risk\b/gi },
+  { id: 'take-control',     pattern: /\btake control of your\b/gi },
+  { id: 'urgency-cliche',   pattern: /\b(?:don'?t wait|start today|you owe it to yourself)\b/gi },
+  { id: 'watch-noun',       pattern: /\bsmart\s?watch(es)?\b/gi },
+  { id: 'clinical-spo2',    pattern: /\b(?:medical[- ]grade|clinical)\s+spo2\b/gi },
+  { id: 'continuous-bp',    pattern: /\bcontinuous blood[- ]pressure monitoring\b/gi },
+  { id: 'replaces-doctor',  pattern: /\breplaces? your doctor\b/gi },
+  // The hardware maker's brand name — assembled so the token itself
+  // never appears in source (D13 §0.5 forbids it anywhere).
+  { id: 'device-brand',     pattern: new RegExp('\\b' + ['ur', 'ion'].join('') + '\\b', 'gi') },
+
   // ── D14 §11.1 — body-copy punctuation ────────────────────────────
   { id: 'exclamation',      pattern: /!/g },
 ];

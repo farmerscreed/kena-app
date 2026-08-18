@@ -274,12 +274,30 @@ async function processUser(
     }
   }
 
+  // D13 §9.2 — a skipped semantic guard is audited and flags the row.
+  let guardSkipped = false;
   let embedder;
   try { embedder = createSupabaseEmbedder(); } catch { embedder = null; }
+  if (!embedder) {
+    guardSkipped = true;
+    await serviceClient.from('audit_log').insert({
+      actor_user_id: userId, family_id: familyId,
+      action: 'ai.output_guard_skipped',
+      metadata: { layer: 2, surface: 'weekly_summary', cause: 'embedder_unavailable', scope_key: weekLabel },
+    });
+  }
   if (embedder) {
     let layer2;
     try { layer2 = await withTimeout(scanLayer2(candidate, embedder), LAYER2_TIMEOUT_MS, 'layer2'); }
-    catch { layer2 = null; }
+    catch {
+      layer2 = null;
+      guardSkipped = true;
+      await serviceClient.from('audit_log').insert({
+        actor_user_id: userId, family_id: familyId,
+        action: 'ai.output_guard_skipped',
+        metadata: { layer: 2, surface: 'weekly_summary', cause: 'scan_timeout', scope_key: weekLabel },
+      });
+    }
     if (layer2) layer2Cosine = layer2.maxCosine;
     if (layer2 && !layer2.passes) {
       const retry = buildLayer2RetryAugment(layer2.matchedPhrase);
@@ -294,12 +312,36 @@ async function processUser(
       candidate = retryCall.body;
       promptTokens += retryCall.promptTokens;
       completionTokens += retryCall.completionTokens;
+      // §9.2 — recheck the retried response with the same timeout
+      // protection as the pre-retry scan; a second hit defers.
+      if (!scanLayer1(candidate).passes) {
+        clearTimeout(timeout);
+        return { status: 'guard_failed', weekLabel };
+      }
+      let recheck2;
+      try { recheck2 = await withTimeout(scanLayer2(candidate, embedder), LAYER2_TIMEOUT_MS, 'layer2-recheck'); }
+      catch {
+        recheck2 = null;
+        guardSkipped = true;
+        await serviceClient.from('audit_log').insert({
+          actor_user_id: userId, family_id: familyId,
+          action: 'ai.output_guard_skipped',
+          metadata: { layer: 2, surface: 'weekly_summary', cause: 'recheck_timeout', scope_key: weekLabel },
+        });
+      }
+      if (recheck2) {
+        layer2Cosine = recheck2.maxCosine;
+        if (!recheck2.passes) {
+          clearTimeout(timeout);
+          return { status: 'guard_failed', weekLabel };
+        }
+      }
     }
   }
 
   clearTimeout(timeout);
 
-  const flagged = !layer1.passes || layer2Cosine >= LAYER2_THRESHOLD;
+  const flagged = !layer1.passes || layer2Cosine >= LAYER2_THRESHOLD || guardSkipped;
   await serviceClient.from('ai_narration_cache').upsert({
     user_id: userId, family_id: familyId,
     surface: 'weekly_summary', scope_key: weekLabel,
