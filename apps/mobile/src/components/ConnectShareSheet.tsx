@@ -19,6 +19,7 @@ import { BottomSheet } from './BottomSheet';
 import { Button } from './Button';
 import { createConnect } from '../services/families/manageInvites';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export interface ConnectShareSheetProps {
   visible: boolean;
@@ -114,7 +115,7 @@ export function ConnectShareSheet({
             >
               {code ? (
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                   accessibilityLabel={`Invite code, ${code.split('').join(' ')}`}
                   style={{ fontFamily: numeric.family, fontSize: 32, letterSpacing: 4, color: theme.colors.text.primary }}
                   testID={`${testID}-code`}
