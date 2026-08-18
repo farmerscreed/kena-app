@@ -358,7 +358,7 @@ export async function fetchParentPulseData(
       .order('measured_at', { ascending: false })
       .limit(CALORIES_LIMIT),
     // Wearer (family owner) timezone — mirrors the listMembers/visibility
-    // FK-join pattern; readable via the `users` same-family RLS policy.
+    // FK-join idiom; readable via the `users` same-family RLS policy.
     client
       .from('family_members')
       .select('users!family_members_user_id_fkey(timezone)')

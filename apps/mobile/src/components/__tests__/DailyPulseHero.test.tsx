@@ -224,7 +224,7 @@ describe('DailyPulseHero — the central verdict', () => {
       ),
     );
     expect(screen.getByTestId('hero-bp-verdict')).toBeTruthy();
-    expect(screen.getByText('mmHg · within your usual range')).toBeTruthy();
+    expect(screen.getByText('mmHg · in your usual range')).toBeTruthy();
   });
 
   it('renders the calm-concerned verdict', () => {
@@ -237,7 +237,7 @@ describe('DailyPulseHero — the central verdict', () => {
         />,
       ),
     );
-    expect(screen.getByText('mmHg · worth a look')).toBeTruthy();
+    expect(screen.getByText('mmHg · a little above your usual')).toBeTruthy();
   });
 
   it('renders the confirmed-urgent verdict', () => {
@@ -250,7 +250,7 @@ describe('DailyPulseHero — the central verdict', () => {
         />,
       ),
     );
-    expect(screen.getByText('mmHg · talk to your doctor today')).toBeTruthy();
+    expect(screen.getByText('mmHg · well above your usual')).toBeTruthy();
   });
 
   it('falls back to the bare unit rather than guessing when there is no tier', () => {
@@ -292,13 +292,13 @@ describe('DailyPulseHero — the central verdict', () => {
       ),
     );
     expect(screen.getByTestId('hero-bp').props.accessibilityLabel).toBe(
-      'Blood pressure 128/82, mmHg · worth a look',
+      'Blood pressure 128/82, mmHg · a little above your usual',
     );
     const node = screen.UNSAFE_root.findAll((n: { props: { accessibilityLabel?: unknown } }) =>
       typeof n.props.accessibilityLabel === 'string' &&
       n.props.accessibilityLabel.startsWith('Daily pulse for Mum'),
     )[0];
-    expect(node.props.accessibilityLabel).toContain('mmHg · worth a look');
+    expect(node.props.accessibilityLabel).toContain('mmHg · a little above your usual');
   });
 });
 

@@ -369,7 +369,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
           }
         >
           <View
-            accessibilityLabel="Latest · 3:30 PM. 122/ 78. mmHg · within your usual range"
+            accessibilityLabel="Latest · 3:30 PM. 122/ 78. mmHg · in your usual range"
             accessibilityRole="text"
             style={
               [
@@ -738,7 +738,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                   }
                   testID="bp-detail-hero-range"
                 >
-                  mmHg · within your usual range
+                  mmHg · in your usual range
                 </Text>
               </View>
             </View>

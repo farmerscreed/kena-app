@@ -154,7 +154,7 @@ export async function scheduleNextLearnedTimeReminder(
   // Sprint 19 (audit D12 P0-8) — voice gate on LOCAL notifications.
   // `send-push` lints server-composed push text and fails closed, but
   // locally-scheduled reminders bypassed it entirely; that is how
-  // "your loved one's reading hasn't come in yet." reached a lock
+  // a hard-fail phrase from docs/05 reached a lock
   // screen. Fail closed here too. Frontmatter/MDX/code stripping is
   // meaningless for push copy, so all three are disabled.
   const voice = lintVoiceText(`${copy.title}\n${copy.body}`, {

@@ -67,7 +67,7 @@ function writePersisted(map: PersistedMap): void {
 }
 
 function labelFor(parent: ParentSummary): string {
-  // Sprint 19 (audit D12 P0-8) — "loved one" is a HARD FAIL in
+  // Sprint 19 (audit D12 P0-8) — the two-word endearment is a HARD FAIL in
   // docs/05-voice-and-claims.md §87 and was reaching the removal banner
   // whenever the display name was missing. "your family member" is the
   // sanctioned generic.

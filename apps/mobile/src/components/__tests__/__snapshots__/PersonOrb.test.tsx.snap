@@ -571,7 +571,7 @@ exports[`PersonOrb — status × mode snapshot matrix renders status=clear mode=
   testID="orb"
 >
   <View
-    accessibilityLabel="Marian, All clear, blood pressure 122/78"
+    accessibilityLabel="Marian, In their usual range, blood pressure 122/78"
     accessibilityRole="button"
     accessibilityState={
       {
@@ -830,7 +830,7 @@ exports[`PersonOrb — status × mode snapshot matrix renders status=clear mode=
   testID="orb"
 >
   <View
-    accessibilityLabel="Marian, All clear, blood pressure 122/78"
+    accessibilityLabel="Marian, In their usual range, blood pressure 122/78"
     accessibilityRole="button"
     accessibilityState={
       {

@@ -25,6 +25,7 @@ import type { NarrationSlots } from '../dailyNarration';
  */
 const SLOTS: NarrationSlots = {
   parent_label: 'Dad',
+  possessive: 'their',
   bp_value: '124/79',
   bp_delta: "six above the week's average",
   bp_week_avg: '130/82',
@@ -81,6 +82,16 @@ describe('narration composition', () => {
     for (const { id, text } of renderAll()) {
       expect(`${id}: ${text}`).not.toMatch(/\b(her|hers|his|she|he)\b/i);
     }
+  });
+
+  it('renders a user-set possessive verbatim — never inferred, never defaulted away', () => {
+    // D13 §7.4 — the possessive is user-set at add-person time. When it
+    // IS set, it flows through the {possessive} slot untouched.
+    const rendered = renderNarration(
+      '{parent_label} is in {possessive} usual range.',
+      { ...SLOTS, possessive: 'his' },
+    );
+    expect(rendered).toBe('Dad is in his usual range.');
   });
 
   it('produces sentences that terminate cleanly', () => {

@@ -77,7 +77,7 @@ Deno.test('BP single calm-concerned returns null (no push)', () => {
     const rendered = renderAnomalyNotification(r, {
       vitalKind: 'bp',
       tier: 'calm_concerned',
-      reason: 'outlier_and_soft_threshold',
+      reason: 'outside_band',
       parentLabel: 'Mum',
     });
     assertEquals(rendered, null);
@@ -89,7 +89,7 @@ Deno.test('BP calm-trend renders for all recipients with clean voice', () => {
     const rendered = renderAnomalyNotification(r, {
       vitalKind: 'bp',
       tier: 'calm_concerned',
-      reason: 'absolute_cold_start',
+      reason: 'baseline_3day_trend',
       parentLabel: 'Mum',
     });
     assert(rendered);
@@ -171,7 +171,7 @@ Deno.test('Sleep + activity never produce a push payload', () => {
       const rendered = renderAnomalyNotification(r, {
         vitalKind: v,
         tier: 'calm_concerned',
-        reason: 'absolute_cold_start',
+        reason: 'baseline_3day_trend',
         parentLabel: 'Mum',
       });
       assertEquals(rendered, null, `${v} ${r} must return null`);

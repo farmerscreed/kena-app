@@ -77,7 +77,7 @@ describe('buildTierATrendsNarrative', () => {
       accountType: 'self_buyer',
     });
     expect(out).not.toBeNull();
-    expect(out).toContain('You are _in pattern_ this month');
+    expect(out).toContain('You are _in your usual range_ this month');
     expect(out).toContain('123/81');
     expect(lintVoiceText(out!).passes).toBe(true);
   });
@@ -101,7 +101,7 @@ describe('buildTierATrendsNarrative', () => {
       accountType: 'caregiver',
       parentLabel: 'Mum',
     });
-    expect(out).toContain('Mum is _in pattern_');
+    expect(out).toContain('Mum is _in ');
     expect(out).toContain("Mum's mornings averaged");
     expect(out).toContain("after Mum's shorter nights");
     expect(lintVoiceText(out!).passes).toBe(true);
@@ -135,9 +135,9 @@ describe('parseNarrativeSpans', () => {
   });
 
   it('splits `_text_` markers into italic spans', () => {
-    expect(parseNarrativeSpans('You are _in pattern_ today.')).toEqual([
+    expect(parseNarrativeSpans('You are _in your usual range_ today.')).toEqual([
       { text: 'You are ' },
-      { text: 'in pattern', em: true },
+      { text: 'in your usual range', em: true },
       { text: ' today.' },
     ]);
   });
@@ -167,10 +167,10 @@ describe('generateTrendsNarrative', () => {
       accountType: 'self_buyer',
     });
     // Sprint 16.5g — Tier-C is the new lead engine; Tier-A reads as
-    // a backup. The body still contains the "in pattern" emphasis
+    // a backup. The body still contains the usual-range emphasis
     // span either way.
     expect(['C', 'A']).toContain(result.tier);
-    expect(result.body).toContain('in pattern');
+    expect(result.body).toContain('usual range');
   });
 
   it('falls through to deterministic when no data', async () => {

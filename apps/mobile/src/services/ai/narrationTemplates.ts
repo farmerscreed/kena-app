@@ -81,8 +81,8 @@ const t = (
 const ALL_IN_PATTERN: NarrationTemplateEntry[] = [
   t(
     'all-in-pattern.bp-central',
-    'Every vital in pattern, BP is the central value',
-    '{parent_label} is in pattern. {bp_value} this morning.',
+    'Every vital in range, BP is the central value',
+    '{parent_label} is in {possessive} usual range. {bp_value} this morning.',
     100,
     (c) =>
       c.centralVital === 'bp' &&
@@ -94,8 +94,8 @@ const ALL_IN_PATTERN: NarrationTemplateEntry[] = [
   ),
   t(
     'all-in-pattern.hr-central',
-    'Every vital in pattern, HR is the central value',
-    '{parent_label} is in pattern. Resting heart rate at {hr_resting}.',
+    'Every vital in range, HR is the central value',
+    '{parent_label} is in {possessive} usual range. Resting heart rate at {hr_resting}.',
     100,
     (c) =>
       c.centralVital === 'hr' &&
@@ -104,8 +104,8 @@ const ALL_IN_PATTERN: NarrationTemplateEntry[] = [
   ),
   t(
     'all-in-pattern.sleep-central',
-    'Every vital in pattern, sleep is the central value',
-    '{parent_label} slept {sleep_total} last night. Numbers in pattern.',
+    'Every vital in range, sleep is the central value',
+    '{parent_label} slept {sleep_total} last night. Numbers in {possessive} usual range.',
     100,
     (c) =>
       c.centralVital === 'sleep' &&
@@ -117,8 +117,8 @@ const ALL_IN_PATTERN: NarrationTemplateEntry[] = [
 const SLEEP_LIGHT_BP_OK: NarrationTemplateEntry[] = [
   t(
     'sleep-light.bp-in-pattern',
-    'BP in pattern but the night was lighter than usual',
-    '{parent_label} slept lightly last night — {bp_value} this morning, in pattern.',
+    'BP in range but the night was lighter than usual',
+    '{parent_label} slept lightly last night — {bp_value} this morning, in {possessive} usual range.',
     110,
     (c) =>
       c.bp === 'in_pattern' &&
@@ -138,7 +138,7 @@ const SLEEP_LIGHT_BP_OK: NarrationTemplateEntry[] = [
 const BP_CALM_CONCERNED: NarrationTemplateEntry[] = [
   t(
     'bp-cc.single',
-    'BP single calm-concerned reading, others in pattern',
+    'BP single calm-concerned reading, others in range',
     "{parent_label}'s morning number is {bp_delta}. Worth a closer look later.",
     120,
     (c) =>
@@ -282,7 +282,7 @@ const FALLBACK: NarrationTemplateEntry[] = [
   t(
     'fallback.calm',
     'Always-applicable safety net so coverage never drops to zero',
-    "{parent_label} is in pattern.",
+    "{parent_label} is in {possessive} usual range.",
     1,
     () => true,
   ),

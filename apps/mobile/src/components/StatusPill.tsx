@@ -39,8 +39,12 @@ export interface StatusPillProps {
   style?: StyleProp<ViewStyle>;
 }
 
+// D13 PR-2 (§6.1, §7.4) — "All clear" is deleted: "all clear" is
+// itself a claim. The clear state is a statement about the person's
+// own range; "their" is the always-safe possessive on multi-person
+// surfaces (the pill never renders on self surfaces).
 const STATUS_LABEL: Record<Status, string> = {
-  clear: 'All clear',
+  clear: 'In their usual range',
   watch: 'Watch',
   attention: 'Needs attention',
   urgent: 'Urgent',
@@ -107,12 +111,12 @@ export function StatusPill({ status, testID, style }: StatusPillProps) {
       />
       <Text
         style={{
-          fontFamily: theme.fontFamilies.numeric,
-          fontSize: labelStyle.size - 1, // 10pt — design uses 9.5
+          // D13 PR-2 — sentence case, never uppercase (docs/05:182).
+          fontFamily: theme.fontFamilies.bodyMedium,
+          fontSize: 11,
           lineHeight: labelStyle.lineHeight,
-          letterSpacing: 0.95, // 0.10em at 9.5pt
+          letterSpacing: 0.2,
           color: tone,
-          textTransform: 'uppercase',
         }}
         maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
       >

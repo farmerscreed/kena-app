@@ -276,7 +276,7 @@ describe('tier UI helpers', () => {
   it('tierChipText keeps the canonical vocabulary', () => {
     expect(tierChipText('in_pattern')).toBe('In your usual range');
     expect(tierChipText('calm_concerned')).toBe('Worth a look');
-    expect(tierChipText('confirmed_urgent')).toBe('Talk to your doctor');
+    expect(tierChipText('confirmed_urgent')).toBe('Talk to a doctor');
   });
 
   it('tierPillVariant matches the design-tokens semantic colour assignment', () => {

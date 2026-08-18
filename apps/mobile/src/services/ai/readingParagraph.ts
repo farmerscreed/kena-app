@@ -105,16 +105,16 @@ export function generateReadingParagraphTierA(
     };
   }
 
-  // in_pattern: reassuring + reinforcing context if available.
+  // in_pattern → §7.4 'in {possessive} usual range' framing (D13 PR-2).
   if (sleepTotal) {
     return {
-      text: `This reading is in pattern for ${parentLabel}. ${parentLabel} slept ${sleepTotal} last night — both look good against the week.`,
+      text: `This reading is in ${parentLabel}'s usual range. ${parentLabel} slept ${sleepTotal} last night — both look good against the week.`,
       templateId: 'reading.in_pattern.with_sleep',
       tier: 'A',
     };
   }
   return {
-    text: `This reading is in pattern for ${parentLabel}. Inside the usual band.`,
+    text: `This reading is in ${parentLabel}'s usual range.`,
     templateId: 'reading.in_pattern.bare',
     tier: 'A',
   };

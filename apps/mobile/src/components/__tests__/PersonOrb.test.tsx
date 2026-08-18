@@ -121,7 +121,7 @@ describe('PersonOrb — interaction', () => {
     );
     fireEvent.press(
       screen.getByRole('button', {
-        name: 'Marian, All clear, blood pressure 122/78',
+        name: 'Marian, In their usual range, blood pressure 122/78',
       }),
     );
     expect(onPress).toHaveBeenCalledTimes(1);

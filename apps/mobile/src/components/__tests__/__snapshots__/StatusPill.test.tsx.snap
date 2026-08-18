@@ -51,11 +51,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     style={
       {
         "color": "#FF7350",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -115,11 +114,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     style={
       {
         "color": "#FF7350",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -130,7 +128,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
 
 exports[`StatusPill — status × mode snapshot matrix renders status=clear mode=dark 1`] = `
 <View
-  accessibilityLabel="All clear"
+  accessibilityLabel="In their usual range"
   accessibilityRole="text"
   style={
     [
@@ -179,22 +177,21 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     style={
       {
         "color": "#61B565",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
-    All clear
+    In their usual range
   </Text>
 </View>
 `;
 
 exports[`StatusPill — status × mode snapshot matrix renders status=clear mode=light 1`] = `
 <View
-  accessibilityLabel="All clear"
+  accessibilityLabel="In their usual range"
   accessibilityRole="text"
   style={
     [
@@ -243,15 +240,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     style={
       {
         "color": "#61B565",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
-    All clear
+    In their usual range
   </Text>
 </View>
 `;
@@ -307,11 +303,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     style={
       {
         "color": "#857F7A",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -371,11 +366,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     style={
       {
         "color": "#857F7A",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -426,11 +420,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     style={
       {
         "color": "#7B67CC",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -481,11 +474,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     style={
       {
         "color": "#7B67CC",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -545,11 +537,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     style={
       {
         "color": "#DC5631",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -609,11 +600,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     style={
       {
         "color": "#DC5631",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -673,11 +663,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
     style={
       {
         "color": "#F2A618",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -737,11 +726,10 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
     style={
       {
         "color": "#F2A618",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >

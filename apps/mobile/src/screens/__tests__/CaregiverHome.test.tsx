@@ -289,7 +289,7 @@ describe('<CaregiverHome /> — populated state', () => {
     render(withProviders(<CaregiverHome />));
     fireEvent.press(
       screen.getByRole('button', {
-        name: 'Marian, Mom, All clear, Read 1 min ago — in the usual range.',
+        name: 'Marian, Mom, In their usual range, Read 1 min ago — in the usual range.',
       }),
     );
     expect(mockNavigate).toHaveBeenCalledWith('ReadingDetail', {
@@ -337,13 +337,13 @@ describe('<CaregiverHome /> — anomaly banner', () => {
   it('shows confirmed-urgent banner when any person is urgent', () => {
     setupOnePerson('urgent');
     render(withProviders(<CaregiverHome />));
-    expect(screen.getByText('Talk to Marian now')).toBeTruthy();
+    expect(screen.getByText('Please check on Marian')).toBeTruthy();
   });
 
   it('shows calm-concerned banner when only attention status is present', () => {
     setupOnePerson('attention');
     render(withProviders(<CaregiverHome />));
-    expect(screen.getByText('Worth a chat with Marian')).toBeTruthy();
+    expect(screen.getByText('Worth a look')).toBeTruthy();
   });
 
   it('does NOT render an AnomalyBanner when everyone is clear', () => {
@@ -375,8 +375,8 @@ describe('<CaregiverHome /> — anomaly banner', () => {
     // in the BANNER. (Marian's attention headline "Worth a chat …" still
     // renders in her legend row — that's per-person copy, not the banner,
     // so we assert on the banner's specific title, not a loose substring.)
-    expect(screen.getByText('Talk to Emeka now')).toBeTruthy();
-    expect(screen.queryByText('Worth a chat with Marian')).toBeNull();
+    expect(screen.getByText('Please check on Emeka')).toBeTruthy();
+    expect(screen.queryByText('Worth a look')).toBeNull();
   });
 });
 

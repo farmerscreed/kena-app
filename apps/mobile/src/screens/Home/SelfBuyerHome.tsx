@@ -39,6 +39,7 @@ import { sleepScoreForSession } from '../../utils/classification';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AnomalyBanner } from '../../components/AnomalyBanner';
+import { bannerCopyFor } from '../../utils/anomalyBannerCopy';
 import { ScreenAnomalyBanner } from '../../components/ScreenAnomalyBanner';
 import { SyncReassuranceBanner } from '../../components/SyncReassuranceBanner';
 import { QuietHoursAffirmSheet } from '../../components/QuietHoursAffirmSheet';
@@ -1125,25 +1126,32 @@ interface BannerState {
   cta?: { label: string; onPress: () => void };
 }
 
+// D13 PR-2 (P0-4) — the cold-start fallback banner (server has no
+// anomaly event yet) no longer carries its own copy. It routes through
+// canonical utils/anomalyBannerCopy, the single voice-linted source,
+// synthesizing a minimal event from the local classification.
 function deriveBanner(
   data: ReturnType<typeof useDailyPulseData>,
 ): BannerState | null {
-  const tier = data.bp.classification?.tier;
-  if (tier === 'confirmed_urgent') {
-    return {
-      severity: 'confirmed-urgent',
-      title: 'Talk to your doctor today',
-      body: 'These last few readings are unusually high. We recommend talking to your doctor today.',
-    };
-  }
-  if (tier === 'calm_concerned') {
-    return {
-      severity: 'calm-concerned',
-      title: 'Worth a look',
-      body: 'A few of your recent readings have been higher than usual. Might be worth talking to your doctor.',
-    };
-  }
-  return null;
+  const classification = data.bp.classification;
+  const tier = classification?.tier;
+  if (tier !== 'confirmed_urgent' && tier !== 'calm_concerned') return null;
+  const copy = bannerCopyFor(
+    {
+      id: 'local-fallback',
+      userId: '',
+      familyId: '',
+      vital: 'bp',
+      tier,
+      reason: classification?.reason ?? 'outside_band_confirmed',
+      readingId: null,
+      triggeredAtSec: 0,
+      acknowledgedAt: null,
+      feedbackThumb: 0,
+    },
+    'self_buyer',
+  );
+  return { severity: copy.severity, title: copy.title, body: copy.body };
 }
 
 function buildHeader(displayName: string | undefined): {

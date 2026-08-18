@@ -1,7 +1,7 @@
 // Caregiver Home — Sprint 7.7a (Family Constellation, bird's-eye view).
 //
 // Replaces the BP-only Sprint 7 card-stack home with the Family
-// Constellation design (`leiko-caregiver-unified.html`). Each loved one
+// Constellation design (`leiko-caregiver-unified.html`). Each person
 // is a glowing orb in a starfield around a centre "You" mark. A legend
 // below carries status pills + headlines. The bottom action bar offers
 // "+ Add someone" when the caregiver has invite capacity.
@@ -49,6 +49,7 @@ import Svg, {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AnomalyBanner } from '../../components/AnomalyBanner';
+import { bannerCopyFor } from '../../utils/anomalyBannerCopy';
 import { ScreenAnomalyBanner } from '../../components/ScreenAnomalyBanner';
 import { SyncReassuranceBanner } from '../../components/SyncReassuranceBanner';
 import { QuietHoursAffirmSheet } from '../../components/QuietHoursAffirmSheet';
@@ -933,29 +934,42 @@ interface BannerState {
   personId: string;
 }
 
+// D13 PR-2 (P0-4) — the cold-start fallback banner no longer carries
+// its own copy. Selection (confirmed-urgent wins outright, else first
+// attention person, order preserved) stays here; every string comes
+// from canonical utils/anomalyBannerCopy via a synthesized event.
+function bannerFromPerson(
+  p: CaregiverPerson,
+  tier: 'confirmed_urgent' | 'calm_concerned',
+): BannerState {
+  const firstName = p.fullName.split(' ')[0];
+  const copy = bannerCopyFor(
+    {
+      id: 'local-fallback',
+      userId: '',
+      familyId: p.id,
+      vital: 'bp',
+      tier,
+      reason: 'outside_band_confirmed',
+      readingId: null,
+      triggeredAtSec: 0,
+      acknowledgedAt: null,
+      feedbackThumb: 0,
+    },
+    'caregiver',
+    firstName,
+  );
+  return { severity: copy.severity, title: copy.title, body: copy.body, personId: p.id };
+}
+
 function pickAnomalyForBanner(people: CaregiverPerson[]): BannerState | null {
-  // Confirmed-urgent wins outright. Otherwise, the first calm-concerned
-  // person sets the banner. Order is preserved — caregiver sees the
-  // earliest-listed urgent person as the "act now" surface.
   let best: BannerState | null = null;
   for (const p of people) {
     if (p.status === 'urgent') {
-      const firstName = p.fullName.split(' ')[0];
-      return {
-        severity: 'confirmed-urgent',
-        title: `Talk to ${firstName} now`,
-        body: 'Their latest reading was above their usual range. A calm check-in helps.',
-        personId: p.id,
-      };
+      return bannerFromPerson(p, 'confirmed_urgent');
     }
     if (!best && p.status === 'attention') {
-      const firstName = p.fullName.split(' ')[0];
-      best = {
-        severity: 'calm-concerned',
-        title: `Worth a chat with ${firstName}`,
-        body: "We've noticed a pattern worth a gentle check-in.",
-        personId: p.id,
-      };
+      best = bannerFromPerson(p, 'calm_concerned');
     }
   }
   return best;

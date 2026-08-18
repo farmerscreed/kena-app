@@ -20,8 +20,7 @@ export type AccountType = 'caregiver' | 'self_buyer' | 'parent';
 export type AnomalyReason =
   | 'crisis_absolute'
   | 'stage2_sustained_60min'
-  | 'outlier_and_soft_threshold'
-  | 'absolute_cold_start'
+  | 'outside_band'
   | 'extreme_value'
   | 'baseline_3day_trend'
   | 'sustained_high_at_rest'
@@ -73,7 +72,8 @@ function renderBpAnomaly(
   // BP single-reading calm-concerned: in-app banner only, no push
   // (D13 §11.3). The send-push call is short-circuited before this
   // function for that case, but defensively return null too.
-  if (p.tier === 'calm_concerned' && p.reason === 'outlier_and_soft_threshold') {
+  // 'outside_band' is the §4.4 single-outlier reason (PR-2).
+  if (p.tier === 'calm_concerned' && p.reason === 'outside_band') {
     return null;
   }
 
@@ -83,7 +83,7 @@ function renderBpAnomaly(
         p.reason === 'crisis_absolute'
           ? `${p.parentLabel}'s reading just now was very high. We recommend reaching out today.`
           : `Three high readings for ${p.parentLabel} in the last hour. We recommend reaching out now.`;
-      return { title: `Please call ${p.parentLabel}`, body };
+      return { title: `Please check on ${p.parentLabel}`, body };
     }
     const body =
       p.reason === 'crisis_absolute'
@@ -115,7 +115,7 @@ function renderHrAnomaly(
   if (p.tier === 'confirmed_urgent') {
     if (recipient === 'caregiver') {
       return {
-        title: `Please call ${p.parentLabel}`,
+        title: `Please check on ${p.parentLabel}`,
         body: `${p.parentLabel}'s resting heart rate is outside their usual range. We recommend reaching out now.`,
       };
     }
@@ -146,7 +146,7 @@ function renderSpO2Anomaly(
   if (p.tier === 'confirmed_urgent') {
     if (recipient === 'caregiver') {
       return {
-        title: `Please call ${p.parentLabel}`,
+        title: `Please check on ${p.parentLabel}`,
         body: `${p.parentLabel}'s overnight oxygen has dipped low three nights running. Worth a call to their doctor today.`,
       };
     }

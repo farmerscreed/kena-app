@@ -1,7 +1,7 @@
 // Portrait — Sprint 7.7a (caregiver Family Constellation).
 //
 // Circular initial-letter portrait used in the caregiver home's bird's-eye
-// orbs and (in 7.7b) editorial cards. Each loved one gets one as a visual
+// orbs and (in 7.7b) editorial cards. Each person gets one as a visual
 // anchor when there's no photo. Background is a subtle accent-tinted
 // gradient; the initial is rendered in the editorial serif so it reads as
 // editorial portraiture, not avatar chrome.

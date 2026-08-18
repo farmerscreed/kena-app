@@ -9,7 +9,6 @@ import {
   classifyHR,
   classifySpO2,
   checkSustainedPattern,
-  computeBpBaseline,
   computeHrMedian,
   producesAnomalyEvent,
   shouldDedupAnomaly,
@@ -17,121 +16,65 @@ import {
 
 // BP — single-reading ────────────────────────────────────────────────
 
-Deno.test('classifyBP — crisis_absolute always wins', () => {
-  const c = classifyBP({ systolic: 180, diastolic: 90 });
-  assertEquals(c.tier, 'confirmed_urgent');
-  assertEquals(c.reason, 'crisis_absolute');
+// The canonical §4.4 band fixture — mirrors the mobile suite
+// (apps/mobile/src/utils/__tests__/classification.test.ts): display
+// band 118–134, classification band 116–136.
+const SYS_ROW = { mean: 126, sd: 5, p10: 118, p90: 134, isSufficient: true };
+const DIA_ROW = { mean: 80, sd: 4, p10: 74, p90: 86, isSufficient: true };
+const PAIR = { systolic: SYS_ROW, diastolic: DIA_ROW };
+
+Deno.test('classifyBP — the 180/120 absolute floor always wins', () => {
+  assertEquals(classifyBP({ systolic: 180, diastolic: 90 }).tier, 'confirmed_urgent');
+  assertEquals(classifyBP({ systolic: 185, diastolic: 125 }, PAIR).reason, 'crisis_absolute');
+  assertEquals(
+    classifyBP({ systolic: 120, diastolic: 120 }, { systolic: null, diastolic: null }).tier,
+    'confirmed_urgent',
+  );
 });
 
-Deno.test('classifyBP — cold-start above stage 2 → calm_concerned', () => {
+Deno.test('classifyBP — no baseline → learning (in_pattern/cold_start), even at 162', () => {
+  // The retired cold-start ladder ambered 162 with no baseline; §4.3
+  // says below the sufficiency gate nothing colours except the floor.
   const c = classifyBP({ systolic: 162, diastolic: 80 });
-  assertEquals(c.tier, 'calm_concerned');
-  assertEquals(c.reason, 'absolute_cold_start');
-});
-
-Deno.test('classifyBP — cold-start in range → in_pattern', () => {
-  const c = classifyBP({ systolic: 120, diastolic: 80, pulse: 70 });
   assertEquals(c.tier, 'in_pattern');
+  assertEquals(c.reason, 'cold_start');
 });
 
-Deno.test('classifyBP — hot path outlier + soft threshold → calm_concerned', () => {
-  const baseline = {
-    sys: 120, dia: 80, pulse: 70,
-    sigmaSys: 5, sigmaDia: 4, sigmaPulse: 6,
-    daysOfData: 14,
-  };
-  const c = classifyBP({ systolic: 155, diastolic: 96, pulse: 80 }, baseline);
+Deno.test('classifyBP — insufficient rows → cold_start', () => {
+  const c = classifyBP(
+    { systolic: 162, diastolic: 80 },
+    { systolic: { ...SYS_ROW, isSufficient: false }, diastolic: { ...DIA_ROW, isSufficient: false } },
+  );
+  assertEquals(c.reason, 'cold_start');
+});
+
+Deno.test('classifyBP — 140 against the 118–134 band → calm_concerned/outside_band', () => {
+  const c = classifyBP({ systolic: 140, diastolic: 80 }, PAIR);
   assertEquals(c.tier, 'calm_concerned');
-  assertEquals(c.reason, 'outlier_and_soft_threshold');
+  assertEquals(c.reason, 'outside_band');
 });
 
-Deno.test('classifyBP — hot path outlier but below soft threshold → in_pattern', () => {
-  const baseline = {
-    sys: 120, dia: 80, pulse: 70,
-    sigmaSys: 5, sigmaDia: 4, sigmaPulse: 6,
-    daysOfData: 14,
-  };
-  // 145/85 is > 2σ outlier but soft thresholds are sys 150 / dia 95 / pulse 120.
-  const c = classifyBP({ systolic: 145, diastolic: 85, pulse: 75 }, baseline);
-  assertEquals(c.tier, 'in_pattern');
+Deno.test('classifyBP — 130 inside the band → in_pattern', () => {
+  assertEquals(classifyBP({ systolic: 130, diastolic: 80 }, PAIR).tier, 'in_pattern');
+});
+
+Deno.test('classifyBP — 135 on the shoulder (between p90 and mean+2σ) → in_pattern', () => {
+  assertEquals(classifyBP({ systolic: 135, diastolic: 80 }, PAIR).tier, 'in_pattern');
+});
+
+Deno.test('classifyBP — diastolic outlier alone flags', () => {
+  assertEquals(classifyBP({ systolic: 128, diastolic: 95 }, PAIR).tier, 'calm_concerned');
+});
+
+Deno.test('classifyBP — pulse no longer participates', () => {
+  assertEquals(classifyBP({ systolic: 128, diastolic: 80, pulse: 135 }, PAIR).tier, 'in_pattern');
 });
 
 Deno.test('classifyBP — sensitivity > 1 widens the outlier band', () => {
-  const baseline = {
-    sys: 120, dia: 80, pulse: 70,
-    sigmaSys: 5, sigmaDia: 4, sigmaPulse: 6,
-    daysOfData: 14,
-  };
-  // sigma=5, 2σ = 10. systolic=155 is 35 above mean → outlier at 1.0.
-  // sensitivity=1.5 → k=3σ → 15. Still outlier.
-  // But sensitivity=10 (hypothetical) would mute it. Use 1.5 + reading
-  // just past the 1.0 band but within the 1.5 band.
-  // mean=120 sigma=5 → 1.0×2σ=10 → outlier above 130. 1.5×2σ=15 → outlier above 135.
-  // reading=133 + dia normal → outlier at 1.0 but not at 1.5.
-  const c10 = classifyBP({ systolic: 133, diastolic: 88, pulse: 75 }, baseline, 1.0);
-  const c15 = classifyBP({ systolic: 133, diastolic: 88, pulse: 75 }, baseline, 1.5);
-  // Note: needs to also exceed soft threshold to fire calm. 133 < 150
-  // soft sys, 88 < 95 soft dia, 75 < 120 soft pulse → no soft trigger,
-  // so still in_pattern for both. This confirms sensitivity tuning is
-  // soft-threshold gated by design.
-  assertEquals(c10.tier, 'in_pattern');
-  assertEquals(c15.tier, 'in_pattern');
+  // 137 is just outside mean+2σ (136) at 1.0, inside at 1.5 (mean+3σ=141).
+  assertEquals(classifyBP({ systolic: 137, diastolic: 80 }, PAIR, 1.0).tier, 'calm_concerned');
+  assertEquals(classifyBP({ systolic: 137, diastolic: 80 }, PAIR, 1.5).tier, 'in_pattern');
 });
-
-// BP — sustained pattern ─────────────────────────────────────────────
-
-Deno.test('checkSustainedPattern — 3 stage-2 in 60min → true', () => {
-  const now = 1_715_000_000;
-  const recent = [
-    { systolic: 165, diastolic: 105, measured_at_sec: now - 100 },
-    { systolic: 168, diastolic: 102, measured_at_sec: now - 1000 },
-    { systolic: 162, diastolic: 101, measured_at_sec: now - 2000 },
-  ];
-  assertEquals(checkSustainedPattern(recent, now), true);
-});
-
-Deno.test('checkSustainedPattern — 3 stage-2 spread > 60min → false', () => {
-  const now = 1_715_000_000;
-  const recent = [
-    { systolic: 165, diastolic: 105, measured_at_sec: now - 100 },
-    { systolic: 168, diastolic: 102, measured_at_sec: now - 1000 },
-    { systolic: 162, diastolic: 101, measured_at_sec: now - 4000 },
-  ];
-  assertEquals(checkSustainedPattern(recent, now), false);
-});
-
-Deno.test('checkSustainedPattern — 2 stage-2 → false', () => {
-  const now = 1_715_000_000;
-  const recent = [
-    { systolic: 165, diastolic: 105, measured_at_sec: now - 100 },
-    { systolic: 168, diastolic: 102, measured_at_sec: now - 1000 },
-    { systolic: 140, diastolic: 85, measured_at_sec: now - 2000 },
-  ];
-  assertEquals(checkSustainedPattern(recent, now), false);
-});
-
-// BP — baseline computation ──────────────────────────────────────────
-
-Deno.test('computeBpBaseline — empty input → null', () => {
-  assertEquals(computeBpBaseline([]), null);
-});
-
-Deno.test('computeBpBaseline — mean + sigma + day count', () => {
-  const now = 1_715_000_000;
-  const rows = [
-    { systolic: 120, diastolic: 80, pulse: 70, measured_at_sec: now - 0 * 86400 },
-    { systolic: 122, diastolic: 82, pulse: 72, measured_at_sec: now - 1 * 86400 },
-    { systolic: 118, diastolic: 78, pulse: 68, measured_at_sec: now - 2 * 86400 },
-  ];
-  const b = computeBpBaseline(rows)!;
-  assertEquals(b.sysMean, 120);
-  assertEquals(b.diaMean, 80);
-  assertEquals(b.pulseMean, 70);
-  assertEquals(b.readingCount, 3);
-  assertEquals(b.daysOfData, 3);
-});
-
-// HR ────────────────────────────────────────────────────────────────
 
 Deno.test('classifyHR — bpm=30 → confirmed_urgent (extreme)', () => {
   const c = classifyHR({ restingBpmToday: 30, restingBpmRecent: [] });

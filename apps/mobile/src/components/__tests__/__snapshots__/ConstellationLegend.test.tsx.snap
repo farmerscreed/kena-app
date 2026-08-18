@@ -18,7 +18,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
   testID="legend"
 >
   <View
-    accessibilityLabel="Marian, Mom, All clear, A calm morning."
+    accessibilityLabel="Marian, Mom, In their usual range, A calm morning."
     accessibilityRole="button"
     accessibilityState={
       {
@@ -152,7 +152,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       </Text>
     </View>
     <View
-      accessibilityLabel="All clear"
+      accessibilityLabel="In their usual range"
       accessibilityRole="text"
       style={
         [
@@ -200,15 +200,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           {
             "color": "#61B565",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
-        All clear
+        In their usual range
       </Text>
     </View>
   </View>
@@ -397,11 +396,10 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           {
             "color": "#FF7350",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
@@ -576,11 +574,10 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           {
             "color": "#7B67CC",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
@@ -609,7 +606,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
   testID="legend"
 >
   <View
-    accessibilityLabel="Marian, Mom, All clear, A calm morning."
+    accessibilityLabel="Marian, Mom, In their usual range, A calm morning."
     accessibilityRole="button"
     accessibilityState={
       {
@@ -743,7 +740,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       </Text>
     </View>
     <View
-      accessibilityLabel="All clear"
+      accessibilityLabel="In their usual range"
       accessibilityRole="text"
       style={
         [
@@ -791,15 +788,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           {
             "color": "#61B565",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
-        All clear
+        In their usual range
       </Text>
     </View>
   </View>
@@ -988,11 +984,10 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           {
             "color": "#FF7350",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
@@ -1167,11 +1162,10 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           {
             "color": "#7B67CC",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >

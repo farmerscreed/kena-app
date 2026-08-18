@@ -30,9 +30,9 @@ describe('StatusPill — labels (voice-rule compliant)', () => {
     expect(screen.getByTestId('pill')).toBeTruthy();
   });
 
-  it('uses "All clear" — not "Patient stable"', () => {
+  it("states the person's own range — no all-clear claim, no clinical language", () => {
     render(withTheme(<StatusPill status="clear" />));
-    expect(screen.getByText('All clear')).toBeTruthy();
+    expect(screen.getByText('In their usual range')).toBeTruthy();
   });
 
   it('uses "Needs attention" — not "Critical"', () => {

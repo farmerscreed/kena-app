@@ -31,6 +31,7 @@ import { corsHeaders } from '../_shared/cors.ts';
 import { withInternalHeader } from '../_shared/internal-auth.ts';
 import {
   classifyBP,
+  type BpBaselinePair,
   classifyHR,
   classifySpO2,
   checkSustainedPattern,
@@ -140,11 +141,15 @@ async function handleReadingInserted(
 
   // Fetch baseline + sensitivity in parallel.
   const [baselineRes, familyRes, lastEventRes, recentRes] = await Promise.all([
+    // D13 PR-2 — the inline path reads the truth layer directly, the
+    // same rows the mobile classifier resolves. The bp_baselines
+    // compatibility view no longer has a consumer.
     service
-      .from('bp_baselines')
-      .select('sys_mean, dia_mean, pulse_mean, sigma_sys, sigma_dia, sigma_pulse, days_of_data')
-      .eq('user_id', userId)
-      .maybeSingle(),
+      .from('vital_baselines')
+      .select('vital, mean_value, sd_value, p10_value, p90_value, is_sufficient')
+      .eq('subject_id', userId)
+      .in('vital', ['bp_systolic', 'bp_diastolic'])
+      .is('context_tag', null),
     service
       .from('families')
       .select('anomaly_sensitivity')
@@ -168,24 +173,30 @@ async function handleReadingInserted(
       .limit(20),
   ]);
 
-  const baseline = baselineRes.data
-    ? {
-        sys: Number(baselineRes.data.sys_mean),
-        dia: Number(baselineRes.data.dia_mean),
-        pulse: Number(baselineRes.data.pulse_mean ?? 0),
-        sigmaSys: Number(baselineRes.data.sigma_sys),
-        sigmaDia: Number(baselineRes.data.sigma_dia),
-        // Since 0054 bp_baselines is a view over vital_baselines and has
-        // no pulse columns (resting HR is its own vital). A null sigma
-        // must DISABLE the pulse-outlier branch, not become sigma=1 —
-        // that coalesce would flag every pulse as an outlier.
-        sigmaPulse:
-          baselineRes.data.sigma_pulse == null
-            ? Number.POSITIVE_INFINITY
-            : Number(baselineRes.data.sigma_pulse),
-        daysOfData: Number(baselineRes.data.days_of_data),
-      }
-    : null;
+  const baselineRows = (baselineRes.data ?? []) as Array<{
+    vital: string;
+    mean_value: number | string;
+    sd_value: number | string;
+    p10_value: number | string;
+    p90_value: number | string;
+    is_sufficient: boolean;
+  }>;
+  const rowFor = (vital: string) => {
+    const r = baselineRows.find((b) => b.vital === vital);
+    return r
+      ? {
+          mean: Number(r.mean_value),
+          sd: Number(r.sd_value),
+          p10: Number(r.p10_value),
+          p90: Number(r.p90_value),
+          isSufficient: r.is_sufficient,
+        }
+      : null;
+  };
+  const baseline: BpBaselinePair = {
+    systolic: rowFor('bp_systolic'),
+    diastolic: rowFor('bp_diastolic'),
+  };
 
   const sensitivity = familyRes.data
     ? Number((familyRes.data as { anomaly_sensitivity: number | string }).anomaly_sensitivity)
