@@ -16,6 +16,10 @@
 // itself doesn't need to filter by user_id.
 
 import type { SupabaseClient } from '@supabase/supabase-js';
+import {
+  seedVitalBaselines,
+  type VitalBaselineServerRow,
+} from '../../utils/vitalBaselines';
 import type { Database, FamilyRole, VitalType } from '../../types/database';
 
 const PER_PARENT_READING_LIMIT = 14; // ~2 weeks of once-daily; powers 7-day sparkline + buffer
@@ -106,6 +110,27 @@ export async function fetchParentSummaries(
   if (!memberships || memberships.length === 0) return [];
 
   const familyIds = memberships.map((m) => m.family_id);
+
+  // D13 PR-1 — refresh each parent's truth-layer rows into the shared
+  // cache so the synchronous status derivation (utils/caregiverPerson)
+  // judges against the server band. One query for all families;
+  // failure is non-fatal (the resolver's provisional fallback covers).
+  const { data: baselineRows, error: baselineErr } = await client
+    .from('vital_baselines')
+    .select(
+      'family_id, vital, window_days, sample_count, mean_value, sd_value, p10_value, p90_value, context_tag, is_sufficient, computed_at',
+    )
+    .in('family_id', familyIds);
+  if (!baselineErr && baselineRows) {
+    for (const familyId of familyIds) {
+      seedVitalBaselines(
+        familyId,
+        (baselineRows as Array<VitalBaselineServerRow & { family_id: string }>).filter(
+          (r) => r.family_id === familyId,
+        ),
+      );
+    }
+  }
 
   const { data: readingRows, error: readingsErr } = await client
     .from('readings')

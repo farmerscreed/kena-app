@@ -37,7 +37,7 @@ import type {
 } from '../services/families/fetchParentSummaries';
 import type { Status } from '../components/StatusPill';
 import { classifyReading } from './classification';
-import { computeReadingBaseline } from './readingBaseline';
+import { resolveBpBaselines } from './vitalBaselines';
 
 const BP_STALE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12h per D13 §6
 const MIN_PER_HR = 60;
@@ -109,24 +109,27 @@ export function caregiverPersonFromParent(
       headline = `Last reading ${ageLabel} ago`;
       sentence = `No reading in the last ${ageLabel}. The watch may be off the wrist.`;
     } else {
-      // Sprint 19 (audit D12 P0-2) — judge the parent's reading against
-      // the parent's OWN baseline, built from the recent-readings window
-      // the summary already carries (PER_PARENT_READING_LIMIT = 14, i.e.
-      // roughly the classifier's 14-day window at once-daily cadence).
-      // Falls back to the classifier's cold-start path when the window
-      // isn't yet 14 distinct days.
-      const baseline = computeReadingBaseline(
-        parent.recentReadings.map((s) => ({
-          measuredAtSec: Math.floor(Date.parse(s.measuredAt) / 1000),
-          systolic: s.systolic,
-          diastolic: s.diastolic,
-          pulse: s.pulse,
-        })),
+      // D13 PR-1 (P0-2) — judge the parent's reading against the
+      // parent's OWN truth-layer baseline: the server row seeded by
+      // whichever fetcher produced this summary, else a provisional
+      // recompute over the recent-readings window the summary already
+      // carries. Below the §4.3 sufficiency gate the classifier
+      // renders the learning state. History (latest first) enables the
+      // three-consecutive confirmation for the latest reading.
+      const samples = parent.recentReadings.map((s) => ({
+        measuredAtSec: Math.floor(Date.parse(s.measuredAt) / 1000),
+        systolic: s.systolic,
+        diastolic: s.diastolic,
+      }));
+      const baselines = resolveBpBaselines(
+        parent.familyId,
+        samples,
         Math.floor(nowMs / 1000),
       );
       const tier = classifyReading(
         { systolic: r.systolic, diastolic: r.diastolic, pulse: r.pulse },
-        baseline,
+        baselines,
+        samples.slice().sort((a, b) => b.measuredAtSec - a.measuredAtSec),
       ).tier;
       switch (tier) {
         case 'confirmed_urgent':

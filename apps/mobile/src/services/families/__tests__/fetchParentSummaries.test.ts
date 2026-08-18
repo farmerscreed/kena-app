@@ -60,6 +60,14 @@ function makeClient(opts: {
       chain.order = jest.fn(() => Promise.resolve({ data: opts.readings, error: null }));
       return chain;
     }
+    if (table === 'vital_baselines') {
+      // D13 PR-1 — .select().in('family_id', ...); empty by default so
+      // the resolver exercises its provisional fallback in these tests.
+      const chain: Record<string, jest.Mock> = {} as never;
+      chain.select = jest.fn(() => chain);
+      chain.in = jest.fn(() => Promise.resolve({ data: [], error: null }));
+      return chain;
+    }
     if (table === 'vitals_other') {
       // .select().in('family_id', ...).in('vital_type', ...).eq('hidden', false).gte('measured_at', ...).order(...)
       const chain: Record<string, jest.Mock> = {} as never;
