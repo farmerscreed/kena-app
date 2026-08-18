@@ -23,21 +23,43 @@
 import type { Status } from '../components/StatusPill';
 import type { CaregiverPerson } from './caregiverPerson';
 
-// Higher number = more urgent = sorts earlier. 'sleeping'/'offline' are
-// calm states and rank with 'clear' (they never pre-empt "You").
+// D13 PR-8 (§7.1a) — the attention sort orders by what needs the
+// caregiver's ACTION next, never by whose numbers are worse (that
+// would be a leaderboard, D11 §9.4):
+//
+//   talk-to-doctor > worth-a-look > silence (> 48h without a reading —
+//   the most actionable state and previously the least visible one) >
+//   learning > in range (most recent first, handled by the base order).
 const STATUS_URGENCY: Record<Status, number> = {
-  urgent: 3,
-  attention: 2,
-  watch: 1,
+  urgent: 5,
+  attention: 4,
+  // 'offline' (stale reading) ranks at the silence tier by default;
+  // statusUrgencyFor raises any status to the silence rank once the
+  // last reading is older than 48h.
+  offline: 3,
+  watch: 2,
+  learning: 1,
   clear: 0,
   sleeping: 0,
-  offline: 0,
-  // D13 PR-4 — learning is calm: accumulating data never pre-empts.
-  learning: 0,
 };
+
+export const SILENCE_THRESHOLD_MS = 48 * 60 * 60 * 1000;
+const SILENCE_RANK = 3;
 
 export function statusUrgency(status: Status): number {
   return STATUS_URGENCY[status] ?? 0;
+}
+
+/** §7.1a — the full sort key: silence outranks a normal number, but an
+ *  active concern (worth-a-look / talk-to-doctor) still outranks
+ *  silence. */
+export function statusUrgencyFor(
+  status: Status,
+  lastReadingAgeMs: number | null,
+): number {
+  const base = statusUrgency(status);
+  const silent = lastReadingAgeMs === null || lastReadingAgeMs > SILENCE_THRESHOLD_MS;
+  return silent ? Math.max(base, SILENCE_RANK) : base;
 }
 
 /** A constellation node: a CaregiverPerson plus whether it is the viewer's
@@ -67,8 +89,15 @@ export function orderConstellationNodes(
   return nodes
     .map((node, index) => ({ node, index }))
     .sort((a, b) => {
-      const ua = statusUrgency(a.node.status);
-      const ub = statusUrgency(b.node.status);
+      // §7.1a — silence-aware urgency: 48h without a reading outranks
+      // a normal number (self stays exempt — the viewer's own quiet
+      // wrist is their own business, not an action item).
+      const ua = a.node.isSelf
+        ? statusUrgency(a.node.status)
+        : statusUrgencyFor(a.node.status, a.node.lastReadingAgeMs);
+      const ub = b.node.isSelf
+        ? statusUrgency(b.node.status)
+        : statusUrgencyFor(b.node.status, b.node.lastReadingAgeMs);
       if (ua !== ub) return ub - ua; // more urgent first
       // same urgency tier → self first
       if (a.node.isSelf !== b.node.isSelf) return a.node.isSelf ? -1 : 1;

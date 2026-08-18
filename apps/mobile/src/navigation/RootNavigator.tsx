@@ -44,6 +44,7 @@ import { SettingsScreen } from '../screens/Settings/SettingsScreen';
 import { TakeReadingScreen } from '../screens/TakeReading/TakeReadingScreen';
 import { ReadingDetailScreen } from '../screens/ReadingDetail/ReadingDetailScreen';
 import { Trends } from '../screens/Trends/Trends';
+import { PersonOverviewScreen } from '../screens/Person/PersonOverviewScreen';
 import { ForYourDoctorScreen } from '../screens/ForYourDoctor/ForYourDoctorScreen';
 import { AuditLogScreen } from '../screens/AuditLog/AuditLogScreen';
 import { CaregiverVisibilityScreen } from '../screens/CaregiverVisibility/CaregiverVisibilityScreen';
@@ -167,6 +168,7 @@ function CaregiverHomeNavigator() {
       <CaregiverStack.Screen name="TakeReading" component={TakeReadingScreen} />
       <CaregiverStack.Screen name="ReadingDetail" component={ReadingDetailScreen} />
       <CaregiverStack.Screen name="Trends" component={Trends} />
+      <CaregiverStack.Screen name="PersonOverview" component={PersonOverviewRoute} />
       <CaregiverStack.Screen
         name="ForYourDoctor"
         component={ForYourDoctorScreen}
@@ -254,6 +256,7 @@ function SelfBuyerHomeNavigator() {
       <SelfBuyerStack.Screen name="VitalHistory" component={VitalHistoryScreen} />
       <SelfBuyerStack.Screen name="PdfPreview" component={PdfPreviewScreen} />
       <SelfBuyerStack.Screen name="Trends" component={Trends} />
+      <SelfBuyerStack.Screen name="PersonOverview" component={PersonOverviewRoute} />
       <SelfBuyerStack.Screen
         name="ForYourDoctor"
         component={ForYourDoctorScreen}
@@ -459,3 +462,23 @@ function VisibilityEnforcer(): null {
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
+
+
+// D13 PR-8 — thin route wrapper for PersonOverviewScreen: binds the
+// navigation handlers so the screen itself stays navigation-free.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function PersonOverviewRoute({ navigation, route }: any) {
+  const { familyId, personName, isSelf } = route.params ?? {};
+  return (
+    <PersonOverviewScreen
+      familyId={familyId}
+      personName={personName}
+      isSelf={isSelf}
+      onBack={() => navigation.goBack()}
+      onOpenVital={(vital: 'bp' | 'hr' | 'spo2' | 'sleep' | 'activity', fid: string | null) =>
+        navigation.navigate('VitalDetail', fid ? { vital, familyId: fid } : { vital })
+      }
+      onDoctorPress={() => navigation.navigate('ForYourDoctor')}
+    />
+  );
+}

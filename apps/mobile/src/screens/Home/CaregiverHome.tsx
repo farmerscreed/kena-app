@@ -98,7 +98,6 @@ import { useHydrateHRFromServer } from '../../hooks/useHydrateHRFromServer';
 import { useHydrateSpO2FromServer } from '../../hooks/useHydrateSpO2FromServer';
 import { useReducedMotion } from '../../theme/useReducedMotion';
 import { useTheme, type Theme } from '../../theme';
-import { usePairing } from '../../state/pairing';
 import { useReadings } from '../../state/readings';
 import type { CaregiverStackParamList } from '../../navigation/types';
 import type {
@@ -151,7 +150,6 @@ export function CaregiverHome() {
   // refetches and surface a calm banner. Backstop for the
   // `family_removed` push when push is suppressed for any reason.
   const removalBanner = useFamilyRemovalBanner(parents, isLoading);
-  const pairedDevice = usePairing((s) => s.pairedDevice);
   const localLatest = useReadings((s) => s.latest());
   const {
     viewMode: viewModePref,
@@ -229,45 +227,17 @@ export function CaregiverHome() {
     (id: string) => {
       const target = merged.find((p) => p.familyId === id);
       if (!target) return;
-      // ADR-0006 Phase 2 — tapping the viewer's OWN node ("You") opens the
-      // immersive personal view via ParentDashboard, which exists on this
-      // (caregiver) stack and reads the self-circle's data from the server.
-      // (Cross-stack routing to the self-buyer SelfBuyerHome — with its
-      // Take-a-reading FAB — is the Phase 3 navigation unification; for
-      // now ParentDashboard renders the full pulse for the self node too.)
-      if (isSelfCircle(target)) {
-        navigation.navigate('ParentDashboard', { familyId: id });
-        return;
-      }
-      // Sprint 16.6 fix — only route to ReadingDetail when the reading
-      // is in this phone's local MMKV (i.e. the caregiver IS the
-      // parent — hybrid mode — and took the reading here). Cross-phone
-      // readings live only on the server; ReadingDetail can't find
-      // them and renders "We can't find that reading." Sprint 17a
-      // routes those taps to ParentDashboard — the per-parent
-      // immersive surface that replaces the Sprint 7 placeholder.
-      if (target.latestReading) {
-        const local = useReadings.getState().byLocalId(target.latestReading.id);
-        if (local) {
-          navigation.navigate('ReadingDetail', {
-            readingLocalId: target.latestReading.id,
-          });
-          return;
-        }
-        navigation.navigate('ParentDashboard', { familyId: id });
-        return;
-      }
-      // No reading yet — route based on what the user can act on. If the
-      // caregiver hasn't paired their own watch yet, route to Pairing
-      // (they may BE the parent in hybrid mode). Otherwise route to
-      // ParentDashboard, which renders the immersive empty-state view.
-      if (!pairedDevice) {
-        navigation.navigate('Pairing');
-        return;
-      }
-      navigation.navigate('ParentDashboard', { familyId: id });
+      // D13 PR-8 (§7.1) — the navigation contract: every tap target
+      // that represents a person routes to PersonOverview. isSelf
+      // travels with the route, so tapping your own node shows
+      // self-framed copy (closes P2-8).
+      navigation.navigate('PersonOverview', {
+        familyId: id,
+        personName: target.parentDisplayName,
+        isSelf: isSelfCircle(target),
+      });
     },
-    [merged, navigation, pairedDevice],
+    [merged, navigation],
   );
 
   // ADR-0006 Phase 3 — the viewer's own circle is the CENTRE "You" anchor,

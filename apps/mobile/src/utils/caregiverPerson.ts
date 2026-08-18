@@ -69,6 +69,9 @@ export interface CaregiverPerson {
   status: Status;
   /** Pre-formatted BP, e.g. "122/78" or "—" when no reading exists. */
   bpLabel: string;
+  /** Milliseconds since the latest reading; null when none exists.
+   *  Drives the §7.1a attention sort's silence rank. */
+  lastReadingAgeMs: number | null;
   /** One-line factual headline. Placeholder until Sprint 12.5 AI. */
   headline: string;
   /** Longer editorial prose. Placeholder until Sprint 12.5 AI. */
@@ -174,6 +177,7 @@ export function caregiverPersonFromParent(
     accentIndex,
     status,
     bpLabel,
+    lastReadingAgeMs: r ? Math.max(0, nowMs - Date.parse(r.measuredAt)) : null,
     headline,
     sentence,
     // Sprint 19 Block 5 — prefer the per-caregiver label when the
