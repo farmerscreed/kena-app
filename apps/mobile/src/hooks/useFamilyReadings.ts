@@ -26,6 +26,7 @@ import { fetchParentSummaries, type ParentSummary } from '../services/families/f
 import { useAuth } from '../state/auth';
 import { useSyncOrchestrator } from '../state/syncOrchestrator';
 import { logger } from '../services/analytics/logger';
+import { announceForAccessibility } from './useAnnounce';
 
 const QUERY_KEY = ['family-readings'] as const;
 
@@ -94,6 +95,11 @@ export function useFamilyReadings(): UseFamilyReadingsResult {
           },
           () => {
             logger.track('reading_realtime_received', { familyId });
+            // D13 PR-9 (§9.1) — the insert used to re-render silently;
+            // a screen-reader user was never told a reading arrived.
+            // No values in the announcement (data rules), just the
+            // event; the surfaces speak the verdict themselves.
+            announceForAccessibility('A new reading just came in.');
             void queryClient.invalidateQueries({ queryKey });
           },
         )

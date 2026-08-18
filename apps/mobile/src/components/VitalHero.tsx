@@ -175,7 +175,7 @@ export function VitalHero({
   const composedA11yLabel = composeAccessibilityLabel(sub, primary, secondary, range);
 
   return (
-    <View
+    <View accessible={true}
       accessibilityRole="text"
       accessibilityLabel={composedA11yLabel}
       style={[styles.root, style]}

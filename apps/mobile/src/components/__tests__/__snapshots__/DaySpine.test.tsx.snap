@@ -194,7 +194,7 @@ exports[`DaySpine — populated matches snapshot in dark mode 1`] = `
         {
           "alignItems": "flex-start",
           "flexDirection": "row",
-          "opacity": 0.55,
+          "opacity": 1,
           "paddingVertical": 12,
         }
       }

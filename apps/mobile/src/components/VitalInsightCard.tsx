@@ -53,7 +53,7 @@ export function VitalInsightCard({
   const a11y = `Leiko about your ${lowerName}: ${body}`;
 
   return (
-    <View
+    <View accessible={true}
       accessibilityRole="text"
       accessibilityLabel={a11y}
       style={[

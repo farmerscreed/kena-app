@@ -10,6 +10,7 @@ exports[`VitalRing — size variation renders size=hero 1`] = `
       "now": 0.5,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -156,6 +157,7 @@ exports[`VitalRing — size variation renders size=lg 1`] = `
       "now": 0.5,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -302,6 +304,7 @@ exports[`VitalRing — size variation renders size=md 1`] = `
       "now": 0.5,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -448,6 +451,7 @@ exports[`VitalRing — size variation renders size=sm 1`] = `
       "now": 0.5,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -594,6 +598,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=filling mode=
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -740,6 +745,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=filling mode=
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -866,6 +872,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=idle mode=dar
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -1012,6 +1019,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=idle mode=lig
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -1138,6 +1146,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=pulsing mode=
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -1284,6 +1293,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=pulsing mode=
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -1410,6 +1420,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=stale mode=da
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {
@@ -1536,6 +1547,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=stale mode=li
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {

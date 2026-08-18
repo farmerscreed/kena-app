@@ -432,7 +432,7 @@ export function DailyPulseHero({
 
   return (
     <View style={[styles.root, style]} testID={testID}>
-      <View
+      <View accessible={true}
         accessibilityRole="text"
         accessibilityLabel={composedA11yLabel}
         style={{ width: CANVAS_W, height: CANVAS_H }}

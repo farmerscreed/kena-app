@@ -5,6 +5,7 @@ exports[`AnomalyBanner — severity × colorMode snapshot matrix renders severit
   accessibilityLabel="Worth-a-chat alert: Worth a chat with Mum. We've noticed a pattern worth a gentle check-in."
   accessibilityLiveRegion="polite"
   accessibilityRole="alert"
+  accessible={true}
   style={
     [
       {
@@ -162,6 +163,7 @@ exports[`AnomalyBanner — severity × colorMode snapshot matrix renders severit
   accessibilityLabel="Worth-a-chat alert: Worth a chat with Mum. We've noticed a pattern worth a gentle check-in."
   accessibilityLiveRegion="polite"
   accessibilityRole="alert"
+  accessible={true}
   style={
     [
       {
@@ -319,6 +321,7 @@ exports[`AnomalyBanner — severity × colorMode snapshot matrix renders severit
   accessibilityLabel="Urgent alert: Talk to Mum now. Their latest reading was above their usual range. A calm check-in helps."
   accessibilityLiveRegion="assertive"
   accessibilityRole="alert"
+  accessible={true}
   style={
     [
       {
@@ -478,6 +481,7 @@ exports[`AnomalyBanner — severity × colorMode snapshot matrix renders severit
   accessibilityLabel="Urgent alert: Talk to Mum now. Their latest reading was above their usual range. A calm check-in helps."
   accessibilityLiveRegion="assertive"
   accessibilityRole="alert"
+  accessible={true}
   style={
     [
       {

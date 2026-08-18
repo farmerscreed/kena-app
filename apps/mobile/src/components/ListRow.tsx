@@ -203,7 +203,7 @@ export function ListRow({
     // Static, no role.
     return (
       <View testID={testID}>
-        <View accessibilityLabel={a11yLabel} style={rowStyle}>
+        <View accessible={true} accessibilityLabel={a11yLabel} style={rowStyle}>
           {body}
         </View>
         {showDivider ? <View style={dividerStyle} /> : null}
@@ -239,7 +239,7 @@ export function ListRow({
   // the function total.
   return (
     <View testID={testID}>
-      <View accessibilityLabel={a11yLabel} style={rowStyle}>
+      <View accessible={true} accessibilityLabel={a11yLabel} style={rowStyle}>
         {body}
       </View>
       {showDivider ? <View style={dividerStyle} /> : null}

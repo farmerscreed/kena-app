@@ -154,6 +154,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="In their usual range"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
@@ -350,6 +351,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="Needs attention"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
@@ -537,6 +539,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="Sleeping"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
@@ -742,6 +745,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="In their usual range"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
@@ -938,6 +942,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="Needs attention"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
@@ -1125,6 +1130,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="Sleeping"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {

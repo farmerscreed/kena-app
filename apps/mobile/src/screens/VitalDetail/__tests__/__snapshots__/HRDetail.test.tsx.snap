@@ -371,6 +371,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
           <View
             accessibilityLabel="Overnight · resting. 64. bpm · resting"
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -439,6 +440,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                       "now": 0.3,
                     }
                   }
+                  accessible={true}
                   style={
                     [
                       {
@@ -1091,6 +1093,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Resting avg: — bpm"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1158,6 +1161,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Peak: 78 today"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1225,6 +1229,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Range today: 14 bpm"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1847,6 +1852,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Resting zone, < 60 bpm, 0 percent"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1967,6 +1973,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Calm zone, 60–80 bpm, 100 percent"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -2087,6 +2094,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Active zone, 80–110 bpm, 0 percent"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -2207,6 +2215,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Vigorous zone, 110+ bpm, 0 percent"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -2723,6 +2732,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
           <View
             accessibilityLabel="Leiko about your heart rate: After a few nights of sleep, this card will compare your resting heart rate to your usual band and call out anything worth noting."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {

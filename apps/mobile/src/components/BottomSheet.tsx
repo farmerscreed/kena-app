@@ -317,7 +317,7 @@ export function BottomSheet({
                   </>
                 )}
                 <View style={contentPaddingStyle}>
-                  <View
+                  <View accessible={true}
                     style={[
                       styles.dragHandle,
                       {

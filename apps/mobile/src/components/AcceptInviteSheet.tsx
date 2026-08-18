@@ -325,7 +325,7 @@ export function AcceptInviteSheet({
             >
               Who are they to you?  ·  optional
             </Text>
-            <View
+            <View accessible={true}
               accessibilityRole="radiogroup"
               accessibilityLabel="Your relationship to the wearer"
               style={{

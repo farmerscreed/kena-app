@@ -213,7 +213,7 @@ function SearchingView({ onCancel }: { onCancel: () => void }) {
   // Audit P1-7.
   useAnnounceOnChange(A11Y_SEARCHING);
   return (
-    <View
+    <View accessible={true}
       testID="pairing-searching"
       accessibilityLiveRegion="polite"
       accessibilityLabel={A11Y_SEARCHING}
@@ -333,7 +333,7 @@ function PairingView() {
   // Audit P1-7.
   useAnnounceOnChange(A11Y_PAIRING);
   return (
-    <View
+    <View accessible={true}
       testID="pairing-pairing"
       accessibilityLiveRegion="polite"
       accessibilityLabel={A11Y_PAIRING}
@@ -356,7 +356,7 @@ function SuccessView({ onContinue }: { onContinue: () => void }) {
     : 'Paired. The watch is connected.';
   useAnnounceOnChange(a11yLabel);
   return (
-    <View
+    <View accessible={true}
       testID="pairing-success"
       accessibilityLiveRegion="assertive"
       accessibilityLabel={a11yLabel}
@@ -419,7 +419,7 @@ function FailureView({ onCancel }: { onCancel: () => void }) {
   }`;
   useAnnounceOnChange(a11yLabel);
   return (
-    <View
+    <View accessible={true}
       testID="pairing-failure"
       accessibilityLiveRegion="assertive"
       accessibilityLabel={a11yLabel}

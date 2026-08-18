@@ -184,7 +184,7 @@ export function AnomalyBanner({
   const IconComponent = isUrgent ? WarningCircleIcon : WarningIcon;
 
   return (
-    <Animated.View
+    <Animated.View accessible={true}
       accessibilityRole="alert"
       accessibilityLabel={composedA11yLabel}
       accessibilityLiveRegion={isUrgent ? 'assertive' : 'polite'}

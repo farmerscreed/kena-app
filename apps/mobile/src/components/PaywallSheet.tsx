@@ -193,7 +193,7 @@ export function PaywallSheet({
       <View style={{ paddingHorizontal: theme.spacing.l, paddingBottom: theme.spacing.xl }}>
         {/* Hero — headline + body */}
         <View style={{ marginTop: theme.spacing.l }}>
-          <View accessibilityRole="header" accessibilityLabel={copy.headline}>
+          <View accessible={true} accessibilityRole="header" accessibilityLabel={copy.headline}>
             <Text style={[headlineStyle, { color: theme.colors.text.primary }]}>
               {copy.headline}
             </Text>

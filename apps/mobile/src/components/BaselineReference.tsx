@@ -42,7 +42,7 @@ export function BaselineReference({
   const captionStyle = theme.type('caption');
 
   return (
-    <View
+    <View accessible={true}
       style={[styles.root, style]}
       accessibilityRole="text"
       accessibilityLabel={`${eyebrow}: ${body}${caption ? `, ${caption}` : ''}`}

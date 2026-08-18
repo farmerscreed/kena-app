@@ -222,7 +222,7 @@ function ConnectingView() {
   // Audit P1-7.
   useAnnounceOnChange(A11Y_CONNECTING);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-connecting"
       accessibilityLiveRegion="polite"
       accessibilityLabel={A11Y_CONNECTING}
@@ -247,7 +247,7 @@ function WaitingForWatchView({
   // Audit P1-7.
   useAnnounceOnChange(A11Y_WAITING);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-waiting"
       accessibilityLiveRegion="polite"
       accessibilityLabel={A11Y_WAITING}
@@ -284,7 +284,7 @@ function ReconnectingView() {
   // Audit P1-7.
   useAnnounceOnChange(A11Y_RECONNECTING);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-reconnecting"
       accessibilityLiveRegion="polite"
       accessibilityLabel={A11Y_RECONNECTING}
@@ -303,7 +303,7 @@ function FetchingView() {
   // Audit P1-7.
   useAnnounceOnChange(A11Y_FETCHING);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-fetching"
       accessibilityLiveRegion="polite"
       accessibilityLabel={A11Y_FETCHING}
@@ -339,7 +339,7 @@ function SuccessView({
   if (!reading) return <FetchingView />;
 
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-success"
       accessibilityLiveRegion="assertive"
       accessibilityLabel={a11yLabel ?? undefined}
@@ -416,7 +416,7 @@ function FailureView({
   const a11yLabel = `We couldn't get that reading. ${friendly}`;
   useAnnounceOnChange(a11yLabel);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-failure"
       accessibilityLiveRegion="assertive"
       accessibilityLabel={a11yLabel}

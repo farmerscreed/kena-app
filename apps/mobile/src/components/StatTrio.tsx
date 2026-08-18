@@ -48,7 +48,7 @@ export function StatTrio({ items, testID, style }: StatTrioProps) {
           ? `${item.label}: ${item.value} ${item.unit}`
           : `${item.label}: ${item.value}`;
         return (
-          <View
+          <View accessible={true}
             key={`${item.label}-${idx}`}
             accessibilityRole="text"
             accessibilityLabel={a11yLabel}

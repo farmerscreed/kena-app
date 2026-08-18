@@ -371,6 +371,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
           <View
             accessibilityLabel="Latest · 3:30 PM. 122/ 78. mmHg · in your usual range"
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -439,6 +440,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                       "now": 0,
                     }
                   }
+                  accessible={true}
                   style={
                     [
                       {
@@ -1074,6 +1076,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
           <View
             accessibilityLabel="Still learning: 0 of 10, We have 0 of the 10 readings we need before we can tell you what's usual for you."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -1149,6 +1152,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
             <View
               accessibilityLabel="7-day avg: 122/78 mmHg"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1216,6 +1220,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
             <View
               accessibilityLabel="Lowest: 122/78 Fri · May 8"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1283,6 +1288,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
             <View
               accessibilityLabel="Highest: 122/78 Fri · May 8"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1761,6 +1767,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
           <View
             accessibilityLabel="Leiko about your blood pressure: After about a week of readings, this card will compare your current numbers to your usual range and call out anything worth noting."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {

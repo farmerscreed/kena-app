@@ -4,6 +4,7 @@ exports[`VitalInsightCard matches snapshot 1`] = `
 <View
   accessibilityLabel="Leiko about your sleep: You spent more time in deep sleep tonight than the seven-night average."
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {

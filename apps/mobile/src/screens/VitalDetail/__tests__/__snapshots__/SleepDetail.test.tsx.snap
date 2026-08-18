@@ -363,6 +363,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
           <View
             accessibilityLabel="Last sync Thu. 7:42hrs. A quieter night by the numbers"
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -431,6 +432,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                       "now": 0.85,
                     }
                   }
+                  accessible={true}
                   style={
                     [
                       {
@@ -1754,6 +1756,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
           <View
             accessibilityLabel="Leiko about your sleep: Deep sleep made up about 21% of the night — within the range we typically see. Wear the watch a few more nights and we'll start showing how this connects to your morning readings."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {

@@ -316,7 +316,7 @@ export function MultiVitalChart({
   const anyVisible = series.some((s) => s.visible && s.values.length > 0);
 
   return (
-    <View
+    <View accessible={true}
       style={style}
       testID={testID}
       accessibilityLabel={a11yLabel}

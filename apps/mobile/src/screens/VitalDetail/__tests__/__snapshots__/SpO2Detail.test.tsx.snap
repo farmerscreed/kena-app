@@ -371,6 +371,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
           <View
             accessibilityLabel="Last night · overnight low. 96%. Steady through the night"
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -439,6 +440,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
                       "now": 0.8666666666666667,
                     }
                   }
+                  accessible={true}
                   style={
                     [
                       {
@@ -1109,6 +1111,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
             <View
               accessibilityLabel="Overnight avg: 96 %"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1176,6 +1179,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
             <View
               accessibilityLabel="Lowest: 94 briefly · 1:00 AM"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1243,6 +1247,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
             <View
               accessibilityLabel="Awake avg: — %"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1723,6 +1728,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
           <View
             accessibilityLabel="Leiko about your oxygen: Your oxygen held in your usual range through the night, with a low of 94% around briefly · 1:00 AM. Small, brief dips like this are common in healthy sleep."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {

@@ -19,6 +19,7 @@ exports[`StatTrio matches snapshot 1`] = `
   <View
     accessibilityLabel="Resting: 62 bpm avg"
     accessibilityRole="text"
+    accessible={true}
     style={
       [
         {
@@ -86,6 +87,7 @@ exports[`StatTrio matches snapshot 1`] = `
   <View
     accessibilityLabel="Peak: 142 yesterday run"
     accessibilityRole="text"
+    accessible={true}
     style={
       [
         {
@@ -153,6 +155,7 @@ exports[`StatTrio matches snapshot 1`] = `
   <View
     accessibilityLabel="Variability: 38 ms · steady"
     accessibilityRole="text"
+    accessible={true}
     style={
       [
         {

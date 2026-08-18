@@ -294,7 +294,7 @@ export function ReadingDetailScreen({ navigation }: Props) {
         </Pressable>
 
         {/* Secondary stats */}
-        <View
+        <View accessible={true}
           style={{
             flexDirection: 'row',
             justifyContent: 'space-around',

@@ -15,6 +15,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 1
   <View
     accessibilityLabel="Daily pulse. Blood pressure 128/82. Heart rate 64 bpm. Oxygen 98 %. Sleep 7:42 hrs. Activity 4,166 steps"
     accessibilityRole="text"
+    accessible={true}
     style={
       {
         "height": 380,
@@ -283,6 +284,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 1
               "now": 0.75,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -554,6 +556,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 1
               "now": 0.4,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -804,6 +807,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 1
               "now": 0.85,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1054,6 +1058,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 1
               "now": 0.6,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1304,6 +1309,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 1
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1506,6 +1512,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 2
   <View
     accessibilityLabel="Daily pulse. Resting HR 62. Heart rate 64 bpm. Oxygen 98 %. Sleep 7:42 hrs. Activity 4,166 steps"
     accessibilityRole="text"
+    accessible={true}
     style={
       {
         "height": 380,
@@ -1774,6 +1781,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 2
               "now": 0.75,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -2045,6 +2053,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 2
               "now": 0.4,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -2295,6 +2304,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 2
               "now": 0.85,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -2545,6 +2555,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 2
               "now": 0.6,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -2795,6 +2806,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 2
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -2997,6 +3009,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 3
   <View
     accessibilityLabel="Daily pulse. Last night 7h 24m. Heart rate 64 bpm. Oxygen 98 %. Sleep 7:42 hrs. Activity 4,166 steps"
     accessibilityRole="text"
+    accessible={true}
     style={
       {
         "height": 380,
@@ -3265,6 +3278,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 3
               "now": 0.75,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -3536,6 +3550,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 3
               "now": 0.4,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -3786,6 +3801,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 3
               "now": 0.85,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -4036,6 +4052,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 3
               "now": 0.6,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -4286,6 +4303,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 3
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -4488,6 +4506,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 4
   <View
     accessibilityLabel="Daily pulse. No readings yet today —. Heart rate 64 bpm. Oxygen 98 %. Sleep 7:42 hrs. Activity 4,166 steps"
     accessibilityRole="text"
+    accessible={true}
     style={
       {
         "height": 380,
@@ -4756,6 +4775,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 4
               "now": 0.75,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -5011,6 +5031,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 4
               "now": 0.4,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -5261,6 +5282,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 4
               "now": 0.85,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -5511,6 +5533,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 4
               "now": 0.6,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -5761,6 +5784,7 @@ exports[`DailyPulseHero — adaptive central value branches (D13 §7.2) branch 4
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -5963,6 +5987,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=dark 1`]
   <View
     accessibilityLabel="Daily pulse for Mum. Blood pressure 128/82. Heart rate 64 bpm. Oxygen 98 %. Sleep 7:42 hrs. Activity 4,166 steps. Mum is in pattern."
     accessibilityRole="text"
+    accessible={true}
     style={
       {
         "height": 380,
@@ -6231,6 +6256,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=dark 1`]
               "now": 0.75,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -6502,6 +6528,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=dark 1`]
               "now": 0.4,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -6752,6 +6779,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=dark 1`]
               "now": 0.85,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -7002,6 +7030,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=dark 1`]
               "now": 0.6,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -7252,6 +7281,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=dark 1`]
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -7476,6 +7506,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=light 1`
   <View
     accessibilityLabel="Daily pulse for Mum. Blood pressure 128/82. Heart rate 64 bpm. Oxygen 98 %. Sleep 7:42 hrs. Activity 4,166 steps. Mum is in pattern."
     accessibilityRole="text"
+    accessible={true}
     style={
       {
         "height": 380,
@@ -7744,6 +7775,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=light 1`
               "now": 0.75,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -7995,6 +8027,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=light 1`
               "now": 0.4,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -8225,6 +8258,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=light 1`
               "now": 0.85,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -8455,6 +8489,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=light 1`
               "now": 0.6,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -8685,6 +8720,7 @@ exports[`DailyPulseHero — colorMode snapshot matrix renders colorMode=light 1`
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
