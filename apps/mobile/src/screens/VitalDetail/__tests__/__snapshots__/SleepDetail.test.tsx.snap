@@ -46,7 +46,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
             "top": 0,
           },
           {
-            "backgroundColor": "#7C7AAB",
+            "backgroundColor": "#9B93C7",
             "opacity": 0.08,
           },
         ]
@@ -204,7 +204,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
             maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#7C7AAB",
+                "color": "#9B93C7",
                 "fontFamily": "Inter_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.55,
@@ -384,7 +384,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     "borderRadius": 999,
                     "height": 220,
                     "left": "50%",
-                    "opacity": 0.14,
+                    "opacity": 0.12,
                     "position": "absolute",
                     "top": 0,
                     "transform": [
@@ -395,10 +395,10 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     "width": 280,
                   },
                   {
-                    "backgroundColor": "#7C7AAB",
+                    "backgroundColor": "#9B93C7",
                   },
                   {
-                    "opacity": 0.14,
+                    "opacity": 0.12,
                   },
                 ]
               }
@@ -494,7 +494,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                         r={51}
                         stroke={
                           {
-                            "payload": 4286347947,
+                            "payload": 4288385991,
                             "type": 0,
                           }
                         }
@@ -528,7 +528,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                         r={51}
                         stroke={
                           {
-                            "payload": 4286347947,
+                            "payload": 4288385991,
                             "type": 0,
                           }
                         }
@@ -580,7 +580,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     bbHeight={28}
                     bbWidth={28}
                     className="moon-duotone__svg-icon-phosphor"
-                    color="#7C7AAB"
+                    color="#9B93C7"
                     fill="currentColor"
                     focusable={false}
                     height={28}
@@ -626,7 +626,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                         d="M227.89 147.89A96 96 0 1 1 108.11 28.11a96.09 96.09 0 0 0 119.78 119.78"
                         fill={
                           {
-                            "payload": 4286347947,
+                            "payload": 4288385991,
                             "type": 0,
                           }
                         }
@@ -690,10 +690,13 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     style={
                       {
                         "color": "#FFFFFF",
-                        "fontFamily": "InstrumentSerif_400Regular",
-                        "fontSize": 56,
+                        "fontFamily": "JetBrainsMono_500Medium",
+                        "fontSize": 44,
+                        "fontVariant": [
+                          "tabular-nums",
+                        ],
                         "letterSpacing": -0.5,
-                        "lineHeight": 60,
+                        "lineHeight": 48,
                       }
                     }
                     testID="sleep-detail-hero-primary"
@@ -704,10 +707,13 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     maxFontSizeMultiplier={1.6}
                     style={
                       {
-                        "color": "#857F7A",
-                        "fontFamily": "InstrumentSerif_400Regular",
-                        "fontSize": 22,
-                        "lineHeight": 28,
+                        "color": "#B8B2AA",
+                        "fontFamily": "JetBrainsMono_500Medium",
+                        "fontSize": 17,
+                        "fontVariant": [
+                          "tabular-nums",
+                        ],
+                        "lineHeight": 22,
                         "marginLeft": 4,
                       }
                     }
@@ -1039,7 +1045,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
               <View
                 style={
                   {
-                    "backgroundColor": "#7C7AAB",
+                    "backgroundColor": "#9B93C7",
                     "flex": 21,
                     "marginLeft": 0,
                     "opacity": 1,
@@ -1050,7 +1056,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
               <View
                 style={
                   {
-                    "backgroundColor": "#7C7AAB",
+                    "backgroundColor": "#9B93C7",
                     "flex": 50,
                     "marginLeft": 1,
                     "opacity": 0.7,
@@ -1061,7 +1067,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
               <View
                 style={
                   {
-                    "backgroundColor": "#7C7AAB",
+                    "backgroundColor": "#9B93C7",
                     "flex": 29,
                     "marginLeft": 1,
                     "opacity": 0.4,
@@ -1104,7 +1110,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                           "width": 8,
                         },
                         {
-                          "backgroundColor": "#7C7AAB",
+                          "backgroundColor": "#9B93C7",
                           "opacity": 1,
                         },
                       ]
@@ -1132,9 +1138,9 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     {
                       "color": "#FFFFFF",
                       "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 15,
+                      "fontSize": 12,
                       "fontWeight": "600",
-                      "lineHeight": 20,
+                      "lineHeight": 16,
                     }
                   }
                 >
@@ -1181,7 +1187,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                           "width": 8,
                         },
                         {
-                          "backgroundColor": "#7C7AAB",
+                          "backgroundColor": "#9B93C7",
                           "opacity": 0.7,
                         },
                       ]
@@ -1209,9 +1215,9 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     {
                       "color": "#FFFFFF",
                       "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 15,
+                      "fontSize": 12,
                       "fontWeight": "600",
-                      "lineHeight": 20,
+                      "lineHeight": 16,
                     }
                   }
                 >
@@ -1258,7 +1264,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                           "width": 8,
                         },
                         {
-                          "backgroundColor": "#7C7AAB",
+                          "backgroundColor": "#9B93C7",
                           "opacity": 0.4,
                         },
                       ]
@@ -1286,9 +1292,9 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     {
                       "color": "#FFFFFF",
                       "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 15,
+                      "fontSize": 12,
                       "fontWeight": "600",
-                      "lineHeight": 20,
+                      "lineHeight": 16,
                     }
                   }
                 >
@@ -1698,7 +1704,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                       "width": 18,
                     },
                     {
-                      "backgroundColor": "#7C7AAB26",
+                      "backgroundColor": "#9B93C726",
                     },
                   ]
                 }
@@ -1708,7 +1714,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                   bbHeight={11}
                   bbWidth={11}
                   className="sparkle-fill__svg-icon-phosphor"
-                  color="#7C7AAB"
+                  color="#9B93C7"
                   fill="currentColor"
                   focusable={false}
                   height={11}
@@ -1753,7 +1759,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     <RNSVGGroup
                       fill={
                         {
-                          "payload": 4286347947,
+                          "payload": 4288385991,
                           "type": 0,
                         }
                       }
@@ -1780,7 +1786,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                 maxFontSizeMultiplier={2}
                 style={
                   {
-                    "color": "#7C7AAB",
+                    "color": "#9B93C7",
                     "fontFamily": "Inter_500Medium",
                     "fontSize": 11,
                     "letterSpacing": 0.55,
@@ -1851,7 +1857,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
             <Text
               style={
                 {
-                  "color": "#E8A063",
+                  "color": "#C96442",
                   "fontFamily": "Inter_400Regular",
                   "fontSize": 15,
                   "fontWeight": "500",

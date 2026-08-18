@@ -47,9 +47,9 @@ exports[`VitalTrendChart — render renders with no caption (chart only) 1`] = `
           gradient={
             [
               0,
-              1298114728,
+              1301265576,
               1,
-              6269096,
+              9419944,
             ]
           }
           gradientTransform={null}
@@ -64,7 +64,7 @@ exports[`VitalTrendChart — render renders with no caption (chart only) 1`] = `
       <RNSVGRect
         fill={
           {
-            "payload": 4284459176,
+            "payload": 4287610024,
             "type": 0,
           }
         }
@@ -206,7 +206,7 @@ exports[`VitalTrendChart — render renders with no caption (chart only) 1`] = `
         }
         stroke={
           {
-            "payload": 4284459176,
+            "payload": 4287610024,
             "type": 0,
           }
         }
@@ -227,7 +227,7 @@ exports[`VitalTrendChart — render renders with no caption (chart only) 1`] = `
         cy={64}
         fill={
           {
-            "payload": 4284459176,
+            "payload": 4287610024,
             "type": 0,
           }
         }

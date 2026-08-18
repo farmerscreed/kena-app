@@ -124,7 +124,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
                 "width": "100%",
               },
               {
-                "backgroundColor": "#D6745A",
+                "backgroundColor": "#C99AB0",
                 "borderRadius": 99,
                 "opacity": 0.35,
               },
@@ -244,7 +244,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
                 "width": "100%",
               },
               {
-                "backgroundColor": "#D6745A",
+                "backgroundColor": "#C99AB0",
                 "borderRadius": 99,
                 "opacity": 0.6,
               },
@@ -364,7 +364,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
                 "width": "100%",
               },
               {
-                "backgroundColor": "#D6745A",
+                "backgroundColor": "#C99AB0",
                 "borderRadius": 99,
                 "opacity": 0.8,
               },
@@ -484,7 +484,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
                 "width": "100%",
               },
               {
-                "backgroundColor": "#D6745A",
+                "backgroundColor": "#C99AB0",
                 "borderRadius": 99,
                 "opacity": 1,
               },

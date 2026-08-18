@@ -73,7 +73,7 @@ exports[`VitalRing — size variation renders size=hero 1`] = `
         r={112}
         stroke={
           {
-            "payload": 4292244570,
+            "payload": 4291402416,
             "type": 0,
           }
         }
@@ -107,7 +107,7 @@ exports[`VitalRing — size variation renders size=hero 1`] = `
         r={112}
         stroke={
           {
-            "payload": 4292244570,
+            "payload": 4291402416,
             "type": 0,
           }
         }
@@ -219,7 +219,7 @@ exports[`VitalRing — size variation renders size=lg 1`] = `
         r={78}
         stroke={
           {
-            "payload": 4292244570,
+            "payload": 4291402416,
             "type": 0,
           }
         }
@@ -253,7 +253,7 @@ exports[`VitalRing — size variation renders size=lg 1`] = `
         r={78}
         stroke={
           {
-            "payload": 4292244570,
+            "payload": 4291402416,
             "type": 0,
           }
         }
@@ -365,7 +365,7 @@ exports[`VitalRing — size variation renders size=md 1`] = `
         r={40}
         stroke={
           {
-            "payload": 4292244570,
+            "payload": 4291402416,
             "type": 0,
           }
         }
@@ -399,7 +399,7 @@ exports[`VitalRing — size variation renders size=md 1`] = `
         r={40}
         stroke={
           {
-            "payload": 4292244570,
+            "payload": 4291402416,
             "type": 0,
           }
         }
@@ -511,7 +511,7 @@ exports[`VitalRing — size variation renders size=sm 1`] = `
         r={18}
         stroke={
           {
-            "payload": 4292244570,
+            "payload": 4291402416,
             "type": 0,
           }
         }
@@ -545,7 +545,7 @@ exports[`VitalRing — size variation renders size=sm 1`] = `
         r={18}
         stroke={
           {
-            "payload": 4292244570,
+            "payload": 4291402416,
             "type": 0,
           }
         }
@@ -657,7 +657,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=filling mode=
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -691,7 +691,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=filling mode=
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -929,7 +929,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=idle mode=dar
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -963,7 +963,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=idle mode=dar
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -1201,7 +1201,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=pulsing mode=
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -1235,7 +1235,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=pulsing mode=
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -1473,7 +1473,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=stale mode=da
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -1507,7 +1507,7 @@ exports[`VitalRing — state × mode snapshot matrix renders state=stale mode=da
         r={40}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }

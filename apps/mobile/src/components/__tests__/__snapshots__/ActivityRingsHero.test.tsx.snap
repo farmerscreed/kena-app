@@ -36,7 +36,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
           "width": 280,
         },
         {
-          "backgroundColor": "#7CA56F",
+          "backgroundColor": "#C4B07E",
           "opacity": 0.18,
         },
       ]
@@ -148,7 +148,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
                 r={57}
                 stroke={
                   {
-                    "payload": 4286358895,
+                    "payload": 4291080318,
                     "type": 0,
                   }
                 }
@@ -182,7 +182,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
                 r={57}
                 stroke={
                   {
-                    "payload": 4286358895,
+                    "payload": 4291080318,
                     "type": 0,
                   }
                 }
@@ -311,7 +311,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
                 r={45.5}
                 stroke={
                   {
-                    "payload": 4286358895,
+                    "payload": 4291080318,
                     "type": 0,
                   }
                 }
@@ -345,7 +345,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
                 r={45.5}
                 stroke={
                   {
-                    "payload": 4286358895,
+                    "payload": 4291080318,
                     "type": 0,
                   }
                 }
@@ -474,7 +474,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
                 r={34}
                 stroke={
                   {
-                    "payload": 4286358895,
+                    "payload": 4291080318,
                     "type": 0,
                   }
                 }
@@ -508,7 +508,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
                 r={34}
                 stroke={
                   {
-                    "payload": 4286358895,
+                    "payload": 4291080318,
                     "type": 0,
                   }
                 }
@@ -578,10 +578,13 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
         style={
           {
             "color": "#FFFFFF",
-            "fontFamily": "InstrumentSerif_400Regular",
-            "fontSize": 56,
+            "fontFamily": "JetBrainsMono_500Medium",
+            "fontSize": 44,
+            "fontVariant": [
+              "tabular-nums",
+            ],
             "letterSpacing": -0.5,
-            "lineHeight": 60,
+            "lineHeight": 48,
           }
         }
         testID="hero-steps"
@@ -592,7 +595,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
         allowFontScaling={false}
         style={
           {
-            "color": "#7CA56F",
+            "color": "#C4B07E",
             "fontFamily": "JetBrainsMono_500Medium",
             "fontSize": 12,
             "letterSpacing": 0.5,
@@ -636,7 +639,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
               "width": 8,
             },
             {
-              "backgroundColor": "#7CA56F",
+              "backgroundColor": "#C4B07E",
             },
           ]
         }
@@ -661,8 +664,11 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
         style={
           {
             "color": "#FFFFFF",
-            "fontFamily": "InstrumentSerif_400Regular",
+            "fontFamily": "JetBrainsMono_500Medium",
             "fontSize": 14,
+            "fontVariant": [
+              "tabular-nums",
+            ],
             "marginLeft": 6,
           }
         }
@@ -714,8 +720,11 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
         style={
           {
             "color": "#FFFFFF",
-            "fontFamily": "InstrumentSerif_400Regular",
+            "fontFamily": "JetBrainsMono_500Medium",
             "fontSize": 14,
+            "fontVariant": [
+              "tabular-nums",
+            ],
             "marginLeft": 6,
           }
         }
@@ -767,8 +776,11 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
         style={
           {
             "color": "#FFFFFF",
-            "fontFamily": "InstrumentSerif_400Regular",
+            "fontFamily": "JetBrainsMono_500Medium",
             "fontSize": 14,
+            "fontVariant": [
+              "tabular-nums",
+            ],
             "marginLeft": 6,
           }
         }

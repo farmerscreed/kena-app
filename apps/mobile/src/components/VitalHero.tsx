@@ -89,6 +89,7 @@ const GLOW_BREATHE_DURATION_MS = 4500;
  */
 const GLOW_OPACITY_REST = opacity.glowRest;
 const GLOW_OPACITY_PEAK = opacity.glowPeak;
+const GLOW_OPACITY_STATIC = opacity.glowStatic;
 
 function composeAccessibilityLabel(
   sub: string,
@@ -133,7 +134,7 @@ export function VitalHero({
   const glowOpacity = useSharedValue<number>(GLOW_OPACITY_REST);
   useEffect(() => {
     if (reduceMotion) {
-      glowOpacity.value = GLOW_OPACITY_REST;
+      glowOpacity.value = GLOW_OPACITY_STATIC;
       return;
     }
     glowOpacity.value = withRepeat(
@@ -215,7 +216,10 @@ export function VitalHero({
             <Text
               maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
-                fontFamily: theme.fontFamilies.editorial,
+                // D13 §5.2 — measured values render in the numeric
+                // face with tabular figures, never the voice serif.
+                fontFamily: theme.fontFamilies.numeric,
+                fontVariant: ['tabular-nums'],
                 fontSize: numericXl.size,
                 lineHeight: numericXl.lineHeight,
                 color: theme.colors.text.primary,
@@ -229,10 +233,13 @@ export function VitalHero({
               <Text
                 maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
-                  fontFamily: theme.fontFamilies.editorial,
+                  fontFamily: theme.fontFamilies.numeric,
+                  fontVariant: ['tabular-nums'],
                   fontSize: numericM.size,
                   lineHeight: numericM.lineHeight,
-                  color: theme.colors.text.tertiary,
+                  // §5.2 — the second half of a blood pressure reading
+                  // is not helper text.
+                  color: theme.colors.text.secondary,
                   marginLeft: 4,
                 }}
                 testID={testID ? `${testID}-secondary` : undefined}

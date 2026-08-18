@@ -29,7 +29,7 @@ describe('color — raw palette dark (D12 §2.2)', () => {
     // bench Android device. Pure white removes the perception
     // ambiguity at the cost of editorial warmth.
     expect(paletteDark.bone[50]).toBe('#FFFFFF');
-    expect(paletteDark.amber[500]).toBe('#E8A063');
+    expect(paletteDark.amber[500]).toBe('#C96442'); // D13 §5.1 interactive copper
     expect(paletteDark.coral[500]).toBe('#D6745A');
     expect(paletteDark.teal[500]).toBe('#5FA8A8');
     expect(paletteDark.violet[500]).toBe('#7C7AAB');
@@ -52,7 +52,7 @@ describe('color — raw palette light (D12 §2.3)', () => {
 
 describe('color — semantic resolver (D12 §2.4)', () => {
   it('dark mode resolves brand.primary to amber-500', () => {
-    expect(getSemanticColors('dark').brand.primary).toBe('#E8A063');
+    expect(getSemanticColors('dark').brand.primary).toBe('#C96442');
   });
 
   it('light mode resolves brand.primary to the darker amber-500 (Sprint 14.5 contrast fix)', () => {
@@ -84,8 +84,13 @@ describe('typography (D12 §3 — Inter-only stack)', () => {
     expect(fontFamilies.numeric).toBe('JetBrainsMono_500Medium');
   });
 
-  it('caregiver scale matches D12 §3.2 sizes', () => {
-    expect(typeScale.caregiver.numericHero.size).toBe(80);
+  it('caregiver scale matches the D13 §5.2 numeric table + D12 §3.2 display sizes', () => {
+    expect(typeScale.caregiver.numericHero.size).toBe(64); // D13 §5.2
+    expect(typeScale.caregiver.numericXl.size).toBe(44);
+    expect(typeScale.caregiver.numericL.size).toBe(28);
+    expect(typeScale.caregiver.numericM.size).toBe(17);
+    expect(typeScale.caregiver.numericS.size).toBe(12);
+    expect(typeScale.caregiver.eyebrow.size).toBe(11);
     expect(typeScale.caregiver.displayXxl.size).toBe(64);
     expect(typeScale.caregiver.displayXl.size).toBe(48);
     expect(typeScale.caregiver.displayM.size).toBe(28);
@@ -101,9 +106,10 @@ describe('typography (D12 §3 — Inter-only stack)', () => {
     expect(getTypeStyle('parent', 'label').size).toBe(15);
   });
 
-  it('parent falls back to caregiver for tokens with no override (display, numeric)', () => {
+  it('parent falls back to caregiver for tokens with no override (display)', () => {
     expect(getTypeStyle('parent', 'displayXl').size).toBe(48);
-    expect(getTypeStyle('parent', 'numericHero').size).toBe(80);
+    // D13 §5.5 step 5 — the numerics now carry parent overrides.
+    expect(getTypeStyle('parent', 'numericHero').size).toBe(72);
   });
 });
 

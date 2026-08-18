@@ -129,7 +129,7 @@ exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
                   "width": "100%",
                 },
                 {
-                  "backgroundColor": "#7CA56F",
+                  "backgroundColor": "#C4B07E",
                   "borderColor": "transparent",
                   "borderWidth": 0,
                   "height": "35%",
@@ -194,7 +194,7 @@ exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
                   "width": "100%",
                 },
                 {
-                  "backgroundColor": "#7CA56F",
+                  "backgroundColor": "#C4B07E",
                   "borderColor": "transparent",
                   "borderWidth": 0,
                   "height": "56.666666666666664%",
@@ -259,7 +259,7 @@ exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
                   "width": "100%",
                 },
                 {
-                  "backgroundColor": "#7CA56F",
+                  "backgroundColor": "#C4B07E",
                   "borderColor": "transparent",
                   "borderWidth": 0,
                   "height": "65.83333333333333%",
@@ -324,7 +324,7 @@ exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
                   "width": "100%",
                 },
                 {
-                  "backgroundColor": "#7CA56F",
+                  "backgroundColor": "#C4B07E",
                   "borderColor": "transparent",
                   "borderWidth": 0,
                   "height": "45%",
@@ -389,7 +389,7 @@ exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
                   "width": "100%",
                 },
                 {
-                  "backgroundColor": "#7CA56F",
+                  "backgroundColor": "#C4B07E",
                   "borderColor": "transparent",
                   "borderWidth": 0,
                   "height": "68.33333333333333%",
@@ -454,7 +454,7 @@ exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
                   "width": "100%",
                 },
                 {
-                  "backgroundColor": "#7CA56F",
+                  "backgroundColor": "#C4B07E",
                   "borderColor": "transparent",
                   "borderWidth": 0,
                   "height": "75.83333333333333%",
@@ -519,8 +519,8 @@ exports[`ActivityWeeklyBars — render matches snapshot in dark mode 1`] = `
                   "width": "100%",
                 },
                 {
-                  "backgroundColor": "#7CA56F",
-                  "borderColor": "#7CA56F",
+                  "backgroundColor": "#C4B07E",
+                  "borderColor": "#C4B07E",
                   "borderWidth": 0.5,
                   "height": "17.833333333333336%",
                   "opacity": 0.55,

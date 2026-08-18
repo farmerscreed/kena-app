@@ -77,14 +77,104 @@ describe.each(MODES)('colour quarantine (%s)', (_mode, colors) => {
 // accent rotation (1..3) already means a fourth family member reuses the
 // first person's colour. Both are palette decisions.
 //
-// CLAUDE.md's rule is to raise rather than guess on design, so this is
-// documented here rather than silently changed. The test below pins the
-// CURRENT state so the day someone does fix it, this fails loudly and
-// gets deleted rather than quietly drifting.
-describe('known collision — awaiting designer input', () => {
-  it('still shares one hex across brand.coral, person 1 and status.attention', () => {
+// D13 PR-5 (§5.1) — the designer input arrived: person accents come
+// from a dedicated ramp used ONLY for avatars and orb rings, never for
+// a value or a status. The old pin (person.1 === status.attention ===
+// brand.coral) is inverted: the decoupling must not regress.
+describe('person accents are decoupled from status (D13 §5.1)', () => {
+  it('status.attention no longer borrows the person-1 coral', () => {
     const { brand, person, status } = semanticColorsDark;
-    expect(person[1]).toBe(brand.coral);
-    expect(status.attention).toBe(brand.coral);
+    expect(status.attention).not.toBe(person[1]);
+    expect(status.attention).not.toBe(brand.coral);
+  });
+});
+
+// ── D13 PR-5 (§5.1) — the three-family fork, enforced ────────────────
+//
+// Colour has exactly three families and they never overlap:
+//   interactive (copper) · status (verdicts only) · series (plot areas).
+// Plus the contrast floor: every status foreground ≥ 4.5:1 against the
+// dark surface AND against its own 14–16% tint over that surface.
+
+function relativeLuminance(hex: string): number {
+  const h = hex.replace('#', '');
+  const chan = (i: number) => {
+    const c = parseInt(h.slice(i, i + 2), 16) / 255;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * chan(0) + 0.7152 * chan(2) + 0.0722 * chan(4);
+}
+
+function contrastRatio(a: string, b: string): number {
+  const la = relativeLuminance(a);
+  const lb = relativeLuminance(b);
+  const [hi, lo] = la > lb ? [la, lb] : [lb, la];
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+/** fg composited over bg at alpha — the tinted chip background. */
+function tintOver(fg: string, bg: string, alpha: number): string {
+  const f = fg.replace('#', '');
+  const g = bg.replace('#', '');
+  const mix = (i: number) =>
+    Math.round(
+      parseInt(f.slice(i, i + 2), 16) * alpha +
+        parseInt(g.slice(i, i + 2), 16) * (1 - alpha),
+    )
+      .toString(16)
+      .padStart(2, '0');
+  return `#${mix(0)}${mix(2)}${mix(4)}`;
+}
+
+const DARK_SURFACE = '#171310';
+
+describe('the three-family fork (D13 §5.1)', () => {
+  const c = semanticColorsDark;
+  const interactive = { primary: c.brand.primary, coral: c.brand.coral };
+  const status = c.status;
+  const series = c.vital;
+
+  it('no hex is shared between interactive, status and series families', () => {
+    const families: Array<[string, Record<string, string>]> = [
+      ['interactive', interactive],
+      ['status', status as unknown as Record<string, string>],
+      ['series', series as unknown as Record<string, string>],
+    ];
+    for (let i = 0; i < families.length; i++) {
+      for (let j = i + 1; j < families.length; j++) {
+        const [nameA, a] = families[i];
+        const [nameB, b] = families[j];
+        for (const [ka, va] of Object.entries(a)) {
+          for (const [kb, vb] of Object.entries(b)) {
+            expect({ pair: `${nameA}.${ka} vs ${nameB}.${kb}`, same: va === vb }).toEqual({
+              pair: `${nameA}.${ka} vs ${nameB}.${kb}`,
+              same: false,
+            });
+          }
+        }
+      }
+    }
+  });
+
+  it('no series or status colour appears in the interactive family', () => {
+    const forbidden = new Set([
+      ...Object.values(status as unknown as Record<string, string>),
+      ...Object.values(series as unknown as Record<string, string>),
+    ]);
+    for (const [k, v] of Object.entries(interactive)) {
+      expect({ token: k, leaked: forbidden.has(v) }).toEqual({ token: k, leaked: false });
+    }
+  });
+
+  it('every status foreground meets 4.5:1 against the dark surface and its own tint', () => {
+    for (const [k, v] of Object.entries(status as unknown as Record<string, string>)) {
+      const vsSurface = contrastRatio(v, DARK_SURFACE);
+      const vsTint = contrastRatio(v, tintOver(v, DARK_SURFACE, 0.14));
+      expect({ token: k, vsSurface: vsSurface >= 4.5, vsTint: vsTint >= 4.5 }).toEqual({
+        token: k,
+        vsSurface: true,
+        vsTint: true,
+      });
+    }
   });
 });

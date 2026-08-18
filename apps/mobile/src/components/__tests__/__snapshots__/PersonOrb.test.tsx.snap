@@ -215,7 +215,7 @@ exports[`PersonOrb — status × mode snapshot matrix renders status=attention m
         pointerEvents="none"
         style={
           {
-            "backgroundColor": "#FF7350",
+            "backgroundColor": "#E8B54F",
             "borderColor": "#0A0908",
             "borderRadius": 99,
             "borderWidth": 1.5,
@@ -490,7 +490,7 @@ exports[`PersonOrb — status × mode snapshot matrix renders status=attention m
         pointerEvents="none"
         style={
           {
-            "backgroundColor": "#FF7350",
+            "backgroundColor": "#E8B54F",
             "borderColor": "#0A0908",
             "borderRadius": 99,
             "borderWidth": 1.5,
@@ -2381,7 +2381,7 @@ exports[`PersonOrb — status × mode snapshot matrix renders status=urgent mode
         pointerEvents="none"
         style={
           {
-            "backgroundColor": "#DC5631",
+            "backgroundColor": "#E06A7C",
             "borderColor": "#0A0908",
             "borderRadius": 99,
             "borderWidth": 1.5,
@@ -2656,7 +2656,7 @@ exports[`PersonOrb — status × mode snapshot matrix renders status=urgent mode
         pointerEvents="none"
         style={
           {
-            "backgroundColor": "#DC5631",
+            "backgroundColor": "#E06A7C",
             "borderColor": "#0A0908",
             "borderRadius": 99,
             "borderWidth": 1.5,

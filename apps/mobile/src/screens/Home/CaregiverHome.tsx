@@ -50,6 +50,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AnomalyBanner } from '../../components/AnomalyBanner';
 import { bannerCopyFor } from '../../utils/anomalyBannerCopy';
+import { CanvasGradient } from '../../components/CanvasGradient';
 import { ScreenAnomalyBanner } from '../../components/ScreenAnomalyBanner';
 import { SyncReassuranceBanner } from '../../components/SyncReassuranceBanner';
 import { QuietHoursAffirmSheet } from '../../components/QuietHoursAffirmSheet';
@@ -411,6 +412,7 @@ export function CaregiverHome() {
         style={StyleSheet.absoluteFill}
         testID="caregiver-home-bg"
       >
+        <CanvasGradient />
         <Animated.View
           style={[StyleSheet.absoluteFill, birdsBgAnimatedStyle]}
         >

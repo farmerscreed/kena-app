@@ -785,7 +785,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             pointerEvents="none"
             style={
               {
-                "backgroundColor": "#FF7350",
+                "backgroundColor": "#E8B54F",
                 "borderColor": "#0A0908",
                 "borderRadius": 99,
                 "borderWidth": 1.5,
@@ -1929,7 +1929,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             pointerEvents="none"
             style={
               {
-                "backgroundColor": "#FF7350",
+                "backgroundColor": "#E8B54F",
                 "borderColor": "#0A0908",
                 "borderRadius": 99,
                 "borderWidth": 1.5,

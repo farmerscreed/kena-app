@@ -284,7 +284,7 @@ export function PersonCard({
             label={VITAL_LABELS.bp}
             divider
             dividerColor={dividerColor}
-            valueFamily={theme.fontFamilies.editorial}
+            valueFamily={theme.fontFamilies.numeric}
             valueColor={theme.colors.text.primary}
             labelFamily={theme.fontFamilies.numeric}
             labelColor={theme.colors.text.tertiary}
@@ -294,7 +294,7 @@ export function PersonCard({
             label={VITAL_LABELS.hr}
             divider
             dividerColor={dividerColor}
-            valueFamily={theme.fontFamilies.editorial}
+            valueFamily={theme.fontFamilies.numeric}
             valueColor={theme.colors.text.primary}
             labelFamily={theme.fontFamilies.numeric}
             labelColor={theme.colors.text.tertiary}
@@ -304,7 +304,7 @@ export function PersonCard({
             label={VITAL_LABELS.spo2}
             divider
             dividerColor={dividerColor}
-            valueFamily={theme.fontFamilies.editorial}
+            valueFamily={theme.fontFamilies.numeric}
             valueColor={theme.colors.text.primary}
             labelFamily={theme.fontFamilies.numeric}
             labelColor={theme.colors.text.tertiary}
@@ -314,7 +314,7 @@ export function PersonCard({
             label={VITAL_LABELS.sleep}
             divider={false}
             dividerColor={dividerColor}
-            valueFamily={theme.fontFamilies.editorial}
+            valueFamily={theme.fontFamilies.numeric}
             valueColor={theme.colors.text.primary}
             labelFamily={theme.fontFamilies.numeric}
             labelColor={theme.colors.text.tertiary}

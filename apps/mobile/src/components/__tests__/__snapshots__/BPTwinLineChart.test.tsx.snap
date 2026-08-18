@@ -47,7 +47,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
       <RNSVGRect
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -81,7 +81,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -110,7 +110,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -139,7 +139,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -168,7 +168,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -197,7 +197,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -226,7 +226,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -255,7 +255,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -284,7 +284,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -301,7 +301,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={60.14999999999999}
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -318,7 +318,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={67.25}
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -335,7 +335,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={45.95}
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -352,7 +352,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={42.39999999999999}
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -369,7 +369,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={35.3}
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -386,7 +386,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={31.75}
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -403,7 +403,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={38.85000000000001}
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -420,7 +420,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={49.5}
         fill={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -446,7 +446,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         r={3}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -467,7 +467,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         r={3}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -488,7 +488,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         r={3}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -509,7 +509,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         r={3}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -530,7 +530,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         r={3}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -551,7 +551,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         r={3}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -572,7 +572,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         r={3}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -593,7 +593,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         r={3}
         stroke={
           {
-            "payload": 4293964676,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -1046,7 +1046,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
               "width": 8,
             },
             {
-              "backgroundColor": "#F0B384",
+              "backgroundColor": "#7EA8C4",
             },
           ]
         }
@@ -1087,7 +1087,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
             },
             {
               "backgroundColor": "transparent",
-              "borderColor": "#F0B384",
+              "borderColor": "#7EA8C4",
               "borderWidth": 1.5,
             },
           ]
