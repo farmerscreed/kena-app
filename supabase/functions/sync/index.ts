@@ -366,6 +366,11 @@ async function handleLegacy(
       systolic: r.systolic,
       diastolic: r.diastolic,
       pulse: r.pulse,
+      // D13 PR-11 (§4.5/§6.5) — context tags travel with the reading;
+      // absent → the column default '{}' applies.
+      ...(r.contextTags && r.contextTags.length > 0
+        ? { context_tags: r.contextTags }
+        : {}),
     })
     .select('id')
     .single();

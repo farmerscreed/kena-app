@@ -32,6 +32,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomSheet } from '../../components/BottomSheet';
 import { Button } from '../../components/Button';
 import { Pill } from '../../components/Pill';
+import { ContextTagSheet } from '../../components/ContextTagSheet';
 import { useTheme } from '../../theme';
 import { useAnnounceOnChange } from '../../hooks/useAnnounce';
 import { useTakeReading } from '../../state/takeReading';
@@ -329,6 +330,7 @@ function SuccessView({
   const numericXl = theme.type('numericXl');
   const bodyM = theme.type('bodyM');
 
+  const [tagSheetOpen, setTagSheetOpen] = useState(false);
   const a11yLabel = reading
     ? `Reading saved. ${reading.systolic} over ${reading.diastolic} mmHg, pulse ${reading.pulse ?? 'unknown'}.`
     : null;
@@ -380,6 +382,25 @@ function SuccessView({
           {tierChipText(reading.classification.tier)}
         </Pill>
       </View>
+      {/* D13 PR-11 (§6.5) — tag the reading. Never blocking; a
+          reading with no tags is valid. */}
+      <Button
+        variant="ghost"
+        onPress={() => setTagSheetOpen(true)}
+        accessibilityLabel="Add context to this reading"
+        testID="take-reading-add-context"
+      >
+        Add context
+      </Button>
+      <ContextTagSheet
+        visible={tagSheetOpen}
+        readingHour={new Date(reading.measuredAtSec * 1000).getHours()}
+        onSave={(tags) => {
+          useReadings.getState().setContextTags(reading.localId, tags);
+          setTagSheetOpen(false);
+        }}
+        onDismiss={() => setTagSheetOpen(false)}
+      />
       <Button
         variant="primary"
         onPress={onDone}
