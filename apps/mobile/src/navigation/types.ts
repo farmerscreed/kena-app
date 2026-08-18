@@ -39,6 +39,10 @@ export type CaregiverStackParamList = {
   // target. Mirrors SelfBuyerHome but family-scoped to the tapped
   // parent's `familyId`.
   ParentDashboard: { familyId: string };
+  // D13 PR-8 (§7.1) — level 2 of Home → Person Overview → Vital
+  // Detail. Every person tap target routes here; isSelf travels with
+  // the route (closes P2-8).
+  PersonOverview: { familyId?: string; personName?: string; isSelf?: boolean };
   // Sprint 17a — caregiver entry to the parameterized VitalDetail
   // screens. The `familyId` is always set on this stack (the caregiver
   // is viewing a parent's data, not their own); the self-buyer stack
@@ -136,6 +140,10 @@ export type SelfBuyerStackParamList = {
   // node's personal detail target.
   CaregiverHome: undefined;
   ParentDashboard: { familyId: string };
+  // D13 PR-8 (§7.1) — level 2 of Home → Person Overview → Vital
+  // Detail. Every person tap target routes here; isSelf travels with
+  // the route (closes P2-8).
+  PersonOverview: { familyId?: string; personName?: string; isSelf?: boolean };
   SelfBuyerHome: undefined;
   SelfBuyerHomePlaceholder: undefined;
   Pairing: undefined;

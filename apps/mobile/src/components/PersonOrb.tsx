@@ -382,6 +382,22 @@ export function PersonOrb({
           >
             {bpLabel}
           </Text>
+          {/* D13 PR-8 (§7.1a) — the caption's third line: the verdict
+              phrase in the status tone. The caption is part of the
+              orb's single tap target and its composed label. */}
+          <Text
+            maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
+            numberOfLines={1}
+            style={{
+              fontFamily: theme.fontFamilies.body,
+              fontSize: 11,
+              lineHeight: 13,
+              color: theme.colors.status[status],
+              marginTop: 1,
+            }}
+          >
+            {STATUS_LABEL_FOR[status]}
+          </Text>
         </View>
       </Pressable>
     </Animated.View>

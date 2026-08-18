@@ -250,7 +250,8 @@ describe('<CaregiverHome /> — populated state', () => {
         initial: 'M',
         accentIndex: 1,
         status: 'clear',
-        bpLabel: '122/78',
+        lastReadingAgeMs: 60_000,
+      bpLabel: '122/78',
         headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 122/78 a moment ago. Inside the usual band.',
         relation: 'Mom',
@@ -262,7 +263,8 @@ describe('<CaregiverHome /> — populated state', () => {
         initial: 'E',
         accentIndex: 2,
         status: 'clear',
-        bpLabel: '134/86',
+        lastReadingAgeMs: 60_000,
+      bpLabel: '134/86',
         headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 134/86 a moment ago. Inside the usual band.',
         relation: 'Dad',
@@ -274,7 +276,8 @@ describe('<CaregiverHome /> — populated state', () => {
         initial: 'J',
         accentIndex: 3,
         status: 'clear',
-        bpLabel: '118/74',
+        lastReadingAgeMs: 60_000,
+      bpLabel: '118/74',
         headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 118/74 a moment ago. Inside the usual band.',
         relation: 'Aunt',
@@ -297,7 +300,7 @@ describe('<CaregiverHome /> — populated state', () => {
     expect(screen.getByText('3 · all in your circle')).toBeTruthy();
   });
 
-  it('navigates to ReadingDetail on a legend row tap', () => {
+  it('navigates to PersonOverview on a legend row tap (D13 §7.1)', () => {
     setupThreePeople();
     render(withProviders(<CaregiverHome />));
     fireEvent.press(
@@ -305,8 +308,10 @@ describe('<CaregiverHome /> — populated state', () => {
         name: 'Marian, Mom, In their usual range, Read 1 min ago — in the usual range.',
       }),
     );
-    expect(mockNavigate).toHaveBeenCalledWith('ReadingDetail', {
-      readingLocalId: 'r-mom',
+    expect(mockNavigate).toHaveBeenCalledWith('PersonOverview', {
+      familyId: 'fam-1',
+      personName: 'Marian Okeke',
+      isSelf: false,
     });
   });
 });
@@ -489,7 +494,8 @@ describe('<CaregiverHome /> — seeded Learn card (Sprint 14.5 task 3)', () => {
         initial: 'M',
         relation: 'Mom',
         status: 'clear',
-        bpLabel: '122/78',
+        lastReadingAgeMs: 60_000,
+      bpLabel: '122/78',
         headline: 'In pattern',
         sentence: 'morning numbers steady',
         vitalStrip: { bp: '122/78', hr: '64', spo2: '97', sleep: '7.5h' },
