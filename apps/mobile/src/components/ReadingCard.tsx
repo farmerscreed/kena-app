@@ -15,13 +15,9 @@
 //   - Tap target = entire card; renders as accessibilityRole="button"
 
 import { Pressable, Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import { Pill } from './Pill';
+import { StatusChip } from './StatusChip';
 import { useTheme } from '../theme';
-import {
-  tierChipText,
-  tierPillVariant,
-  type ClassificationTier,
-} from '../utils/classification';
+import { canonicalTierFor, type Tier } from '../utils/classification';
 import type { LocalReading } from '../state/readings';
 
 export type ReadingCardOwnerVariant = 'parent' | 'self';
@@ -52,13 +48,15 @@ function formatRelative(measuredAtSec: number): string {
   return new Date(measuredAtSec * 1000).toLocaleDateString();
 }
 
-function tierAccessibilitySuffix(tier: ClassificationTier): string {
+function tierAccessibilitySuffix(tier: Tier): string {
   switch (tier) {
-    case 'in_pattern':
+    case 'in_range':
       return '';
-    case 'calm_concerned':
+    case 'learning':
+      return ' — still learning their usual';
+    case 'worth_a_look':
       return ' — worth a chat';
-    case 'confirmed_urgent':
+    case 'talk_to_doctor':
       return ' — talk to your doctor';
   }
 }
@@ -73,9 +71,11 @@ export function ReadingCard({
   style,
 }: ReadingCardProps) {
   const theme = useTheme();
-  const tier = reading.classification.tier;
-  const isUrgent = tier === 'confirmed_urgent';
-  const showTierBadge = tier !== 'in_pattern';
+  // D13 PR-4 — verdict-aware tier: a below-sufficiency reading shows
+  // the grey Learning chip, never a coloured claim.
+  const tier = canonicalTierFor(reading.classification);
+  const isUrgent = tier === 'talk_to_doctor';
+  const showTierBadge = tier !== 'in_range';
   const isOffline = reading.serverId === null;
 
   const title = theme.type('title');
@@ -190,9 +190,7 @@ export function ReadingCard({
       </Text>
 
       {showTierBadge ? (
-        <View style={{ alignSelf: 'flex-start' }}>
-          <Pill variant={tierPillVariant(tier)}>{tierChipText(tier)}</Pill>
-        </View>
+        <StatusChip tier={tier} size="s" nestedInLabelledCard />
       ) : null}
     </Pressable>
   );

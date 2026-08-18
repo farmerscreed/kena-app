@@ -436,7 +436,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                     {
                       "max": 1,
                       "min": 0,
-                      "now": 1,
+                      "now": 0,
                     }
                   }
                   style={
@@ -546,29 +546,9 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                             320.4424506661589,
                           ]
                         }
-                        strokeDashoffset={null}
+                        strokeDashoffset={320.4424506661589}
                         strokeLinecap={1}
                         strokeWidth={6}
-                      />
-                      <RNSVGCircle
-                        cx={54}
-                        cy={54}
-                        fill={null}
-                        propList={
-                          [
-                            "fill",
-                            "stroke",
-                            "strokeWidth",
-                          ]
-                        }
-                        r={47}
-                        stroke={
-                          {
-                            "payload": 268435455,
-                            "type": 0,
-                          }
-                        }
-                        strokeWidth={1}
                       />
                     </RNSVGGroup>
                   </RNSVGSvgView>
@@ -974,6 +954,66 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
             }
           }
         >
+          <View
+            accessibilityLabel="Still learning: 0 of 10, We have 0 of the 10 readings we need before we can tell you what's usual for you."
+            accessibilityRole="text"
+            style={
+              [
+                {
+                  "alignItems": "center",
+                  "marginTop": 4,
+                  "paddingHorizontal": 20,
+                },
+                undefined,
+              ]
+            }
+            testID="bp-detail-learning"
+          >
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                {
+                  "color": "#857F7A",
+                  "fontFamily": "Inter_500Medium",
+                  "fontSize": 11,
+                  "letterSpacing": 0.55,
+                  "lineHeight": 14,
+                  "marginBottom": 2,
+                  "textTransform": "uppercase",
+                }
+              }
+            >
+              Still learning
+            </Text>
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                {
+                  "color": "#B8B2AA",
+                  "fontFamily": "JetBrainsMono_500Medium",
+                  "fontSize": 14,
+                  "letterSpacing": 0.2,
+                }
+              }
+              testID="bp-detail-learning-body"
+            >
+              0 of 10
+            </Text>
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                {
+                  "color": "#857F7A",
+                  "fontFamily": "Inter_400Regular",
+                  "fontSize": 12,
+                  "lineHeight": 16,
+                  "marginTop": 2,
+                }
+              }
+            >
+              We have 0 of the 10 readings we need before we can tell you what's usual for you.
+            </Text>
+          </View>
           <View
             style={
               [

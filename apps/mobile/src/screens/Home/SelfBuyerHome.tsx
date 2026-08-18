@@ -74,6 +74,8 @@ import {
 } from '../../components/CorrelationStrip';
 import { DaySpine } from '../../components/DaySpine';
 import { useDailyPulseData } from '../../state/dailyPulse';
+import { bpRingFill } from '../../utils/vitalThemes';
+import { canonicalTierFor } from '../../utils/classification';
 import { useFamilyReadings } from '../../hooks/useFamilyReadings';
 import { FamilyRemovalBanner } from '../../components/FamilyRemovalBanner';
 import { useFamilyRemovalBanner } from '../../hooks/useFamilyRemovalBanner';
@@ -319,6 +321,12 @@ export function SelfBuyerHome() {
               tier:
                 central.priority === 'bp'
                   ? data.bp.classification?.tier ?? null
+                  : null,
+              // D13 PR-4 — verdict-aware tier so the learning state
+              // renders grey with honest copy.
+              canonicalTier:
+                central.priority === 'bp' && data.bp.classification
+                  ? canonicalTierFor(data.bp.classification)
                   : null,
               live: false,
             }}
@@ -997,7 +1005,8 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
 export function buildHeroVitals(
   data: ReturnType<typeof useDailyPulseData>,
 ): DailyPulseHeroVitals {
-  const bpFill = bpFillFromTier(data.bp.classification?.tier);
+  // D13 PR-4 (§6.2) — the ring's stroke encodes data sufficiency.
+  const bpFill = bpRingFill(data.bp.classification);
   const hrFill = data.hr.displayBpm !== null
     ? clamp01((data.hr.displayBpm - 40) / 80)
     : 0;
@@ -1097,21 +1106,6 @@ export function buildCentralUnit(
   priority: 'bp' | 'hr' | 'sleep' | 'none',
 ): string | undefined {
   return priority === 'bp' ? 'mmHg' : undefined;
-}
-
-function bpFillFromTier(tier: string | null | undefined): number {
-  // D13 §7.1: in_pattern → 1.0, calm_concerned → 0.5, confirmed_urgent → 0.25,
-  // no data → 0. Activity has its own ring formula above.
-  switch (tier) {
-    case 'in_pattern':
-      return 1.0;
-    case 'calm_concerned':
-      return 0.5;
-    case 'confirmed_urgent':
-      return 0.25;
-    default:
-      return 0;
-  }
 }
 
 function clamp01(x: number): number {

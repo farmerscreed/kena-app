@@ -36,7 +36,7 @@ import type {
   Spo2Summary,
 } from '../services/families/fetchParentSummaries';
 import type { Status } from '../components/StatusPill';
-import { classifyReading } from './classification';
+import { classifyReading, canonicalTierFor } from './classification';
 import { resolveBpBaselines } from './vitalBaselines';
 
 const BP_STALE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12h per D13 §6
@@ -126,26 +126,34 @@ export function caregiverPersonFromParent(
         samples,
         Math.floor(nowMs / 1000),
       );
-      const tier = classifyReading(
+      const classification = classifyReading(
         { systolic: r.systolic, diastolic: r.diastolic, pulse: r.pulse },
         baselines,
         samples.slice().sort((a, b) => b.measuredAtSec - a.measuredAtSec),
-      ).tier;
-      switch (tier) {
-        case 'confirmed_urgent':
+      );
+      // D13 PR-4 (§4.3) — the verdict-aware tier keeps the learning
+      // state visible: below the sufficiency gate a person is grey
+      // with honest copy, never a green "in range" claim.
+      switch (canonicalTierFor(classification)) {
+        case 'talk_to_doctor':
           status = 'urgent';
           headline = 'A calm check-in helps right now.';
           sentence = `BP ${bpLabel} ${ageLabel} ago — above the usual range. A calm check-in helps.`;
           break;
-        case 'calm_concerned':
+        case 'worth_a_look':
           status = 'attention';
           headline = "Worth a chat — pattern's a little off.";
           sentence = `BP ${bpLabel} ${ageLabel} ago — a little above the usual band.`;
           break;
-        case 'in_pattern':
+        case 'in_range':
           status = 'clear';
           headline = `Read ${ageLabel} ago — in the usual range.`;
           sentence = `BP ${bpLabel} ${ageLabel} ago. Inside the usual band.`;
+          break;
+        case 'learning':
+          status = 'learning';
+          headline = 'Still learning';
+          sentence = `BP ${bpLabel} ${ageLabel} ago. Still learning what's usual for ${parent.parentDisplayName?.trim() || 'your family member'}.`;
           break;
       }
     }

@@ -210,12 +210,25 @@ describe('<CaregiverHome /> — loading state', () => {
 
 describe('<CaregiverHome /> — populated state', () => {
   function setupThreePeople() {
+    // PR-4 — the tapped row carries a sufficient band so the populated
+    // state exercises the in-range path, not learning.
+    const bandSys = [118, 120, 122, 124, 125, 126, 126, 127, 128, 130, 132, 134];
+    const bandDia = [74, 76, 77, 78, 79, 80, 80, 81, 82, 83, 85, 86];
+    const banded = bandSys.map((sys, i) =>
+      reading({
+        id: `band-${i}`,
+        measuredAt: new Date(Date.now() - (2 + i) * 24 * 3600_000).toISOString(),
+        systolic: sys,
+        diastolic: bandDia[i],
+      }),
+    );
     mockHookResult.parents = [
       parent({
         familyId: 'fam-1',
         parentDisplayName: 'Marian Okeke',
         parentRelationship: 'Mom',
         latestReading: reading({ id: 'r-mom', systolic: 122, diastolic: 78 }),
+        recentReadings: banded,
       }),
       parent({
         familyId: 'fam-2',

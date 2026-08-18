@@ -109,11 +109,26 @@ describe('caregiverPersonFromParent — status mapping (D13 §6 + D10 anomaly)',
     return summary({ latestReading: reading({ measuredAt: '2023-11-14T20:53:00Z', ...p }) });
   }
 
-  it('returns "clear" when classification is in_pattern and the reading is fresh', () => {
-    // 2023-11-14T20:53:00Z is exactly NOW (1_700_000_000_000)
-    const p = caregiverPersonFromParent(withReading({ systolic: 122, diastolic: 78 }), 0, NOW);
+  it('returns "clear" when the reading sits inside a sufficient personal band', () => {
+    // 2023-11-14T20:53:00Z is exactly NOW (1_700_000_000_000). Since
+    // PR-4 "clear" requires a sufficient band — without one the state
+    // is learning, not a range claim.
+    const p = caregiverPersonFromParent(
+      summary({
+        latestReading: reading({ measuredAt: '2023-11-14T20:53:00Z', systolic: 122, diastolic: 78 }),
+        recentReadings: bandedRecent(NOW),
+      }),
+      0,
+      NOW,
+    );
     expect(p.status).toBe('clear');
     expect(p.bpLabel).toBe('122/78');
+  });
+
+  it('returns "learning" when the reading is fresh but the band is not yet earned', () => {
+    const p = caregiverPersonFromParent(withReading({ systolic: 122, diastolic: 78 }), 0, NOW);
+    expect(p.status).toBe('learning');
+    expect(p.headline).toBe('Still learning');
   });
 
   it('returns "attention" when the reading sits outside the personal band', () => {
@@ -359,12 +374,25 @@ describe('caregiverPersonFromParent — sentence (placeholder editorial prose)',
 
   it('clear sentence is calm + factual', () => {
     const p = caregiverPersonFromParent(
-      summary({ latestReading: reading({ measuredAt: new Date(NOW - HOUR).toISOString() }) }),
+      summary({
+        latestReading: reading({ measuredAt: new Date(NOW - HOUR).toISOString() }),
+        recentReadings: bandedRecent(NOW),
+      }),
       0,
       NOW,
     );
     expect(p.sentence).toContain('122/78');
     expect(p.sentence).toContain('Inside the usual band');
+    checkVoice(p.sentence);
+  });
+
+  it('learning sentence is honest and in voice', () => {
+    const p = caregiverPersonFromParent(
+      summary({ latestReading: reading({ measuredAt: new Date(NOW - HOUR).toISOString() }) }),
+      0,
+      NOW,
+    );
+    expect(p.sentence).toContain("Still learning what's usual for");
     checkVoice(p.sentence);
   });
 
