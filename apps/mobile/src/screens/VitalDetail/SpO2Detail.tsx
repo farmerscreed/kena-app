@@ -36,7 +36,7 @@
 // completely. Sprint 12.5 wires the real generator.
 
 import { useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { DetailShell } from '../../components/DetailShell';
 import { VitalHero } from '../../components/VitalHero';
 import { StatTrio } from '../../components/StatTrio';
@@ -82,8 +82,9 @@ import {
   dayKeyInZone,
 } from '../../utils/timeInZone';
 import { spo2Fill } from '../../utils/vitalThemes';
-import { checkStaleness } from '../../utils/classification';
+import { checkStaleness, canonicalTierForLegacy } from '../../utils/classification';
 import { formatStalenessCaption } from '../../utils/stalenessCaption';
+import { mmkv } from '../../services/storage';
 import { useTheme } from '../../theme';
 import type { ClassificationTier } from '../../utils/classification';
 import type { SpO2Sample } from '../../types/vitals';
@@ -421,9 +422,23 @@ export function SpO2Detail({
   const [trendRange, setTrendRange] = useState<TrendRange>('7d');
 
   const latestPercent = data.spo2.latestPercent;
+  // D13 PR-7 (§7.3) — honest by design: the hero is the OVERNIGHT low,
+  // never a daytime spot value promoted to headline.
+  const lastOvernightLow =
+    data.spo2.overnightLowsRecent.length > 0
+      ? data.spo2.overnightLowsRecent[data.spo2.overnightLowsRecent.length - 1]
+      : null;
+  const heroPercent = lastOvernightLow ?? latestPercent;
+  const heroIsOvernight = lastOvernightLow !== null;
   const tier = data.spo2.classification?.tier ?? null;
   const isEmpty = latestPercent === null;
   // Sprint 16 — per D13 §6.6, stale when latest SpO2 is older than 8h.
+  const spo2ChipTier = useMemo(() => {
+    const row = getServerBaseline(historyFamilyId ?? '', 'spo2');
+    if (!row || !row.isSufficient) return 'learning' as const;
+    return tier ? canonicalTierForLegacy(tier) : ('learning' as const);
+  }, [historyFamilyId, tier]);
+
   const spo2Staleness = isEmpty
     ? 'no_data'
     : checkStaleness('spo2', data.spo2.latestSampleSec);
@@ -591,13 +606,18 @@ export function SpO2Detail({
       hero={
         <VitalHero
           vital="spo2"
-          primary={latestPercent === null ? '—' : String(latestPercent)}
-          secondary={latestPercent === null ? undefined : '%'}
+          primary={heroPercent === null ? '—' : String(heroPercent)}
+          secondary={heroPercent === null ? undefined : '%'}
           sub={
             spo2StaleCaption ??
-            (isEmpty ? 'No oxygen samples yet' : 'Now · oxygen saturation')
+            (isEmpty
+              ? 'No oxygen samples yet'
+              : heroIsOvernight
+                ? 'Last night · overnight low'
+                : 'Now · oxygen estimate')
           }
           range={range.hero}
+          tier={isEmpty ? null : spo2ChipTier}
           ringFill={spo2Fill(latestPercent)}
           livePulse={false}
           testID="spo2-detail-hero"
@@ -683,9 +703,15 @@ export function SpO2Detail({
                 testID="spo2-detail-table"
               />
             </View>
+
           ) : (
             <EmptyChartHelper />
           )}
+
+          {/* D13 PR-7 (§7.3) — honest by design: the no-alarm rule is
+              stated, and the permanent explainer sits below. */}
+          <SpO2NoAlarmNote testID="spo2-detail-no-alarm-note" />
+          <SpO2ExplainerCard testID="spo2-detail-explainer" />
 
           {correlation ? (
             <View style={{ paddingHorizontal: 20 }}>
@@ -822,3 +848,86 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+
+// ── D13 PR-7 (§7.3) — the honest-by-design explainer ─────────────────
+//
+// Permanent card, expanded by default on first visit; the collapsed
+// choice persists in MMKV. Copy is the §7.3 content (drawn from D9
+// other-002) — do not extend it here.
+
+const SPO2_EXPLAINER_COLLAPSED_KEY = 'leiko.spo2.explainerCollapsed';
+
+function SpO2ExplainerCard({ testID }: { testID?: string }) {
+  const theme = useTheme();
+  const [collapsed, setCollapsed] = useState(
+    () => mmkv.getString(SPO2_EXPLAINER_COLLAPSED_KEY) === 'true',
+  );
+  const toggle = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    mmkv.set(SPO2_EXPLAINER_COLLAPSED_KEY, String(next));
+  };
+  const title = theme.type('title');
+  const bodyM = theme.type('bodyM');
+  return (
+    <View
+      style={{
+        marginHorizontal: 20,
+        marginTop: theme.spacing.l,
+        padding: theme.spacing.l,
+        backgroundColor: theme.colors.surface.warmElevated,
+        borderRadius: theme.radii.l,
+      }}
+      testID={testID}
+    >
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded: !collapsed }}
+        onPress={toggle}
+        testID={testID ? `${testID}-toggle` : undefined}
+      >
+        <Text
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
+          style={[title, { color: theme.colors.text.primary }]}
+        >
+          What your watch can and cannot tell you
+        </Text>
+      </Pressable>
+      {!collapsed ? (
+        <Text
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
+          style={[bodyM, { color: theme.colors.text.secondary, marginTop: theme.spacing.s }]}
+          testID={testID ? `${testID}-body` : undefined}
+        >
+          Wrist optical sensors are less accurate than a clinical oximeter.
+          This is a wellness reference, not a clinical measurement. If you
+          have a chronic respiratory condition, use the device your doctor
+          recommends.
+        </Text>
+      ) : null}
+    </View>
+  );
+}
+
+
+function SpO2NoAlarmNote({ testID }: { testID?: string }) {
+  const theme = useTheme();
+  return (
+    <Text
+      maxFontSizeMultiplier={MAX_FONT_SCALE}
+      style={[
+        theme.type('caption'),
+        {
+          color: theme.colors.text.tertiary,
+          marginHorizontal: 20,
+          marginTop: theme.spacing.m,
+        },
+      ]}
+      testID={testID}
+    >
+      Readings below 92% are shown without alarm and never trigger an alert
+      on their own. Overnight patterns are what we watch.
+    </Text>
+  );
+}

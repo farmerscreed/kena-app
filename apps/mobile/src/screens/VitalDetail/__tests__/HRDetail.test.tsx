@@ -280,12 +280,12 @@ describe('HRDetail — has-data path', () => {
     expect(screen.getByTestId('hr-detail-hero-primary').props.children).toBe('64');
   });
 
-  it('renders the "Latest reading" hero sub-label when a live sample exists', () => {
-    // Live-first hero: the watch auto-samples HR every 5 min, so the
-    // headline shows the most recent sample. Resting moves to the
-    // "Resting avg" stat below.
+  it('renders the "Overnight · resting" hero sub-label when a resting value exists', () => {
+    // D13 PR-7 (§7.3) — resting-first hero: the nightly resting value
+    // wins the headline even when a fresher spot sample exists. The
+    // spot value lives in the stats below.
     render(withProviders(<HRDetail onBack={() => undefined} />));
-    expect(screen.getByText('Latest reading')).toBeTruthy();
+    expect(screen.getByText('Overnight · resting')).toBeTruthy();
   });
 
   it('renders the StatTrio with three label/value pairs', () => {
@@ -538,8 +538,13 @@ describe('HRDetail — hero range copy gating (Sprint 18 P-H1)', () => {
     mockHRRestingRecent = [];
     mockHRRestingByNight = []; // no baseline-eligible nights yet
     render(withProviders(<HRDetail onBack={() => undefined} />));
-    expect(screen.getByText('bpm · latest')).toBeTruthy();
+    // D13 PR-7 — resting-first hero: with a resting value but no
+    // baseline the sub-line stays neutral and the chip says Learning.
+    // The range claim never renders without a computed baseline.
+    expect(screen.getByText('bpm · resting')).toBeTruthy();
+    expect(screen.getByText('Learning', { includeHiddenElements: true })).toBeTruthy();
     expect(screen.queryByText('bpm · within your range')).toBeNull();
+    expect(screen.queryByText('bpm · in your usual range')).toBeNull();
   });
 });
 

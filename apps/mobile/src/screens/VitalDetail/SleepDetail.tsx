@@ -40,6 +40,7 @@ import {
   type VitalSeries,
 } from '../../components/CorrelationStrip';
 import { SleepStagesBar } from '../../components/SleepStagesBar';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
 import { SleepNightlyBars } from '../../components/SleepNightlyBars';
 import { LoadingState } from '../../components/LoadingState';
 import { ErrorState } from '../../components/ErrorState';
@@ -481,19 +482,6 @@ export function SleepDetail({
         />
       ) : (
         <>
-          {hasLastNight ? (
-            <SleepStagesBar
-              totalMinutes={totalMinutes}
-              deepMinutes={deepMinutes}
-              lightMinutes={lightMinutes}
-              otherMinutes={otherMinutes}
-              sessionStartSec={heroDisplay!.startSec}
-              sessionEndSec={heroDisplay!.endSec}
-              wakeSource={heroDisplay!.wakeSource}
-              tz={tz}
-              testID="sleep-detail-stages"
-            />
-          ) : null}
 
           {/* Nightly chart for the selected range — shows historical
               context even when last night was missing. Sprint 18 S4:
@@ -505,6 +493,17 @@ export function SleepDetail({
               range={range}
               width={screenWidth}
               testID="sleep-detail-nightly"
+            />
+          ) : null}
+          {allNights.length > 0 ? (
+            <ViewAsTableLink
+              rows={allNights.map((n) => ({
+                label: monthDayInZone(n.sessionEndSec * 1000, tz),
+                value: `${Math.floor(n.totalMinutes / 60)}:${String(n.totalMinutes % 60).padStart(2, '0')} hrs`,
+              }))}
+              subjectNoun="nights"
+              testID="sleep-detail-table"
+              style={styles.correlationWrap}
             />
           ) : null}
 
@@ -570,6 +569,26 @@ export function SleepDetail({
             </View>
           ) : null}
 
+          {/* D13 PR-7 (§7.3) — the stage composition moves below the
+              fold: the signature of this screen is the sleep→BP
+              relationship above, not the hypnogram. */}
+          {hasLastNight ? (
+            <SleepStagesBar
+              totalMinutes={totalMinutes}
+              deepMinutes={deepMinutes}
+              lightMinutes={lightMinutes}
+              otherMinutes={otherMinutes}
+              sessionStartSec={heroDisplay!.startSec}
+              sessionEndSec={heroDisplay!.endSec}
+              wakeSource={heroDisplay!.wakeSource}
+              tz={tz}
+              testID="sleep-detail-stages"
+            />
+          ) : null}
+          {hasLastNight ? (
+            <SleepStageApproxCaption testID="sleep-detail-stages-caption" />
+          ) : null}
+
           <VitalInsightCard
             vital="sleep"
             body={insightBody(hasLastNight ? session : null, allNights.length)}
@@ -611,3 +630,30 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
 });
+
+
+// D13 PR-7 (§7.3) — stage estimates are approximate (D9 other-003):
+// the watch estimates stages from movement and heart rate. Trends
+// matter more than any single night's breakdown.
+function SleepStageApproxCaption({ testID }: { testID?: string }) {
+  const theme = useTheme();
+  const caption = theme.type('caption');
+  return (
+    <Text
+      maxFontSizeMultiplier={MAX_FONT_SCALE}
+      style={[
+        caption,
+        {
+          color: theme.colors.text.tertiary,
+          marginHorizontal: 20,
+          marginTop: theme.spacing.xs,
+        },
+      ]}
+      testID={testID}
+    >
+      Stage estimates are approximate — the watch infers them from
+      movement and heart rate. Night-to-night trends matter more than any
+      single breakdown.
+    </Text>
+  );
+}

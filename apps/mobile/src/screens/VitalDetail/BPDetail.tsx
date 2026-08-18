@@ -30,7 +30,7 @@
 // `onSelectReading`. Tests can mount the screen directly with mocked
 // hooks — no NavigationContainer needed.
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { DetailShell } from '../../components/DetailShell';
 import { VitalHero } from '../../components/VitalHero';
@@ -39,6 +39,7 @@ import { type RecentReading } from '../../components/RecentReadingsList';
 import { RecentReadingsSection } from '../../components/RecentReadingsSection';
 import { VitalInsightCard } from '../../components/VitalInsightCard';
 import { RangeBandChart } from '../../components/RangeBandChart';
+import { TimeOfDayRing } from '../../components/TimeOfDayRing';
 import { ViewAsTableLink } from '../../components/ViewAsTableLink';
 import { VitalExplainerAnchor } from '../../components/VitalExplainerAnchor';
 import { BaselineReference } from '../../components/BaselineReference';
@@ -51,11 +52,12 @@ import { useReadings, type LocalReading } from '../../state/readings';
 import { useParentDailyPulseData } from '../../hooks/useParentDailyPulseData';
 import { useParentVitalsRecent } from '../../hooks/useParentVitalsRecent';
 import { bpRingCalibration, LEARNING_COPY } from '../../utils/calibration';
-import { resolveBpBaselines } from '../../utils/vitalBaselines';
+import { resolveBpBaselines, getServerBaseline } from '../../utils/vitalBaselines';
 import { mmkv, STORAGE_KEYS } from '../../services/storage';
 import { useTheme } from '../../theme';
 import {
   checkStaleness,
+  canonicalTierFor,
   vitalRangeCopyForTier,
   type ClassificationTier,
 } from '../../utils/classification';
@@ -404,6 +406,12 @@ export function BPDetail({
           : 'Latest')
       }
       range={rangeCopyForTier(tier)}
+      // D13 PR-7 (§6.2/P1-5) — the verdict chip is mandatory on the
+      // hero; ring goes learning-grey until the §4.3 gate is met.
+      tier={data.bp.classification ? canonicalTierFor(data.bp.classification) : null}
+      ringColorOverride={
+        ringCalibration.isLearning ? theme.colors.status.learning : undefined
+      }
       ringFill={ringFill}
       livePulse={false}
       testID="bp-detail-hero"
@@ -451,12 +459,44 @@ export function BPDetail({
     () => readingsForToday(allBPReadings, timeZone),
     [allBPReadings, timeZone],
   );
+  // D13 PR-7 (§7.3) — the BP signature: Morning | Evening | All. Each
+  // segment filters readings by the wearer-local hour (§6.5's derived
+  // tags: morning before noon, evening from five) and judges against
+  // its own context-conditioned band — the server row when the cron
+  // has earned one, else a provisional recompute over the segment's
+  // own readings.
+  const [daySegment, setDaySegment] = useState<'morning' | 'evening' | 'all'>('all');
+  const hourOf = useCallback(
+    (measuredAtSec: number) =>
+      Number(
+        new Intl.DateTimeFormat('en-GB', {
+          hour: 'numeric',
+          hour12: false,
+          timeZone,
+        }).format(new Date(measuredAtSec * 1000)),
+      ) % 24,
+    [timeZone],
+  );
+  const inSegment = useCallback(
+    (measuredAtSec: number) => {
+      if (daySegment === 'all') return true;
+      const h = hourOf(measuredAtSec);
+      return daySegment === 'morning' ? h < 12 : h >= 17;
+    },
+    [daySegment, hourOf],
+  );
+  const segmentReadings = useMemo(
+    () => rangedReadings.filter((r) => inSegment(r.measuredAtSec)),
+    [rangedReadings, inSegment],
+  );
+
   // D13 PR-6 (§6.3) — the range-aware point builder replaces the slot
   // bucketers: one point per reading in the window, oldest → newest,
   // never an empty trailing slot. The eyebrow and the range pill read
   // from the SAME `range` state, so they cannot disagree.
   const { chartPoints, chartEyebrow } = useMemo(() => {
-    const source = range === '7d' ? todayReadings : rangedReadings;
+    const windowed = range === '7d' ? todayReadings : rangedReadings;
+    const source = windowed.filter((r) => inSegment(r.measuredAtSec));
     const sorted = [...source].sort((a, b) => a.measuredAtSec - b.measuredAtSec);
     const points = sorted.map((r) => ({
       value: r.systolic,
@@ -473,7 +513,7 @@ export function BPDetail({
           ? 'Today · systolic & diastolic'
           : `Last ${RANGE_TO_DAYS[range]} days · readings`,
     };
-  }, [todayReadings, rangedReadings, range, timeZone]);
+  }, [todayReadings, rangedReadings, range, timeZone, inSegment]);
 
   // The chart's band is the truth layer's: p10–p90 whenever sufficient,
   // nothing while learning (§4.3 — the ribbon is earned, not assumed).
@@ -488,6 +528,38 @@ export function BPDetail({
       row && row.isSufficient ? { low: Math.round(row.p10), high: Math.round(row.p90) } : null;
     return { band: bandFor(pair.systolic), secondaryBand: bandFor(pair.diastolic) };
   }, [allBPReadings, bandFamilyId]);
+
+  const segmentBands = useMemo(() => {
+    if (daySegment === 'all') return chartBands;
+    const serverRow = getServerBaseline(bandFamilyId ?? '', 'bp_systolic', daySegment);
+    const serverDia = getServerBaseline(bandFamilyId ?? '', 'bp_diastolic', daySegment);
+    if (serverRow?.isSufficient && serverDia?.isSufficient) {
+      return {
+        band: { low: Math.round(serverRow.p10), high: Math.round(serverRow.p90) },
+        secondaryBand: { low: Math.round(serverDia.p10), high: Math.round(serverDia.p90) },
+      };
+    }
+    const pair = resolveBpBaselines(
+      `${bandFamilyId ?? ''}#${daySegment}`,
+      segmentReadings.map((r) => ({
+        systolic: r.systolic,
+        diastolic: r.diastolic,
+        measuredAtSec: r.measuredAtSec,
+      })),
+    );
+    const bandFor = (row: typeof pair.systolic) =>
+      row && row.isSufficient ? { low: Math.round(row.p10), high: Math.round(row.p90) } : null;
+    return { band: bandFor(pair.systolic), secondaryBand: bandFor(pair.diastolic) };
+  }, [daySegment, chartBands, bandFamilyId, segmentReadings]);
+
+  // Hours for the 24-hour ring signature.
+  const ringHours = useMemo(
+    () => ({
+      history: allBPReadings.map((r) => hourOf(r.measuredAtSec)),
+      today: todayReadings.map((r) => hourOf(r.measuredAtSec)),
+    }),
+    [allBPReadings, todayReadings, hourOf],
+  );
 
   // ----- Baseline reference (16.5f) ------------------------------------
   const baseline = useMemo(() => bpBaseline(allBPReadings), [allBPReadings]);
@@ -613,12 +685,60 @@ export function BPDetail({
                 >
                   {has7dTodayData ? (
                     <>
+                      {/* §7.3 — Morning | Evening | All: each segment is
+                          judged against its own band. */}
+                      <View
+                        accessibilityRole="tablist"
+                        style={{ flexDirection: 'row', gap: theme.spacing.s, marginBottom: theme.spacing.m }}
+                      >
+                        {(['morning', 'evening', 'all'] as const).map((seg) => (
+                          <Pressable
+                            key={seg}
+                            accessibilityRole="tab"
+                            accessibilityState={{ selected: daySegment === seg }}
+                            onPress={() => setDaySegment(seg)}
+                            hitSlop={6}
+                            style={{
+                              paddingHorizontal: theme.spacing.m,
+                              paddingVertical: 6,
+                              borderRadius: 99,
+                              backgroundColor:
+                                daySegment === seg
+                                  ? theme.colors.surface.warmElevated
+                                  : 'transparent',
+                              borderWidth: 0.5,
+                              borderColor: theme.colors.border.rim,
+                            }}
+                            testID={`bp-detail-segment-${seg}`}
+                          >
+                            <Text
+                              maxFontSizeMultiplier={MAX_FONT_SCALE}
+                              style={[
+                                theme.type('label'),
+                                {
+                                  color:
+                                    daySegment === seg
+                                      ? theme.colors.text.primary
+                                      : theme.colors.text.secondary,
+                                },
+                              ]}
+                            >
+                              {seg === 'morning' ? 'Morning' : seg === 'evening' ? 'Evening' : 'All'}
+                            </Text>
+                          </Pressable>
+                        ))}
+                      </View>
                       <RangeBandChart
                         vital="bp"
                         points={chartPoints}
-                        band={chartBands.band}
-                        secondaryBand={chartBands.secondaryBand}
+                        band={segmentBands.band}
+                        secondaryBand={segmentBands.secondaryBand}
                         unit="mmHg"
+                        subCaption={
+                          daySegment === 'all'
+                            ? undefined
+                            : `${segmentReadings.length} ${daySegment} reading${segmentReadings.length === 1 ? '' : 's'}`
+                        }
                         testID="bp-detail-chart"
                       />
                       <ViewAsTableLink
@@ -664,6 +784,26 @@ export function BPDetail({
             }
             testID="bp-detail-insight"
           />
+
+          {/* D13 PR-7 (§7.3) — the BP signature section: the 24-hour
+              ring showing when readings usually land. */}
+          {!isEmpty && ringHours.history.length > 0 ? (
+            <View
+              style={{
+                marginHorizontal: theme.spacing.l,
+                marginTop: theme.spacing.l,
+                paddingVertical: theme.spacing.l,
+                backgroundColor: theme.colors.surface.warmElevated,
+                borderRadius: theme.radii.l,
+              }}
+            >
+              <TimeOfDayRing
+                historyHours={ringHours.history}
+                todayHours={ringHours.today}
+                testID="bp-detail-time-ring"
+              />
+            </View>
+          ) : null}
 
           {!isEmpty && data.bp.latest ? (
             <VitalExplainerAnchor
