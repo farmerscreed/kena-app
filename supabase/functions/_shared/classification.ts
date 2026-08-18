@@ -38,76 +38,80 @@ export interface ReadingForClassification {
   pulse?: number | null;
 }
 
-export interface ReadingBaseline {
-  sys: number;
-  dia: number;
-  pulse: number;
-  sigmaSys: number;
-  sigmaDia: number;
-  sigmaPulse: number;
-  daysOfData: number;
-}
 
 export interface BPClassification {
   tier: ClassificationTier;
-  reason:
-    | 'crisis_absolute'
-    | 'absolute_cold_start'
-    | 'cold_start'
-    | 'outlier_and_soft_threshold'
-    | 'within_baseline';
+  reason: 'crisis_absolute' | 'cold_start' | 'outside_band' | 'within_baseline';
 }
 
 const BP_CRISIS_SYS = 180;
 const BP_CRISIS_DIA = 120;
 const BP_STAGE2_SYS = 160;
 const BP_STAGE2_DIA = 100;
-const BP_SOFT_SYS = 150;
-const BP_SOFT_DIA = 95;
-const BP_SOFT_PULSE = 120;
-const BP_COLD_PULSE = 130;
 const BP_SIGMA_MULTIPLIER = 2;
 const BP_MIN_BASELINE_DAYS = 14;
 
+/** One vital_baselines row, as the D13 truth layer stores it. */
+export interface VitalBaselineRowLike {
+  mean: number;
+  sd: number;
+  p10: number;
+  p90: number;
+  isSufficient: boolean;
+}
+
+export interface BpBaselinePair {
+  systolic: VitalBaselineRowLike | null;
+  diastolic: VitalBaselineRowLike | null;
+}
+
 /**
- * Classify a single BP reading against an optional baseline.
+ * Classify a single BP reading — D13 §4.4 rules, aligned with the
+ * mobile classifier in PR-2 (in-app and push can no longer disagree):
  *
- * The sigma multiplier is scaled by the family's anomaly_sensitivity
- * (clamped 0.8–1.5 per docs/10-anomaly-logic.md §3). 1.0 is the
- * default; thumbs-down nudges it up (less sensitive), thumbs-up down.
+ *   1. Absolute floor ≥ 180/120 → confirmed_urgent, regardless of
+ *      band and regardless of sufficiency.
+ *   2. No baseline / insufficient → in_pattern (learning — below the
+ *      §4.3 gate nothing ambers; the floor is the only absolute).
+ *   3. Inside [p10, p90] → in_pattern.
+ *   4. Outside mean ± 2σ (σ scaled by the family's anomaly_sensitivity,
+ *      clamped 0.8–1.5 per docs/10 §3) → calm_concerned.
+ *   5. The shoulder between p90 and mean + 2σ stays in_pattern.
+ *
+ * Pulse no longer participates: resting HR is its own vital with its
+ * own baseline row. The retired cold-start ladder and the
+ * outlier-AND-soft-threshold conjunction are gone with it.
  */
 export function classifyBP(
   reading: ReadingForClassification,
-  baseline?: ReadingBaseline | null,
+  baselines?: BpBaselinePair | null,
   sensitivity: number = 1.0,
 ): BPClassification {
   const { systolic, diastolic } = reading;
-  const pulse = reading.pulse ?? 0;
 
-  // Crisis-absolute always wins, regardless of baseline maturity.
   if (systolic >= BP_CRISIS_SYS || diastolic >= BP_CRISIS_DIA) {
     return { tier: 'confirmed_urgent', reason: 'crisis_absolute' };
   }
 
-  if (!baseline || baseline.daysOfData < BP_MIN_BASELINE_DAYS) {
-    if (systolic > BP_STAGE2_SYS || diastolic > BP_STAGE2_DIA || pulse > BP_COLD_PULSE) {
-      return { tier: 'calm_concerned', reason: 'absolute_cold_start' };
-    }
-    return { tier: 'in_pattern', reason: 'cold_start' };
+  const judge = (
+    value: number,
+    row: VitalBaselineRowLike | null,
+  ): 'learning' | 'in_range' | 'worth_a_look' => {
+    if (!row || !row.isSufficient) return 'learning';
+    if (value >= row.p10 && value <= row.p90) return 'in_range';
+    const spread = BP_SIGMA_MULTIPLIER * sensitivity * row.sd;
+    if (value > row.mean + spread || value < row.mean - spread) return 'worth_a_look';
+    return 'in_range';
+  };
+
+  const sys = judge(systolic, baselines?.systolic ?? null);
+  const dia = judge(diastolic, baselines?.diastolic ?? null);
+
+  if (sys === 'worth_a_look' || dia === 'worth_a_look') {
+    return { tier: 'calm_concerned', reason: 'outside_band' };
   }
-
-  const k = BP_SIGMA_MULTIPLIER * sensitivity;
-  const sysOutlier = Math.abs(systolic - baseline.sys) > k * baseline.sigmaSys;
-  const diaOutlier = Math.abs(diastolic - baseline.dia) > k * baseline.sigmaDia;
-  const pulseOutlier =
-    reading.pulse != null &&
-    Math.abs(reading.pulse - baseline.pulse) > k * baseline.sigmaPulse;
-
-  const exceedsSoft =
-    systolic > BP_SOFT_SYS || diastolic > BP_SOFT_DIA || pulse > BP_SOFT_PULSE;
-
-  if ((sysOutlier || diaOutlier || pulseOutlier) && exceedsSoft) {
-    return { tier: 'calm_concerned', reason: 'outlier_and_soft_threshold' };
+  if (sys === 'learning' && dia === 'learning') {
+    return { tier: 'in_pattern', reason: 'cold_start' };
   }
   return { tier: 'in_pattern', reason: 'within_baseline' };
 }
@@ -135,64 +139,10 @@ export function checkSustainedPattern(
   return stage2Hits >= 3;
 }
 
-// BP baseline computation (used by the nightly cron).
-
-export interface BaselineInput {
-  systolic: number;
-  diastolic: number;
-  pulse?: number | null;
-  measured_at_sec: number;
-}
-
-export interface ComputedBpBaseline {
-  sysMean: number;
-  diaMean: number;
-  pulseMean: number | null;
-  sigmaSys: number;
-  sigmaDia: number;
-  sigmaPulse: number | null;
-  daysOfData: number;
-  readingCount: number;
-}
-
-/**
- * Compute a baseline over the supplied readings. `daysOfData` is
- * counted by distinct UTC dates (a proxy good enough for the 14-day
- * gate; the user's local TZ doesn't shift this materially because
- * the gate is "at least 14 days").
- *
- * Variance uses the population formula (1/N), matching the existing
- * `sigma` semantics in the mobile classifier.
- */
-export function computeBpBaseline(rows: BaselineInput[]): ComputedBpBaseline | null {
-  if (rows.length === 0) return null;
-
-  const sysMean = mean(rows.map((r) => r.systolic));
-  const diaMean = mean(rows.map((r) => r.diastolic));
-  const pulses = rows.map((r) => r.pulse).filter((p): p is number => p != null);
-  const pulseMean = pulses.length > 0 ? mean(pulses) : null;
-
-  const sigmaSys = popStdDev(rows.map((r) => r.systolic), sysMean);
-  const sigmaDia = popStdDev(rows.map((r) => r.diastolic), diaMean);
-  const sigmaPulse = pulses.length > 0 && pulseMean != null
-    ? popStdDev(pulses, pulseMean)
-    : null;
-
-  const days = new Set(
-    rows.map((r) => new Date(r.measured_at_sec * 1000).toISOString().slice(0, 10)),
-  );
-
-  return {
-    sysMean,
-    diaMean,
-    pulseMean,
-    sigmaSys,
-    sigmaDia,
-    sigmaPulse,
-    daysOfData: days.size,
-    readingCount: rows.length,
-  };
-}
+// The legacy computeBpBaseline (14-day mean±σ, pulse included) is
+// retired with D13 PR-2 — the nightly cron writes vital_baselines via
+// _shared/baselines.ts, and keeping the old maths alive would preserve
+// exactly the divergence §4.1 exists to kill.
 
 // ─────────────────────────────────────────────────────────────────────
 // HR.
@@ -365,12 +315,3 @@ export function shouldDedupAnomaly(
 // ─────────────────────────────────────────────────────────────────────
 // Math helpers.
 
-function mean(xs: number[]): number {
-  return xs.reduce((sum, x) => sum + x, 0) / xs.length;
-}
-
-function popStdDev(xs: number[], mu: number): number {
-  if (xs.length === 0) return 0;
-  const variance = xs.reduce((sum, x) => sum + (x - mu) * (x - mu), 0) / xs.length;
-  return Math.sqrt(variance);
-}
