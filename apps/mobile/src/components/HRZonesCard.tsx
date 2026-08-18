@@ -187,7 +187,7 @@ export function HRZonesCard({
       {zones.map((z, i) => {
         const a11y = `${z.name} zone, ${z.range} bpm, ${Math.round(z.pct)} percent`;
         return (
-          <View
+          <View accessible={true}
             key={`${z.name}-${i}`}
             accessibilityRole="text"
             accessibilityLabel={a11y}

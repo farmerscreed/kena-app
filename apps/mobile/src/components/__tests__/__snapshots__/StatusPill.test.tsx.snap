@@ -4,6 +4,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
 <View
   accessibilityLabel="Needs attention"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -67,6 +68,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
 <View
   accessibilityLabel="Needs attention"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -130,6 +132,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
 <View
   accessibilityLabel="In their usual range"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -193,6 +196,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
 <View
   accessibilityLabel="In their usual range"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -256,6 +260,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
 <View
   accessibilityLabel="No recent reading"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -319,6 +324,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
 <View
   accessibilityLabel="No recent reading"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -382,6 +388,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
 <View
   accessibilityLabel="Sleeping"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -436,6 +443,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
 <View
   accessibilityLabel="Sleeping"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -490,6 +498,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
 <View
   accessibilityLabel="Urgent"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -553,6 +562,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
 <View
   accessibilityLabel="Urgent"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -616,6 +626,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
 <View
   accessibilityLabel="Watch"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -679,6 +690,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
 <View
   accessibilityLabel="Watch"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {

@@ -177,7 +177,7 @@ export function VitalRing({
   const rimRadius = radius - strokeWidth / 2 - 1;
 
   return (
-    <Animated.View
+    <Animated.View accessible={true}
       style={[
         { width: diameter, height: diameter, opacity: baseOpacity },
         animatedWrapperStyle,

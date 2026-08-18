@@ -444,6 +444,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                         "now": 0.78125,
                       }
                     }
+                    accessible={true}
                     style={
                       [
                         {
@@ -605,6 +606,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                         "now": 0,
                       }
                     }
+                    accessible={true}
                     style={
                       [
                         {
@@ -1145,6 +1147,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
           <View
             accessibilityLabel="Your typical day: ~7,100 steps, based on 6 days of activity"
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -1220,6 +1223,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
             <View
               accessibilityLabel="Daily avg: 6,636 steps · week"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1287,6 +1291,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
             <View
               accessibilityLabel="Best day: 9,000 Monday"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1354,6 +1359,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
             <View
               accessibilityLabel="Streak: 0 days at goal"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1976,6 +1982,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
           <View
             accessibilityLabel="Leiko about your activity: You met your goal 2 times this week. Your daily average (6,636) is right at your usual."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {

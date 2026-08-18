@@ -81,7 +81,7 @@ export function StatusPill({ status, testID, style }: StatusPillProps) {
         };
 
   return (
-    <View
+    <View accessible={true}
       accessibilityRole="text"
       accessibilityLabel={STATUS_LABEL[status]}
       testID={testID}

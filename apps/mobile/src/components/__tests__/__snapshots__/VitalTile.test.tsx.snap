@@ -90,6 +90,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -448,6 +449,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=live mod
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -787,6 +789,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=no-data 
               "now": 0,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1124,6 +1127,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=no-data 
               "now": 0,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1463,6 +1467,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=normal m
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1820,6 +1825,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=normal m
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -2159,6 +2165,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=stale mo
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -2496,6 +2503,7 @@ exports[`VitalTile — state × colorMode snapshot matrix renders state=stale mo
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {

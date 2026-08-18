@@ -28,7 +28,7 @@ export interface LoadingStateProps {
 export function LoadingState({ caption, style, testID }: LoadingStateProps) {
   const theme = useTheme();
   return (
-    <View
+    <View accessible={true}
       style={[
         styles.root,
         { padding: theme.spacing.xl, gap: theme.spacing.s },

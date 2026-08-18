@@ -4,6 +4,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
 <View
   accessibilityLabel="Last night · in bed 11:14 pm. 7:42hrs. A quieter night than last week"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -72,6 +73,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
             "now": 0.78,
           }
         }
+        accessible={true}
         style={
           [
             {

@@ -5,6 +5,7 @@ exports[`Reduced motion — end-state snapshots AnomalyBanner confirmed-urgent r
   accessibilityLabel="Urgent alert: Talk to Mum now. Their latest reading was above their usual range."
   accessibilityLiveRegion="assertive"
   accessibilityRole="alert"
+  accessible={true}
   style={
     [
       {
@@ -174,6 +175,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
   <View
     accessibilityLabel="Daily pulse. Blood pressure 128/82. Heart rate 64 bpm. Oxygen 98 %. Sleep 7:42 hrs. Activity 4,166 steps. Mum is in pattern."
     accessibilityRole="text"
+    accessible={true}
     style={
       {
         "height": 380,
@@ -442,6 +444,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               "now": 0.75,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -713,6 +716,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               "now": 0.4,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -963,6 +967,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               "now": 0.85,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1213,6 +1218,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               "now": 0.6,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1463,6 +1469,7 @@ exports[`Reduced motion — end-state snapshots DailyPulseHero constellation ren
               "now": 0.5,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -1682,6 +1689,7 @@ exports[`Reduced motion — end-state snapshots VitalRing state="filling" render
       "now": 0.62,
     }
   }
+  accessible={true}
   style={
     [
       {

@@ -85,6 +85,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
               "now": 1,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -246,6 +247,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
               "now": 0.7,
             }
           }
+          accessible={true}
           style={
             [
               {
@@ -409,6 +411,7 @@ exports[`ActivityRingsHero — snapshot matches snapshot in dark mode 1`] = `
               "now": 0.9333333333333333,
             }
           }
+          accessible={true}
           style={
             [
               {

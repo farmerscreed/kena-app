@@ -144,7 +144,7 @@ export function Card({
   }
 
   return (
-    <View testID={testID} accessibilityLabel={accessibilityLabel} style={[containerStyle, style]}>
+    <View accessible={true} testID={testID} accessibilityLabel={accessibilityLabel} style={[containerStyle, style]}>
       {renderContent()}
     </View>
   );

@@ -40,6 +40,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
   <View
     accessibilityLabel="Resting zone, < 60 bpm, 18 percent"
     accessibilityRole="text"
+    accessible={true}
     style={
       [
         {
@@ -160,6 +161,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
   <View
     accessibilityLabel="Calm zone, 60–80 bpm, 56 percent"
     accessibilityRole="text"
+    accessible={true}
     style={
       [
         {
@@ -280,6 +282,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
   <View
     accessibilityLabel="Active zone, 80–110 bpm, 22 percent"
     accessibilityRole="text"
+    accessible={true}
     style={
       [
         {
@@ -400,6 +403,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
   <View
     accessibilityLabel="Vigorous zone, 110+ bpm, 4 percent"
     accessibilityRole="text"
+    accessible={true}
     style={
       [
         {

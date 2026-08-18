@@ -632,7 +632,7 @@ export function ConstellationField({
           listing them. The count is now on screen, and the legend stays
           the authoritative full list. */}
       {overflowSlot ? (
-        <View
+        <View accessible={true}
           accessibilityRole="text"
           accessibilityLabel={`${overflowCount} more in your circle, listed below`}
           style={{
