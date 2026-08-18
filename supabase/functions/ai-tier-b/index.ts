@@ -637,16 +637,26 @@ Deno.serve(async (req: Request): Promise<Response> => {
   // ── Layer 2 ────────────────────────────────────────────────────────
   // Embedder is created once per Edge Function isolate and lazily
   // embeds the diagnostic cluster on first scanLayer2 call.
+  // D13 §9.2 — the semantic guard never fails open silently: any skip
+  // is audited as ai.output_guard_skipped (now canonical vocabulary,
+  // superseding the earlier D14 §15 objection) and the cached output
+  // is flagged for the sampling review queue.
+  let guardSkipped = false;
   let embedder;
   try {
     embedder = createSupabaseEmbedder();
   } catch (err) {
-    // If Supabase.ai isn't available in this runtime (e.g. self-hosted
-    // older version), skip Layer 2 with an audit-log note rather than
-    // hard-failing the whole request. Layer 1 + the system prompt are
-    // still in place.
     console.error('embedder unavailable', (err as Error).message);
     embedder = null;
+  }
+  if (!embedder) {
+    guardSkipped = true;
+    await writeAuditLog(serviceClient, {
+      actorUserId: userId,
+      familyId: demo.familyId,
+      action: 'ai.output_guard_skipped',
+      metadata: { layer: 2, surface: 'tier_b', cause: 'embedder_unavailable' },
+    });
   }
 
   if (embedder) {
@@ -658,15 +668,15 @@ Deno.serve(async (req: Request): Promise<Response> => {
         'layer2',
       );
     } catch (err) {
-      // Cold-start or transient failure — skip Layer 2 for this
-      // request and proceed with Layer 1 + system-prompt as the
-      // response gate. Subsequent requests in the same warm isolate
-      // should embed in <50ms. We don't write an audit row for the
-      // skip — D14 §15's vocabulary doesn't include a "guard layer
-      // unavailable" action and inventing one would diverge from the
-      // canonical list. The console warn is enough for dev triage.
       console.warn('layer2 skipped:', (err as Error).message);
       layer2 = null;
+      guardSkipped = true;
+      await writeAuditLog(serviceClient, {
+        actorUserId: userId,
+        familyId: demo.familyId,
+        action: 'ai.output_guard_skipped',
+        metadata: { layer: 2, surface: 'tier_b', cause: 'scan_timeout' },
+      });
     }
     if (layer2) {
       layer2Cosine = layer2.maxCosine;
@@ -720,12 +730,31 @@ Deno.serve(async (req: Request): Promise<Response> => {
         };
         return json(resp, 200);
       }
-      // Re-check both layers on the retried response.
+      // Re-check both layers on the retried response. §9.2 — the
+      // post-retry scan gets the same timeout protection as pre-retry.
       const recheck1 = scanLayer1(candidate);
-      const recheck2 = await scanLayer2(candidate, embedder);
-      layer2Cosine = recheck2.maxCosine;
-      layer2Matched = recheck2.matchedPhrase;
-      if (!recheck1.passes || !recheck2.passes) {
+      let recheck2;
+      try {
+        recheck2 = await withTimeout(
+          scanLayer2(candidate, embedder),
+          LAYER2_TIMEOUT_MS,
+          'layer2-recheck',
+        );
+      } catch {
+        recheck2 = null;
+        guardSkipped = true;
+        await writeAuditLog(serviceClient, {
+          actorUserId: userId,
+          familyId: demo.familyId,
+          action: 'ai.output_guard_skipped',
+          metadata: { layer: 2, surface: 'tier_b', cause: 'recheck_timeout' },
+        });
+      }
+      if (recheck2) {
+        layer2Cosine = recheck2.maxCosine;
+        layer2Matched = recheck2.matchedPhrase;
+      }
+      if (!recheck1.passes || (recheck2 && !recheck2.passes)) {
         clearTimeout(timeout);
         await writeAuditLog(serviceClient, {
           actorUserId: userId,
@@ -734,7 +763,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
           metadata: {
             reason: 'guard_double_hit',
             layer1_passes: recheck1.passes,
-            layer2_passes: recheck2.passes,
+            layer2_passes: recheck2?.passes ?? null,
           },
         });
         const resp: AiTierBDeferResponse = {
@@ -757,7 +786,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     response: candidate,
     promptTokens,
     completionTokens,
-    flagged: layer1Hits.length > 0 || layer2Cosine >= LAYER2_THRESHOLD,
+    flagged: layer1Hits.length > 0 || layer2Cosine >= LAYER2_THRESHOLD || guardSkipped,
   });
   if ('error' in persisted) {
     return json({ status: 'error', error: persisted.error }, 500);

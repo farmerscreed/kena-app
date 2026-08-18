@@ -503,9 +503,20 @@ Deno.serve(async (req: Request): Promise<Response> => {
   }
 
   // ── Layer 2 ───────────────────────────────────────────────────────
+  // D13 §9.2 — the semantic guard never fails open silently: any skip
+  // is audited (ai.output_guard_skipped) and the output is flagged.
+  let guardSkipped = false;
   let embedder;
   try { embedder = createSupabaseEmbedder(); }
   catch (err) { console.warn('embedder unavailable', (err as Error).message); embedder = null; }
+  if (!embedder) {
+    guardSkipped = true;
+    await writeAuditLog(serviceClient, {
+      actorUserId: userId, familyId,
+      action: 'ai.output_guard_skipped',
+      metadata: { layer: 2, surface: 'daily_narration', cause: 'embedder_unavailable' },
+    });
+  }
   if (embedder) {
     let layer2;
     try {
@@ -513,6 +524,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
     } catch (err) {
       console.warn('layer2 skipped:', (err as Error).message);
       layer2 = null;
+      guardSkipped = true;
+      await writeAuditLog(serviceClient, {
+        actorUserId: userId, familyId,
+        action: 'ai.output_guard_skipped',
+        metadata: { layer: 2, surface: 'daily_narration', cause: 'scan_timeout' },
+      });
     }
     if (layer2) layer2Cosine = layer2.maxCosine;
     if (layer2 && !layer2.passes) {
@@ -535,9 +552,22 @@ Deno.serve(async (req: Request): Promise<Response> => {
       promptTokens += retryCall.promptTokens;
       completionTokens += retryCall.completionTokens;
       const recheck1 = scanLayer1(candidate);
-      const recheck2 = await scanLayer2(candidate, embedder);
-      layer2Cosine = recheck2.maxCosine;
-      if (!recheck1.passes || !recheck2.passes) {
+      // §9.2 — the post-retry scan gets the same timeout protection as
+      // the pre-retry scan; a hung recheck defers rather than hangs.
+      let recheck2;
+      try {
+        recheck2 = await withTimeout(scanLayer2(candidate, embedder), LAYER2_TIMEOUT_MS, 'layer2-recheck');
+      } catch {
+        recheck2 = null;
+        guardSkipped = true;
+        await writeAuditLog(serviceClient, {
+          actorUserId: userId, familyId,
+          action: 'ai.output_guard_skipped',
+          metadata: { layer: 2, surface: 'daily_narration', cause: 'recheck_timeout' },
+        });
+      }
+      if (recheck2) layer2Cosine = recheck2.maxCosine;
+      if (!recheck1.passes || (recheck2 && !recheck2.passes)) {
         clearTimeout(timeout);
         await writeAuditLog(serviceClient, {
           actorUserId: userId, familyId,
@@ -552,7 +582,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
   clearTimeout(timeout);
 
   // ── Persist + audit + sample ──────────────────────────────────────
-  const flagged = layer1Hits.length > 0 || layer2Cosine >= LAYER2_THRESHOLD;
+  const flagged = layer1Hits.length > 0 || layer2Cosine >= LAYER2_THRESHOLD || guardSkipped;
   const messageId = await writeCache(serviceClient, {
     userId, familyId, scopeKey: body.scopeKey, body: candidate,
     promptTokens, completionTokens, flagged,

@@ -206,12 +206,30 @@ async function processUser(
     if (!scanLayer1(candidate).passes) { clearTimeout(timeout); return { status: 'guard_failed', monthLabel }; }
   }
 
+  // D13 §9.2 — a skipped semantic guard is audited and flags the row.
+  let guardSkipped = false;
   let embedder;
   try { embedder = createSupabaseEmbedder(); } catch { embedder = null; }
+  if (!embedder) {
+    guardSkipped = true;
+    await serviceClient.from('audit_log').insert({
+      actor_user_id: userId, family_id: familyId,
+      action: 'ai.output_guard_skipped',
+      metadata: { layer: 2, surface: 'monthly_baseline', cause: 'embedder_unavailable', scope_key: monthLabel },
+    });
+  }
   if (embedder) {
     let layer2;
     try { layer2 = await withTimeout(scanLayer2(candidate, embedder), LAYER2_TIMEOUT_MS, 'layer2'); }
-    catch { layer2 = null; }
+    catch {
+      layer2 = null;
+      guardSkipped = true;
+      await serviceClient.from('audit_log').insert({
+        actor_user_id: userId, family_id: familyId,
+        action: 'ai.output_guard_skipped',
+        metadata: { layer: 2, surface: 'monthly_baseline', cause: 'scan_timeout', scope_key: monthLabel },
+      });
+    }
     if (layer2) layer2Cosine = layer2.maxCosine;
     if (layer2 && !layer2.passes) {
       const retryCall = await callAnthropic({
@@ -223,12 +241,29 @@ async function processUser(
       candidate = retryCall.body;
       promptTokens += retryCall.promptTokens;
       completionTokens += retryCall.completionTokens;
+      // §9.2 — recheck the retried response, timeout-protected.
+      if (!scanLayer1(candidate).passes) { clearTimeout(timeout); return { status: 'guard_failed', monthLabel }; }
+      let recheck2;
+      try { recheck2 = await withTimeout(scanLayer2(candidate, embedder), LAYER2_TIMEOUT_MS, 'layer2-recheck'); }
+      catch {
+        recheck2 = null;
+        guardSkipped = true;
+        await serviceClient.from('audit_log').insert({
+          actor_user_id: userId, family_id: familyId,
+          action: 'ai.output_guard_skipped',
+          metadata: { layer: 2, surface: 'monthly_baseline', cause: 'recheck_timeout', scope_key: monthLabel },
+        });
+      }
+      if (recheck2) {
+        layer2Cosine = recheck2.maxCosine;
+        if (!recheck2.passes) { clearTimeout(timeout); return { status: 'guard_failed', monthLabel }; }
+      }
     }
   }
 
   clearTimeout(timeout);
 
-  const flagged = !layer1.passes || layer2Cosine >= LAYER2_THRESHOLD;
+  const flagged = !layer1.passes || layer2Cosine >= LAYER2_THRESHOLD || guardSkipped;
   await serviceClient.from('ai_narration_cache').upsert({
     user_id: userId, family_id: familyId,
     surface: 'monthly_baseline', scope_key: monthLabel,
