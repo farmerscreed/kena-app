@@ -69,6 +69,7 @@ import { useTheme, type Theme } from '../../theme';
 import { generateTrendsNarrative } from '../../services/ai/trendsNarration';
 import type { TrendsRange, TrendsData } from '../../utils/trends-aggregate';
 import type { VitalType } from '../../components/VitalRing';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
 import type { AccountType } from '../../types/database';
 import { bpBaseline, formatBPBaseline } from '../../utils/vitalBaselines';
 import type {
@@ -707,6 +708,20 @@ function ExpansionPanel({
         caption="This range"
         subCaption={rangeLabel}
         testID="trends-chart"
+      />
+      {/* D13 PR-6 (§6.3/§9.1) — the non-visual route to the chart's
+          numbers. Trends previously had none at all. */}
+      <ViewAsTableLink
+        rows={series
+          .filter((s) => s.visible)
+          .flatMap((s) =>
+            s.values.map((v, i) => ({
+              label: `${s.kind.toUpperCase()} · ${s.days[i] ?? ''}`,
+              value: String(Math.round(v)),
+            })),
+          )}
+        subjectNoun="daily values"
+        testID="trends-table"
       />
     </View>
   );

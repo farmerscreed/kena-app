@@ -1,7 +1,7 @@
 // SpO2Detail — Sprint 8.5 (vital-detail screens, D13 §8.4).
 //
 // Per-vital detail surface for blood oxygen. Composes the Sprint 8.5
-// foundation primitives (DetailShell, VitalHero, StatTrio, VitalTrendChart,
+// foundation primitives (DetailShell, VitalHero, StatTrio, RangeBandChart,
 // VitalInsightCard, RecentReadingsList) into the SpO2 layout from the
 // design's leiko-detail-screens.jsx (lines 190–242).
 //
@@ -40,7 +40,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { DetailShell } from '../../components/DetailShell';
 import { VitalHero } from '../../components/VitalHero';
 import { StatTrio } from '../../components/StatTrio';
-import { VitalTrendChart } from '../../components/VitalTrendChart';
+import { RangeBandChart } from '../../components/RangeBandChart';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
+import { getServerBaseline } from '../../utils/vitalBaselines';
 import { VitalInsightCard } from '../../components/VitalInsightCard';
 import { VitalExplainerAnchor } from '../../components/VitalExplainerAnchor';
 import { type RecentReading } from '../../components/RecentReadingsList';
@@ -387,6 +389,14 @@ export function SpO2Detail({
   // Sprint 18 SP1 — distinguish loading + error from "truly empty" on
   // the caregiver-scoped path (matches Sleep S1+S3 / HR H1 / BP B1).
   const isCaregiverScoped = scopedFamilyId !== null;
+
+  // D13 PR-6 — ribbon from the truth layer (§4.3-gated).
+  const spo2TruthBand = useMemo(() => {
+    const row = getServerBaseline(historyFamilyId ?? '', 'spo2');
+    return row && row.isSufficient
+      ? { low: Math.round(row.p10), high: Math.round(row.p90) }
+      : null;
+  }, [historyFamilyId]);
   const isInitialParentLoad =
     isCaregiverScoped &&
     (parentPulse.isLoading || parentRecent.isLoading) &&
@@ -653,15 +663,24 @@ export function SpO2Detail({
 
           {chartHasData ? (
             <View style={{ paddingHorizontal: 20 }}>
-              <VitalTrendChart
+              {/* D13 PR-6 (§6.3) — ribbon from the truth layer's spo2
+                  row, drawn only when the §4.3 gate is met. */}
+              <RangeBandChart
                 vital="spo2"
-                data={overnightSeries}
-                range={chartRange}
+                points={overnightSeries.map((v) => ({ value: v }))}
+                band={spo2TruthBand}
+                unit="%"
                 caption={`Overnight · oxygen · last ${RANGE_TO_DAYS[trendRange]} days`}
                 subCaption={`${chartRange[0]}–${chartRange[1]} band`}
-                peak
-                trough
                 testID="spo2-detail-chart"
+              />
+              <ViewAsTableLink
+                rows={overnightSeries.map((v, i) => ({
+                  label: `Night ${i + 1} of ${overnightSeries.length}`,
+                  value: `${Math.round(v)}%`,
+                }))}
+                subjectNoun="overnight lows"
+                testID="spo2-detail-table"
               />
             </View>
           ) : (
