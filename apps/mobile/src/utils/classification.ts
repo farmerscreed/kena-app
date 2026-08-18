@@ -258,43 +258,61 @@ export function classifyReading(
   return { tier: LEGACY_TIER[worst.tier], reason: legacyReason(worst), verdict: worst };
 }
 
-/** UI string for the tier chip. Centralised so tests catch voice-rule drift. */
-export function tierChipText(tier: ClassificationTier): string {
+// UI helpers — thin shims over the canonical vocabulary
+// (services/voice/tierVocabulary, D13 §7.4). One definition site;
+// these keep the legacy ClassificationTier signatures that existing
+// surfaces call with, defaulting to the self subject. Caregiver
+// surfaces pass their own Subject as they migrate (PR-7/PR-8).
+
+import {
+  chipTextForTier,
+  sentenceFragmentForTier,
+  SELF_SUBJECT,
+  type Subject,
+} from '../services/voice/tierVocabulary';
+export type { Subject };
+
+/** Legacy tier → canonical §4.4 tier. Without a Verdict the legacy
+ *  in_pattern is ambiguous (learning vs in_range); callers that have
+ *  a Classification should use canonicalTierFor instead. */
+export function canonicalTierForLegacy(tier: ClassificationTier): Tier {
   switch (tier) {
     case 'in_pattern':
-      return 'In your usual range';
+      return 'in_range';
     case 'calm_concerned':
-      return 'Worth a look';
+      return 'worth_a_look';
     case 'confirmed_urgent':
-      return 'Talk to your doctor';
+      return 'talk_to_doctor';
   }
+}
+
+/** Canonical tier for a full Classification — verdict-aware, so the
+ *  learning state survives the legacy shape. */
+export function canonicalTierFor(classification: Classification): Tier {
+  return classification.verdict?.tier ?? canonicalTierForLegacy(classification.tier);
+}
+
+/** UI string for the tier chip. */
+export function tierChipText(
+  tier: ClassificationTier,
+  subject: Subject = SELF_SUBJECT,
+): string {
+  return chipTextForTier(canonicalTierForLegacy(tier), subject);
 }
 
 /**
  * The hero sub-line under a vital value — "<unit> · <verdict>".
- *
- * Sprint 19 (audit D12 P0-4). BPDetail had a private `rangeCopyForTier`;
- * HRDetail had none and gated on `baseline !== null`, so a heart rate
- * classified calm_concerned or confirmed_urgent still rendered
- * "bpm · within your range" — directly contradicting the anomaly banner
- * firing above it. Both now call this.
- *
  * A null tier yields the bare unit: we say nothing rather than guess.
  */
 export function vitalRangeCopyForTier(
   unit: string,
   tier: ClassificationTier | null | undefined,
+  subject: Subject = SELF_SUBJECT,
 ): string {
-  switch (tier) {
-    case 'in_pattern':
-      return `${unit} · within your usual range`;
-    case 'calm_concerned':
-      return `${unit} · worth a look`;
-    case 'confirmed_urgent':
-      return `${unit} · talk to your doctor today`;
-    default:
-      return unit;
-  }
+  if (tier == null) return unit;
+  const fragment = sentenceFragmentForTier(canonicalTierForLegacy(tier), subject);
+  // "is in your usual range" → "in your usual range" for the sub-line.
+  return `${unit} · ${fragment.replace(/^is /, '')}`;
 }
 
 export function tierPillVariant(tier: ClassificationTier): 'success' | 'accent' | 'urgent' {
