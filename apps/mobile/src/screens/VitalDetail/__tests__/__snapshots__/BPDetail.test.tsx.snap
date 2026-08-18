@@ -502,7 +502,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                         r={51}
                         stroke={
                           {
-                            "payload": 4286490820,
+                            "payload": 4287925638,
                             "type": 0,
                           }
                         }
@@ -536,7 +536,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                         r={51}
                         stroke={
                           {
-                            "payload": 4286490820,
+                            "payload": 4287925638,
                             "type": 0,
                           }
                         }
@@ -708,6 +708,117 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                     testID="bp-detail-hero-secondary"
                   >
                     / 78
+                  </Text>
+                </View>
+                <View
+                  accessibilityElementsHidden={true}
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
+                  style={
+                    [
+                      {
+                        "alignItems": "center",
+                        "alignSelf": "flex-start",
+                        "backgroundColor": "#5FA97E24",
+                        "borderColor": "#5FA97E3D",
+                        "borderRadius": 99,
+                        "borderWidth": 0.5,
+                        "flexDirection": "row",
+                        "gap": 4,
+                        "paddingHorizontal": 8,
+                        "paddingVertical": 3,
+                      },
+                      {
+                        "marginTop": 4,
+                      },
+                    ]
+                  }
+                  testID="bp-detail-hero-chip"
+                >
+                  <RNSVGSvgView
+                    align="xMidYMid"
+                    bbHeight={12}
+                    bbWidth={12}
+                    className="check-bold__svg-icon-phosphor"
+                    color="#5FA97E"
+                    fill="currentColor"
+                    focusable={false}
+                    height={12}
+                    meetOrSlice={0}
+                    minX={0}
+                    minY={0}
+                    style={
+                      [
+                        {
+                          "backgroundColor": "transparent",
+                          "borderWidth": 0,
+                        },
+                        [
+                          undefined,
+                          undefined,
+                          {},
+                        ],
+                        {
+                          "flex": 0,
+                          "height": 12,
+                          "width": 12,
+                        },
+                      ]
+                    }
+                    testID="phosphor-react-native-check-bold"
+                    vbHeight={256}
+                    vbWidth={256}
+                    width={12}
+                  >
+                    <RNSVGGroup
+                      fill={
+                        {
+                          "type": 2,
+                        }
+                      }
+                      propList={
+                        [
+                          "fill",
+                        ]
+                      }
+                    >
+                      <RNSVGGroup
+                        fill={
+                          {
+                            "payload": 4284459390,
+                            "type": 0,
+                          }
+                        }
+                        propList={
+                          [
+                            "fill",
+                          ]
+                        }
+                      >
+                        <RNSVGPath
+                          d="m232.49 80.49-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"
+                          fill={
+                            {
+                              "payload": 4278190080,
+                              "type": 0,
+                            }
+                          }
+                        />
+                      </RNSVGGroup>
+                    </RNSVGGroup>
+                  </RNSVGSvgView>
+                  <Text
+                    maxFontSizeMultiplier={1.3}
+                    style={
+                      {
+                        "color": "#5FA97E",
+                        "fontFamily": "Inter_400Regular",
+                        "fontSize": 11,
+                        "lineHeight": 15,
+                      }
+                    }
+                  >
+                    In your usual range
                   </Text>
                 </View>
                 <Text
@@ -1276,6 +1387,206 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
               }
             >
               <View
+                accessibilityRole="tablist"
+                style={
+                  {
+                    "flexDirection": "row",
+                    "gap": 8,
+                    "marginBottom": 12,
+                  }
+                }
+              >
+                <View
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "busy": undefined,
+                      "checked": undefined,
+                      "disabled": undefined,
+                      "expanded": undefined,
+                      "selected": false,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  hitSlop={6}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    {
+                      "backgroundColor": "transparent",
+                      "borderColor": "rgba(255,255,255,0.06)",
+                      "borderRadius": 99,
+                      "borderWidth": 0.5,
+                      "paddingHorizontal": 12,
+                      "paddingVertical": 6,
+                    }
+                  }
+                  testID="bp-detail-segment-morning"
+                >
+                  <Text
+                    maxFontSizeMultiplier={1.6}
+                    style={
+                      [
+                        {
+                          "family": "Inter_500Medium",
+                          "lineHeight": 16,
+                          "size": 13,
+                          "weight": "500",
+                        },
+                        {
+                          "color": "#B8B2AA",
+                        },
+                      ]
+                    }
+                  >
+                    Morning
+                  </Text>
+                </View>
+                <View
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "busy": undefined,
+                      "checked": undefined,
+                      "disabled": undefined,
+                      "expanded": undefined,
+                      "selected": false,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  hitSlop={6}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    {
+                      "backgroundColor": "transparent",
+                      "borderColor": "rgba(255,255,255,0.06)",
+                      "borderRadius": 99,
+                      "borderWidth": 0.5,
+                      "paddingHorizontal": 12,
+                      "paddingVertical": 6,
+                    }
+                  }
+                  testID="bp-detail-segment-evening"
+                >
+                  <Text
+                    maxFontSizeMultiplier={1.6}
+                    style={
+                      [
+                        {
+                          "family": "Inter_500Medium",
+                          "lineHeight": 16,
+                          "size": 13,
+                          "weight": "500",
+                        },
+                        {
+                          "color": "#B8B2AA",
+                        },
+                      ]
+                    }
+                  >
+                    Evening
+                  </Text>
+                </View>
+                <View
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "busy": undefined,
+                      "checked": undefined,
+                      "disabled": undefined,
+                      "expanded": undefined,
+                      "selected": true,
+                    }
+                  }
+                  accessibilityValue={
+                    {
+                      "max": undefined,
+                      "min": undefined,
+                      "now": undefined,
+                      "text": undefined,
+                    }
+                  }
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  hitSlop={6}
+                  onBlur={[Function]}
+                  onClick={[Function]}
+                  onFocus={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    {
+                      "backgroundColor": "#1D140D",
+                      "borderColor": "rgba(255,255,255,0.06)",
+                      "borderRadius": 99,
+                      "borderWidth": 0.5,
+                      "paddingHorizontal": 12,
+                      "paddingVertical": 6,
+                    }
+                  }
+                  testID="bp-detail-segment-all"
+                >
+                  <Text
+                    maxFontSizeMultiplier={1.6}
+                    style={
+                      [
+                        {
+                          "family": "Inter_500Medium",
+                          "lineHeight": 16,
+                          "size": 13,
+                          "weight": "500",
+                        },
+                        {
+                          "color": "#FFFFFF",
+                        },
+                      ]
+                    }
+                  >
+                    All
+                  </Text>
+                </View>
+              </View>
+              <View
                 accessibilityLabel="1 reading plotted, latest 122 over 78 mmHg."
                 accessibilityRole="image"
                 accessible={true}
@@ -1594,6 +1905,173 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
             >
               After about a week of readings, this card will compare your current numbers to your usual range and call out anything worth noting.
             </Text>
+          </View>
+          <View
+            style={
+              {
+                "backgroundColor": "#1D140D",
+                "borderRadius": 22,
+                "marginHorizontal": 16,
+                "marginTop": 16,
+                "paddingVertical": 16,
+              }
+            }
+          >
+            <View
+              accessibilityLabel="Readings usually land in the morning. Today has 1."
+              accessibilityRole="image"
+              accessible={true}
+              style={
+                [
+                  {
+                    "alignItems": "center",
+                  },
+                  undefined,
+                ]
+              }
+              testID="bp-detail-time-ring"
+            >
+              <Text
+                maxFontSizeMultiplier={1.6}
+                style={
+                  {
+                    "color": "#857F7A",
+                    "fontFamily": "JetBrainsMono_500Medium",
+                    "fontSize": 11,
+                    "letterSpacing": 0.88,
+                    "lineHeight": 14,
+                    "marginBottom": 8,
+                    "textTransform": "uppercase",
+                  }
+                }
+              >
+                When readings usually land
+              </Text>
+              <RNSVGSvgView
+                accessibilityElementsHidden={true}
+                bbHeight={148}
+                bbWidth={148}
+                focusable={false}
+                height={148}
+                importantForAccessibility="no-hide-descendants"
+                style={
+                  [
+                    {
+                      "backgroundColor": "transparent",
+                      "borderWidth": 0,
+                    },
+                    {
+                      "flex": 0,
+                      "height": 148,
+                      "width": 148,
+                    },
+                  ]
+                }
+                width={148}
+              >
+                <RNSVGGroup
+                  fill={
+                    {
+                      "payload": 4278190080,
+                      "type": 0,
+                    }
+                  }
+                >
+                  <RNSVGCircle
+                    cx={74}
+                    cy={74}
+                    fill={null}
+                    propList={
+                      [
+                        "fill",
+                        "stroke",
+                        "strokeWidth",
+                      ]
+                    }
+                    r={64}
+                    stroke={
+                      {
+                        "payload": 4280095757,
+                        "type": 0,
+                      }
+                    }
+                    strokeWidth={1}
+                  />
+                  <RNSVGCircle
+                    cx={74}
+                    cy={10}
+                    fill={
+                      {
+                        "payload": 4286939002,
+                        "type": 0,
+                      }
+                    }
+                    propList={
+                      [
+                        "fill",
+                      ]
+                    }
+                    r={1.5}
+                  />
+                  <RNSVGCircle
+                    cx={23.225386221360957}
+                    cy={112.96073145655814}
+                    fill={
+                      {
+                        "payload": 4286490820,
+                        "type": 0,
+                      }
+                    }
+                    opacity={0.45}
+                    propList={
+                      [
+                        "fill",
+                      ]
+                    }
+                    r={5}
+                  />
+                  <RNSVGCircle
+                    cx={23.225386221360957}
+                    cy={112.96073145655814}
+                    fill={
+                      {
+                        "payload": 4294967295,
+                        "type": 0,
+                      }
+                    }
+                    propList={
+                      [
+                        "fill",
+                        "stroke",
+                        "strokeWidth",
+                      ]
+                    }
+                    r={3.4}
+                    stroke={
+                      {
+                        "payload": 4286490820,
+                        "type": 0,
+                      }
+                    }
+                    strokeWidth={1}
+                  />
+                </RNSVGGroup>
+              </RNSVGSvgView>
+              <Text
+                maxFontSizeMultiplier={1.6}
+                style={
+                  {
+                    "color": "#857F7A",
+                    "fontFamily": "Inter_400Regular",
+                    "fontSize": 12,
+                    "lineHeight": 16,
+                    "marginTop": 6,
+                  }
+                }
+              >
+                Bigger dots mean more readings at that time of day.
+              </Text>
+            </View>
           </View>
           <View
             accessibilityHint="Opens explanation sheet"

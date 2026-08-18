@@ -70,6 +70,7 @@ import { useOnboarding } from '../../state/onboarding';
 import { useHRRangeSummary } from '../../hooks/useHRRangeSummary';
 import { hrFill } from '../../utils/vitalThemes';
 import {
+  canonicalTierForLegacy,
   checkStaleness,
   vitalRangeCopyForTier,
 } from '../../utils/classification';
@@ -619,12 +620,17 @@ export function HRDetail({
     [allSamples],
   );
   const liveBpm = liveSample?.bpm ?? null;
-  const heroBpm = liveBpm ?? displayBpm;
+  // D13 PR-7 (§7.3) — the hero is NIGHTLY RESTING HR (the lowest
+  // sustained value across the sleep window). An instantaneous value
+  // with a verdict under it is close to meaningless; the live/spot
+  // value only carries the hero when no resting value exists yet.
+  const heroBpm = restingToday ?? liveBpm ?? displayBpm;
+  const heroIsResting = restingToday !== null;
   // "Live" framing whenever the hero value is a recent sample rather than a
   // resting value — either one found in the slice, or dailyPulse's display
   // falling back to its latest (non-resting) sample. Only when the value is
   // genuinely resting do we keep the calm resting wording.
-  const isLive = liveBpm !== null || data.hr.displaySource === 'latest';
+  const isLive = !heroIsResting && (liveBpm !== null || data.hr.displaySource === 'latest');
   const heroSampleSec = liveSample?.measuredAtSec ?? data.hr.latestSampleSec;
 
   // Resting-specific copy (insight card, baseline) stays gated on a
@@ -646,6 +652,12 @@ export function HRDetail({
   // Live reading leads with neutral "Latest" wording (the sample may be a
   // few minutes old); the resting fallback keeps the calm resting framing.
   const heroPrimary = hasHero ? String(Math.round(heroBpm!)) : '—';
+  const hrChipTier = useMemo(() => {
+    const row = getServerBaseline(summaryFamilyId ?? '', 'resting_hr');
+    if (!row || !row.isSufficient) return 'learning' as const;
+    const legacy = data.hr.classification?.tier;
+    return legacy ? canonicalTierForLegacy(legacy) : ('learning' as const);
+  }, [summaryFamilyId, data.hr.classification]);
   const heroSub =
     staleCaption ??
     (hasHero ? (isLive ? 'Latest reading' : 'Now · resting') : 'Heart rate');
@@ -654,10 +666,13 @@ export function HRDetail({
   // contradicting the anomaly banner above it. The verdict now comes
   // from the classification, via the same helper BPDetail uses.
   const hrTier = data.hr.classification?.tier ?? null;
+  // §4.3 — the range claim renders only once the truth layer's
+  // resting-HR row is sufficient; below the gate the sub-line stays
+  // neutral and the chip carries the Learning state.
   const heroRange = hasHero
     ? isLive
       ? 'bpm · latest'
-      : hrTier !== null
+      : hrChipTier !== 'learning' && hrTier !== null
         ? vitalRangeCopyForTier('bpm', hrTier)
         : 'bpm · resting'
     : 'Wear the watch to start tracking your heart rate.';
@@ -671,9 +686,12 @@ export function HRDetail({
         <VitalHero
           vital="hr"
           primary={heroPrimary}
-          sub={heroSub}
+          sub={heroIsResting ? 'Overnight · resting' : heroSub}
           range={heroRange}
           ringFill={hrFill(heroBpm)}
+          // §6.2/P1-5 — the verdict chip; learning until the truth
+          // layer's resting-HR row clears the §4.3 gate.
+          tier={hasHero ? hrChipTier : null}
           livePulse={false}
           testID="hr-detail-hero"
         />

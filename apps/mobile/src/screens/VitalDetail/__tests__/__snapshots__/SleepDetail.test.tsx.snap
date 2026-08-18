@@ -980,6 +980,406 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                   "borderColor": "rgba(255,255,255,0.06)",
                   "borderRadius": 22,
                   "borderWidth": 0.5,
+                  "gap": 8,
+                  "marginHorizontal": 20,
+                  "padding": 16,
+                },
+                undefined,
+              ]
+            }
+            testID="sleep-detail-nightly"
+          >
+            <View
+              style={
+                {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                  "justifyContent": "space-between",
+                }
+              }
+            >
+              <Text
+                allowFontScaling={false}
+                style={
+                  {
+                    "color": "#857F7A",
+                    "fontFamily": "Inter_500Medium",
+                    "fontSize": 11,
+                    "letterSpacing": 0.55,
+                    "lineHeight": 14,
+                    "textTransform": "uppercase",
+                  }
+                }
+              >
+                Nightly sleep · 7d
+              </Text>
+              <Text
+                allowFontScaling={false}
+                style={
+                  {
+                    "color": "#857F7A",
+                    "fontFamily": "JetBrainsMono_500Medium",
+                    "fontSize": 12,
+                    "letterSpacing": 0.3,
+                    "lineHeight": 16,
+                  }
+                }
+              >
+                0 of 7 tracked
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="Nightly sleep across the last 7 nights. No nights tracked yet in this window — nights appear here as the watch syncs."
+              accessibilityRole="image"
+              accessible={true}
+              style={
+                [
+                  {
+                    "flexDirection": "row",
+                    "gap": 6,
+                  },
+                  {
+                    "height": 132,
+                  },
+                ]
+              }
+            >
+              <View
+                style={
+                  {
+                    "justifyContent": "space-between",
+                    "paddingBottom": 0,
+                    "paddingTop": 0,
+                  }
+                }
+              >
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#857F7A",
+                      "fontFamily": "Inter_400Regular",
+                      "fontSize": 10,
+                      "lineHeight": 12,
+                      "textAlign": "right",
+                      "width": 22,
+                    }
+                  }
+                >
+                  9h
+                </Text>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#857F7A",
+                      "fontFamily": "Inter_400Regular",
+                      "fontSize": 10,
+                      "lineHeight": 12,
+                      "textAlign": "right",
+                      "width": 22,
+                    }
+                  }
+                >
+                  6h
+                </Text>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#857F7A",
+                      "fontFamily": "Inter_400Regular",
+                      "fontSize": 10,
+                      "lineHeight": 12,
+                      "textAlign": "right",
+                      "width": 22,
+                    }
+                  }
+                >
+                  3h
+                </Text>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#857F7A",
+                      "fontFamily": "Inter_400Regular",
+                      "fontSize": 10,
+                      "lineHeight": 12,
+                      "textAlign": "right",
+                      "width": 22,
+                    }
+                  }
+                >
+                  0h
+                </Text>
+              </View>
+              <View
+                style={
+                  {
+                    "flex": 1,
+                  }
+                }
+              >
+                <View
+                  style={
+                    {
+                      "backgroundColor": "#857F7A",
+                      "height": 0.5,
+                      "left": 0,
+                      "opacity": 0.15,
+                      "position": "absolute",
+                      "right": 0,
+                      "top": 0,
+                    }
+                  }
+                />
+                <View
+                  style={
+                    {
+                      "backgroundColor": "#857F7A",
+                      "height": 0.5,
+                      "left": 0,
+                      "opacity": 0.15,
+                      "position": "absolute",
+                      "right": 0,
+                      "top": 44,
+                    }
+                  }
+                />
+                <View
+                  style={
+                    {
+                      "backgroundColor": "#857F7A",
+                      "height": 0.5,
+                      "left": 0,
+                      "opacity": 0.15,
+                      "position": "absolute",
+                      "right": 0,
+                      "top": 88,
+                    }
+                  }
+                />
+                <View
+                  accessibilityElementsHidden={true}
+                  importantForAccessibility="no-hide-descendants"
+                  style={
+                    [
+                      {
+                        "alignItems": "flex-end",
+                        "flexDirection": "row",
+                        "paddingBottom": 4,
+                        "paddingTop": 4,
+                      },
+                      {
+                        "gap": 6,
+                        "height": 132,
+                      },
+                    ]
+                  }
+                >
+                  <View
+                    style={
+                      {
+                        "alignSelf": "flex-end",
+                        "backgroundColor": "#857F7A",
+                        "borderRadius": 1.5,
+                        "height": 3,
+                        "opacity": 0.2,
+                        "width": 28,
+                      }
+                    }
+                  />
+                  <View
+                    style={
+                      {
+                        "alignSelf": "flex-end",
+                        "backgroundColor": "#857F7A",
+                        "borderRadius": 1.5,
+                        "height": 3,
+                        "opacity": 0.2,
+                        "width": 28,
+                      }
+                    }
+                  />
+                  <View
+                    style={
+                      {
+                        "alignSelf": "flex-end",
+                        "backgroundColor": "#857F7A",
+                        "borderRadius": 1.5,
+                        "height": 3,
+                        "opacity": 0.2,
+                        "width": 28,
+                      }
+                    }
+                  />
+                  <View
+                    style={
+                      {
+                        "alignSelf": "flex-end",
+                        "backgroundColor": "#857F7A",
+                        "borderRadius": 1.5,
+                        "height": 3,
+                        "opacity": 0.2,
+                        "width": 28,
+                      }
+                    }
+                  />
+                  <View
+                    style={
+                      {
+                        "alignSelf": "flex-end",
+                        "backgroundColor": "#857F7A",
+                        "borderRadius": 1.5,
+                        "height": 3,
+                        "opacity": 0.2,
+                        "width": 28,
+                      }
+                    }
+                  />
+                  <View
+                    style={
+                      {
+                        "alignSelf": "flex-end",
+                        "backgroundColor": "#857F7A",
+                        "borderRadius": 1.5,
+                        "height": 3,
+                        "opacity": 0.2,
+                        "width": 28,
+                      }
+                    }
+                  />
+                  <View
+                    style={
+                      {
+                        "alignSelf": "flex-end",
+                        "backgroundColor": "#857F7A",
+                        "borderRadius": 1.5,
+                        "height": 3,
+                        "opacity": 0.2,
+                        "width": 28,
+                      }
+                    }
+                  />
+                </View>
+              </View>
+            </View>
+            <View
+              style={
+                [
+                  {
+                    "flexDirection": "row",
+                    "justifyContent": "space-between",
+                  },
+                  {
+                    "paddingLeft": 28,
+                  },
+                ]
+              }
+            >
+              <Text
+                allowFontScaling={false}
+                style={
+                  {
+                    "color": "#857F7A",
+                    "fontFamily": "Inter_400Regular",
+                    "fontSize": 12,
+                    "lineHeight": 16,
+                  }
+                }
+              >
+                May 2
+              </Text>
+              <Text
+                allowFontScaling={false}
+                style={
+                  {
+                    "color": "#857F7A",
+                    "fontFamily": "Inter_400Regular",
+                    "fontSize": 12,
+                    "lineHeight": 16,
+                  }
+                }
+              >
+                today
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              {
+                "marginHorizontal": 20,
+              }
+            }
+            testID="sleep-detail-table"
+          >
+            <View
+              accessibilityHint="Shows the nights behind the chart as text"
+              accessibilityLabel="View as table"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              hitSlop={8}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignSelf": "flex-start",
+                  "paddingVertical": 6,
+                }
+              }
+              testID="sleep-detail-table-toggle"
+            >
+              <Text
+                maxFontSizeMultiplier={1.6}
+                style={
+                  {
+                    "color": "#B8B2AA",
+                    "fontFamily": "Inter_500Medium",
+                    "fontSize": 13,
+                    "lineHeight": 16,
+                    "textDecorationLine": "underline",
+                  }
+                }
+              >
+                View as table
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              [
+                {
+                  "backgroundColor": "#120C07",
+                  "borderColor": "rgba(255,255,255,0.06)",
+                  "borderRadius": 22,
+                  "borderWidth": 0.5,
                   "gap": 12,
                   "marginHorizontal": 20,
                   "padding": 16,
@@ -1330,340 +1730,27 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
               Your watch reports total, deep, and light durations per night. Minute-by-minute REM and awake timing aren't available on this model — "Other" covers REM cycles and brief wakings combined.
             </Text>
           </View>
-          <View
+          <Text
+            maxFontSizeMultiplier={1.6}
             style={
               [
                 {
-                  "backgroundColor": "#120C07",
-                  "borderColor": "rgba(255,255,255,0.06)",
-                  "borderRadius": 22,
-                  "borderWidth": 0.5,
-                  "gap": 8,
-                  "marginHorizontal": 20,
-                  "padding": 16,
+                  "family": "Inter_400Regular",
+                  "lineHeight": 16,
+                  "size": 12,
+                  "weight": "400",
                 },
-                undefined,
+                {
+                  "color": "#857F7A",
+                  "marginHorizontal": 20,
+                  "marginTop": 4,
+                },
               ]
             }
-            testID="sleep-detail-nightly"
+            testID="sleep-detail-stages-caption"
           >
-            <View
-              style={
-                {
-                  "alignItems": "center",
-                  "flexDirection": "row",
-                  "justifyContent": "space-between",
-                }
-              }
-            >
-              <Text
-                allowFontScaling={false}
-                style={
-                  {
-                    "color": "#857F7A",
-                    "fontFamily": "Inter_500Medium",
-                    "fontSize": 11,
-                    "letterSpacing": 0.55,
-                    "lineHeight": 14,
-                    "textTransform": "uppercase",
-                  }
-                }
-              >
-                Nightly sleep · 7d
-              </Text>
-              <Text
-                allowFontScaling={false}
-                style={
-                  {
-                    "color": "#857F7A",
-                    "fontFamily": "JetBrainsMono_500Medium",
-                    "fontSize": 12,
-                    "letterSpacing": 0.3,
-                    "lineHeight": 16,
-                  }
-                }
-              >
-                0 of 7 tracked
-              </Text>
-            </View>
-            <View
-              accessibilityLabel="Nightly sleep across the last 7 nights. No nights tracked yet in this window — nights appear here as the watch syncs."
-              accessibilityRole="image"
-              accessible={true}
-              style={
-                [
-                  {
-                    "flexDirection": "row",
-                    "gap": 6,
-                  },
-                  {
-                    "height": 132,
-                  },
-                ]
-              }
-            >
-              <View
-                style={
-                  {
-                    "justifyContent": "space-between",
-                    "paddingBottom": 0,
-                    "paddingTop": 0,
-                  }
-                }
-              >
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#857F7A",
-                      "fontFamily": "Inter_400Regular",
-                      "fontSize": 10,
-                      "lineHeight": 12,
-                      "textAlign": "right",
-                      "width": 22,
-                    }
-                  }
-                >
-                  9h
-                </Text>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#857F7A",
-                      "fontFamily": "Inter_400Regular",
-                      "fontSize": 10,
-                      "lineHeight": 12,
-                      "textAlign": "right",
-                      "width": 22,
-                    }
-                  }
-                >
-                  6h
-                </Text>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#857F7A",
-                      "fontFamily": "Inter_400Regular",
-                      "fontSize": 10,
-                      "lineHeight": 12,
-                      "textAlign": "right",
-                      "width": 22,
-                    }
-                  }
-                >
-                  3h
-                </Text>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#857F7A",
-                      "fontFamily": "Inter_400Regular",
-                      "fontSize": 10,
-                      "lineHeight": 12,
-                      "textAlign": "right",
-                      "width": 22,
-                    }
-                  }
-                >
-                  0h
-                </Text>
-              </View>
-              <View
-                style={
-                  {
-                    "flex": 1,
-                  }
-                }
-              >
-                <View
-                  style={
-                    {
-                      "backgroundColor": "#857F7A",
-                      "height": 0.5,
-                      "left": 0,
-                      "opacity": 0.15,
-                      "position": "absolute",
-                      "right": 0,
-                      "top": 0,
-                    }
-                  }
-                />
-                <View
-                  style={
-                    {
-                      "backgroundColor": "#857F7A",
-                      "height": 0.5,
-                      "left": 0,
-                      "opacity": 0.15,
-                      "position": "absolute",
-                      "right": 0,
-                      "top": 44,
-                    }
-                  }
-                />
-                <View
-                  style={
-                    {
-                      "backgroundColor": "#857F7A",
-                      "height": 0.5,
-                      "left": 0,
-                      "opacity": 0.15,
-                      "position": "absolute",
-                      "right": 0,
-                      "top": 88,
-                    }
-                  }
-                />
-                <View
-                  accessibilityElementsHidden={true}
-                  importantForAccessibility="no-hide-descendants"
-                  style={
-                    [
-                      {
-                        "alignItems": "flex-end",
-                        "flexDirection": "row",
-                        "paddingBottom": 4,
-                        "paddingTop": 4,
-                      },
-                      {
-                        "gap": 6,
-                        "height": 132,
-                      },
-                    ]
-                  }
-                >
-                  <View
-                    style={
-                      {
-                        "alignSelf": "flex-end",
-                        "backgroundColor": "#857F7A",
-                        "borderRadius": 1.5,
-                        "height": 3,
-                        "opacity": 0.2,
-                        "width": 28,
-                      }
-                    }
-                  />
-                  <View
-                    style={
-                      {
-                        "alignSelf": "flex-end",
-                        "backgroundColor": "#857F7A",
-                        "borderRadius": 1.5,
-                        "height": 3,
-                        "opacity": 0.2,
-                        "width": 28,
-                      }
-                    }
-                  />
-                  <View
-                    style={
-                      {
-                        "alignSelf": "flex-end",
-                        "backgroundColor": "#857F7A",
-                        "borderRadius": 1.5,
-                        "height": 3,
-                        "opacity": 0.2,
-                        "width": 28,
-                      }
-                    }
-                  />
-                  <View
-                    style={
-                      {
-                        "alignSelf": "flex-end",
-                        "backgroundColor": "#857F7A",
-                        "borderRadius": 1.5,
-                        "height": 3,
-                        "opacity": 0.2,
-                        "width": 28,
-                      }
-                    }
-                  />
-                  <View
-                    style={
-                      {
-                        "alignSelf": "flex-end",
-                        "backgroundColor": "#857F7A",
-                        "borderRadius": 1.5,
-                        "height": 3,
-                        "opacity": 0.2,
-                        "width": 28,
-                      }
-                    }
-                  />
-                  <View
-                    style={
-                      {
-                        "alignSelf": "flex-end",
-                        "backgroundColor": "#857F7A",
-                        "borderRadius": 1.5,
-                        "height": 3,
-                        "opacity": 0.2,
-                        "width": 28,
-                      }
-                    }
-                  />
-                  <View
-                    style={
-                      {
-                        "alignSelf": "flex-end",
-                        "backgroundColor": "#857F7A",
-                        "borderRadius": 1.5,
-                        "height": 3,
-                        "opacity": 0.2,
-                        "width": 28,
-                      }
-                    }
-                  />
-                </View>
-              </View>
-            </View>
-            <View
-              style={
-                [
-                  {
-                    "flexDirection": "row",
-                    "justifyContent": "space-between",
-                  },
-                  {
-                    "paddingLeft": 28,
-                  },
-                ]
-              }
-            >
-              <Text
-                allowFontScaling={false}
-                style={
-                  {
-                    "color": "#857F7A",
-                    "fontFamily": "Inter_400Regular",
-                    "fontSize": 12,
-                    "lineHeight": 16,
-                  }
-                }
-              >
-                May 2
-              </Text>
-              <Text
-                allowFontScaling={false}
-                style={
-                  {
-                    "color": "#857F7A",
-                    "fontFamily": "Inter_400Regular",
-                    "fontSize": 12,
-                    "lineHeight": 16,
-                  }
-                }
-              >
-                today
-              </Text>
-            </View>
-          </View>
+            Stage estimates are approximate — the watch infers them from movement and heart rate. Night-to-night trends matter more than any single breakdown.
+          </Text>
           <View
             accessibilityLabel="Leiko about your sleep: Deep sleep made up about 21% of the night — within the range we typically see. Wear the watch a few more nights and we'll start showing how this connects to your morning readings."
             accessibilityRole="text"

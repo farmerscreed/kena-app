@@ -369,7 +369,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
           }
         >
           <View
-            accessibilityLabel="Now · oxygen saturation. 98%. Steady through the night"
+            accessibilityLabel="Last night · overnight low. 96%. Steady through the night"
             accessibilityRole="text"
             style={
               [
@@ -682,7 +682,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
                   }
                   testID="spo2-detail-hero-sub"
                 >
-                  Now · oxygen saturation
+                  Last night · overnight low
                 </Text>
                 <View
                   style={
@@ -709,7 +709,7 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
                     }
                     testID="spo2-detail-hero-primary"
                   >
-                    98
+                    96
                   </Text>
                   <Text
                     maxFontSizeMultiplier={1.6}
@@ -728,6 +728,117 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
                     testID="spo2-detail-hero-secondary"
                   >
                     %
+                  </Text>
+                </View>
+                <View
+                  accessibilityElementsHidden={true}
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
+                  style={
+                    [
+                      {
+                        "alignItems": "center",
+                        "alignSelf": "flex-start",
+                        "backgroundColor": "#918B8424",
+                        "borderColor": "#918B843D",
+                        "borderRadius": 99,
+                        "borderWidth": 0.5,
+                        "flexDirection": "row",
+                        "gap": 4,
+                        "paddingHorizontal": 8,
+                        "paddingVertical": 3,
+                      },
+                      {
+                        "marginTop": 4,
+                      },
+                    ]
+                  }
+                  testID="spo2-detail-hero-chip"
+                >
+                  <RNSVGSvgView
+                    align="xMidYMid"
+                    bbHeight={12}
+                    bbWidth={12}
+                    className="circle-dashed-bold__svg-icon-phosphor"
+                    color="#918B84"
+                    fill="currentColor"
+                    focusable={false}
+                    height={12}
+                    meetOrSlice={0}
+                    minX={0}
+                    minY={0}
+                    style={
+                      [
+                        {
+                          "backgroundColor": "transparent",
+                          "borderWidth": 0,
+                        },
+                        [
+                          undefined,
+                          undefined,
+                          {},
+                        ],
+                        {
+                          "flex": 0,
+                          "height": 12,
+                          "width": 12,
+                        },
+                      ]
+                    }
+                    testID="phosphor-react-native-circle-dashed-bold"
+                    vbHeight={256}
+                    vbWidth={256}
+                    width={12}
+                  >
+                    <RNSVGGroup
+                      fill={
+                        {
+                          "type": 2,
+                        }
+                      }
+                      propList={
+                        [
+                          "fill",
+                        ]
+                      }
+                    >
+                      <RNSVGGroup
+                        fill={
+                          {
+                            "payload": 4287728516,
+                            "type": 0,
+                          }
+                        }
+                        propList={
+                          [
+                            "fill",
+                          ]
+                        }
+                      >
+                        <RNSVGPath
+                          d="M92.38 38.05A12 12 0 0 1 101 23.42a108 108 0 0 1 54 0 12 12 0 1 1-6 23.23 84.1 84.1 0 0 0-42 0 12 12 0 0 1-14.62-8.6M50.94 52.34a108.1 108.1 0 0 0-27 46.76 12 12 0 0 0 8.37 14.77 12.2 12.2 0 0 0 3.2.43 12 12 0 0 0 11.56-8.8 84 84 0 0 1 21-36.35 12 12 0 1 0-17.13-16.81m-3.88 98.14a12 12 0 0 0-23.12 6.42 108 108 0 0 0 27 46.78A12 12 0 0 0 68 186.85a84 84 0 0 1-20.94-36.37M149 209.35a84 84 0 0 1-42 0 12 12 0 1 0-6 23.23 108 108 0 0 0 54 0 12 12 0 1 0-6-23.23m74.72-67.22A12 12 0 0 0 209 150.5a84 84 0 0 1-21 36.35 12 12 0 0 0 17.12 16.82 108.2 108.2 0 0 0 27-46.77 12 12 0 0 0-8.41-14.77Zm-14.77-36.61a12 12 0 0 0 23.12-6.42 108 108 0 0 0-27-46.78A12 12 0 1 0 188 69.15a84 84 0 0 1 20.94 36.37Z"
+                          fill={
+                            {
+                              "payload": 4278190080,
+                              "type": 0,
+                            }
+                          }
+                        />
+                      </RNSVGGroup>
+                    </RNSVGGroup>
+                  </RNSVGSvgView>
+                  <Text
+                    maxFontSizeMultiplier={1.3}
+                    style={
+                      {
+                        "color": "#918B84",
+                        "fontFamily": "Inter_400Regular",
+                        "fontSize": 11,
+                        "lineHeight": 15,
+                      }
+                    }
+                  >
+                    Learning
                   </Text>
                 </View>
                 <Text
@@ -1502,6 +1613,112 @@ exports[`SpO2Detail — populated surface matches the dark-mode snapshot for an 
                 </Text>
               </View>
             </View>
+          </View>
+          <Text
+            maxFontSizeMultiplier={1.6}
+            style={
+              [
+                {
+                  "family": "Inter_400Regular",
+                  "lineHeight": 16,
+                  "size": 12,
+                  "weight": "400",
+                },
+                {
+                  "color": "#857F7A",
+                  "marginHorizontal": 20,
+                  "marginTop": 12,
+                },
+              ]
+            }
+            testID="spo2-detail-no-alarm-note"
+          >
+            Readings below 92% are shown without alarm and never trigger an alert on their own. Overnight patterns are what we watch.
+          </Text>
+          <View
+            style={
+              {
+                "backgroundColor": "#1D140D",
+                "borderRadius": 22,
+                "marginHorizontal": 20,
+                "marginTop": 16,
+                "padding": 16,
+              }
+            }
+            testID="spo2-detail-explainer"
+          >
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": true,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              testID="spo2-detail-explainer-toggle"
+            >
+              <Text
+                maxFontSizeMultiplier={1.6}
+                style={
+                  [
+                    {
+                      "family": "Inter_600SemiBold",
+                      "lineHeight": 24,
+                      "size": 18,
+                      "weight": "600",
+                    },
+                    {
+                      "color": "#FFFFFF",
+                    },
+                  ]
+                }
+              >
+                What your watch can and cannot tell you
+              </Text>
+            </View>
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                [
+                  {
+                    "family": "Inter_400Regular",
+                    "lineHeight": 22,
+                    "size": 15,
+                    "weight": "400",
+                  },
+                  {
+                    "color": "#B8B2AA",
+                    "marginTop": 8,
+                  },
+                ]
+              }
+              testID="spo2-detail-explainer-body"
+            >
+              Wrist optical sensors are less accurate than a clinical oximeter. This is a wellness reference, not a clinical measurement. If you have a chronic respiratory condition, use the device your doctor recommends.
+            </Text>
           </View>
           <View
             accessibilityLabel="Leiko about your oxygen: Your oxygen held in your usual range through the night, with a low of 94% around briefly · 1:00 AM. Small, brief dips like this are common in healthy sleep."

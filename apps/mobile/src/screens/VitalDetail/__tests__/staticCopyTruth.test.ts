@@ -23,6 +23,18 @@ const EVENT_WORDS = /\b(dip|dips|dipped|dipping|spike|spikes|spiked|spiking|drop
 const CLOCK_TIME = /\b\d{1,2}:\d{2}\b/;
 const DIGITS = /\d/;
 
+/** §7.3-mandated statements whose digits ARE the spec: the 92%
+ *  no-alarm threshold ("and the screen says so") and the 7,000–9,000
+ *  step evidence framing (D9 other-004). Exact strings only. */
+const SPEC_MANDATED = new Set([
+  'Readings below 92% are shown without alarm and never trigger an alert on their own. Overnight patterns are what we watch.',
+  'The famous ten-thousand figure is marketing, not medicine — the evidence for older adults supports benefit at 7,000–9,000 steps a day. Steady weeks matter more than big days.',
+]);
+
+function normalise(text: string): string {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
 /** Digits allowed only inside spec-approved UI chrome, never as a
  *  physiological statement:
  *  - "SpO2" names the sensor channel;
@@ -55,7 +67,9 @@ describe.each(SCREENS)('%s — static copy states no events', (screen) => {
   });
 
   it('carries no digits outside data slots', () => {
-    const offenders = strings.filter((s) => DIGITS.test(stripExemptTokens(s.text)));
+    const offenders = strings.filter(
+      (s) => !SPEC_MANDATED.has(normalise(s.text)) && DIGITS.test(stripExemptTokens(s.text)),
+    );
     expect(offenders).toEqual([]);
   });
 });

@@ -52,6 +52,7 @@ import {
 } from 'react-native';
 import { DetailShell } from '../../components/DetailShell';
 import { StatTrio } from '../../components/StatTrio';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
 import { VitalInsightCard } from '../../components/VitalInsightCard';
 import { VitalExplainerAnchor } from '../../components/VitalExplainerAnchor';
 import { type RecentReading } from '../../components/RecentReadingsList';
@@ -437,6 +438,17 @@ export function ActivityDetail({
           <WeeklyCaloriesRow kcal={weeklyActiveKcal} />
         ) : null}
 
+        {!isEmpty && rangedDays.length > 0 ? (
+          <ViewAsTableLink
+            rows={rangedDays.map((d) => ({
+              label: d.dayLocal,
+              value: `${d.totalSteps.toLocaleString()} steps`,
+            }))}
+            subjectNoun="days"
+            testID="activity-detail-table"
+            style={{ marginHorizontal: 20 }}
+          />
+        ) : null}
         {!isEmpty ? (
           <RecentReadingsSection
             vital="activity"
@@ -562,6 +574,25 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
           ›
         </Text>
       </Pressable>
+      {/* D13 PR-7 (§7.3) — goal framing uses the 7,000–9,000 step
+          evidence for older adults, not the 10,000 marketing legacy
+          (D9 other-004). Consistency over intensity. */}
+      <Text
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
+        style={{
+          fontFamily: theme.fontFamilies.body,
+          fontSize: 13,
+          lineHeight: 18,
+          color: theme.colors.text.tertiary,
+          marginHorizontal: 20,
+          marginTop: theme.spacing.s,
+        }}
+        testID="activity-detail-goal-framing"
+      >
+        The famous ten-thousand figure is marketing, not medicine — the
+        evidence for older adults supports benefit at 7,000–9,000 steps a
+        day. Steady weeks matter more than big days.
+      </Text>
     </View>
   );
 }

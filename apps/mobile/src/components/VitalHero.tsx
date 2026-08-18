@@ -45,6 +45,8 @@ import {
 } from 'phosphor-react-native';
 import { VitalRing, type VitalType } from './VitalRing';
 import { useTheme } from '../theme';
+import { StatusChip } from './StatusChip';
+import type { Tier, Subject } from '../utils/classification';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { opacity } from '../theme/tokens';
 import { MAX_FONT_SCALE } from '../theme/fontScaling';
@@ -69,6 +71,16 @@ export interface VitalHeroProps {
   range?: string;
   /** Arc fraction 0..1 for the ring. */
   ringFill: number;
+  /**
+   * D13 PR-7 (§6.2, P1-5) — the verdict chip under the value. A hero
+   * value never renders without a verdict; screens pass the canonical
+   * tier. Undefined only for surfaces that have no classifier yet.
+   */
+  tier?: Tier | null;
+  /** Whose verdict — defaults to the self subject. */
+  subject?: Subject;
+  /** Ring colour override (learning grey while insufficient, §6.2). */
+  ringColorOverride?: string;
   /** When true, ring runs the live-pulse worklet + a "live" pill renders. */
   livePulse?: boolean;
   testID?: string;
@@ -108,6 +120,9 @@ export function VitalHero({
   sub,
   range,
   ringFill,
+  tier,
+  subject,
+  ringColorOverride,
   livePulse,
   testID,
   style,
@@ -180,6 +195,7 @@ export function VitalHero({
         <View style={styles.ringWrap}>
           <VitalRing
             vitalType={vital}
+            colorOverride={ringColorOverride}
             fill={ringFill}
             diameter={RING_DIAMETER}
             strokeWidth={RING_STROKE}
@@ -248,6 +264,16 @@ export function VitalHero({
               </Text>
             ) : null}
           </View>
+          {tier ? (
+            <StatusChip
+              tier={tier}
+              subject={subject}
+              size="s"
+              nestedInLabelledCard
+              testID={testID ? `${testID}-chip` : undefined}
+              style={{ marginTop: theme.spacing.xs }}
+            />
+          ) : null}
           {range ? (
             <Text
               maxFontSizeMultiplier={MAX_FONT_SCALE}

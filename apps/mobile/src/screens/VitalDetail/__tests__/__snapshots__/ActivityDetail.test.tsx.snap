@@ -2177,6 +2177,72 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
             </Text>
           </View>
           <View
+            style={
+              {
+                "marginHorizontal": 20,
+              }
+            }
+            testID="activity-detail-table"
+          >
+            <View
+              accessibilityHint="Shows the days behind the chart as text"
+              accessibilityLabel="View as table"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              hitSlop={8}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignSelf": "flex-start",
+                  "paddingVertical": 6,
+                }
+              }
+              testID="activity-detail-table-toggle"
+            >
+              <Text
+                maxFontSizeMultiplier={1.6}
+                style={
+                  {
+                    "color": "#B8B2AA",
+                    "fontFamily": "Inter_500Medium",
+                    "fontSize": 13,
+                    "lineHeight": 16,
+                    "textDecorationLine": "underline",
+                  }
+                }
+              >
+                View as table
+              </Text>
+            </View>
+          </View>
+          <View
             testID="activity-detail-recent"
           >
             <Text
@@ -2991,6 +3057,22 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 ›
               </Text>
             </View>
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                {
+                  "color": "#857F7A",
+                  "fontFamily": "Inter_400Regular",
+                  "fontSize": 13,
+                  "lineHeight": 18,
+                  "marginHorizontal": 20,
+                  "marginTop": 8,
+                }
+              }
+              testID="activity-detail-goal-framing"
+            >
+              The famous ten-thousand figure is marketing, not medicine — the evidence for older adults supports benefit at 7,000–9,000 steps a day. Steady weeks matter more than big days.
+            </Text>
           </View>
         </View>
       </View>

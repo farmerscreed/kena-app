@@ -206,9 +206,12 @@ describe('SpO2Detail — hero + tier copy', () => {
       activityToday: null,
     });
     render(withProviders(<SpO2Detail onBack={mockOnBack} />));
+    // D13 PR-7 (§7.3) — the hero is the OVERNIGHT low (96), never the
+    // daytime spot value (98) promoted to headline.
     expect(screen.getByTestId('spo2-detail-hero-primary').props.children).toBe(
-      '98',
+      '96',
     );
+    expect(screen.getByText('Last night · overnight low')).toBeTruthy();
     expect(screen.getByText('Steady through the night')).toBeTruthy();
   });
 
