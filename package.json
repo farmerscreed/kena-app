@@ -2,7 +2,7 @@
   "name": "leiko-app",
   "private": true,
   "version": "0.0.0",
-  "description": "Leiko — caregiver-mode blood pressure monitoring app. Monorepo root.",
+  "description": "Leiko \u2014 caregiver-mode blood pressure monitoring app. Monorepo root.",
   "workspaces": [
     "apps/*"
   ],
