@@ -1,6 +1,6 @@
 // PersonOrb — Sprint 7.7a (caregiver Family Constellation).
 //
-// A glowing orb representing one loved one in the caregiver bird's-eye
+// A glowing orb representing one person in the caregiver bird's-eye
 // view. Composes Portrait inside a halo + status-driven pulse + status
 // overlay (attention dot OR sleeping moon glyph), with a name + BP label
 // rendered beneath the orb.

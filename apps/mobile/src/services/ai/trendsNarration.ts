@@ -120,12 +120,12 @@ export function buildTierATrendsNarrative(
   // Lead clause — pattern + emphasis.
   if (avg) {
     pieces.push(
-      `${subject} ${verb} _in pattern_ this ${windowLabel}. ${capitalize(
+      `${subject} ${verb} _in ${possessive} usual range_ this ${windowLabel}. ${capitalize(
         possessive,
       )} mornings averaged ${avg}.`,
     );
   } else {
-    pieces.push(`${subject} ${verb} _in pattern_ this ${windowLabel}.`);
+    pieces.push(`${subject} ${verb} _in ${possessive} usual range_ this ${windowLabel}.`);
   }
 
   // Correlation clause — append the strongest meaningful one.

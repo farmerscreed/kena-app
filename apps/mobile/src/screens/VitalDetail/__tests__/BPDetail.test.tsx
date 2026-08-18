@@ -195,7 +195,7 @@ describe('BPDetail — populated states', () => {
     // app used six different phrases for this one idea; "within your
     // usual range" is now the single source, via
     // utils/classification.vitalRangeCopyForTier.
-    expect(screen.getByText('mmHg · within your usual range')).toBeTruthy();
+    expect(screen.getByText('mmHg · in your usual range')).toBeTruthy();
     expect(screen.getByTestId('bp-detail-chart')).toBeTruthy();
     expect(screen.getByTestId('bp-detail-readings')).toBeTruthy();
   });
@@ -215,7 +215,7 @@ describe('BPDetail — populated states', () => {
       activityToday: null,
     });
     render(withProviders(<BPDetail onBack={() => undefined} />));
-    expect(screen.getByText('mmHg · worth a look')).toBeTruthy();
+    expect(screen.getByText('mmHg · a little above your usual')).toBeTruthy();
   });
 
   it('renders talk-to-your-doctor copy when tier is confirmed_urgent', () => {
@@ -233,7 +233,7 @@ describe('BPDetail — populated states', () => {
       activityToday: null,
     });
     render(withProviders(<BPDetail onBack={() => undefined} />));
-    expect(screen.getByText('mmHg · talk to your doctor today')).toBeTruthy();
+    expect(screen.getByText('mmHg · well above your usual')).toBeTruthy();
   });
 });
 

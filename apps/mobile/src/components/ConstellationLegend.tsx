@@ -1,7 +1,7 @@
 // ConstellationLegend — Sprint 7.7a (caregiver Family Constellation).
 //
 // A semi-glass card sitting beneath the bird's-eye `ConstellationField`.
-// One row per loved one, each row composed of:
+// One row per person, each row composed of:
 //   - leading 8pt accent dot (with a soft accent-coloured glow; sleeping
 //     dots are dim + un-glowed because the periwinkle reads as a calm
 //     marker, not a live signal),

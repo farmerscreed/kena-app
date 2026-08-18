@@ -1,6 +1,6 @@
 // PersonCard — Sprint 7.7b (caregiver Family Constellation, detailed view).
 //
-// A tappable editorial card per loved one. Translates the design's
+// A tappable editorial card per person. Translates the design's
 // `PersonPage` (leiko-caregiver-a.jsx) to React Native: a Pressable with
 // a Portrait + relation/age eyebrow + full name, a status pill, an
 // italic editorial headline, an AI prose sentence, a four-vital row,

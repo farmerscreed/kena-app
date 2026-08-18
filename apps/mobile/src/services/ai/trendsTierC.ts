@@ -280,7 +280,7 @@ export function buildTrendsLetter(
   const pieces: string[] = [];
 
   // 1. Lead — pattern declaration.
-  pieces.push(`${subject} ${verb} _in pattern_ this ${windowLabel}.`);
+  pieces.push(`${subject} ${verb} _in ${possessive} usual range_ this ${windowLabel}.`);
 
   // 2. BP comparison — uses baseline when available.
   if (summary.bp.count >= 3) {

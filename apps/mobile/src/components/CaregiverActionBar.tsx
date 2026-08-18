@@ -14,7 +14,7 @@
 //
 // Voice rules (docs/05-voice-and-claims.md):
 //   "all in your circle" — calm, in-voice. "+ Add someone" — verb+object
-//   CTA, sentence-cased. No "loved one", no "patient", no fear language.
+//   CTA, sentence-cased. No docs/05 hard-fail phrases, no fear language.
 //
 // Glass material follows the existing Card 'glass' elevation pattern: a
 // surface.glassMedium floor (so Android < 12 still reads as intentional

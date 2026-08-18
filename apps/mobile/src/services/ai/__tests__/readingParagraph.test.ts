@@ -29,7 +29,7 @@ it('in-pattern + sleep available → reinforcing template with sleep total', () 
   });
   expect(r.tier).toBe('A');
   expect(r.text).toContain('Mum');
-  expect(r.text).toContain('in pattern');
+  expect(r.text).toContain('usual range');
   expect(r.text).toContain('7h 24m');
   expect(r.templateId).toBe('reading.in_pattern.with_sleep');
 });
@@ -40,7 +40,7 @@ it('in-pattern + no sleep data → bare template', () => {
     classification: { tier: 'in_pattern' } as Classification,
     parentLabel: 'Dad',
   });
-  expect(r.text).toBe('This reading is in pattern for Dad. Inside the usual band.');
+  expect(r.text).toBe("This reading is in Dad's usual range.");
   expect(r.templateId).toBe('reading.in_pattern.bare');
 });
 

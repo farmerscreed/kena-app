@@ -15,7 +15,7 @@
 //   - For overnight dips, lean on "Healthy sleep often shows small,
 //     transient dips like this" framing.
 //   - Forbidden everywhere: patient, diagnose, predict, dangerous,
-//     critical, silent killer, medical-grade, clinical SpO2, loved one,
+//     critical, medical-grade, clinical SpO2, plus the docs/05 hard-fail phrases,
 //     you may have, we detected, abnormal.
 //
 // Tier-aware copy:

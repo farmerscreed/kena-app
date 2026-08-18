@@ -61,7 +61,7 @@ it('returns ok with body, ids, and guard metadata on a successful response', asy
   invokeSpy.mockResolvedValueOnce({
     data: {
       status: 'ok',
-      body: 'Mum is in pattern.',
+      body: 'Mum is in her usual range.',
       conversationId: 'c-123',
       messageId: 'm-456',
       tier: 'B',
@@ -73,7 +73,7 @@ it('returns ok with body, ids, and guard metadata on a successful response', asy
   const r = await askTierB({ question: 'is 75 bpm normal?' });
   expect(r.status).toBe('ok');
   if (r.status === 'ok') {
-    expect(r.body).toBe('Mum is in pattern.');
+    expect(r.body).toBe('Mum is in her usual range.');
     expect(r.conversationId).toBe('c-123');
     expect(r.messageId).toBe('m-456');
     expect(r.guard.layer2MaxCosine).toBe(0.42);

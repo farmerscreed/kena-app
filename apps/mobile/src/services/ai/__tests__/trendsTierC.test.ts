@@ -192,7 +192,7 @@ describe('buildTrendsLetter', () => {
       accountType: 'self_buyer',
     });
     expect(letter).not.toBeNull();
-    expect(letter!.body).toContain('in pattern');
+    expect(letter!.body).toContain('usual range');
     // BP avg (126/81) clause should appear.
     expect(letter!.body).toMatch(/126\/81/);
     // Emphasis markers should be present.

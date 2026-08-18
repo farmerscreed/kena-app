@@ -30,6 +30,10 @@ import type { AccountType } from '../../types/database';
 
 export interface NarrationSlots {
   parent_label: string;
+  /** D13 §7.4 — user-set at add-person time; "their" is the always-safe
+   *  default and the current value everywhere until the Person Overview
+   *  build adds the capture field. Never inferred from a name. */
+  possessive: string;
   bp_value: string;
   bp_delta: string;
   bp_week_avg: string;
@@ -81,7 +85,7 @@ function formatBpValue(latest: { systolic: number; diastolic: number } | null): 
  * Sprint 19 (audit D12 P0-7). This used to return a fragment ("six above
  * her week") into templates that ALSO supplied "above her week",
  * composing to "…is six above her week above her week." and, in the
- * uncomputable case, "…is in pattern above her week." The templates now
+ * uncomputable case, a doubled predicate. The templates now
  * end at the slot, so this function owns the whole predicate. If you
  * change the shape here, change `BP_CALM_CONCERNED` in
  * narrationTemplates.ts to match — and see the composition test in
@@ -217,6 +221,8 @@ export function buildNarrationContext(
 export interface BuildNarrationSlotsInput {
   data: DailyPulseData;
   parentLabel: string;
+  /** §7.4 possessive; "their" default, "your" for self surfaces. */
+  possessive?: string;
   weekAverageSystolic?: number | null;
   weekAverageDiastolic?: number | null;
   /** Days in last 7 where steps met target. */
@@ -231,6 +237,7 @@ export function buildNarrationSlots(
   const weekAvgDia = input.weekAverageDiastolic ?? null;
   return {
     parent_label: parentLabel,
+    possessive: input.possessive ?? 'their',
     bp_value: formatBpValue(data.bp.latest),
     bp_delta: formatBpDelta(data.bp.latest?.systolic ?? null, weekAvgSys),
     bp_week_avg: formatBpWeekAvg(weekAvgSys, weekAvgDia),
@@ -246,6 +253,9 @@ export function buildNarrationSlots(
 export interface GenerateDailyNarrationInput {
   data: DailyPulseData;
   parentLabel: string;
+  /** §7.4 possessive for {possessive} slots. Defaults to "their";
+   *  self-buyer callers pass "your". Never inferred from a name. */
+  possessive?: string;
   accountType: AccountType;
   meaningfulCorrelation?: NarrationContext['hasMeaningfulCorrelation'];
   activityStreak?: boolean;

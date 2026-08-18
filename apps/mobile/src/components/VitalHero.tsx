@@ -65,7 +65,7 @@ export interface VitalHeroProps {
   secondary?: string;
   /** Mono uppercase sub-label ("Now · resting", "Latest · 6:42 am"). */
   sub: string;
-  /** Optional context line under the value ("mmHg · within your range"). */
+  /** Optional context line under the value ("mmHg · in your usual range"). */
   range?: string;
   /** Arc fraction 0..1 for the ring. */
   ringFill: number;

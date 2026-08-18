@@ -1,7 +1,7 @@
 // BaselineReference — Sprint 16.5f.
 //
 // Small inline "Your usual: X–Y" line surfaced under each detail-screen
-// hero. Replaces the bare hero phrase "within your range" — which made a
+// hero. Replaces the bare hero range phrase — which made a
 // claim ("your range") without showing the range. Now the user sees the
 // reference and can judge for themselves.
 //

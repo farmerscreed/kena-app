@@ -22,7 +22,7 @@
 // Voice rules (docs/05-voice-and-claims.md): every user-visible string
 // in this file is voice-checked. Forbidden: "patient", "diagnose",
 // "predict", "dangerous level", "critical level", "silent killer", "you
-// may have", "we detected", "loved one", "smartwatch". Preferred: "your
+// may have", "we detected", plus the docs/05 hard-fail phrases. Preferred: "your
 // reading", "talk to your doctor", calm/reassuring framing.
 //
 // Stack pin (docs/00-tech-stack.md): RN 0.81.5, react-native-svg 15.x,
@@ -639,7 +639,7 @@ export function HRDetail({
     staleCaption ??
     (hasHero ? (isLive ? 'Latest reading' : 'Now · resting') : 'Heart rate');
   // Sprint 19 (audit D12 P0-4) — this used to gate on `baseline !== null`
-  // and render "bpm · within your range" for EVERY classified tier,
+  // and render a same-sub-line verdict for EVERY classified tier,
   // contradicting the anomaly banner above it. The verdict now comes
   // from the classification, via the same helper BPDetail uses.
   const hrTier = data.hr.classification?.tier ?? null;

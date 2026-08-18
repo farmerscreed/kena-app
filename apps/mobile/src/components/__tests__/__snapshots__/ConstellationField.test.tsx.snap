@@ -325,7 +325,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       }
     >
       <View
-        accessibilityLabel="Marian, All clear, blood pressure 122/78"
+        accessibilityLabel="Marian, In their usual range, blood pressure 122/78"
         accessibilityRole="button"
         accessibilityState={
           {
@@ -1469,7 +1469,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       }
     >
       <View
-        accessibilityLabel="Marian, All clear, blood pressure 122/78"
+        accessibilityLabel="Marian, In their usual range, blood pressure 122/78"
         accessibilityRole="button"
         accessibilityState={
           {

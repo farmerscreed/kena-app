@@ -783,7 +783,8 @@ export function buildParentHeader(parent: ParentSummary | null): {
   // parentDisplayName is the user-supplied first-person reference for
   // the parent ("Mum", "Dad", or a given name). Fall back to a calm
   // neutral when absent (rare: family-readings hasn't loaded yet).
-  const parentName = parent?.parentDisplayName?.trim() || 'your loved one';
+  // D13 PR-2 (§7.4) — the only permitted missing-label fallback.
+  const parentName = parent?.parentDisplayName?.trim() || 'your family member';
   return { date, parentName };
 }
 

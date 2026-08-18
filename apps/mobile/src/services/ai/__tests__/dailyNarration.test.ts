@@ -58,8 +58,8 @@ it('renderNarration substitutes known slots', () => {
     weekAverageDiastolic: 78,
     stepsTargetDaysHit: 4,
   });
-  const out = renderNarration('{parent_label} is in pattern. {bp_value} this morning.', slots);
-  expect(out).toBe('Mum is in pattern. 124/79 this morning.');
+  const out = renderNarration('{parent_label} is in {possessive} usual range. {bp_value} this morning.', slots);
+  expect(out).toBe('Mum is in their usual range. 124/79 this morning.');
 });
 
 it('renderNarration leaves unknown slots intact', () => {
