@@ -53,6 +53,8 @@ module.exports = {
         '<rootDir>/src/utils/**/__tests__/**/*.test.ts?(x)',
         '<rootDir>/src/services/**/__tests__/**/*.test.ts?(x)',
         '<rootDir>/src/state/**/__tests__/**/*.test.ts?(x)',
+        // D13 PR-3 — the copy-lint gate's own tests.
+        '<rootDir>/tools/**/__tests__/**/*.test.ts?(x)',
       ],
     },
     {

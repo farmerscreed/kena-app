@@ -41,6 +41,13 @@ jobs:
       - name: Test
         run: npm run test --workspace=apps/mobile
 
+      # D13 PR-3 — the docs/05 CI contract (step 5): every user-visible
+      # string in the scanned tree passes the voice dictionary. Hard
+      # fails block the merge; the deliberate-violation test in the
+      # unit suite proves this step actually bites.
+      - name: Copy lint (voice rules)
+        run: npm run copy-lint --workspace=apps/mobile
+
       # D13 PR-1 — the edge functions carry Deno tests (classification,
       # baselines, templates, guards) that the npm graph never runs.
       # -A: internal-auth's tests read env to prove the fail-closed path.

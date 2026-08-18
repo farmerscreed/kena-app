@@ -570,7 +570,7 @@ const DEFER_INTENTS: Intent[] = [
   {
     id: 'defer.diagnosis',
     category: 'defer',
-    description: 'User asks for a diagnosis',
+    description: 'Request to label a condition — always deferred to the doctor',
     patterns: [
       /\b(?:do i have|am i|have i got) (?:hypertension|high blood pressure|heart disease|diabetes|diabetic)\b/i,
       /\bam i diabetic\b/i,
