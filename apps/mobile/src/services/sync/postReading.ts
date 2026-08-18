@@ -97,6 +97,9 @@ export async function postReading(
       diastolic: row.diastolic,
       pulse: row.pulse,
       source: row.source,
+      ...(row.contextTags && row.contextTags.length > 0
+        ? { contextTags: row.contextTags }
+        : {}),
     },
   };
 

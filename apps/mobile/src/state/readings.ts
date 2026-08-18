@@ -42,6 +42,9 @@ export interface LocalReading {
   classification: Classification;
   /** ble device MAC for this reading; null for manual entries. */
   deviceBleId: string | null;
+  /** D13 PR-11 (§6.5) — reading_context tags. Optional so persisted
+   *  pre-tag rows stay valid; a reading with no tags is valid. */
+  contextTags?: string[];
   /** ms timestamp of the local insert (used for sort tie-break, debug). */
   capturedAtMs: number;
 }
@@ -59,6 +62,8 @@ interface ReadingsState {
   ) => LocalReading;
   /** Best-effort sync of every pending row. Idempotent; safe to call repeatedly. */
   syncPending: () => Promise<void>;
+  /** D13 PR-11 — attach context tags to a held reading (pre-sync). */
+  setContextTags: (localId: string, tags: string[]) => void;
   /** Latest reading regardless of pending/recent. UI helper. */
   latest: () => LocalReading | null;
   /** Lookup by localId (UI deep-link). */
@@ -308,6 +313,15 @@ export const useReadings = create<ReadingsState>((set, get) => ({
     } finally {
       set({ syncing: false });
     }
+  },
+
+  setContextTags: (localId, tags) => {
+    const patch = (rows: LocalReading[]) =>
+      rows.map((r) => (r.localId === localId ? { ...r, contextTags: tags } : r));
+    const pending = patch(get().pending);
+    const recent = patch(get().recent);
+    set({ pending, recent });
+    persist({ pending, recent });
   },
 
   latest: () => {

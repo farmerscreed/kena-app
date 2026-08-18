@@ -38,6 +38,8 @@ import {
 import { timeInZone } from '../../utils/timeInZone';
 import { LEARNING_COPY } from '../../utils/calibration';
 import { mmkv, STORAGE_KEYS } from '../../services/storage';
+import { MedicationSection } from '../../components/MedicationSection';
+import { useAuth } from '../../state/auth';
 
 export interface PersonOverviewScreenProps {
   /** The person's circle — omitted on the self path. */
@@ -82,6 +84,7 @@ export function PersonOverviewScreen({
   testID = 'person-overview',
 }: PersonOverviewScreenProps) {
   const theme = useTheme();
+  const viewerUserId = useAuth((s) => s.profile?.id ?? null);
   const ownPulse = useDailyPulseData();
   const parentPulse = useParentDailyPulseData(familyId ?? null);
   const isCaregiverScoped = familyId != null;
@@ -314,6 +317,21 @@ export function PersonOverviewScreen({
             />
           ))}
         </View>
+
+        {/* D13 PR-11 (§7.6) — the medication log. Self path only until
+            the caregiver route carries the wearer's user id (the RLS
+            write path needs subject_id, which the caregiver client
+            does not hold today). */}
+        {isSelf && viewerUserId ? (
+          <MedicationSection
+            familyId={bandFamilyId}
+            subjectName="you"
+            viewerUserId={viewerUserId}
+            subjectUserId={viewerUserId}
+            timeZone={tz || 'UTC'}
+            testID={`${testID}-medications`}
+          />
+        ) : null}
 
         {onDoctorPress ? (
           <Pressable

@@ -41,6 +41,7 @@ import {
 } from '../../components/CorrelationStrip';
 import { SleepStagesBar } from '../../components/SleepStagesBar';
 import { ViewAsTableLink } from '../../components/ViewAsTableLink';
+import { CorrelationCountdown } from '../../components/CorrelationCountdown';
 import { SleepNightlyBars } from '../../components/SleepNightlyBars';
 import { LoadingState } from '../../components/LoadingState';
 import { ErrorState } from '../../components/ErrorState';
@@ -567,6 +568,19 @@ export function SleepDetail({
                 A few more mornings of readings will let us chart how your sleep lines up with your morning BP.
               </Text>
             </View>
+          ) : null}
+
+          {/* D13 PR-11 (§6.6) — while the pair count is short of the
+              engine's n≥14, the countdown says what is coming instead
+              of leaving a silent gap. */}
+          {!correlationSeries ? (
+            <CorrelationCountdown
+              pairedNights={Math.min(
+                allNights.length,
+                allReadings.length > 0 ? allNights.length : 0,
+              )}
+              testID="sleep-detail-correlation-countdown"
+            />
           ) : null}
 
           {/* D13 PR-7 (§7.3) — the stage composition moves below the
