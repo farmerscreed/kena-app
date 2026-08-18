@@ -229,7 +229,17 @@ export function VitalTrendChart({
   );
 
   return (
-    <View style={style} testID={testID} accessibilityLabel={a11yLabel}>
+    // Audit P1-6 — `accessible` added explicitly. A View that carries an
+    // accessibilityLabel but not `accessible` is not guaranteed to be
+    // exposed as a single element on iOS, so this composed label was at
+    // risk of never being spoken.
+    <View
+      style={style}
+      testID={testID}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={a11yLabel}
+    >
       {(caption || subCaption) ? (
         <View style={styles.captionRow}>
           {caption ? (

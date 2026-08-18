@@ -35,6 +35,7 @@ import {
 import { useTheme } from '../theme';
 import type { DayMoment, MomentVital } from '../utils/dayMoments';
 import type { VitalType } from './VitalRing';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 // Moment vitals are a strict subset of VitalType; the cast is safe.
 function vitalToVitalType(v: MomentVital): VitalType {
@@ -90,7 +91,7 @@ export function DaySpine({
           }}
         />
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           style={{
             fontFamily: eyebrowStyle.family,
             fontSize: eyebrowStyle.size,
@@ -172,7 +173,7 @@ export function DaySpine({
               >
                 {/* Time label — fixed-width column on the left */}
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: timeStyle.size,
@@ -211,7 +212,7 @@ export function DaySpine({
                 {/* Body column */}
                 <View style={{ flex: 1, paddingTop: 2 }}>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                     style={{
                       fontFamily: theme.fontFamilies.editorial,
                       fontSize: titleStyle.size,

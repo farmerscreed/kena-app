@@ -125,7 +125,10 @@ describe('classifyReading — hot path (full baseline)', () => {
 
 describe('tier UI helpers', () => {
   it('tierChipText matches the docs/04-screens/reading-detail.md mapping', () => {
-    expect(tierChipText('in_pattern')).toBe('In pattern');
+    // Sprint 19 (audit D12 P2-1) — "In pattern" was the internal enum
+    // name (`in_pattern`) promoted to user copy, competing with five
+    // other phrases for the same idea. Canonical vocabulary now.
+    expect(tierChipText('in_pattern')).toBe('In your usual range');
     expect(tierChipText('calm_concerned')).toBe('Worth a look');
     expect(tierChipText('confirmed_urgent')).toBe('Talk to your doctor');
   });

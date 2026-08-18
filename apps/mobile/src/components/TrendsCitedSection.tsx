@@ -15,6 +15,7 @@
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
 import type { CorrelationRow } from '../types/database';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export const TRENDS_CITED_LABEL = 'Cited';
 
@@ -91,7 +92,7 @@ export function TrendsCitedSection({
         ]}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 10,
@@ -134,7 +135,7 @@ export function TrendsCitedSection({
           const CardContent = (
             <>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.numeric,
                   fontSize: 18,
@@ -150,7 +151,7 @@ export function TrendsCitedSection({
               <View style={{ flex: 1 }}>
                 <View style={styles.strengthRow}>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE}
                     style={{
                       fontFamily: theme.fontFamilies.numeric,
                       fontSize: 9,
@@ -164,7 +165,7 @@ export function TrendsCitedSection({
                   </Text>
                   {rDisplay ? (
                     <Text
-                      allowFontScaling={false}
+                      maxFontSizeMultiplier={MAX_FONT_SCALE}
                       style={{
                         fontFamily: theme.fontFamilies.numeric,
                         fontSize: 9,
@@ -179,7 +180,7 @@ export function TrendsCitedSection({
                   ) : null}
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: theme.fontFamilies.editorial,
                     fontSize: 15,

@@ -21,6 +21,7 @@ import { create } from 'zustand';
 import { mmkv, STORAGE_KEYS } from '../services/storage';
 import { logger } from '../services/analytics/logger';
 import { classifyReading, type Classification } from '../utils/classification';
+import { computeReadingBaseline } from '../utils/readingBaseline';
 import { postReading } from '../services/sync/postReading';
 import { forwardReadingToPlatform } from '../services/health-platform/syncBridge';
 
@@ -173,9 +174,18 @@ export const useReadings = create<ReadingsState>((set, get) => ({
     if (existing) {
       return existing;
     }
+    // Sprint 19 (audit D12 P0-2) — classify against the wearer's own
+    // 14-day baseline, not the absolute ladder. The baseline is computed
+    // from readings we already hold locally, so this works offline;
+    // `classifyReading` owns the maturity gate and falls back to its
+    // cold-start path when there aren't yet 14 distinct days.
+    const baseline = computeReadingBaseline([
+      ...get().pending,
+      ...get().recent,
+    ]);
     const classification = classifyReading(
       { systolic: input.systolic, diastolic: input.diastolic, pulse: input.pulse },
-      null, // cold-start; baseline computation deferred to Sprint 15
+      baseline,
     );
     const row: LocalReading = {
       ...input,

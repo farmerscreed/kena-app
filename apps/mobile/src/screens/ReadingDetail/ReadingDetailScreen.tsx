@@ -24,6 +24,7 @@ import { useTheme } from '../../theme';
 import { useReadings } from '../../state/readings';
 import { useAuth } from '../../state/auth';
 import { useReadingParagraph } from '../../hooks/useReadingParagraph';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import {
   tierChipText,
   tierPillVariant,
@@ -144,7 +145,7 @@ export function ReadingDetailScreen({ navigation }: Props) {
           })}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               color: theme.colors.brand.primary,
               fontSize: bodyM.size + 4,

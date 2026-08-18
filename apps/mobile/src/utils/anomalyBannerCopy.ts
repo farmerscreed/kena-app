@@ -70,7 +70,7 @@ export function bannerCopyFor(
         return {
           severity,
           title: `Please call ${parentLabel}`,
-          body: `${parentLabel}'s resting heart rate is outside her usual range. We recommend reaching out now.`,
+          body: `${parentLabel}'s resting heart rate is outside their usual range. We recommend reaching out now.`,
         };
       }
       return {
@@ -99,7 +99,7 @@ export function bannerCopyFor(
       return {
         severity,
         title: `Please call ${parentLabel}`,
-        body: `${parentLabel}'s overnight oxygen has dipped low three nights running. Worth a call to her doctor today.`,
+        body: `${parentLabel}'s overnight oxygen has dipped low three nights running. Worth a call to their doctor today.`,
       };
     }
     return {

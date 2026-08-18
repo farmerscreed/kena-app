@@ -39,6 +39,7 @@ import {
 import { BottomSheet } from './BottomSheet';
 import { Button } from './Button';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 const GOAL_OPTIONS = [4000, 6000, 8000, 10000, 12000] as const;
 
@@ -87,7 +88,7 @@ export function ActivityGoalSheet({
     >
       <View style={styles.body}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: captionStyle.family,
             fontSize: captionStyle.size,
@@ -127,7 +128,7 @@ export function ActivityGoalSheet({
                 ]}
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: labelStyle.size,
@@ -141,7 +142,7 @@ export function ActivityGoalSheet({
                   {value.toLocaleString()}
                 </Text>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: 9,

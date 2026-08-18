@@ -12,6 +12,7 @@
 
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export interface StalenessHintRowProps {
   /** When false, renders nothing. Hide-and-forget API for callers. */
@@ -50,7 +51,7 @@ export function StalenessHintRow({
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 14,
@@ -60,7 +61,7 @@ export function StalenessHintRow({
           ⓘ
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             flex: 1,
             fontFamily: captionStyle.family,

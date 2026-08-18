@@ -8,7 +8,7 @@ exports[`AnomalyBanner — severity × colorMode snapshot matrix renders severit
   style={
     [
       {
-        "backgroundColor": "#E8A063",
+        "backgroundColor": "#D89150",
         "borderRadius": 14,
         "elevation": 0,
         "padding": 16,
@@ -165,7 +165,7 @@ exports[`AnomalyBanner — severity × colorMode snapshot matrix renders severit
   style={
     [
       {
-        "backgroundColor": "#C5824A",
+        "backgroundColor": "#A6641F",
         "borderRadius": 14,
         "elevation": 0,
         "padding": 16,

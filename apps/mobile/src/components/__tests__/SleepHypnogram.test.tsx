@@ -150,3 +150,16 @@ describe('SleepHypnogram — render', () => {
     expect(screen.queryByTestId('hypno-bin-10')).toBeNull();
   });
 });
+
+// ── Audit P1-6 ───────────────────────────────────────────────────────
+// The composed label sat on a View with accessibilityRole="image" but no
+// `accessible` prop, so iOS was not guaranteed to expose it.
+
+describe('SleepHypnogram — accessibility (audit P1-6)', () => {
+  it('marks the labelled card explicitly accessible', () => {
+    render(withTheme(<SleepHypnogram session={makeSession([])} testID="hypno" />));
+    const card = screen.getByLabelText(/Sleep stages from/);
+    expect(card.props.accessible).toBe(true);
+    expect(card.props.accessibilityRole).toBe('image');
+  });
+});

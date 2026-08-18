@@ -169,7 +169,7 @@ describe('TakeReadingScreen — happy path (watch flow)', () => {
     // Success view should render with the rendered numeric.
     expect(await screen.findByTestId('take-reading-success')).toBeTruthy();
     expect(screen.getByText('124/79')).toBeTruthy();
-    expect(screen.getByText('In pattern')).toBeTruthy();
+    expect(screen.getByText('In your usual range')).toBeTruthy();
 
     // MMKV write must have happened — the spec hard rule.
     const recent = JSON.parse(mmkv.getString(STORAGE_KEYS.recentReadings) ?? '[]');

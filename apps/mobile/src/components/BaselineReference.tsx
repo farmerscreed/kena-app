@@ -14,6 +14,7 @@
 
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export interface BaselineReferenceProps {
   /** The pre-formatted baseline body (e.g. "115–128 / 72–82" or
@@ -48,7 +49,7 @@ export function BaselineReference({
       testID={testID}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -62,7 +63,7 @@ export function BaselineReference({
         {eyebrow}
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 14,
@@ -75,7 +76,7 @@ export function BaselineReference({
       </Text>
       {caption ? (
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: captionStyle.family,
             fontSize: captionStyle.size,

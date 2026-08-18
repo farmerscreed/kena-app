@@ -60,6 +60,14 @@ import { Button } from '../../components/Button';
 import { SixthReadingPaywallHost } from '../../components/SixthReadingPaywallHost';
 import { CaregiverActionBar } from '../../components/CaregiverActionBar';
 import { HomeTabBar } from '../../components/HomeTabBar';
+// Sprint 19 (audit P1-3) — single source of truth for the bottom
+// furniture stack (tab bar + action bar) and the scroll padding that
+// must clear it.
+import {
+  homeFurnitureBottom,
+  homeScrollPaddingBottom,
+  type HomeFurniture,
+} from '../../components/homeLayout';
 import {
   ConstellationField,
   type ConstellationPerson,
@@ -97,6 +105,7 @@ import type {
 } from '../../services/families/fetchParentSummaries';
 import type { LocalReading } from '../../state/readings';
 import { type CaregiverPerson } from '../../utils/caregiverPerson';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import {
   buildConstellationNodes,
   hasSelfNode,
@@ -375,6 +384,16 @@ export function CaregiverHome() {
     [mergedPeople, merged, theme],
   );
 
+  // Sprint 19 (audit P1-3) — which bottom furniture renders this frame.
+  // The wearer path stacks BOTH the tab bar and the action bar; a pure
+  // caregiver gets the action bar only, and an empty circle gets neither.
+  // `safeAreaBottom` is 0 because the furniture lives inside the
+  // SafeAreaView below, which already pads the OS inset.
+  const furniture: HomeFurniture = {
+    tabBar: viewerIsWearer,
+    actionBar: merged.length > 0,
+  };
+
   return (
     <SafeAreaView
       // Sprint 16.6 — design uses a near-black warm base (#060505) under
@@ -408,7 +427,10 @@ export function CaregiverHome() {
           {
             paddingHorizontal: theme.spacing.l,
             paddingTop: theme.spacing.m,
-            paddingBottom: theme.spacing.xxxxl + theme.spacing.xxl,
+            // Sprint 19 (audit P1-3) — was a flat 72pt, which the wearer
+            // path's tab bar + action bar overran by ~56pt and hid the
+            // "Worth a read" card. Derived from the furniture stack now.
+            paddingBottom: homeScrollPaddingBottom(furniture),
           },
         ]}
         refreshControl={
@@ -570,11 +592,11 @@ export function CaregiverHome() {
             position: 'absolute',
             left: theme.spacing.l,
             right: theme.spacing.l,
-            // Sit above the bottom tab bar when the viewer is a wearer
-            // (tab bar bottom=xxl, height 60), else at the usual spot.
-            bottom: viewerIsWearer
-              ? theme.spacing.xxl + 60 + theme.spacing.s
-              : theme.spacing.xxl,
+            // Sprint 19 (audit P1-3) — was `theme.spacing.xxl + 60 +
+            // theme.spacing.s`, where the 60 was a hand-copy of
+            // HomeTabBar's height with nothing keeping the two in sync.
+            // The stack model now positions this layer.
+            bottom: homeFurnitureBottom('actionBar', furniture),
           }}
         >
           {/* Connect Phase A — the old family_owner gate here was built
@@ -709,7 +731,7 @@ function DetailedView({ people, onSelectPerson, theme }: DetailedViewProps) {
     <View testID="caregiver-home-detailed">
       <View style={{ paddingHorizontal: theme.spacing.s, marginBottom: theme.spacing.l }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: headlineStyle.size,
@@ -790,7 +812,7 @@ function SharedHeader({
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9.5,
@@ -805,7 +827,7 @@ function SharedHeader({
           style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.m }}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.numeric,
               fontSize: 9.5,
@@ -830,7 +852,7 @@ function SharedHeader({
             style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontSize: 18,
                 color: theme.colors.brand.coral,
@@ -851,7 +873,7 @@ function SharedHeader({
             {/* Phosphor GearSix lands when icons sweep through screens.
                 Plain glyph until then — affordance still reads. */}
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontSize: 18,
                 color: theme.colors.text.tertiary,
@@ -877,7 +899,7 @@ function SharedHeader({
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9,
@@ -966,7 +988,7 @@ function EmptyNoFamily({
       }}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.editorial,
           fontSize: headline.size,

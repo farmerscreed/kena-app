@@ -33,7 +33,7 @@ exports[`CaregiverActionBar — canInvite × colorMode snapshot matrix renders c
     tint="dark"
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#857F7A",
@@ -83,7 +83,7 @@ exports[`CaregiverActionBar — canInvite × colorMode snapshot matrix renders c
     tint="light"
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#5A6478",
@@ -133,7 +133,7 @@ exports[`CaregiverActionBar — canInvite × colorMode snapshot matrix renders c
     tint="dark"
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#857F7A",
@@ -188,7 +188,7 @@ exports[`CaregiverActionBar — canInvite × colorMode snapshot matrix renders c
     testID="action-bar-invite"
   >
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.3}
       style={
         {
           "color": "#FF7350",
@@ -238,7 +238,7 @@ exports[`CaregiverActionBar — canInvite × colorMode snapshot matrix renders c
     tint="light"
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#5A6478",
@@ -293,7 +293,7 @@ exports[`CaregiverActionBar — canInvite × colorMode snapshot matrix renders c
     testID="action-bar-invite"
   >
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.3}
       style={
         {
           "color": "#FF7350",

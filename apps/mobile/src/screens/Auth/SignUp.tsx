@@ -8,6 +8,7 @@ import { Text, TextInput } from 'react-native';
 import { Button } from '../../components/Button';
 import { OnboardingScaffold } from '../../components/OnboardingScaffold';
 import { useTheme } from '../../theme';
+import { useAnnounceOnChange } from '../../hooks/useAnnounce';
 import { useAuth } from '../../state/auth';
 import type { AuthScreenProps } from '../../navigation/types';
 
@@ -21,6 +22,10 @@ export function SignUpScreen({ navigation }: AuthScreenProps<'SignUp'>) {
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Audit P1-7 — accessibilityLiveRegion on the inline error below is
+  // Android-only, so on iOS the error was never spoken. This is the iOS half.
+  useAnnounceOnChange(error);
 
   const trimmed = email.trim();
   const valid = EMAIL_RE.test(trimmed) && pendingAccountType !== null;

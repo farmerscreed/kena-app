@@ -3,6 +3,8 @@
 exports[`VitalTrendChart — render renders with no caption (chart only) 1`] = `
 <View
   accessibilityLabel="Trend, latest 98, peak 98, low 94"
+  accessibilityRole="image"
+  accessible={true}
   testID="chart"
 >
   <RNSVGSvgView

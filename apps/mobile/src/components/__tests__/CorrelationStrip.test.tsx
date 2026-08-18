@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { ThemeProvider } from '../../theme';
 import {
+  composeCorrelationAccessibilityLabel,
   CorrelationStrip,
   polylinePoints,
   scaleX,
@@ -47,6 +48,14 @@ const bpPoints: VitalSeries = {
     { t: 6, value: 122 },
   ],
 };
+
+// Audit P1-6 — the SVG plot and the bar body are now marked
+// decorative (accessibilityElementsHidden /
+// importantForAccessibility="no-hide-descendants") because the
+// container carries one composed accessibilityLabel instead. RNTL
+// excludes inaccessible nodes by default, so structural assertions
+// about what is drawn have to opt back in.
+const INCLUDE_HIDDEN = { includeHiddenElements: true } as const;
 
 describe('CorrelationStrip — pure logic: scaleX', () => {
   it('maps tMin to the left padded edge', () => {
@@ -132,8 +141,8 @@ describe('CorrelationStrip — empty series', () => {
       ),
     );
     expect(screen.getByTestId('strip')).toBeTruthy();
-    expect(screen.getByTestId('strip-line-b')).toBeTruthy();
-    expect(screen.queryByTestId('strip-line-a')).toBeNull();
+    expect(screen.getByTestId('strip-line-b', INCLUDE_HIDDEN)).toBeTruthy();
+    expect(screen.queryByTestId('strip-line-a', INCLUDE_HIDDEN)).toBeNull();
   });
 
   it('renders without crash when both series are empty', () => {
@@ -148,8 +157,8 @@ describe('CorrelationStrip — empty series', () => {
       ),
     );
     expect(screen.getByTestId('strip')).toBeTruthy();
-    expect(screen.queryByTestId('strip-line-a')).toBeNull();
-    expect(screen.queryByTestId('strip-line-b')).toBeNull();
+    expect(screen.queryByTestId('strip-line-a', INCLUDE_HIDDEN)).toBeNull();
+    expect(screen.queryByTestId('strip-line-b', INCLUDE_HIDDEN)).toBeNull();
   });
 });
 
@@ -198,8 +207,8 @@ describe('CorrelationStrip — smoke render: Sleep × Morning BP', () => {
       ),
     );
     expect(screen.getByTestId('strip')).toBeTruthy();
-    expect(screen.getByTestId('strip-line-a')).toBeTruthy();
-    expect(screen.getByTestId('strip-line-b')).toBeTruthy();
+    expect(screen.getByTestId('strip-line-a', INCLUDE_HIDDEN)).toBeTruthy();
+    expect(screen.getByTestId('strip-line-b', INCLUDE_HIDDEN)).toBeTruthy();
   });
 });
 
@@ -225,4 +234,86 @@ describe('CorrelationStrip — colorMode snapshot matrix', () => {
       expect(toJSON()).toMatchSnapshot();
     });
   }
+});
+
+// ── Audit P1-6 ───────────────────────────────────────────────────────
+// The strip had zero accessibility props: a screen reader landed on it
+// and heard the caption alone, with no idea what was plotted.
+
+describe('CorrelationStrip — accessibility (audit P1-6)', () => {
+  it('names both series, their shapes, their counts and their spans', () => {
+    const label = composeCorrelationAccessibilityLabel(
+      sleepPoints,
+      bpPoints,
+      '7d',
+      'Sleep × Morning BP',
+    );
+    expect(label).toContain('Sleep × Morning BP.');
+    expect(label).toContain('the last 7 days');
+    expect(label).toContain('sleep, solid line, 7 points, from 6.2 to 8.1.');
+    expect(label).toContain('blood pressure, dashed line, 7 points, from 119 to 132.');
+  });
+
+  it('falls back to a neutral opener when there is no caption', () => {
+    const label = composeCorrelationAccessibilityLabel(sleepPoints, bpPoints, '30d');
+    expect(label).toContain('Two vitals compared.');
+    expect(label).toContain('the last 30 days');
+  });
+
+  it('describes an absent series calmly rather than claiming a relationship', () => {
+    const label = composeCorrelationAccessibilityLabel(
+      { type: 'sleep', points: [] },
+      bpPoints,
+      '90d',
+    );
+    expect(label).toContain('No sleep to show for this window (solid line).');
+    // Descriptive only — we never assert one vital caused the other.
+    expect(label.toLowerCase()).not.toContain('because');
+    expect(label.toLowerCase()).not.toContain('causes');
+  });
+
+  it('handles a flat series without a nonsensical "from X to X"', () => {
+    const label = composeCorrelationAccessibilityLabel(
+      { type: 'hr', points: [{ t: 0, value: 68 }, { t: 1, value: 68 }] },
+      bpPoints,
+      '7d',
+    );
+    expect(label).toContain('heart rate, solid line, 2 points, steady at 68.');
+  });
+
+  it('exposes the composed label on an explicitly accessible root', () => {
+    render(
+      withTheme(
+        <CorrelationStrip
+          vitalA={sleepPoints}
+          vitalB={bpPoints}
+          range="7d"
+          caption="Sleep × Morning BP"
+          testID="strip"
+        />,
+      ),
+    );
+    const root = screen.getByTestId('strip');
+    expect(root.props.accessible).toBe(true);
+    expect(root.props.accessibilityRole).toBe('image');
+    expect(root.props.accessibilityLabel).toBe(
+      composeCorrelationAccessibilityLabel(sleepPoints, bpPoints, '7d', 'Sleep × Morning BP'),
+    );
+  });
+
+  it('hides the decorative SVG beneath the composed label', () => {
+    render(
+      withTheme(
+        <CorrelationStrip
+          vitalA={sleepPoints}
+          vitalB={bpPoints}
+          range="7d"
+          testID="strip"
+        />,
+      ),
+    );
+    const svg = screen.getByTestId('strip-svg', INCLUDE_HIDDEN);
+    expect(svg.props.accessibilityElementsHidden).toBe(true);
+    expect(svg.props.importantForAccessibility).toBe('no-hide-descendants');
+  });
 });

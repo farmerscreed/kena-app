@@ -106,14 +106,54 @@ export function classifyReading(
 }
 
 /** UI string for the tier chip. Centralised so tests catch voice-rule drift. */
+/**
+ * Sprint 19 (audit D12 P2-1) — "In pattern" was internal enum vocabulary
+ * (`in_pattern`) promoted to brand copy. It means nothing to a reader
+ * who hasn't seen the codebase, and it competed with five other phrases
+ * for the same concept ("within your range", "in range", "ALL CLEAR",
+ * "your usual", "steady"). The canonical user-facing vocabulary is now:
+ *
+ *   in_pattern       → "In your usual range"
+ *   calm_concerned   → "Worth a look"
+ *   confirmed_urgent → "Talk to your doctor"
+ *
+ * Everything that surfaces a tier imports from here. Do not re-coin.
+ */
 export function tierChipText(tier: ClassificationTier): string {
   switch (tier) {
     case 'in_pattern':
-      return 'In pattern';
+      return 'In your usual range';
     case 'calm_concerned':
       return 'Worth a look';
     case 'confirmed_urgent':
       return 'Talk to your doctor';
+  }
+}
+
+/**
+ * The hero sub-line under a vital value — "<unit> · <verdict>".
+ *
+ * Sprint 19 (audit D12 P0-4). BPDetail had a private `rangeCopyForTier`;
+ * HRDetail had none and gated on `baseline !== null`, so a heart rate
+ * classified calm_concerned or confirmed_urgent still rendered
+ * "bpm · within your range" — directly contradicting the anomaly banner
+ * firing above it. Both now call this.
+ *
+ * A null tier yields the bare unit: we say nothing rather than guess.
+ */
+export function vitalRangeCopyForTier(
+  unit: string,
+  tier: ClassificationTier | null | undefined,
+): string {
+  switch (tier) {
+    case 'in_pattern':
+      return `${unit} · within your usual range`;
+    case 'calm_concerned':
+      return `${unit} · worth a look`;
+    case 'confirmed_urgent':
+      return `${unit} · talk to your doctor today`;
+    default:
+      return unit;
   }
 }
 

@@ -28,6 +28,7 @@ import { Button } from '../../components/Button';
 import { Card } from '../../components/Card';
 import { BatteryOptimizationPrompt } from '../../components/BatteryOptimizationPrompt';
 import { useTheme } from '../../theme';
+import { useAnnounceOnChange } from '../../hooks/useAnnounce';
 import { usePairing, supportsWebBluetoothHandoff } from '../../state/pairing';
 import { useOnboarding } from '../../state/onboarding';
 import type { CaregiverScreenProps } from '../../navigation/types';
@@ -150,6 +151,17 @@ function Body({ children, muted = false }: { children: React.ReactNode; muted?: 
 
 // ─── views per phase ─────────────────────────────────────────────────
 
+// Audit P1-7 — the pairing phases carried Android-only
+// accessibilityLiveRegion props, so on iOS the flow ran silently: no
+// "we're looking", no "we found it", no "it's paired". Each phase now
+// declares one sentence used by both the live region (Android) and
+// useAnnounceOnChange (iOS). The old labels ("Searching for watch",
+// "Pairing", "Paired") read as debug strings; these are complete,
+// calm sentences per docs/05-voice-and-claims.md.
+const A11Y_SEARCHING =
+  'Looking for the watch. This usually takes a few seconds.';
+const A11Y_PAIRING = 'Talking to the watch. Hang on — almost there.';
+
 function PermissionPrimeView() {
   const theme = useTheme();
   const acknowledgePermissions = usePairing((s) => s.acknowledgePermissions);
@@ -198,11 +210,13 @@ function PowerOnView({ onCancel }: { onCancel: () => void }) {
 function SearchingView({ onCancel }: { onCancel: () => void }) {
   const theme = useTheme();
   const stopScan = usePairing((s) => s.stopScan);
+  // Audit P1-7.
+  useAnnounceOnChange(A11Y_SEARCHING);
   return (
     <View
       testID="pairing-searching"
       accessibilityLiveRegion="polite"
-      accessibilityLabel="Searching for watch"
+      accessibilityLabel={A11Y_SEARCHING}
     >
       <Headline>Looking for the watch</Headline>
       <Body muted>This usually takes a few seconds.</Body>
@@ -316,11 +330,13 @@ function FoundView({ onCancel }: { onCancel: () => void }) {
 
 function PairingView() {
   const theme = useTheme();
+  // Audit P1-7.
+  useAnnounceOnChange(A11Y_PAIRING);
   return (
     <View
       testID="pairing-pairing"
       accessibilityLiveRegion="polite"
-      accessibilityLabel="Pairing"
+      accessibilityLabel={A11Y_PAIRING}
     >
       <Headline>Talking to the watch</Headline>
       <Body muted>Hang on — almost there.</Body>
@@ -334,11 +350,16 @@ function PairingView() {
 function SuccessView({ onContinue }: { onContinue: () => void }) {
   const theme = useTheme();
   const pairedDevice = usePairing((s) => s.pairedDevice);
+  // Audit P1-7.
+  const a11yLabel = pairedDevice
+    ? `Paired. The watch ending ${pairedDevice.macSuffix} is connected.`
+    : 'Paired. The watch is connected.';
+  useAnnounceOnChange(a11yLabel);
   return (
     <View
       testID="pairing-success"
       accessibilityLiveRegion="assertive"
-      accessibilityLabel="Paired"
+      accessibilityLabel={a11yLabel}
     >
       <View
         style={{
@@ -391,8 +412,18 @@ function FailureView({ onCancel }: { onCancel: () => void }) {
   const theme = useTheme();
   const error = usePairing((s) => s.error);
   const retry = usePairing((s) => s.retry);
+  // Audit P1-7 — the failure phase had no live region on either platform,
+  // so a screen-reader user got no signal that pairing had stopped.
+  const a11yLabel = `We couldn't reach the watch. ${
+    error?.friendly ?? 'Something got in the way. Try again?'
+  }`;
+  useAnnounceOnChange(a11yLabel);
   return (
-    <View testID="pairing-failure">
+    <View
+      testID="pairing-failure"
+      accessibilityLiveRegion="assertive"
+      accessibilityLabel={a11yLabel}
+    >
       <Headline>We couldn't reach the watch</Headline>
       <Body muted>
         {error?.friendly ?? 'Something got in the way. Try again?'}

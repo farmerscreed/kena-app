@@ -45,6 +45,7 @@ import Svg, { Circle, Rect } from 'react-native-svg';
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import type { CaregiverViewMode } from '../hooks/useCaregiverViewMode';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export interface ViewToggleProps {
   /** Current value — usually wired to useCaregiverViewMode().viewMode. */
@@ -316,7 +317,7 @@ function SegmentButton({
           <DetailedGlyph color={tint} opacity={opacity} />
         )}
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           style={{
             fontFamily: labelFamily,
             fontSize: 9.5,

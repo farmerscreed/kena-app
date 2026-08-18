@@ -191,7 +191,11 @@ describe('BPDetail — populated states', () => {
     render(withProviders(<BPDetail onBack={() => undefined} />));
     expect(screen.getByText('122')).toBeTruthy();
     expect(screen.getByText('/ 78')).toBeTruthy();
-    expect(screen.getByText('mmHg · within your range')).toBeTruthy();
+    // Sprint 19 (audit D12 P0-4 / P2-1) — canonical vocabulary. The
+    // app used six different phrases for this one idea; "within your
+    // usual range" is now the single source, via
+    // utils/classification.vitalRangeCopyForTier.
+    expect(screen.getByText('mmHg · within your usual range')).toBeTruthy();
     expect(screen.getByTestId('bp-detail-chart')).toBeTruthy();
     expect(screen.getByTestId('bp-detail-readings')).toBeTruthy();
   });

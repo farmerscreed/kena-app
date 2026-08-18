@@ -57,6 +57,14 @@ import Svg, { Line } from 'react-native-svg';
 import { VitalRing, type VitalRingState, type VitalType } from './VitalRing';
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
+import { opacity } from '../theme/tokens';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
+// Sprint 19 (audit P1-5) — the verdict under the hero value comes from
+// the SAME helper BPDetail and HRDetail use. Do not re-coin it here.
+import {
+  vitalRangeCopyForTier,
+  type ClassificationTier,
+} from '../utils/classification';
 import {
   dailyPulseRevealNarrationOpacity,
   dailyPulseRevealOpacity,
@@ -89,8 +97,24 @@ export interface DailyPulseHeroCentral {
   label: string;
   /** Pre-formatted giant value ("122/78", "64", "7:42", "—"). */
   value: string;
-  /** Mono caption below the value ("mmHg · 6:42 am", "bpm · now"). */
+  /** Mono caption below the value ("6:42 am", "resting", "last night"). */
   sub?: string;
+  /**
+   * Unit for the verdict line under the ring ("mmHg", "bpm").
+   *
+   * Sprint 19 (audit P1-5). Combined with `tier` through the shared
+   * `vitalRangeCopyForTier`, so the biggest number in the app carries
+   * the same interpretation the detail screens show. With no `tier` the
+   * helper yields the bare unit — we say nothing rather than guess.
+   */
+  unit?: string;
+  /**
+   * Classification tier for the central value. Callers pass this ONLY
+   * when the tier actually describes the value on screen — i.e. when the
+   * D13 §7.2 cascade resolved to BP. The HR / sleep fallbacks have no
+   * verdict of their own, so they leave it undefined.
+   */
+  tier?: ClassificationTier | null;
   /** When true, a small "live" pill renders below the sub. */
   live?: boolean;
 }
@@ -122,9 +146,22 @@ const BP_CX = CANVAS_W / 2;
 const BP_CY = 230;
 const BP_DIAMETER = 220;
 const BP_STROKE = 9;
+// Sprint 19 (audit P1-5) — the verdict line sits in the dead space
+// between the BP ring's lower edge (BP_CY + BP_DIAMETER / 2 = 340) and
+// the canvas bottom (380). Full canvas width, so "mmHg · within your
+// usual range" fits on one line — inside the ring, the chord at that
+// height is only ~150pt and would have wrapped it over the stroke.
+const VERDICT_TOP = BP_CY + BP_DIAMETER / 2 + 8;
 const STAGGER_MS = 80;
 const OPACITY_REVEAL_MS = 200; // duration.normal — see motion/patterns.ts
 const GLOW_BREATHE_DURATION_MS = 4500;
+/**
+ * Rendered opacity of the ambient glow disc behind the BP ring. Sourced
+ * from the shared opacity tokens — see the rationale and contrast
+ * ceiling documented on `opacity.glowRest` / `opacity.glowPeak`.
+ */
+const GLOW_OPACITY_REST = opacity.glowRest;
+const GLOW_OPACITY_PEAK = opacity.glowPeak;
 
 interface SatelliteDef {
   vital: 'hr' | 'spo2' | 'sleep' | 'activity';
@@ -265,6 +302,24 @@ function NarrationLine({ text, reduceMotion }: NarrationProps) {
 }
 
 // ---------------------------------------------------------------------------
+// The verdict line — Sprint 19 (audit P1-5).
+//
+// The hero carried `label`, `value`, `sub` and `live` but no status, so
+// the single biggest number in the app arrived with no interpretation:
+// home showed "128/82 · mmHg · 6:42 am" while BPDetail, two taps away,
+// showed "mmHg · within your usual range" for the same reading.
+//
+// The copy is NOT written here. `vitalRangeCopyForTier` is the one place
+// tier vocabulary lives (see its doc-block: "Everything that surfaces a
+// tier imports from here. Do not re-coin.").
+// ---------------------------------------------------------------------------
+
+function centralVerdict(central: DailyPulseHeroCentral): string | undefined {
+  if (!central.unit) return undefined;
+  return vitalRangeCopyForTier(central.unit, central.tier);
+}
+
+// ---------------------------------------------------------------------------
 // Composed accessibility label — read by screen-reader users. Mirrors
 // what visual users see: central value first, then each satellite, then
 // the AI narration.
@@ -278,6 +333,10 @@ function composeAccessibilityLabel(
 ): string {
   const subject = parentName ? `Daily pulse for ${parentName}` : 'Daily pulse';
   const parts: string[] = [subject, `${central.label} ${central.value}`];
+  // Sprint 19 (audit P1-5) — a screen-reader user got the number with no
+  // verdict either. Reads immediately after the value, as it renders.
+  const verdict = centralVerdict(central);
+  if (verdict) parts.push(verdict);
   for (const def of SATELLITES) {
     const v = vitals[def.vital];
     parts.push(`${VITAL_HUMAN_NAME[def.vital]} ${v.display} ${v.unit}`);
@@ -310,16 +369,24 @@ export function DailyPulseHero({
   const bpColor = theme.colors.vital.bp;
 
   // Ambient breathing glow under the BP ring. Reduced motion → static.
-  const glowOpacity = useSharedValue(reduceMotion ? 0.55 : 0.55);
+  //
+  // Sprint 19 (audit D12 P0-5): this animated style is applied after
+  // `styles.glow`, so these values — not the stylesheet's — are what
+  // renders. See GLOW_OPACITY_REST/PEAK in VitalHero for the rationale
+  // and the contrast ceiling.
+  const glowOpacity = useSharedValue<number>(GLOW_OPACITY_REST);
   useEffect(() => {
-    if (reduceMotion) return;
+    if (reduceMotion) {
+      glowOpacity.value = GLOW_OPACITY_REST;
+      return;
+    }
     glowOpacity.value = withRepeat(
       withSequence(
-        withTiming(0.75, {
+        withTiming(GLOW_OPACITY_PEAK, {
           duration: GLOW_BREATHE_DURATION_MS / 2,
           easing: Easing.inOut(Easing.ease),
         }),
-        withTiming(0.55, {
+        withTiming(GLOW_OPACITY_REST, {
           duration: GLOW_BREATHE_DURATION_MS / 2,
           easing: Easing.inOut(Easing.ease),
         }),
@@ -336,6 +403,8 @@ export function DailyPulseHero({
     aiNarration,
     parentName,
   );
+  // Sprint 19 (audit P1-5).
+  const verdict = centralVerdict(central);
 
   const bpRing = vitals.bp;
   const bpRingState: VitalRingState = reduceMotion
@@ -406,7 +475,13 @@ export function DailyPulseHero({
           <Pressable
             onPress={onSelectVital ? () => onSelectVital('bp') : undefined}
             accessibilityRole={onSelectVital ? 'button' : 'text'}
-            accessibilityLabel={`${central.label} ${central.value}`}
+            // Sprint 19 (audit P1-5) — the ring is the focusable node for
+            // the hero value, so the verdict belongs here too.
+            accessibilityLabel={
+              verdict
+                ? `${central.label} ${central.value}, ${verdict}`
+                : `${central.label} ${central.value}`
+            }
             testID={testID ? `${testID}-bp` : undefined}
             style={styles.bpPressable}
           >
@@ -422,7 +497,7 @@ export function DailyPulseHero({
             />
             <View pointerEvents="none" style={styles.bpCentre}>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                 style={{
                   fontFamily: labelStyle.family,
                   fontSize: labelStyle.size,
@@ -436,11 +511,17 @@ export function DailyPulseHero({
                 {central.label}
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 style={{
-                  fontFamily: theme.fontFamilies.editorial,
+                  // Sprint 19 (audit P1-2) — was `fontFamilies.editorial`
+                  // (Instrument Serif, a proportional display serif)
+                  // while pulling its size from the numeric tokens, which
+                  // are specified in JetBrains Mono. Tabular figures stop
+                  // the 80pt value jittering as digits change.
+                  fontFamily: theme.fontFamilies.numeric,
+                  fontVariant: ['tabular-nums'],
                   // Adaptive sizing — numericHero (80pt) is sized for
                   // short values like "63" or "124/79". Mixed-unit
                   // strings ("10h 44m") overflow the ring inner; drop
@@ -459,7 +540,7 @@ export function DailyPulseHero({
               </Text>
               {central.sub ? (
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: captionStyle.size,
@@ -482,10 +563,10 @@ export function DailyPulseHero({
                     style={[styles.liveDot, { backgroundColor: bpColor }]}
                   />
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                     style={{
                       fontFamily: theme.fontFamilies.numeric,
-                      fontSize: 9,
+                      fontSize: 11,
                       letterSpacing: 1.4,
                       color: bpColor,
                       textTransform: 'uppercase',
@@ -539,9 +620,14 @@ export function DailyPulseHero({
                 />
                 <View pointerEvents="none" style={styles.satCentre}>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                     style={{
-                      fontFamily: theme.fontFamilies.editorial,
+                      // Sprint 19 (audit P1-2) — same serif/numeric-token
+                      // mismatch as the central value above. Tabular
+                      // figures keep the satellite values from shifting
+                      // inside their rings as digits change.
+                      fontFamily: theme.fontFamilies.numeric,
+                      fontVariant: ['tabular-nums'],
                       fontSize: def.size > 70 ? numericM.size : numericM.size - 4,
                       lineHeight: def.size > 70 ? numericM.lineHeight : numericM.lineHeight - 4,
                       color: theme.colors.text.primary,
@@ -552,10 +638,10 @@ export function DailyPulseHero({
                     {state.display}
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                     style={{
                       fontFamily: theme.fontFamilies.numeric,
-                      fontSize: 8,
+                      fontSize: 11,
                       letterSpacing: 0.5,
                       color: vitalColor,
                       textTransform: 'uppercase',
@@ -569,6 +655,33 @@ export function DailyPulseHero({
             </RingWrapper>
           );
         })}
+
+        {/* Sprint 19 (audit P1-5) — the verdict for the central value.
+            Sits just under the BP ring so it reads as that number's
+            caption, in the canvas dead space the satellites never use. */}
+        {verdict ? (
+          <Text
+            maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            pointerEvents="none"
+            style={{
+              position: 'absolute',
+              top: VERDICT_TOP,
+              left: 0,
+              right: 0,
+              textAlign: 'center',
+              fontFamily: theme.fontFamilies.numeric,
+              fontSize: captionStyle.size,
+              lineHeight: captionStyle.lineHeight,
+              letterSpacing: 0.4,
+              color: theme.colors.text.secondary,
+            }}
+            testID={testID ? `${testID}-bp-verdict` : undefined}
+          >
+            {verdict}
+          </Text>
+        ) : null}
       </View>
 
       {aiNarration ? (
@@ -591,7 +704,9 @@ const styles = StyleSheet.create({
     width: 260,
     height: 260,
     borderRadius: 130,
-    opacity: 0.18,
+    // Overridden at runtime by the animated glow style (see GLOW_OPACITY_*).
+    // Kept in sync so a static render matches the animated rest state.
+    opacity: opacity.glowRest,
   },
   svgOverlay: {
     position: 'absolute',

@@ -201,7 +201,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
           <Text
             accessibilityLabel="Activity"
             accessibilityRole="header"
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#7CA56F",
@@ -363,6 +363,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
           <View
             accessibilityLabel="Today, 6,250 steps. 78% of 8,000."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -979,7 +980,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               testID="activity-detail-range-7d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
@@ -1043,7 +1044,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               testID="activity-detail-range-30d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1107,7 +1108,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               testID="activity-detail-range-90d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1148,7 +1149,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
             testID="activity-detail-baseline"
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={1.6}
               style={
                 {
                   "color": "#857F7A",
@@ -1164,7 +1165,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               Your typical day
             </Text>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={1.6}
               style={
                 {
                   "color": "#B8B2AA",
@@ -1178,7 +1179,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               ~7,100 steps
             </Text>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={1.6}
               style={
                 {
                   "color": "#857F7A",
@@ -1227,7 +1228,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               testID="activity-detail-stat-trio-0"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1243,7 +1244,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 Daily avg
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
@@ -1256,7 +1257,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 6,636
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1291,7 +1292,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               testID="activity-detail-stat-trio-1"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1307,7 +1308,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 Best day
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
@@ -1320,7 +1321,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 9,000
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1355,7 +1356,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               testID="activity-detail-stat-trio-2"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1371,7 +1372,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 Streak
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
@@ -1384,7 +1385,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 0
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1401,6 +1402,9 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
             </View>
           </View>
           <View
+            accessibilityLabel="This week vs goal. 7 days shown. Steps ranged from 4,200 to 9,000. 2 of them reached the goal of 8,000 steps."
+            accessibilityRole="image"
+            accessible={true}
             testID="activity-detail-weekly-bars"
           >
             <Text
@@ -1438,6 +1442,8 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               }
             >
               <View
+                accessibilityElementsHidden={true}
+                importantForAccessibility="no-hide-descendants"
                 style={
                   [
                     {
@@ -2068,7 +2074,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 </RNSVGSvgView>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={2}
                 style={
                   {
                     "color": "#7CA56F",
@@ -2156,7 +2162,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
             testID="activity-detail-recent"
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={1.6}
               style={
                 {
                   "color": "#857F7A",
@@ -2262,7 +2268,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#FFFFFF",
@@ -2275,7 +2281,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                     6,250
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#857F7A",
@@ -2292,7 +2298,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.3}
                   style={
                     {
                       "color": "#857F7A",
@@ -2377,7 +2383,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#FFFFFF",
@@ -2390,7 +2396,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                     8,000
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#857F7A",
@@ -2407,7 +2413,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.3}
                   style={
                     {
                       "color": "#857F7A",
@@ -2492,7 +2498,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#FFFFFF",
@@ -2505,7 +2511,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                     7,100
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#857F7A",
@@ -2522,7 +2528,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.3}
                   style={
                     {
                       "color": "#857F7A",
@@ -2607,7 +2613,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#FFFFFF",
@@ -2620,7 +2626,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                     5,400
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#857F7A",
@@ -2637,7 +2643,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.3}
                   style={
                     {
                       "color": "#857F7A",
@@ -2722,7 +2728,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#FFFFFF",
@@ -2735,7 +2741,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                     9,000
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#857F7A",
@@ -2752,7 +2758,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.3}
                   style={
                     {
                       "color": "#857F7A",
@@ -2817,7 +2823,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
               testID="activity-detail-recent-footer"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.6}
                 style={
                   {
                     "color": "#FFFFFF",
@@ -2834,7 +2840,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
           </View>
           <View>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={1.6}
               style={
                 {
                   "color": "#857F7A",
@@ -2911,7 +2917,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 }
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#FFFFFF",
@@ -2924,7 +2930,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                   8,000
                 </Text>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -2940,7 +2946,7 @@ exports[`ActivityDetail — snapshot matches snapshot in dark mode (populated) 1
                 </Text>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.6}
                 style={
                   {
                     "color": "#857F7A",

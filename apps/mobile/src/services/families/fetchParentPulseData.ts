@@ -37,7 +37,11 @@ import {
   computeSleepLastNight,
   computeActivityToday,
 } from '../../utils/vitalAggregators';
-import { classifyReading } from '../../utils/classification';
+import {
+  classifyReading,
+  type ReadingBaseline,
+} from '../../utils/classification';
+import { computeReadingBaseline } from '../../utils/readingBaseline';
 import type { LocalReading } from '../../state/readings';
 import type {
   HRSample,
@@ -114,10 +118,17 @@ interface VitalsOtherRow {
 // hooks' mappers are private and one-shot, this fetcher needs the
 // same shape for a different orchestration path) -------------------
 
-function mapReading(row: ReadingRow): LocalReading {
+function mapReading(
+  row: ReadingRow,
+  baseline: ReadingBaseline | null,
+): LocalReading {
+  // Sprint 19 (audit D12 P0-2) — the parent's readings are classified
+  // against the PARENT's own baseline. This is the caregiver path, so
+  // the baseline must come from the fetched rows, never from the
+  // caregiver's own local store.
   const classification = classifyReading(
     { systolic: row.systolic, diastolic: row.diastolic, pulse: row.pulse },
-    null,
+    baseline,
   );
   const measuredAtMs = new Date(row.measured_at).getTime();
   return {
@@ -356,7 +367,18 @@ export async function fetchParentPulseData(
   if (stepsResult.error) throw stepsResult.error;
   if (caloriesResult.error) throw caloriesResult.error;
 
-  const readings = ((readingsResult.data ?? []) as ReadingRow[]).map(mapReading);
+  const readingRows = (readingsResult.data ?? []) as ReadingRow[];
+  // Baseline over the parent's own fetched window, computed once so the
+  // whole batch is judged consistently.
+  const readingBaseline = computeReadingBaseline(
+    readingRows.map((r) => ({
+      measuredAtSec: Math.floor(new Date(r.measured_at).getTime() / 1000),
+      systolic: r.systolic,
+      diastolic: r.diastolic,
+      pulse: r.pulse,
+    })),
+  );
+  const readings = readingRows.map((r) => mapReading(r, readingBaseline));
   const hr = ((hrResult.data ?? []) as VitalsOtherRow[]).map(mapHR);
   const spo2 = ((spo2Result.data ?? []) as VitalsOtherRow[]).map(mapSpO2);
   const sleep = ((sleepResult.data ?? []) as VitalsOtherRow[]).map(mapSleep);

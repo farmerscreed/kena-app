@@ -238,7 +238,7 @@ describe('<CaregiverHome /> — populated state', () => {
         accentIndex: 1,
         status: 'clear',
         bpLabel: '122/78',
-        headline: 'Read 1 min ago — in pattern.',
+        headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 122/78 a moment ago. Inside the usual band.',
         relation: 'Mom',
         vitalStrip: { bp: '122/78', hr: '64', spo2: '98%', sleep: '7:42' },
@@ -250,7 +250,7 @@ describe('<CaregiverHome /> — populated state', () => {
         accentIndex: 2,
         status: 'clear',
         bpLabel: '134/86',
-        headline: 'Read 1 min ago — in pattern.',
+        headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 134/86 a moment ago. Inside the usual band.',
         relation: 'Dad',
         vitalStrip: { bp: '134/86', hr: '72', spo2: '96%', sleep: '6:18' },
@@ -262,7 +262,7 @@ describe('<CaregiverHome /> — populated state', () => {
         accentIndex: 3,
         status: 'clear',
         bpLabel: '118/74',
-        headline: 'Read 1 min ago — in pattern.',
+        headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 118/74 a moment ago. Inside the usual band.',
         relation: 'Aunt',
         vitalStrip: { bp: '118/74', hr: '58', spo2: '97%', sleep: '8:00' },
@@ -289,7 +289,7 @@ describe('<CaregiverHome /> — populated state', () => {
     render(withProviders(<CaregiverHome />));
     fireEvent.press(
       screen.getByRole('button', {
-        name: 'Marian, Mom, All clear, Read 1 min ago — in pattern.',
+        name: 'Marian, Mom, All clear, Read 1 min ago — in the usual range.',
       }),
     );
     expect(mockNavigate).toHaveBeenCalledWith('ReadingDetail', {

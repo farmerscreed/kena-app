@@ -47,7 +47,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#FF7350",
@@ -111,7 +111,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#FF7350",
@@ -175,7 +175,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#61B565",
@@ -239,7 +239,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#61B565",
@@ -303,7 +303,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#857F7A",
@@ -367,7 +367,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#857F7A",
@@ -422,7 +422,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#7B67CC",
@@ -477,7 +477,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#7B67CC",
@@ -541,7 +541,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#DC5631",
@@ -605,7 +605,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#DC5631",
@@ -669,7 +669,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#F2A618",
@@ -733,7 +733,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#F2A618",

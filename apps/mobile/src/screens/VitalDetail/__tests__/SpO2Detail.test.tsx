@@ -233,13 +233,15 @@ describe('SpO2Detail — hero + tier copy', () => {
         'Worth a look — share with your doctor at your next visit',
       ),
     ).toBeTruthy();
-    // Calm-concerned insight names the pattern + the next visit, never
-    // panicky words.
-    expect(
-      screen.getByText(
-        'Your overnight oxygen has held below 92% on a few recent nights. Worth mentioning at your next doctor visit.',
-      ),
-    ).toBeTruthy();
+    // Sprint 19 (audit D12 P0-1) — the insight used to hardcode a
+    // threshold ("below 92%") that had nothing to do with this user's
+    // data. It now quotes the observed low, or stays general when we
+    // have none. Assert the SHAPE, not a frozen sentence, so honest
+    // copy can evolve without a test edit.
+    expect(screen.getByText(/below your usual/i)).toBeTruthy();
+    expect(screen.getByText(/next doctor visit/i)).toBeTruthy();
+    // Never asserts an event we did not observe.
+    expect(screen.queryByText(/around \d+\s?(am|pm)/i)).toBeNull();
   });
 
   it('renders confirmed_urgent hero + insight when overnight lows < 88 sustained 3+ nights', () => {
@@ -258,11 +260,13 @@ describe('SpO2Detail — hero + tier copy', () => {
     expect(
       screen.getByText('We recommend talking to your doctor soon'),
     ).toBeTruthy();
-    expect(
-      screen.getByText(
-        'Your overnight oxygen has held below 90 on a few recent nights — worth mentioning at your next doctor visit.',
-      ),
-    ).toBeTruthy();
+    // Sprint 19 (audit D12 P0-1) — see the calm_concerned case above.
+    expect(screen.getByText(/well below your usual/i)).toBeTruthy();
+    // The hero and the insight both carry this — assert at least one.
+    expect(screen.getAllByText(/doctor soon/i).length).toBeGreaterThan(0);
+    // The observed low here is 85, so it should be quoted — a real
+    // number from the user's own data, not a hardcoded threshold.
+    expect(screen.getByText(/85%/)).toBeTruthy();
   });
 });
 

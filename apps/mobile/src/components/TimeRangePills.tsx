@@ -17,6 +17,7 @@
 
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export type TrendRange = '7d' | '30d' | '90d';
 
@@ -79,7 +80,7 @@ export function TimeRangePills({
             ]}
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 fontSize: labelStyle.size,

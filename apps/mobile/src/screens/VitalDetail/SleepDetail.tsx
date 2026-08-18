@@ -66,6 +66,7 @@ import {
 import { useReconcileSleepFromHR } from '../../hooks/useReconcileSleepFromHR';
 import { useTheme } from '../../theme';
 import type { SleepSession } from '../../types/vitals';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 /** Sprint 18 — pick the HR-inferred wake/bed times when present, else
  *  fall back to the legacy synthesized boundaries. Exported for tests. */
@@ -546,7 +547,7 @@ export function SleepDetail({
               testID="sleep-detail-correlation-placeholder"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={[
                   theme.type('labelUppercase'),
                   {

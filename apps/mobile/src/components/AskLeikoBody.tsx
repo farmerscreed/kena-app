@@ -28,6 +28,7 @@ import { askTierB, type TierBDeferTrigger } from '../services/ai/tierB';
 import { DEFER_TEMPLATES } from '../services/ai/deferTemplates';
 import { mapAskLeikoTierBResult } from '../services/ai/fallThrough';
 import type { IntentMatch } from '../services/ai/types';
+import { MAX_FONT_SCALE_PROSE } from '../theme/fontScaling';
 
 export const ASK_LEIKO_COPY = {
   helper: 'A short, plain-language question works best.',
@@ -240,7 +241,7 @@ export function AskLeikoBody({ onArticleOpen, testID }: AskLeikoBodyProps) {
       {submitted ? (
         <View testID="ask-leiko-result">
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE_PROSE}
             style={{
               color: theme.colors.text.tertiary,
               fontSize: captionStyle.size,

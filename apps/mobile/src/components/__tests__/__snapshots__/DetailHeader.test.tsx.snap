@@ -136,7 +136,7 @@ exports[`DetailHeader — render + interaction matches snapshot in dark mode for
   <Text
     accessibilityLabel="Oxygen"
     accessibilityRole="header"
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#5FA8A8",

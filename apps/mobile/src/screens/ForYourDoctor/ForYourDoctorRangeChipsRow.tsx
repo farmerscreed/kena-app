@@ -8,6 +8,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Pill } from '../../components/Pill';
 import { useTheme } from '../../theme';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import {
   DOCTOR_PDF_RANGES,
   type DoctorPdfRange,
@@ -101,7 +102,7 @@ function LockedChip({
       ]}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 13,
@@ -122,7 +123,7 @@ function LockedChip({
         accessibilityElementsHidden
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: labelStyle.family,
             fontSize: 8,

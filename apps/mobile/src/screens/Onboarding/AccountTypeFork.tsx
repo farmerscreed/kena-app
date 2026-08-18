@@ -27,6 +27,7 @@ import { useTheme } from '../../theme';
 import { useAuth } from '../../state/auth';
 import type { AuthScreenProps } from '../../navigation/types';
 import type { AccountType } from '../../types/database';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 export function AccountTypeForkScreen({ navigation }: AuthScreenProps<'AccountTypeFork'>) {
   const theme = useTheme();
@@ -63,7 +64,7 @@ export function AccountTypeForkScreen({ navigation }: AuthScreenProps<'AccountTy
       >
         {/* Decorative brand mark — never font-scale it out of its circle. */}
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             color: theme.colors.text.onBrand,
             fontSize: 36,

@@ -92,6 +92,43 @@ export function goalLineFraction(goal: number, values: number[]): number {
   return Math.max(0, Math.min(1, 1 - goal / scaleMax));
 }
 
+/**
+ * Audit P1-6 — composes the chart's spoken description. This component had
+ * zero accessibility props, so a screen-reader user heard the seven day
+ * initials ("M", "T", "W"…) and the string "goal 8k", and nothing that
+ * explained what the bars were. Exported so the sentence is unit-testable.
+ *
+ * Calm and factual per docs/05-voice-and-claims.md: it reports how many
+ * days met the goal without praising or scolding.
+ */
+export function composeActivityWeeklyAccessibilityLabel(
+  days: number[],
+  goal: number,
+  title: string,
+): string {
+  // Titles are written without terminal punctuation ("This week vs
+  // goal"); strip it if a caller supplies one so the sentence reads clean.
+  const head = title.trim().replace(/[.!?]+$/, '');
+  if (days.length === 0) {
+    return `${head}. Steps appear here once the watch has a day of activity to show.`;
+  }
+  const low = Math.min(...days);
+  const high = Math.max(...days);
+  const met = days.filter((d) => d >= goal).length;
+  const dayWord = days.length === 1 ? 'day' : 'days';
+  const metClause =
+    met === 0
+      ? `No day reached the goal of ${goal.toLocaleString()} steps.`
+      : met === days.length
+        ? `Every one reached the goal of ${goal.toLocaleString()} steps.`
+        : `${met} of them reached the goal of ${goal.toLocaleString()} steps.`;
+  const spread =
+    low === high
+      ? `Each ${dayWord} was ${low.toLocaleString()} steps.`
+      : `Steps ranged from ${low.toLocaleString()} to ${high.toLocaleString()}.`;
+  return `${head}. ${days.length} ${dayWord} shown. ${spread} ${metClause}`;
+}
+
 export function ActivityWeeklyBars({
   days,
   dayLabels,
@@ -107,8 +144,20 @@ export function ActivityWeeklyBars({
 
   const goalLabel = `goal ${Math.round(goal / 1000)}k`;
 
+  // Audit P1-6.
+  const a11yLabel = composeActivityWeeklyAccessibilityLabel(days, goal, title);
+
   return (
-    <View style={style} testID={testID}>
+    // Audit P1-6 — one accessible element with one composed sentence.
+    // `accessible` is explicit: without it iOS may not expose this View as
+    // a single element, and the label would never be spoken.
+    <View
+      style={style}
+      testID={testID}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={a11yLabel}
+    >
       <Text
         allowFontScaling={false}
         style={{
@@ -137,11 +186,16 @@ export function ActivityWeeklyBars({
           },
         ]}
       >
+        {/* Audit P1-6 — the bars, the goal line and the day initials are
+            decorative once the composed label above describes them; left
+            exposed they read as a stream of single letters. */}
         <View
           style={[
             styles.body,
             { height: CARD_HEIGHT, paddingBottom: BAR_AREA_BOTTOM_INSET, gap: BAR_GAP },
           ]}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
         >
           {/* Dashed goal line */}
           <GoalLine

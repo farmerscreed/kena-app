@@ -31,8 +31,12 @@
 // Accessibility:
 //   - accessibilityRole="alert" on the root.
 //   - accessibilityLiveRegion="assertive" for confirmed-urgent, "polite" for
-//     calm-concerned.
+//     calm-concerned. Android only — see the P1-7 note below.
 //   - Composed accessibilityLabel: "<severity humanized> alert: <title>. <body>".
+//   - Audit P1-7: accessibilityLiveRegion is Android-only, so on iOS this
+//     banner never spoke. useAnnounceOnChange posts the same composed
+//     sentence to VoiceOver. Android is excluded inside the hook so the
+//     banner is not read twice there.
 //
 // Voice rules (docs/05-voice-and-claims.md): this component does NOT generate
 // copy — title/body/cta.label are passed by the consumer. The primitive ships
@@ -63,6 +67,7 @@ import {
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { duration, spring as springTokens } from '../theme/tokens';
+import { useAnnounceOnChange } from '../hooks/useAnnounce';
 
 export type AnomalyBannerSeverity = 'calm-concerned' | 'confirmed-urgent';
 
@@ -170,6 +175,11 @@ export function AnomalyBanner({
   };
 
   const composedA11yLabel = composeAccessibilityLabel(severity, title, body);
+
+  // Audit P1-7 — iOS half of the live region. accessibilityLiveRegion below
+  // covers Android; this covers iOS. Without it a VoiceOver user was never
+  // told a reading had been flagged.
+  useAnnounceOnChange(composedA11yLabel);
 
   const IconComponent = isUrgent ? WarningCircleIcon : WarningIcon;
 

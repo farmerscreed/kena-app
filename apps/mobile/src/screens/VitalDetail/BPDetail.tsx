@@ -53,6 +53,7 @@ import { bpFillFromTier } from '../../utils/vitalThemes';
 import { useTheme } from '../../theme';
 import {
   checkStaleness,
+  vitalRangeCopyForTier,
   type ClassificationTier,
 } from '../../utils/classification';
 import { formatStalenessCaption } from '../../utils/stalenessCaption';
@@ -68,6 +69,7 @@ import {
 import { useAuth } from '../../state/auth';
 import { useOnboarding } from '../../state/onboarding';
 import { ViewAllHistoryLink } from '../../components/ViewAllHistoryLink';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 const RANGE_TO_DAYS: Record<TrendRange, number> = {
   '7d': 7,
@@ -109,21 +111,12 @@ const INSIGHT_BODY_EMPTY =
 const INSIGHT_BODY_PRE_BASELINE =
   "After about a week of readings, this card will compare your current numbers to your usual range and call out anything worth noting.";
 
-// Range-line copy keyed to the BP classification tier. Mirrors the
-// in-app `tierChipText()` (utils/classification.ts) so the same calm
-// vocabulary is used wherever a tier is surfaced. "—" branch handles
-// the rare case of a BP reading whose classification is null.
+// Range-line copy keyed to the BP classification tier. Sprint 19
+// (audit D12 P0-4) — the switch moved to utils/classification.ts as
+// `vitalRangeCopyForTier` so HRDetail (which had drifted) shares it.
+// Kept as a named local so the call sites below read unchanged.
 function rangeCopyForTier(tier: ClassificationTier | null | undefined): string {
-  switch (tier) {
-    case 'in_pattern':
-      return 'mmHg · within your range';
-    case 'calm_concerned':
-      return 'mmHg · worth a look';
-    case 'confirmed_urgent':
-      return 'mmHg · talk to your doctor today';
-    default:
-      return 'mmHg';
-  }
+  return vitalRangeCopyForTier('mmHg', tier);
 }
 
 // ---------------------------------------------------------------------------
@@ -633,7 +626,7 @@ export function BPDetail({
                 ]}
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: theme.type('labelUppercase').family,
                     fontSize: theme.type('labelUppercase').size,
@@ -670,7 +663,7 @@ export function BPDetail({
                     // The chart card frame stays so the screen doesn't
                     // jump; the body explains why there's no line yet.
                     <Text
-                      allowFontScaling={false}
+                      maxFontSizeMultiplier={MAX_FONT_SCALE}
                       testID="bp-detail-chart-empty-today"
                       style={[
                         theme.type('bodyM'),
@@ -828,7 +821,7 @@ function ShareWithDoctorRow({ onPress }: ShareWithDoctorRowProps) {
     >
       <View style={{ flex: 1 }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: labelStyle.family,
             fontSize: labelStyle.size,
@@ -842,7 +835,7 @@ function ShareWithDoctorRow({ onPress }: ShareWithDoctorRowProps) {
           Share
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: valueStyle.family,
             fontSize: valueStyle.size,
@@ -854,7 +847,7 @@ function ShareWithDoctorRow({ onPress }: ShareWithDoctorRowProps) {
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 22,

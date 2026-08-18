@@ -12,6 +12,7 @@
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export const TRENDS_ASK_LABEL = 'Ask about this trend';
 
@@ -60,7 +61,7 @@ export function TrendsAskAffordance({
             />
           </Svg>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.bodyMedium,
               fontSize: 13,

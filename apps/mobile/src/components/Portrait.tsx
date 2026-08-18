@@ -19,6 +19,7 @@
 
 import { type StyleProp, type ViewStyle, View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export type PortraitSize = 'sm' | 'md' | 'lg';
 
@@ -86,7 +87,7 @@ export function Portrait({
           lineHeight: initialFontSize,
           color: accent,
         }}
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
       >
         {initial}
       </Text>

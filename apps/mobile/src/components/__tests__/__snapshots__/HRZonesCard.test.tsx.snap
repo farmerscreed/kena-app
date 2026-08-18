@@ -21,7 +21,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
   testID="zones"
 >
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.6}
     style={
       {
         "color": "#857F7A",
@@ -64,7 +64,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
       }
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#FFFFFF",
@@ -77,7 +77,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
         Resting
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#857F7A",
@@ -141,7 +141,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
       </View>
     </View>
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.6}
       style={
         {
           "color": "#857F7A",
@@ -184,7 +184,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
       }
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#FFFFFF",
@@ -197,7 +197,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
         Calm
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#857F7A",
@@ -261,7 +261,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
       </View>
     </View>
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.6}
       style={
         {
           "color": "#857F7A",
@@ -304,7 +304,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
       }
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#FFFFFF",
@@ -317,7 +317,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
         Active
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#857F7A",
@@ -381,7 +381,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
       </View>
     </View>
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.6}
       style={
         {
           "color": "#857F7A",
@@ -424,7 +424,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
       }
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#FFFFFF",
@@ -437,7 +437,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
         Vigorous
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#857F7A",
@@ -501,7 +501,7 @@ exports[`HRZonesCard matches snapshot in dark mode 1`] = `
       </View>
     </View>
     <Text
-      allowFontScaling={false}
+      maxFontSizeMultiplier={1.6}
       style={
         {
           "color": "#857F7A",

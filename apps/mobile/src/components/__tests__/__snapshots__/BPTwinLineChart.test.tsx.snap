@@ -2,14 +2,19 @@
 
 exports[`BPTwinLineChart — render matches snapshot 1`] = `
 <View
+  accessibilityLabel="Blood pressure through the day. 8 readings. The first number ranged from 110 to 130, the second number from 70 to 84. The first number finished the day 6 higher than it started."
+  accessibilityRole="image"
+  accessible={true}
   testID="chart"
 >
   <RNSVGSvgView
+    accessibilityElementsHidden={true}
     align="xMidYMid"
     bbHeight={170}
     bbWidth="100%"
     focusable={false}
     height={170}
+    importantForAccessibility="no-hide-descendants"
     meetOrSlice={0}
     minX={0}
     minY={0}
@@ -42,7 +47,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
       <RNSVGRect
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -76,7 +81,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -105,7 +110,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -134,7 +139,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -163,7 +168,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -192,7 +197,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -221,7 +226,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -250,7 +255,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -279,7 +284,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -296,7 +301,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={60.14999999999999}
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -313,7 +318,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={67.25}
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -330,7 +335,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={45.95}
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -347,7 +352,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={42.39999999999999}
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -364,7 +369,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={35.3}
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -381,7 +386,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={31.75}
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -398,7 +403,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={38.85000000000001}
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -415,7 +420,7 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
         cy={49.5}
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4293964676,
             "type": 0,
           }
         }
@@ -430,153 +435,169 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
       <RNSVGCircle
         cx={16}
         cy={134.7}
-        fill={
-          {
-            "payload": 4293435491,
-            "type": 0,
-          }
-        }
-        fillOpacity={0.6}
+        fill={null}
         propList={
           [
             "fill",
-            "fillOpacity",
+            "stroke",
+            "strokeWidth",
           ]
         }
         r={3}
+        stroke={
+          {
+            "payload": 4293964676,
+            "type": 0,
+          }
+        }
+        strokeWidth={1.5}
         testID="chart-dia-dot-0"
       />
       <RNSVGCircle
         cx={57.142857142857146}
         cy={138.25}
-        fill={
-          {
-            "payload": 4293435491,
-            "type": 0,
-          }
-        }
-        fillOpacity={0.6}
+        fill={null}
         propList={
           [
             "fill",
-            "fillOpacity",
+            "stroke",
+            "strokeWidth",
           ]
         }
         r={3}
+        stroke={
+          {
+            "payload": 4293964676,
+            "type": 0,
+          }
+        }
+        strokeWidth={1.5}
         testID="chart-dia-dot-1"
       />
       <RNSVGCircle
         cx={98.28571428571429}
         cy={124.05}
-        fill={
-          {
-            "payload": 4293435491,
-            "type": 0,
-          }
-        }
-        fillOpacity={0.6}
+        fill={null}
         propList={
           [
             "fill",
-            "fillOpacity",
+            "stroke",
+            "strokeWidth",
           ]
         }
         r={3}
+        stroke={
+          {
+            "payload": 4293964676,
+            "type": 0,
+          }
+        }
+        strokeWidth={1.5}
         testID="chart-dia-dot-2"
       />
       <RNSVGCircle
         cx={139.42857142857144}
         cy={122.275}
-        fill={
-          {
-            "payload": 4293435491,
-            "type": 0,
-          }
-        }
-        fillOpacity={0.6}
+        fill={null}
         propList={
           [
             "fill",
-            "fillOpacity",
+            "stroke",
+            "strokeWidth",
           ]
         }
         r={3}
+        stroke={
+          {
+            "payload": 4293964676,
+            "type": 0,
+          }
+        }
+        strokeWidth={1.5}
         testID="chart-dia-dot-3"
       />
       <RNSVGCircle
         cx={180.57142857142858}
         cy={116.94999999999999}
-        fill={
-          {
-            "payload": 4293435491,
-            "type": 0,
-          }
-        }
-        fillOpacity={0.6}
+        fill={null}
         propList={
           [
             "fill",
-            "fillOpacity",
+            "stroke",
+            "strokeWidth",
           ]
         }
         r={3}
+        stroke={
+          {
+            "payload": 4293964676,
+            "type": 0,
+          }
+        }
+        strokeWidth={1.5}
         testID="chart-dia-dot-4"
       />
       <RNSVGCircle
         cx={221.71428571428572}
         cy={113.4}
-        fill={
-          {
-            "payload": 4293435491,
-            "type": 0,
-          }
-        }
-        fillOpacity={0.6}
+        fill={null}
         propList={
           [
             "fill",
-            "fillOpacity",
+            "stroke",
+            "strokeWidth",
           ]
         }
         r={3}
+        stroke={
+          {
+            "payload": 4293964676,
+            "type": 0,
+          }
+        }
+        strokeWidth={1.5}
         testID="chart-dia-dot-5"
       />
       <RNSVGCircle
         cx={262.8571428571429}
         cy={118.725}
-        fill={
-          {
-            "payload": 4293435491,
-            "type": 0,
-          }
-        }
-        fillOpacity={0.6}
+        fill={null}
         propList={
           [
             "fill",
-            "fillOpacity",
+            "stroke",
+            "strokeWidth",
           ]
         }
         r={3}
+        stroke={
+          {
+            "payload": 4293964676,
+            "type": 0,
+          }
+        }
+        strokeWidth={1.5}
         testID="chart-dia-dot-6"
       />
       <RNSVGCircle
         cx={304}
         cy={127.6}
-        fill={
-          {
-            "payload": 4293435491,
-            "type": 0,
-          }
-        }
-        fillOpacity={0.6}
+        fill={null}
         propList={
           [
             "fill",
-            "fillOpacity",
+            "stroke",
+            "strokeWidth",
           ]
         }
         r={3}
+        stroke={
+          {
+            "payload": 4293964676,
+            "type": 0,
+          }
+        }
+        strokeWidth={1.5}
         testID="chart-dia-dot-7"
       />
       <RNSVGText
@@ -1025,10 +1046,11 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
               "width": 8,
             },
             {
-              "backgroundColor": "#E8A063",
+              "backgroundColor": "#F0B384",
             },
           ]
         }
+        testID="chart-legend-sys-swatch"
       />
       <Text
         allowFontScaling={false}
@@ -1064,11 +1086,13 @@ exports[`BPTwinLineChart — render matches snapshot 1`] = `
               "width": 8,
             },
             {
-              "backgroundColor": "#E8A063",
-              "opacity": 0.6,
+              "backgroundColor": "transparent",
+              "borderColor": "#F0B384",
+              "borderWidth": 1.5,
             },
           ]
         }
+        testID="chart-legend-dia-swatch"
       />
       <Text
         allowFontScaling={false}

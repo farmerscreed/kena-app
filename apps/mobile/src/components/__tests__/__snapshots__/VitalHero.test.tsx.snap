@@ -25,7 +25,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
           "borderRadius": 999,
           "height": 220,
           "left": "50%",
-          "opacity": 0.18,
+          "opacity": 0.14,
           "position": "absolute",
           "top": 0,
           "transform": [
@@ -39,7 +39,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
           "backgroundColor": "#7C7AAB",
         },
         {
-          "opacity": 0.55,
+          "opacity": 0.14,
         },
       ]
     }
@@ -301,7 +301,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
       }
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#857F7A",
@@ -327,7 +327,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.6}
           style={
             {
               "color": "#FFFFFF",
@@ -342,7 +342,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
           7:42
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.6}
           style={
             {
               "color": "#857F7A",
@@ -358,7 +358,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#857F7A",

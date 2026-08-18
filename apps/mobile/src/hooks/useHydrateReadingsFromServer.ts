@@ -26,7 +26,11 @@ import { useAuth } from '../state/auth';
 import { useReadings, type LocalReading } from '../state/readings';
 import { supabase } from '../services/supabase';
 import { logger } from '../services/analytics/logger';
-import { classifyReading } from '../utils/classification';
+import {
+  classifyReading,
+  type ReadingBaseline,
+} from '../utils/classification';
+import { computeReadingBaseline } from '../utils/readingBaseline';
 
 const FETCH_LIMIT = 30;
 
@@ -42,10 +46,18 @@ interface ServerReadingRow {
   hidden: boolean;
 }
 
-function mapServerRowToLocal(row: ServerReadingRow): LocalReading {
+function mapServerRowToLocal(
+  row: ServerReadingRow,
+  baseline: ReadingBaseline | null,
+): LocalReading {
+  // Sprint 19 (audit D12 P0-2) — server rows are classified against the
+  // wearer's own baseline, same as locally-captured ones. The caller
+  // computes the baseline ONCE over the whole fetched batch and passes
+  // it in, so every row in a hydration is judged consistently (mapping
+  // per-row would let a row's own value shift the band it is judged by).
   const classification = classifyReading(
     { systolic: row.systolic, diastolic: row.diastolic, pulse: row.pulse },
-    null,
+    baseline,
   );
   return {
     localId: `srv-${row.id}`,
@@ -109,7 +121,23 @@ export function useHydrateReadingsFromServer(): void {
           .limit(FETCH_LIMIT);
         if (cancelled || error || !rows || rows.length === 0) return;
 
-        const mapped = (rows as ServerReadingRow[]).map(mapServerRowToLocal);
+        // Sprint 19 (audit D12 P0-2) — build the baseline from the
+        // union of what the server just returned and what we already
+        // hold, then classify every row against it. Computing once, up
+        // front, keeps a batch internally consistent.
+        const serverRows = rows as ServerReadingRow[];
+        const { pending, recent } = useReadings.getState();
+        const baseline = computeReadingBaseline([
+          ...pending,
+          ...recent,
+          ...serverRows.map((r) => ({
+            measuredAtSec: Math.floor(new Date(r.measured_at).getTime() / 1000),
+            systolic: r.systolic,
+            diastolic: r.diastolic,
+            pulse: r.pulse,
+          })),
+        ]);
+        const mapped = serverRows.map((r) => mapServerRowToLocal(r, baseline));
         const added = useReadings.getState().seedRecentFromServer(mapped);
         if (added > 0) {
           logger.track('readings_hydrated_from_server', { count: added });

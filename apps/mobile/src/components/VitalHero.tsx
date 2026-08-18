@@ -46,6 +46,8 @@ import {
 import { VitalRing, type VitalType } from './VitalRing';
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
+import { opacity } from '../theme/tokens';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 const VITAL_ICON: Record<VitalType, PhosphorIcon> = {
   bp: DropIcon,
@@ -80,6 +82,13 @@ const RING_STROKE = 6;
 const ICON_SIZE = 28;
 
 const GLOW_BREATHE_DURATION_MS = 4500;
+/**
+ * Rendered opacity of the ambient glow disc behind the hero value.
+ * Sourced from the shared opacity tokens — see the rationale and the
+ * contrast ceiling documented on `opacity.glowRest` / `opacity.glowPeak`.
+ */
+const GLOW_OPACITY_REST = opacity.glowRest;
+const GLOW_OPACITY_PEAK = opacity.glowPeak;
 
 function composeAccessibilityLabel(
   sub: string,
@@ -112,19 +121,28 @@ export function VitalHero({
   const IconComponent = VITAL_ICON[vital];
 
   // Ambient glow — soft "breathing" opacity. Reduced motion → static.
-  const glowOpacity = useSharedValue(reduceMotion ? 0.55 : 0.55);
+  //
+  // Sprint 19 (audit D12 P0-5): these values ARE the rendered opacity.
+  // `styles.glow` also declares `opacity: GLOW_OPACITY_REST`, but this
+  // animated style is applied last and wins, so the stylesheet value is
+  // decorative only. The previous 0.55→0.75 range therefore painted the
+  // glow at 3–4× its designed strength, dropping `text.tertiary` over
+  // the hero to ~1.1:1 and oscillating contrast on a 4.5s cycle.
+  // Any change here must keep the peak at or below GLOW_OPACITY_PEAK —
+  // see the contrast test in __tests__/glowOpacity.test.ts.
+  const glowOpacity = useSharedValue<number>(GLOW_OPACITY_REST);
   useEffect(() => {
     if (reduceMotion) {
-      glowOpacity.value = 0.55;
+      glowOpacity.value = GLOW_OPACITY_REST;
       return;
     }
     glowOpacity.value = withRepeat(
       withSequence(
-        withTiming(0.75, {
+        withTiming(GLOW_OPACITY_PEAK, {
           duration: GLOW_BREATHE_DURATION_MS / 2,
           easing: Easing.inOut(Easing.ease),
         }),
-        withTiming(0.55, {
+        withTiming(GLOW_OPACITY_REST, {
           duration: GLOW_BREATHE_DURATION_MS / 2,
           easing: Easing.inOut(Easing.ease),
         }),
@@ -179,7 +197,7 @@ export function VitalHero({
         </View>
         <View style={{ flex: 1, minWidth: 0, marginLeft: theme.spacing.l }}>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,
@@ -195,7 +213,7 @@ export function VitalHero({
           </Text>
           <View style={styles.valueRow}>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontFamily: theme.fontFamilies.editorial,
                 fontSize: numericXl.size,
@@ -209,7 +227,7 @@ export function VitalHero({
             </Text>
             {secondary ? (
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.editorial,
                   fontSize: numericM.size,
@@ -225,7 +243,7 @@ export function VitalHero({
           </View>
           {range ? (
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 fontSize: captionStyle.size,
@@ -254,7 +272,7 @@ export function VitalHero({
                 ]}
               />
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.numeric,
                   fontSize: 9,
@@ -287,7 +305,9 @@ const styles = StyleSheet.create({
     width: 280,
     height: 220,
     borderRadius: 999,
-    opacity: 0.18,
+    // Overridden at runtime by the animated glow style (see GLOW_OPACITY_*).
+    // Kept in sync so a static render matches the animated rest state.
+    opacity: opacity.glowRest,
     transform: [{ translateX: -140 }],
   },
   row: {

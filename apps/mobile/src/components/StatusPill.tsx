@@ -23,6 +23,7 @@
 
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export type Status =
   | 'clear'
@@ -113,7 +114,7 @@ export function StatusPill({ status, testID, style }: StatusPillProps) {
           color: tone,
           textTransform: 'uppercase',
         }}
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
       >
         {STATUS_LABEL[status]}
       </Text>

@@ -149,3 +149,27 @@ describe('ActivityRingsHero — snapshot', () => {
     expect(toJSON()).toMatchSnapshot();
   });
 });
+
+// ── Audit P1-6 ───────────────────────────────────────────────────────
+// A View that carries an accessibilityLabel but not `accessible` is not
+// guaranteed to be exposed as a single element on iOS, so the composed
+// label was at risk of never being spoken. `accessible` is now explicit.
+
+describe('ActivityRingsHero — accessibility (audit P1-6)', () => {
+  it('marks the labelled root explicitly accessible', () => {
+    render(
+      withTheme(
+        <ActivityRingsHero
+          steps={2140}
+          target={8000}
+          calories={410}
+          moveMinutes={14}
+          testID="hero"
+        />,
+      ),
+    );
+    const root = screen.getByTestId('hero');
+    expect(root.props.accessible).toBe(true);
+    expect(root.props.accessibilityLabel).toBe('Today, 2,140 steps. 27% of 8,000.');
+  });
+});

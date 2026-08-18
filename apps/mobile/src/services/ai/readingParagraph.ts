@@ -82,7 +82,7 @@ export function generateReadingParagraphTierA(
   // doctor without alarmism.
   if (tier === 'confirmed_urgent') {
     return {
-      text: `This reading is above ${parentLabel}'s usual week. Worth a calm check-in with the doctor when she next gets the chance.`,
+      text: `This reading is above ${parentLabel}'s usual week. Worth a calm check-in with the doctor at the next chance.`,
       templateId: 'reading.confirmed_urgent',
       tier: 'A',
     };
@@ -93,7 +93,7 @@ export function generateReadingParagraphTierA(
   if (tier === 'calm_concerned') {
     if (input.sleepConcerning && sleepTotal) {
       return {
-        text: `This reading is ${delta || 'a little above the week'} for ${parentLabel}. She slept ${sleepTotal} last night — these often go together.`,
+        text: `This reading is ${delta || 'a little above the week'} for ${parentLabel}. ${parentLabel} slept ${sleepTotal} last night — these often go together.`,
         templateId: 'reading.calm_concerned.sleep_poor',
         tier: 'A',
       };
@@ -108,7 +108,7 @@ export function generateReadingParagraphTierA(
   // in_pattern: reassuring + reinforcing context if available.
   if (sleepTotal) {
     return {
-      text: `This reading is in pattern for ${parentLabel}. She slept ${sleepTotal} last night — both look good against the week.`,
+      text: `This reading is in pattern for ${parentLabel}. ${parentLabel} slept ${sleepTotal} last night — both look good against the week.`,
       templateId: 'reading.in_pattern.with_sleep',
       tier: 'A',
     };

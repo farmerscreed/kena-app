@@ -294,16 +294,24 @@ function HydratingFallback() {
  * Sprint 16.6 FUN-4 — wire the learned-time reminder dispatcher to
  * current app state. Pure-ish: reads the store snapshots directly so
  * it does not depend on React rendering. Self-buyer fires "you"
- * copy; caregiver fires a neutral "your loved one" until per-parent
- * resolution is wired through useCaregiverFamily (TODO follow-up).
+ * copy; caregiver fires a neutral label until per-parent resolution is
+ * wired through useCaregiverFamily (TODO follow-up).
  * The "parent" persona route is read-only by spec, so we skip it.
+ *
+ * Sprint 19 (audit D12 P0-8) — the caregiver fallback was "your loved
+ * one", a HARD FAIL in docs/05-voice-and-claims.md §87, and it reached
+ * the lock screen because local notifications bypass the voice gate the
+ * server path enforces. `dispatcher.ts` now lints too, but the correct
+ * label matters more than the safety net.
  */
+const CAREGIVER_REMINDER_FALLBACK_LABEL = 'your family member';
+
 function scheduleLearnedTimeFromCurrentState(): Promise<unknown> | void {
   const accountType = useAuth.getState().profile?.account_type;
   if (!accountType || accountType === 'parent') return;
   const isSelf = accountType === 'self_buyer';
   const readings = useReadings.getState().recent ?? [];
-  const parentLabel = isSelf ? '' : 'your loved one';
+  const parentLabel = isSelf ? '' : CAREGIVER_REMINDER_FALLBACK_LABEL;
   return scheduleNextLearnedTimeReminder({ readings, parentLabel, isSelf });
 }
 

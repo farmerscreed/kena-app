@@ -80,6 +80,7 @@ import { useReadings } from '../../state/readings';
 import { bpBaseline, formatBPBaseline } from '../../utils/vitalBaselines';
 import { logger } from '../../services/analytics/logger';
 import type { AccountType } from '../../types/database';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import type {
   CaregiverScreenProps,
   SelfBuyerScreenProps,
@@ -486,7 +487,7 @@ export function ForYourDoctorScreen(props: Nav) {
               testID="fyd-range-block"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.numeric,
                   fontSize: 9,
@@ -524,7 +525,7 @@ export function ForYourDoctorScreen(props: Nav) {
               />
               <View style={[styles.pagesPdfTag, { backgroundColor: theme.colors.surface.warmBase, borderColor: theme.colors.brand.primary }]}>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: 9,
@@ -538,7 +539,7 @@ export function ForYourDoctorScreen(props: Nav) {
                 </Text>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.numeric,
                   fontSize: 9.5,
@@ -648,7 +649,7 @@ export function ForYourDoctorScreen(props: Nav) {
                 if (!isPlus) {
                   return (
                     <Text
-                      allowFontScaling={false}
+                      maxFontSizeMultiplier={MAX_FONT_SCALE}
                       style={{
                         fontFamily: theme.fontFamilies.numeric,
                         fontSize: 9,
@@ -667,7 +668,7 @@ export function ForYourDoctorScreen(props: Nav) {
                 if (isOffline) {
                   return (
                     <Text
-                      allowFontScaling={false}
+                      maxFontSizeMultiplier={MAX_FONT_SCALE}
                       style={{
                         fontFamily: theme.fontFamilies.numeric,
                         fontSize: 9,
@@ -685,7 +686,7 @@ export function ForYourDoctorScreen(props: Nav) {
                 }
                 return (
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE}
                     style={{
                       fontFamily: theme.fontFamilies.numeric,
                       fontSize: 9,
@@ -724,7 +725,7 @@ export function ForYourDoctorScreen(props: Nav) {
                   })}
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE}
                     style={{
                       fontFamily: theme.fontFamilies.numeric,
                       fontSize: 11,
@@ -734,7 +735,7 @@ export function ForYourDoctorScreen(props: Nav) {
                     {formatLastGenerated(lastGenerated)}
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE}
                     style={{
                       fontFamily: theme.fontFamilies.numeric,
                       fontSize: 11,
@@ -750,7 +751,7 @@ export function ForYourDoctorScreen(props: Nav) {
                   the dev rasterizer returns mock HTML. */}
               {sandboxNotice ? (
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: 10,
@@ -837,7 +838,7 @@ function Header({ theme, onBack }: { theme: Theme; onBack: () => void }) {
             />
           </Svg>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.numeric,
               fontSize: 11,
@@ -851,7 +852,7 @@ function Header({ theme, onBack }: { theme: Theme; onBack: () => void }) {
           </Text>
         </Pressable>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9.5,
@@ -895,7 +896,7 @@ function TitleBlock({
     >
       <Text
         accessibilityRole="header"
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.editorial,
           fontSize: 32,
