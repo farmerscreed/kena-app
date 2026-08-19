@@ -154,25 +154,37 @@ exist yet; nothing to flip.
   surfaced per-vital + Story drivers + the letter; brainstorm answer
   delivered, implementation next).
 
-## Release state (2026-08-19)
+## Release state (2026-08-19) — DONE
 
 - `redesign/vitals-layer-d13` → `main` MERGED as PR #29 (after the
   matrix, #28). versionCode 15, built from main, installed + verified.
-- db-migrate on main FAILED with the pre-existing remote-only
-  migration-history drift ("Remote migration versions not found in
-  local migrations directory") — prod's history table carries entries
-  the repo lacks (the Aug-14 punch list recorded this same failure).
-- Migrations 0053–0058 are therefore NOT YET APPLIED to prod, the five
-  edge functions are NOT YET DEPLOYED, and the cron has not been
-  invoked. Until then the app runs correctly on provisional on-device
-  bands; the matrix/letter/context-band features await the backend.
-- EVERYTHING is packaged in `tools/release-d13.sh`: the founder runs
-  it once with `export LEIKO_PAT='sbp_…'` (1Password, per session,
-  never in a file — docs/release/prod-db-access.md). It shows the
-  history drift, guides the repair, pushes migrations, deploys
-  detect-anomaly/sync/compute-correlations/compute-weekly-summary/
-  compute-monthly-baseline, and invokes the detect-anomaly cron once
-  via tools/prod-sql.py.
+- PROD RELEASE EXECUTED AND VERIFIED. See the release record at the top
+  of this document for exactly what ran and what was found.
+- The migration-history drift is FIXED, not worked around: the 19
+  remote-only timestamp versions were removed from
+  `supabase_migrations.schema_migrations` (their SQL stays applied) and
+  0053–0058 recorded. **Proven green:** the `DB migrate (Supabase)`
+  workflow was dispatched on main afterwards and succeeded (run
+  32261764217) — the first green db-migrate since the drift appeared.
+- `tools/release-d13.sh` is now STALE — supabase CLI v2.109 dropped
+  `--project-ref` from `migration list` / `db push`, so its DB steps
+  error out. Use `tools/prod-sql.py` (management API; reads LEIKO_PAT
+  or the session file `~/secrets/leiko-pat`) and
+  `tools/deploy-d13-fns.sh [fn …]` instead. Rewrite or delete the old
+  script before anyone trusts it again.
+
+### CI state on main (read before assuming you broke something)
+
+- `lint`, `typecheck`, `test`, `copy lint (voice rules)`, and the Deno
+  edge-function tests all PASS on main as of d184434.
+- The `Audit (production deps, high+ severity)` step FAILS, and has
+  failed continuously since at least 2026-08-14 — it predates every
+  D13 commit. Cause: new advisories against toolchain packages
+  (`@babel/core`, `brace-expansion`, `image-size` via metro/expo).
+  `npm audit fix --force` would install expo@57, a breaking change, so
+  it is NOT taken: the stack is pinned in docs/00-tech-stack.md and
+  bumping needs a founder decision. **Open question for the founder:**
+  bump the toolchain, or scope the audit step to runtime deps only?
 
 ## Built (was: approved-but-not-yet-built)
 
@@ -199,10 +211,16 @@ inherits the matrix through the existing context assembler.
 
 ## Next session, in order
 
-1. Founder verifies v14 (round-1 fixes: activity numbers, doctor
-   cards, segment labels, ring compass, strip legends, hero card).
-2. On "go": build the cross-vital correlation matrix (above).
-3. Remaining review flags (§ above) + v1.1 deferrals as chosen.
-4. Single PR: `redesign/vitals-layer-d13` → `main`, founder-reviewed,
-   then execute the release runbook above. Version-code ledger: next
-   install is 15.
+1. **On-device live pass on v15** — now that prod serves real baselines,
+   check that the vital pages show server bands (not provisional),
+   that PersonalFindingsCard reaches its found / honest-negative /
+   counting states on BP + HR, and that the context segments render.
+   The first Story letter appears after the Monday 04:00 UTC weekly
+   cron; correlations refresh hourly.
+2. Decide the `npm audit` question (see CI state above) — it is the
+   only red step on main.
+3. Remaining founder review flags (§ above): storyCopy.ts strings,
+   chapter thresholds (4 mmHg / 3 weeks / t≥2), the lightened §5.1
+   hexes, the "Diagnosed with hypertension?" allowlist.
+4. v1.1 deferrals as chosen. Version-code ledger: next install is 16.
+5. Rewrite or delete `tools/release-d13.sh` (stale CLI flags).
