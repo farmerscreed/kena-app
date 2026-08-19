@@ -217,6 +217,11 @@ export type ReadingRow = {
   pulse: number | null;
   quality_score: QualityScore | null;
   quality_flags: Record<string, unknown>;
+  // D13 PR-1/PR-11 — reading context (migration 0055). Optional so
+  // pre-existing row literals in fixtures stay valid; the DB default
+  // is '{}'.
+  context_tags?: string[];
+  context_note?: string | null;
   motion_detected: boolean | null;
   hidden: boolean;
   hidden_reason: string | null;

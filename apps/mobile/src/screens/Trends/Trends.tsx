@@ -70,6 +70,7 @@ import { generateTrendsNarrative } from '../../services/ai/trendsNarration';
 import type { TrendsRange, TrendsData } from '../../utils/trends-aggregate';
 import type { VitalType } from '../../components/VitalRing';
 import { ViewAsTableLink } from '../../components/ViewAsTableLink';
+import { StorySection } from '../../components/StorySection';
 import type { AccountType } from '../../types/database';
 import { bpBaseline, formatBPBaseline } from '../../utils/vitalBaselines';
 import type {
@@ -460,6 +461,10 @@ export function Trends() {
         testID="trends-scroll"
       >
         <Header title={headerTitle} onBack={() => navigation.goBack()} />
+
+        {/* Story Trends (2026-08-19) — the person's arc sits above the
+            range machinery: letter, band river, chapters. */}
+        <StorySection familyId={familyId} userId={userId} />
 
         <TrendsRangeChipsRow
           accountType={accountType}
