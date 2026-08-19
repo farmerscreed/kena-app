@@ -217,7 +217,35 @@ by downgrading react-native 0.81.5 → 0.72.17. Never delete
 pruned 1089 lines of platform-specific entries the iOS build needs.
 Both are documented in `docs/_reference/npm-audit-allowlist.md`.
 
-Version-code ledger: 16–19 used; next install is 20.
+Version-code ledger: 16–20 used; next is 21.
+
+### Play Store release (2026-08-19)
+
+Artifacts staged in `~/leiko-release-v20/` (not in the repo — build
+outputs):
+
+- `leiko-v20-playstore.aab` — the Play bundle, versionCode 20.
+- `leiko-v20-sideload.apk` — the same code and versionCode, for
+  direct install.
+
+Verified on the bundle: signed with the LEIKO release key (not the
+debug fallback), versionCode 20, applicationId `com.leiko.care`,
+64-bit ABIs present (arm64-v8a + x86_64), and the shipped JS bundle
+points at `https://kqnzxjrpnjnczhgdwdqg.supabase.co` — prod.
+
+**Play currently has versionCode 7 live** (confirmed from a device
+where `com.leiko.care` v7 was installed by `com.android.vending`), so
+20 is a valid upgrade.
+
+**versionName is still `1.0.0`, same as the live v7** — cosmetic, does
+not block upload, but the D13 vitals layer is a major feature release
+and probably wants `1.1.0`. Founder decision; one rebuild to change.
+
+**A locally-built APK cannot update a Play-installed copy** — Play App
+Signing re-signs with Google's key, so signatures never match
+(`INSTALL_FAILED_UPDATE_INCOMPATIBLE`). Either uninstall the Play copy
+first (this loses that device's unsynced local readings) or, better,
+push the AAB to an Internal Testing track and update through Play.
 
 ## Built (was: approved-but-not-yet-built)
 
