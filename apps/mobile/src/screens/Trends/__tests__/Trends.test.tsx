@@ -99,6 +99,13 @@ jest.mock('../../../hooks/useTrendsData', () => ({
   usePrefetchTrendsRange: () => undefined,
 }));
 
+// Story Trends (2026-08-19) — the section owns its own react-query
+// wiring; this suite tests the page chrome, so stub it (its own suite
+// covers the story pieces).
+jest.mock('../../../components/StorySection', () => ({
+  StorySection: () => null,
+}));
+
 jest.mock('../../../hooks/usePlusEntitlement', () => ({
   usePlusEntitlement: () => ({
     tier: mockIsPlus ? 'plus' : 'free',

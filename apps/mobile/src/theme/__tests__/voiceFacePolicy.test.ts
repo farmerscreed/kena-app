@@ -19,6 +19,8 @@ const VOICE_SURFACES = new Set([
   'components/AskLeikoBody.tsx',
   // The Person Overview's "What Leiko sees" voice slot (D13 §7.2a).
   'screens/Person/PersonOverviewScreen.tsx',
+  // The Story Trends letter (2026-08-19).
+  'components/StorySection.tsx',
   // The Trends letter.
   'components/TrendsLetterHero.tsx',
   'components/TrendsCitedSection.tsx',
