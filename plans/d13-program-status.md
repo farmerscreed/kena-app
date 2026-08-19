@@ -103,6 +103,22 @@ exist yet; nothing to flip.
 5. `is_sufficient` encodes the stricter §4.3 classification column
    (single boolean; band-only gate derivable from sample_count).
 
+## Founder test round 1 (2026-08-19) — PR #27, merged; v14 on phone
+
+- FIXED: Activity daily-average denominator bug (zero-step not-worn
+  days polluted the narration average); BP/HR narration now compares
+  against the truth-layer band (same as the chips).
+- ADDED: DoctorLinkCard on every page (DetailShell slot); BP segments
+  "All times" + tap affordance + caption; TimeOfDayRing compass words +
+  caption; correlation-strip legend + how-to-read; HR what-moves
+  evidence card; overview hero staged card; meds log subtitle.
+- OPEN from the founder's list: item 4 depth (movement×HR strip needs
+  a steps series in HRDetail), item 5 (cross-vital AI correlation
+  matrix — engine expansion: pairs sleep→BP, sleep→restingHR,
+  activity→restingHR, activity→BP, after-meds-tag→BP, each n≥14-gated,
+  surfaced per-vital + Story drivers + the letter; brainstorm answer
+  delivered, implementation next).
+
 ## Next session, in order
 
 1. Founder joint test on v13 (walk: cold start → take reading + tags →
