@@ -90,7 +90,7 @@ export function DoctorCoverPreview({
   );
 
   return (
-    <View
+    <View accessible={true}
       style={[
         styles.root,
         {

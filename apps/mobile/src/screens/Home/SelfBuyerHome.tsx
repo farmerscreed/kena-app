@@ -39,6 +39,7 @@ import { sleepScoreForSession } from '../../utils/classification';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AnomalyBanner } from '../../components/AnomalyBanner';
+import { bannerCopyFor } from '../../utils/anomalyBannerCopy';
 import { ScreenAnomalyBanner } from '../../components/ScreenAnomalyBanner';
 import { SyncReassuranceBanner } from '../../components/SyncReassuranceBanner';
 import { QuietHoursAffirmSheet } from '../../components/QuietHoursAffirmSheet';
@@ -48,6 +49,16 @@ import { HealthPlatformPermissionPrompt } from '../../components/HealthPlatformP
 import { SixthReadingPaywallHost } from '../../components/SixthReadingPaywallHost';
 import { DailyPulseHero, type DailyPulseHeroVitals } from '../../components/DailyPulseHero';
 import { HomeLearnCard } from '../../components/HomeLearnCard';
+// Sprint 19 (audit P1-3) — single source of truth for the bottom
+// furniture stack (tab bar + Ask Leiko FAB) and the scroll padding that
+// must clear it.
+import {
+  ASK_LEIKO_FAB_HEIGHT,
+  HOME_TAB_BAR_HEIGHT,
+  homeFurnitureBottom,
+  homeScrollPaddingBottom,
+  type HomeFurniture,
+} from '../../components/homeLayout';
 import { useSeededLearnCard } from '../../hooks/useSeededLearnCard';
 import { useEnsureSelfBuyerFamily } from '../../hooks/useEnsureSelfBuyerFamily';
 import { useDailyNarration } from '../../hooks/useDailyNarration';
@@ -63,6 +74,9 @@ import {
 } from '../../components/CorrelationStrip';
 import { DaySpine } from '../../components/DaySpine';
 import { useDailyPulseData } from '../../state/dailyPulse';
+import { bpRingFill } from '../../utils/vitalThemes';
+import { canonicalTierFor } from '../../utils/classification';
+import { CanvasGradient } from '../../components/CanvasGradient';
 import { useFamilyReadings } from '../../hooks/useFamilyReadings';
 import { FamilyRemovalBanner } from '../../components/FamilyRemovalBanner';
 import { useFamilyRemovalBanner } from '../../hooks/useFamilyRemovalBanner';
@@ -77,8 +91,17 @@ import {
   type DayMoment,
 } from '../../utils/dayMoments';
 import type { SelfBuyerStackParamList } from '../../navigation/types';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 type Nav = NativeStackNavigationProp<SelfBuyerStackParamList>;
+
+// Sprint 19 (audit P1-3) — this screen always renders BOTH the tab bar
+// and the Ask Leiko FAB. They used to be positioned independently and
+// overlapped by 16pt, with the tab bar painting over the FAB because it
+// renders second. They are now two layers of one bottom-anchored stack.
+// `safeAreaBottom` stays 0: the furniture lives inside the SafeAreaView
+// below, which already pads the OS inset.
+const SELF_BUYER_FURNITURE: HomeFurniture = { tabBar: true, fab: true };
 
 export function SelfBuyerHome() {
   const theme = useTheme();
@@ -195,12 +218,15 @@ export function SelfBuyerHome() {
       style={[styles.root, { backgroundColor: theme.colors.surface.warmBase }]}
       edges={['top', 'bottom']}
     >
+      {/* D13 PR-5 (§5.4) — canvas gradient under everything. */}
+      <CanvasGradient />
       <ScrollView
         contentContainerStyle={[
           styles.scroll,
           {
-            paddingBottom:
-              theme.spacing.xxxxl + theme.spacing.xxxl + theme.spacing.l,
+            // Sprint 19 (audit P1-3) — was a flat 96pt, which the FAB
+            // (top edge at 124pt) already overran. Derived now.
+            paddingBottom: homeScrollPaddingBottom(SELF_BUYER_FURNITURE),
           },
         ]}
         refreshControl={
@@ -289,6 +315,22 @@ export function SelfBuyerHome() {
                   : central.label,
               value: central.value,
               sub: buildCentralSub(data, central.priority),
+              unit: buildCentralUnit(central.priority),
+              // Sprint 19 (audit P1-5) — the tier was already computed
+              // two lines from here (deriveBanner reads the same field)
+              // and never reached the biggest number on the screen. Only
+              // passed when the cascade actually resolved to BP; the HR
+              // fallback has no BP verdict to show.
+              tier:
+                central.priority === 'bp'
+                  ? data.bp.classification?.tier ?? null
+                  : null,
+              // D13 PR-4 — verdict-aware tier so the learning state
+              // renders grey with honest copy.
+              canonicalTier:
+                central.priority === 'bp' && data.bp.classification
+                  ? canonicalTierFor(data.bp.classification)
+                  : null,
               live: false,
             }}
             onSelectVital={handleVitalPress}
@@ -533,7 +575,7 @@ function PulseHeader({ theme, eyebrow, greeting, name, onAvatarPress }: PulseHea
     >
       <View style={{ flex: 1 }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: eyebrowStyle.family,
             fontSize: eyebrowStyle.size,
@@ -547,7 +589,7 @@ function PulseHeader({ theme, eyebrow, greeting, name, onAvatarPress }: PulseHea
           {eyebrow}
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: greetingStyle.size,
@@ -588,7 +630,7 @@ function PulseHeader({ theme, eyebrow, greeting, name, onAvatarPress }: PulseHea
             "Settings". Phosphor GearSix lands when the icon library
             sweep ships. */}
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontSize: 18,
             color: theme.colors.text.secondary,
@@ -638,7 +680,7 @@ function PairWatchPrompt({ theme, onPair }: PairWatchPromptProps) {
       })}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -712,7 +754,7 @@ function NarrationCard({ theme, text }: NarrationCardProps) {
       testID="self-buyer-home-narration"
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -761,8 +803,13 @@ function AskLeikoFAB({ theme, onPress }: AskLeikoFABProps) {
       style={({ pressed }) => ({
         position: 'absolute',
         right: theme.spacing.xl,
-        bottom: theme.spacing.xxxxl + theme.spacing.xl,
-        height: 56,
+        // Sprint 19 (audit P1-3) — was `theme.spacing.xxxxl +
+        // theme.spacing.xl` (68), which put the FAB at 68..124 while the
+        // tab bar sat at 24..84. They overlapped, and the tab bar
+        // rendered second so it painted over the FAB. Stacked properly
+        // now: the FAB sits a gap above the tab bar's top edge.
+        bottom: homeFurnitureBottom('fab', SELF_BUYER_FURNITURE),
+        height: ASK_LEIKO_FAB_HEIGHT,
         paddingHorizontal: theme.spacing.l,
         borderRadius: 28,
         backgroundColor: pressed
@@ -776,7 +823,7 @@ function AskLeikoFAB({ theme, onPress }: AskLeikoFABProps) {
       })}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -826,8 +873,10 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
         position: 'absolute',
         left: theme.spacing.m,
         right: theme.spacing.m,
-        bottom: theme.spacing.xxl,
-        height: 60,
+        // Sprint 19 (audit P1-3) — shared with HomeTabBar (which this
+        // local copy mirrors) via the furniture stack model.
+        bottom: homeFurnitureBottom('tabBar', SELF_BUYER_FURNITURE),
+        height: HOME_TAB_BAR_HEIGHT,
         borderRadius: 28,
         backgroundColor: theme.colors.surface.warmElevated,
         borderWidth: 0.5,
@@ -858,7 +907,7 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
           })}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,
@@ -900,7 +949,7 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
         })}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.display,
             fontSize: 26,
@@ -929,7 +978,7 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
           })}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,
@@ -959,7 +1008,8 @@ function SelfBuyerTabBar({ theme, onSelect }: SelfBuyerTabBarProps) {
 export function buildHeroVitals(
   data: ReturnType<typeof useDailyPulseData>,
 ): DailyPulseHeroVitals {
-  const bpFill = bpFillFromTier(data.bp.classification?.tier);
+  // D13 PR-4 (§6.2) — the ring's stroke encodes data sufficiency.
+  const bpFill = bpRingFill(data.bp.classification);
   const hrFill = data.hr.displayBpm !== null
     ? clamp01((data.hr.displayBpm - 40) / 80)
     : 0;
@@ -1014,9 +1064,13 @@ export function buildHeroVitals(
 
 /**
  * Builds the small mono caption that sits under the giant value inside
- * the central BP ring. Per the constellation design: "mmHg · 6:42 am"
- * for fresh BP, falls through to a unit-only caption for the HR / sleep
- * cascade states. Pure helper.
+ * the central BP ring — when the reading was taken, or what the
+ * fallback value describes. Pure helper.
+ *
+ * Sprint 19 (audit P1-5): the unit moved OUT of this string. It now
+ * belongs to the hero's verdict line ("mmHg · within your usual range"),
+ * composed by `vitalRangeCopyForTier` — see `buildCentralUnit` below.
+ * Keeping the unit here as well would print it twice.
  */
 export function buildCentralSub(
   data: ReturnType<typeof useDailyPulseData>,
@@ -1024,13 +1078,14 @@ export function buildCentralSub(
 ): string | undefined {
   switch (priority) {
     case 'bp': {
-      if (!data.bp.latestSampleSec) return 'mmHg';
-      const t = new Date(data.bp.latestSampleSec * 1000).toLocaleTimeString(
+      if (!data.bp.latestSampleSec) return undefined;
+      return new Date(data.bp.latestSampleSec * 1000).toLocaleTimeString(
         undefined,
         { hour: 'numeric', minute: '2-digit' },
       );
-      return `mmHg · ${t}`;
     }
+    // The HR / sleep fallbacks keep their unit inline: they have no
+    // classification tier, so they get no verdict line to carry it.
     case 'hr':
       return 'bpm · resting';
     case 'sleep':
@@ -1041,19 +1096,19 @@ export function buildCentralSub(
   }
 }
 
-function bpFillFromTier(tier: string | null | undefined): number {
-  // D13 §7.1: in_pattern → 1.0, calm_concerned → 0.5, confirmed_urgent → 0.25,
-  // no data → 0. Activity has its own ring formula above.
-  switch (tier) {
-    case 'in_pattern':
-      return 1.0;
-    case 'calm_concerned':
-      return 0.5;
-    case 'confirmed_urgent':
-      return 0.25;
-    default:
-      return 0;
-  }
+/**
+ * Sprint 19 (audit P1-5) — the unit for the hero's verdict line. The
+ * hero pairs it with the classification tier through the shared
+ * `vitalRangeCopyForTier`, so home says exactly what BPDetail says.
+ *
+ * Only BP. The HR / sleep fallbacks in the D13 §7.2 cascade carry no
+ * classification of their own, so they keep their unit inline in the
+ * caption (see `buildCentralSub`) and render no verdict line.
+ */
+export function buildCentralUnit(
+  priority: 'bp' | 'hr' | 'sleep' | 'none',
+): string | undefined {
+  return priority === 'bp' ? 'mmHg' : undefined;
 }
 
 function clamp01(x: number): number {
@@ -1068,25 +1123,32 @@ interface BannerState {
   cta?: { label: string; onPress: () => void };
 }
 
+// D13 PR-2 (P0-4) — the cold-start fallback banner (server has no
+// anomaly event yet) no longer carries its own copy. It routes through
+// canonical utils/anomalyBannerCopy, the single voice-linted source,
+// synthesizing a minimal event from the local classification.
 function deriveBanner(
   data: ReturnType<typeof useDailyPulseData>,
 ): BannerState | null {
-  const tier = data.bp.classification?.tier;
-  if (tier === 'confirmed_urgent') {
-    return {
-      severity: 'confirmed-urgent',
-      title: 'Talk to your doctor today',
-      body: 'These last few readings are unusually high. We recommend talking to your doctor today.',
-    };
-  }
-  if (tier === 'calm_concerned') {
-    return {
-      severity: 'calm-concerned',
-      title: 'Worth a look',
-      body: 'A few of your recent readings have been higher than usual. Might be worth talking to your doctor.',
-    };
-  }
-  return null;
+  const classification = data.bp.classification;
+  const tier = classification?.tier;
+  if (tier !== 'confirmed_urgent' && tier !== 'calm_concerned') return null;
+  const copy = bannerCopyFor(
+    {
+      id: 'local-fallback',
+      userId: '',
+      familyId: '',
+      vital: 'bp',
+      tier,
+      reason: classification?.reason ?? 'outside_band_confirmed',
+      readingId: null,
+      triggeredAtSec: 0,
+      acknowledgedAt: null,
+      feedbackThumb: 0,
+    },
+    'self_buyer',
+  );
+  return { severity: copy.severity, title: copy.title, body: copy.body };
 }
 
 function buildHeader(displayName: string | undefined): {

@@ -46,7 +46,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
             "top": 0,
           },
           {
-            "backgroundColor": "#7C7AAB",
+            "backgroundColor": "#9B93C7",
             "opacity": 0.08,
           },
         ]
@@ -201,10 +201,10 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
           <Text
             accessibilityLabel="Sleep"
             accessibilityRole="header"
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#7C7AAB",
+                "color": "#9B93C7",
                 "fontFamily": "Inter_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.55,
@@ -363,6 +363,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
           <View
             accessibilityLabel="Last sync Thu. 7:42hrs. A quieter night by the numbers"
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -384,7 +385,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     "borderRadius": 999,
                     "height": 220,
                     "left": "50%",
-                    "opacity": 0.18,
+                    "opacity": 0.12,
                     "position": "absolute",
                     "top": 0,
                     "transform": [
@@ -395,10 +396,10 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     "width": 280,
                   },
                   {
-                    "backgroundColor": "#7C7AAB",
+                    "backgroundColor": "#9B93C7",
                   },
                   {
-                    "opacity": 0.55,
+                    "opacity": 0.12,
                   },
                 ]
               }
@@ -431,6 +432,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                       "now": 0.85,
                     }
                   }
+                  accessible={true}
                   style={
                     [
                       {
@@ -494,7 +496,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                         r={51}
                         stroke={
                           {
-                            "payload": 4286347947,
+                            "payload": 4288385991,
                             "type": 0,
                           }
                         }
@@ -528,7 +530,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                         r={51}
                         stroke={
                           {
-                            "payload": 4286347947,
+                            "payload": 4288385991,
                             "type": 0,
                           }
                         }
@@ -580,7 +582,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     bbHeight={28}
                     bbWidth={28}
                     className="moon-duotone__svg-icon-phosphor"
-                    color="#7C7AAB"
+                    color="#9B93C7"
                     fill="currentColor"
                     focusable={false}
                     height={28}
@@ -626,7 +628,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                         d="M227.89 147.89A96 96 0 1 1 108.11 28.11a96.09 96.09 0 0 0 119.78 119.78"
                         fill={
                           {
-                            "payload": 4286347947,
+                            "payload": 4288385991,
                             "type": 0,
                           }
                         }
@@ -660,7 +662,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                 }
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -686,14 +688,17 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.6}
                     style={
                       {
                         "color": "#FFFFFF",
-                        "fontFamily": "InstrumentSerif_400Regular",
-                        "fontSize": 56,
+                        "fontFamily": "JetBrainsMono_500Medium",
+                        "fontSize": 44,
+                        "fontVariant": [
+                          "tabular-nums",
+                        ],
                         "letterSpacing": -0.5,
-                        "lineHeight": 60,
+                        "lineHeight": 48,
                       }
                     }
                     testID="sleep-detail-hero-primary"
@@ -701,13 +706,16 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     7:42
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.6}
                     style={
                       {
-                        "color": "#857F7A",
-                        "fontFamily": "InstrumentSerif_400Regular",
-                        "fontSize": 22,
-                        "lineHeight": 28,
+                        "color": "#B8B2AA",
+                        "fontFamily": "JetBrainsMono_500Medium",
+                        "fontSize": 17,
+                        "fontVariant": [
+                          "tabular-nums",
+                        ],
+                        "lineHeight": 22,
                         "marginLeft": 4,
                       }
                     }
@@ -717,7 +725,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -813,7 +821,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
               testID="sleep-detail-range-7d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
@@ -877,7 +885,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
               testID="sleep-detail-range-30d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -941,7 +949,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
               testID="sleep-detail-range-90d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -966,363 +974,6 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
             }
           }
         >
-          <View
-            style={
-              [
-                {
-                  "backgroundColor": "#120C07",
-                  "borderColor": "rgba(255,255,255,0.06)",
-                  "borderRadius": 22,
-                  "borderWidth": 0.5,
-                  "gap": 12,
-                  "marginHorizontal": 20,
-                  "padding": 16,
-                },
-                undefined,
-              ]
-            }
-            testID="sleep-detail-stages"
-          >
-            <View
-              style={
-                {
-                  "alignItems": "center",
-                  "flexDirection": "row",
-                  "justifyContent": "space-between",
-                }
-              }
-            >
-              <Text
-                allowFontScaling={false}
-                style={
-                  {
-                    "color": "#857F7A",
-                    "fontFamily": "Inter_500Medium",
-                    "fontSize": 11,
-                    "letterSpacing": 0.55,
-                    "lineHeight": 14,
-                    "textTransform": "uppercase",
-                  }
-                }
-              >
-                Sleep composition
-              </Text>
-              <Text
-                allowFontScaling={false}
-                style={
-                  {
-                    "color": "#857F7A",
-                    "fontFamily": "JetBrainsMono_500Medium",
-                    "fontSize": 12,
-                    "letterSpacing": 0.3,
-                    "lineHeight": 16,
-                  }
-                }
-              >
-                7h 42m
-                 total
-              </Text>
-            </View>
-            <View
-              accessibilityLabel="Deep 21%, Light 50%, Other 29%"
-              accessibilityRole="image"
-              style={
-                {
-                  "borderRadius": 6,
-                  "flexDirection": "row",
-                  "height": 12,
-                  "overflow": "hidden",
-                }
-              }
-            >
-              <View
-                style={
-                  {
-                    "backgroundColor": "#7C7AAB",
-                    "flex": 21,
-                    "marginLeft": 0,
-                    "opacity": 1,
-                  }
-                }
-                testID="sleep-detail-stages-segment-deep"
-              />
-              <View
-                style={
-                  {
-                    "backgroundColor": "#7C7AAB",
-                    "flex": 50,
-                    "marginLeft": 1,
-                    "opacity": 0.7,
-                  }
-                }
-                testID="sleep-detail-stages-segment-light"
-              />
-              <View
-                style={
-                  {
-                    "backgroundColor": "#7C7AAB",
-                    "flex": 29,
-                    "marginLeft": 1,
-                    "opacity": 0.4,
-                  }
-                }
-                testID="sleep-detail-stages-segment-other"
-              />
-            </View>
-            <View
-              style={
-                {
-                  "flexDirection": "row",
-                  "gap": 12,
-                }
-              }
-            >
-              <View
-                style={
-                  {
-                    "flex": 1,
-                    "gap": 4,
-                  }
-                }
-              >
-                <View
-                  style={
-                    {
-                      "alignItems": "center",
-                      "flexDirection": "row",
-                      "gap": 6,
-                    }
-                  }
-                >
-                  <View
-                    style={
-                      [
-                        {
-                          "borderRadius": 4,
-                          "height": 8,
-                          "width": 8,
-                        },
-                        {
-                          "backgroundColor": "#7C7AAB",
-                          "opacity": 1,
-                        },
-                      ]
-                    }
-                  />
-                  <Text
-                    allowFontScaling={false}
-                    style={
-                      {
-                        "color": "#857F7A",
-                        "fontFamily": "Inter_500Medium",
-                        "fontSize": 11,
-                        "letterSpacing": 0.55,
-                        "lineHeight": 14,
-                        "textTransform": "uppercase",
-                      }
-                    }
-                  >
-                    Deep
-                  </Text>
-                </View>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#FFFFFF",
-                      "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 15,
-                      "fontWeight": "600",
-                      "lineHeight": 20,
-                    }
-                  }
-                >
-                  1h 38m
-                </Text>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#857F7A",
-                      "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 12,
-                      "lineHeight": 16,
-                    }
-                  }
-                >
-                  21
-                  %
-                </Text>
-              </View>
-              <View
-                style={
-                  {
-                    "flex": 1,
-                    "gap": 4,
-                  }
-                }
-              >
-                <View
-                  style={
-                    {
-                      "alignItems": "center",
-                      "flexDirection": "row",
-                      "gap": 6,
-                    }
-                  }
-                >
-                  <View
-                    style={
-                      [
-                        {
-                          "borderRadius": 4,
-                          "height": 8,
-                          "width": 8,
-                        },
-                        {
-                          "backgroundColor": "#7C7AAB",
-                          "opacity": 0.7,
-                        },
-                      ]
-                    }
-                  />
-                  <Text
-                    allowFontScaling={false}
-                    style={
-                      {
-                        "color": "#857F7A",
-                        "fontFamily": "Inter_500Medium",
-                        "fontSize": 11,
-                        "letterSpacing": 0.55,
-                        "lineHeight": 14,
-                        "textTransform": "uppercase",
-                      }
-                    }
-                  >
-                    Light
-                  </Text>
-                </View>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#FFFFFF",
-                      "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 15,
-                      "fontWeight": "600",
-                      "lineHeight": 20,
-                    }
-                  }
-                >
-                  3h 52m
-                </Text>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#857F7A",
-                      "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 12,
-                      "lineHeight": 16,
-                    }
-                  }
-                >
-                  50
-                  %
-                </Text>
-              </View>
-              <View
-                style={
-                  {
-                    "flex": 1,
-                    "gap": 4,
-                  }
-                }
-              >
-                <View
-                  style={
-                    {
-                      "alignItems": "center",
-                      "flexDirection": "row",
-                      "gap": 6,
-                    }
-                  }
-                >
-                  <View
-                    style={
-                      [
-                        {
-                          "borderRadius": 4,
-                          "height": 8,
-                          "width": 8,
-                        },
-                        {
-                          "backgroundColor": "#7C7AAB",
-                          "opacity": 0.4,
-                        },
-                      ]
-                    }
-                  />
-                  <Text
-                    allowFontScaling={false}
-                    style={
-                      {
-                        "color": "#857F7A",
-                        "fontFamily": "Inter_500Medium",
-                        "fontSize": 11,
-                        "letterSpacing": 0.55,
-                        "lineHeight": 14,
-                        "textTransform": "uppercase",
-                      }
-                    }
-                  >
-                    Other
-                  </Text>
-                </View>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#FFFFFF",
-                      "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 15,
-                      "fontWeight": "600",
-                      "lineHeight": 20,
-                    }
-                  }
-                >
-                  2h 12m
-                </Text>
-                <Text
-                  allowFontScaling={false}
-                  style={
-                    {
-                      "color": "#857F7A",
-                      "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 12,
-                      "lineHeight": 16,
-                    }
-                  }
-                >
-                  29
-                  %
-                </Text>
-              </View>
-            </View>
-            <Text
-              allowFontScaling={false}
-              style={
-                {
-                  "color": "#857F7A",
-                  "fontFamily": "Inter_400Regular",
-                  "fontSize": 12,
-                  "lineHeight": 16,
-                }
-              }
-            >
-              Your watch reports total, deep, and light durations per night. Minute-by-minute REM and awake timing aren't available on this model — "Other" covers REM cycles and brief wakings combined.
-            </Text>
-          </View>
           <View
             style={
               [
@@ -1380,6 +1031,9 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
               </Text>
             </View>
             <View
+              accessibilityLabel="Nightly sleep across the last 7 nights. No nights tracked yet in this window — nights appear here as the watch syncs."
+              accessibilityRole="image"
+              accessible={true}
               style={
                 [
                   {
@@ -1509,7 +1163,8 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                   }
                 />
                 <View
-                  accessibilityRole="image"
+                  accessibilityElementsHidden={true}
+                  importantForAccessibility="no-hide-descendants"
                   style={
                     [
                       {
@@ -1654,8 +1309,454 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
             </View>
           </View>
           <View
+            style={
+              {
+                "marginHorizontal": 20,
+              }
+            }
+            testID="sleep-detail-table"
+          >
+            <View
+              accessibilityHint="Shows the nights behind the chart as text"
+              accessibilityLabel="View as table"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              hitSlop={8}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignSelf": "flex-start",
+                  "paddingVertical": 6,
+                }
+              }
+              testID="sleep-detail-table-toggle"
+            >
+              <Text
+                maxFontSizeMultiplier={1.6}
+                style={
+                  {
+                    "color": "#B8B2AA",
+                    "fontFamily": "Inter_500Medium",
+                    "fontSize": 13,
+                    "lineHeight": 16,
+                    "textDecorationLine": "underline",
+                  }
+                }
+              >
+                View as table
+              </Text>
+            </View>
+          </View>
+          <View
+            style={
+              [
+                {
+                  "backgroundColor": "#120C07",
+                  "borderColor": "rgba(255,255,255,0.06)",
+                  "borderRadius": 22,
+                  "borderWidth": 0.5,
+                  "gap": 12,
+                  "marginHorizontal": 20,
+                  "padding": 16,
+                },
+                undefined,
+              ]
+            }
+            testID="sleep-detail-stages"
+          >
+            <View
+              style={
+                {
+                  "alignItems": "center",
+                  "flexDirection": "row",
+                  "justifyContent": "space-between",
+                }
+              }
+            >
+              <Text
+                allowFontScaling={false}
+                style={
+                  {
+                    "color": "#857F7A",
+                    "fontFamily": "Inter_500Medium",
+                    "fontSize": 11,
+                    "letterSpacing": 0.55,
+                    "lineHeight": 14,
+                    "textTransform": "uppercase",
+                  }
+                }
+              >
+                Sleep composition
+              </Text>
+              <Text
+                allowFontScaling={false}
+                style={
+                  {
+                    "color": "#857F7A",
+                    "fontFamily": "JetBrainsMono_500Medium",
+                    "fontSize": 12,
+                    "letterSpacing": 0.3,
+                    "lineHeight": 16,
+                  }
+                }
+              >
+                7h 42m
+                 total
+              </Text>
+            </View>
+            <View
+              accessibilityLabel="Deep 21%, Light 50%, Other 29%"
+              accessibilityRole="image"
+              accessible={true}
+              style={
+                {
+                  "borderRadius": 6,
+                  "flexDirection": "row",
+                  "height": 12,
+                  "overflow": "hidden",
+                }
+              }
+            >
+              <View
+                style={
+                  {
+                    "backgroundColor": "#9B93C7",
+                    "flex": 21,
+                    "marginLeft": 0,
+                    "opacity": 1,
+                  }
+                }
+                testID="sleep-detail-stages-segment-deep"
+              />
+              <View
+                style={
+                  {
+                    "backgroundColor": "#9B93C7",
+                    "flex": 50,
+                    "marginLeft": 1,
+                    "opacity": 0.7,
+                  }
+                }
+                testID="sleep-detail-stages-segment-light"
+              />
+              <View
+                style={
+                  {
+                    "backgroundColor": "#9B93C7",
+                    "flex": 29,
+                    "marginLeft": 1,
+                    "opacity": 0.4,
+                  }
+                }
+                testID="sleep-detail-stages-segment-other"
+              />
+            </View>
+            <View
+              style={
+                {
+                  "flexDirection": "row",
+                  "gap": 12,
+                }
+              }
+            >
+              <View
+                style={
+                  {
+                    "flex": 1,
+                    "gap": 4,
+                  }
+                }
+              >
+                <View
+                  style={
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "gap": 6,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      [
+                        {
+                          "borderRadius": 4,
+                          "height": 8,
+                          "width": 8,
+                        },
+                        {
+                          "backgroundColor": "#9B93C7",
+                          "opacity": 1,
+                        },
+                      ]
+                    }
+                  />
+                  <Text
+                    allowFontScaling={false}
+                    style={
+                      {
+                        "color": "#857F7A",
+                        "fontFamily": "Inter_500Medium",
+                        "fontSize": 11,
+                        "letterSpacing": 0.55,
+                        "lineHeight": 14,
+                        "textTransform": "uppercase",
+                      }
+                    }
+                  >
+                    Deep
+                  </Text>
+                </View>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#FFFFFF",
+                      "fontFamily": "JetBrainsMono_500Medium",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "lineHeight": 16,
+                    }
+                  }
+                >
+                  1h 38m
+                </Text>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#857F7A",
+                      "fontFamily": "JetBrainsMono_500Medium",
+                      "fontSize": 12,
+                      "lineHeight": 16,
+                    }
+                  }
+                >
+                  21
+                  %
+                </Text>
+              </View>
+              <View
+                style={
+                  {
+                    "flex": 1,
+                    "gap": 4,
+                  }
+                }
+              >
+                <View
+                  style={
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "gap": 6,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      [
+                        {
+                          "borderRadius": 4,
+                          "height": 8,
+                          "width": 8,
+                        },
+                        {
+                          "backgroundColor": "#9B93C7",
+                          "opacity": 0.7,
+                        },
+                      ]
+                    }
+                  />
+                  <Text
+                    allowFontScaling={false}
+                    style={
+                      {
+                        "color": "#857F7A",
+                        "fontFamily": "Inter_500Medium",
+                        "fontSize": 11,
+                        "letterSpacing": 0.55,
+                        "lineHeight": 14,
+                        "textTransform": "uppercase",
+                      }
+                    }
+                  >
+                    Light
+                  </Text>
+                </View>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#FFFFFF",
+                      "fontFamily": "JetBrainsMono_500Medium",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "lineHeight": 16,
+                    }
+                  }
+                >
+                  3h 52m
+                </Text>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#857F7A",
+                      "fontFamily": "JetBrainsMono_500Medium",
+                      "fontSize": 12,
+                      "lineHeight": 16,
+                    }
+                  }
+                >
+                  50
+                  %
+                </Text>
+              </View>
+              <View
+                style={
+                  {
+                    "flex": 1,
+                    "gap": 4,
+                  }
+                }
+              >
+                <View
+                  style={
+                    {
+                      "alignItems": "center",
+                      "flexDirection": "row",
+                      "gap": 6,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      [
+                        {
+                          "borderRadius": 4,
+                          "height": 8,
+                          "width": 8,
+                        },
+                        {
+                          "backgroundColor": "#9B93C7",
+                          "opacity": 0.4,
+                        },
+                      ]
+                    }
+                  />
+                  <Text
+                    allowFontScaling={false}
+                    style={
+                      {
+                        "color": "#857F7A",
+                        "fontFamily": "Inter_500Medium",
+                        "fontSize": 11,
+                        "letterSpacing": 0.55,
+                        "lineHeight": 14,
+                        "textTransform": "uppercase",
+                      }
+                    }
+                  >
+                    Other
+                  </Text>
+                </View>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#FFFFFF",
+                      "fontFamily": "JetBrainsMono_500Medium",
+                      "fontSize": 12,
+                      "fontWeight": "600",
+                      "lineHeight": 16,
+                    }
+                  }
+                >
+                  2h 12m
+                </Text>
+                <Text
+                  allowFontScaling={false}
+                  style={
+                    {
+                      "color": "#857F7A",
+                      "fontFamily": "JetBrainsMono_500Medium",
+                      "fontSize": 12,
+                      "lineHeight": 16,
+                    }
+                  }
+                >
+                  29
+                  %
+                </Text>
+              </View>
+            </View>
+            <Text
+              allowFontScaling={false}
+              style={
+                {
+                  "color": "#857F7A",
+                  "fontFamily": "Inter_400Regular",
+                  "fontSize": 12,
+                  "lineHeight": 16,
+                }
+              }
+            >
+              Your watch reports total, deep, and light durations per night. Minute-by-minute REM and awake timing aren't available on this model — "Other" covers REM cycles and brief wakings combined.
+            </Text>
+          </View>
+          <Text
+            maxFontSizeMultiplier={1.6}
+            style={
+              [
+                {
+                  "family": "Inter_400Regular",
+                  "lineHeight": 16,
+                  "size": 12,
+                  "weight": "400",
+                },
+                {
+                  "color": "#857F7A",
+                  "marginHorizontal": 20,
+                  "marginTop": 4,
+                },
+              ]
+            }
+            testID="sleep-detail-stages-caption"
+          >
+            Stage estimates are approximate — the watch infers them from movement and heart rate. Night-to-night trends matter more than any single breakdown.
+          </Text>
+          <View
             accessibilityLabel="Leiko about your sleep: Deep sleep made up about 21% of the night — within the range we typically see. Wear the watch a few more nights and we'll start showing how this connects to your morning readings."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -1693,7 +1794,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                       "width": 18,
                     },
                     {
-                      "backgroundColor": "#7C7AAB26",
+                      "backgroundColor": "#9B93C726",
                     },
                   ]
                 }
@@ -1703,7 +1804,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                   bbHeight={11}
                   bbWidth={11}
                   className="sparkle-fill__svg-icon-phosphor"
-                  color="#7C7AAB"
+                  color="#9B93C7"
                   fill="currentColor"
                   focusable={false}
                   height={11}
@@ -1748,7 +1849,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                     <RNSVGGroup
                       fill={
                         {
-                          "payload": 4286347947,
+                          "payload": 4288385991,
                           "type": 0,
                         }
                       }
@@ -1772,10 +1873,10 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
                 </RNSVGSvgView>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={2}
                 style={
                   {
-                    "color": "#7C7AAB",
+                    "color": "#9B93C7",
                     "fontFamily": "Inter_500Medium",
                     "fontSize": 11,
                     "letterSpacing": 0.55,
@@ -1846,7 +1947,7 @@ exports[`SleepDetail — snapshot matches the dark-mode snapshot with a session 
             <Text
               style={
                 {
-                  "color": "#E8A063",
+                  "color": "#C96442",
                   "fontFamily": "Inter_400Regular",
                   "fontSize": 15,
                   "fontWeight": "500",

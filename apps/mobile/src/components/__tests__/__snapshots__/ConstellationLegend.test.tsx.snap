@@ -18,7 +18,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
   testID="legend"
 >
   <View
-    accessibilityLabel="Marian, Mom, All clear, A calm morning."
+    accessibilityLabel="Marian, Mom, In their usual range, A calm morning."
     accessibilityRole="button"
     accessibilityState={
       {
@@ -105,7 +105,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#FFFFFF",
@@ -119,7 +119,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
           Marian
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#857F7A",
@@ -135,8 +135,8 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
         ellipsizeMode="tail"
+        maxFontSizeMultiplier={1.3}
         numberOfLines={1}
         style={
           {
@@ -152,15 +152,16 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       </Text>
     </View>
     <View
-      accessibilityLabel="All clear"
+      accessibilityLabel="In their usual range"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
             "alignItems": "center",
             "alignSelf": "flex-start",
-            "backgroundColor": "#61B56524",
-            "borderColor": "#61B56559",
+            "backgroundColor": "#5FA97E24",
+            "borderColor": "#5FA97E59",
             "borderRadius": 99,
             "borderWidth": 0.5,
             "flexDirection": "row",
@@ -177,14 +178,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           [
             {
-              "backgroundColor": "#61B565",
+              "backgroundColor": "#5FA97E",
               "borderRadius": 99,
               "height": 5,
               "width": 5,
             },
             {
               "elevation": 0,
-              "shadowColor": "#61B565",
+              "shadowColor": "#5FA97E",
               "shadowOffset": {
                 "height": 0,
                 "width": 0,
@@ -196,19 +197,18 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       />
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
-            "color": "#61B565",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "color": "#5FA97E",
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
-        All clear
+        In their usual range
       </Text>
     </View>
   </View>
@@ -302,7 +302,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#FFFFFF",
@@ -316,7 +316,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
           Emeka
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#857F7A",
@@ -332,8 +332,8 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
         ellipsizeMode="tail"
+        maxFontSizeMultiplier={1.3}
         numberOfLines={1}
         style={
           {
@@ -351,13 +351,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="Needs attention"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
             "alignItems": "center",
             "alignSelf": "flex-start",
-            "backgroundColor": "#FF735024",
-            "borderColor": "#FF735059",
+            "backgroundColor": "#E8B54F24",
+            "borderColor": "#E8B54F59",
             "borderRadius": 99,
             "borderWidth": 0.5,
             "flexDirection": "row",
@@ -374,14 +375,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           [
             {
-              "backgroundColor": "#FF7350",
+              "backgroundColor": "#E8B54F",
               "borderRadius": 99,
               "height": 5,
               "width": 5,
             },
             {
               "elevation": 0,
-              "shadowColor": "#FF7350",
+              "shadowColor": "#E8B54F",
               "shadowOffset": {
                 "height": 0,
                 "width": 0,
@@ -393,15 +394,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       />
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
-            "color": "#FF7350",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "color": "#E8B54F",
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
@@ -490,7 +490,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#FFFFFF",
@@ -504,7 +504,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
           Joy
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#857F7A",
@@ -520,8 +520,8 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
         ellipsizeMode="tail"
+        maxFontSizeMultiplier={1.3}
         numberOfLines={1}
         style={
           {
@@ -539,13 +539,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="Sleeping"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
             "alignItems": "center",
             "alignSelf": "flex-start",
-            "backgroundColor": "#7B67CC24",
-            "borderColor": "#7B67CC59",
+            "backgroundColor": "#8F7FD424",
+            "borderColor": "#8F7FD459",
             "borderRadius": 99,
             "borderWidth": 0.5,
             "flexDirection": "row",
@@ -562,7 +563,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           [
             {
-              "backgroundColor": "#7B67CC",
+              "backgroundColor": "#8F7FD4",
               "borderRadius": 99,
               "height": 5,
               "width": 5,
@@ -572,15 +573,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       />
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
-            "color": "#7B67CC",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "color": "#8F7FD4",
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
@@ -609,7 +609,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
   testID="legend"
 >
   <View
-    accessibilityLabel="Marian, Mom, All clear, A calm morning."
+    accessibilityLabel="Marian, Mom, In their usual range, A calm morning."
     accessibilityRole="button"
     accessibilityState={
       {
@@ -696,7 +696,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#0F121C",
@@ -710,7 +710,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
           Marian
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#5A6478",
@@ -726,8 +726,8 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
         ellipsizeMode="tail"
+        maxFontSizeMultiplier={1.3}
         numberOfLines={1}
         style={
           {
@@ -743,15 +743,16 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       </Text>
     </View>
     <View
-      accessibilityLabel="All clear"
+      accessibilityLabel="In their usual range"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
             "alignItems": "center",
             "alignSelf": "flex-start",
-            "backgroundColor": "#61B56524",
-            "borderColor": "#61B56559",
+            "backgroundColor": "#5FA97E24",
+            "borderColor": "#5FA97E59",
             "borderRadius": 99,
             "borderWidth": 0.5,
             "flexDirection": "row",
@@ -768,14 +769,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           [
             {
-              "backgroundColor": "#61B565",
+              "backgroundColor": "#5FA97E",
               "borderRadius": 99,
               "height": 5,
               "width": 5,
             },
             {
               "elevation": 0,
-              "shadowColor": "#61B565",
+              "shadowColor": "#5FA97E",
               "shadowOffset": {
                 "height": 0,
                 "width": 0,
@@ -787,19 +788,18 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       />
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
-            "color": "#61B565",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "color": "#5FA97E",
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
-        All clear
+        In their usual range
       </Text>
     </View>
   </View>
@@ -893,7 +893,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#0F121C",
@@ -907,7 +907,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
           Emeka
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#5A6478",
@@ -923,8 +923,8 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
         ellipsizeMode="tail"
+        maxFontSizeMultiplier={1.3}
         numberOfLines={1}
         style={
           {
@@ -942,13 +942,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="Needs attention"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
             "alignItems": "center",
             "alignSelf": "flex-start",
-            "backgroundColor": "#FF735024",
-            "borderColor": "#FF735059",
+            "backgroundColor": "#E8B54F24",
+            "borderColor": "#E8B54F59",
             "borderRadius": 99,
             "borderWidth": 0.5,
             "flexDirection": "row",
@@ -965,14 +966,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           [
             {
-              "backgroundColor": "#FF7350",
+              "backgroundColor": "#E8B54F",
               "borderRadius": 99,
               "height": 5,
               "width": 5,
             },
             {
               "elevation": 0,
-              "shadowColor": "#FF7350",
+              "shadowColor": "#E8B54F",
               "shadowOffset": {
                 "height": 0,
                 "width": 0,
@@ -984,15 +985,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       />
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
-            "color": "#FF7350",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "color": "#E8B54F",
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >
@@ -1081,7 +1081,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#0F121C",
@@ -1095,7 +1095,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
           Joy
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.3}
           style={
             {
               "color": "#5A6478",
@@ -1111,8 +1111,8 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
         ellipsizeMode="tail"
+        maxFontSizeMultiplier={1.3}
         numberOfLines={1}
         style={
           {
@@ -1130,13 +1130,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
     <View
       accessibilityLabel="Sleeping"
       accessibilityRole="text"
+      accessible={true}
       style={
         [
           {
             "alignItems": "center",
             "alignSelf": "flex-start",
-            "backgroundColor": "#7B67CC24",
-            "borderColor": "#7B67CC59",
+            "backgroundColor": "#8F7FD424",
+            "borderColor": "#8F7FD459",
             "borderRadius": 99,
             "borderWidth": 0.5,
             "flexDirection": "row",
@@ -1153,7 +1154,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         style={
           [
             {
-              "backgroundColor": "#7B67CC",
+              "backgroundColor": "#8F7FD4",
               "borderRadius": 99,
               "height": 5,
               "width": 5,
@@ -1163,15 +1164,14 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
         }
       />
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.3}
         style={
           {
-            "color": "#7B67CC",
-            "fontFamily": "JetBrainsMono_500Medium",
-            "fontSize": 10,
-            "letterSpacing": 0.95,
+            "color": "#8F7FD4",
+            "fontFamily": "Inter_500Medium",
+            "fontSize": 11,
+            "letterSpacing": 0.2,
             "lineHeight": 14,
-            "textTransform": "uppercase",
           }
         }
       >

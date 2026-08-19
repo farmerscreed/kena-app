@@ -26,6 +26,9 @@ export interface BPReading {
   diastolic: number;
   pulse: number | null;
   source: 'watch' | 'manual';
+  /** D13 PR-11 (§6.5) — reading_context enum values; optional so
+   *  pre-tag clients keep syncing untouched. */
+  contextTags?: string[];
 }
 
 export type HRMotionState = 'rest' | 'light' | 'moderate' | 'vigorous' | 'unknown';

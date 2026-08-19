@@ -310,3 +310,162 @@ export function addDays(dayLocal: string, n: number): string {
 export function localHourFor(utcIso: string, timezone: string): number {
   return toLocal(utcIso, timezone).hour;
 }
+
+// ── The matrix additions (2026-08-19) ────────────────────────────────
+
+/** sleep × resting HR — pairs (sleep total minutes for the night
+ *  ending day D, resting HR for day D = median of 22:00–06:00 local
+ *  samples). Short or fragmented sleep showing up as a higher resting
+ *  rate is the textbook association; the pair tests it on THIS person. */
+export async function fetchSleepXRestingHr(
+  args: QueryArgs,
+): Promise<PairedObservation[]> {
+  const { supabase, familyId, userId } = args;
+  const tz = await fetchUserTimezone(supabase, userId);
+  const { startIso, endIso } = asOfClause(args.asOf);
+
+  const [sleepRes, hrRes] = await Promise.all([
+    supabase
+      .from('vitals_other')
+      .select('measured_at, value_int')
+      .eq('family_id', familyId)
+      .eq('vital_type', 'sleep_session')
+      .eq('hidden', false)
+      .gte('measured_at', startIso)
+      .lt('measured_at', endIso),
+    supabase
+      .from('vitals_other')
+      .select('measured_at, value_int')
+      .eq('family_id', familyId)
+      .eq('vital_type', 'hr')
+      .eq('hidden', false)
+      .gte('measured_at', startIso)
+      .lt('measured_at', endIso),
+  ]);
+  if (sleepRes.error) throw sleepRes.error;
+  if (hrRes.error) throw hrRes.error;
+
+  const sleepByDay = new Map<string, number>();
+  for (const s of (sleepRes.data ?? []) as { measured_at: string; value_int: number | null }[]) {
+    if (s.value_int === null) continue;
+    const local = toLocal(s.measured_at, tz);
+    sleepByDay.set(local.day, s.value_int);
+  }
+  const hrByDay = new Map<string, number[]>();
+  for (const h of (hrRes.data ?? []) as { measured_at: string; value_int: number | null }[]) {
+    if (h.value_int === null || h.value_int === 0) continue;
+    const local = toLocal(h.measured_at, tz);
+    if (local.hour >= 22 || local.hour < 6) {
+      const list = hrByDay.get(local.day);
+      if (list) list.push(h.value_int);
+      else hrByDay.set(local.day, [h.value_int]);
+    }
+  }
+
+  const pairs: PairedObservation[] = [];
+  for (const [day, totalMin] of sleepByDay) {
+    const sample = hrByDay.get(day);
+    if (!sample || sample.length === 0) continue;
+    pairs.push({ day, x: totalMin, y: median(sample) });
+  }
+  return pairs.sort((a, b) => a.day.localeCompare(b.day));
+}
+
+/** movement × NEXT-morning BP — pairs (steps total for day D, mean
+ *  morning systolic for day D+1). The day-after pairing matches how
+ *  activity is expected to show up in a morning number. */
+export async function fetchActivityXMorningBp(
+  args: QueryArgs,
+): Promise<PairedObservation[]> {
+  const { supabase, familyId, userId } = args;
+  const tz = await fetchUserTimezone(supabase, userId);
+  const { startIso, endIso } = asOfClause(args.asOf);
+
+  const [stepsRes, readingsRes] = await Promise.all([
+    supabase
+      .from('vitals_other')
+      .select('measured_at, value_int')
+      .eq('family_id', familyId)
+      .eq('vital_type', 'steps_day')
+      .eq('hidden', false)
+      .gte('measured_at', startIso)
+      .lt('measured_at', endIso),
+    supabase
+      .from('readings')
+      .select('measured_at, systolic')
+      .eq('family_id', familyId)
+      .eq('hidden', false)
+      .gte('measured_at', startIso)
+      .lt('measured_at', endIso),
+  ]);
+  if (stepsRes.error) throw stepsRes.error;
+  if (readingsRes.error) throw readingsRes.error;
+
+  const stepsByDay = new Map<string, number>();
+  for (const s of (stepsRes.data ?? []) as { measured_at: string; value_int: number | null }[]) {
+    if (s.value_int === null || s.value_int === 0) continue;
+    const local = toLocal(s.measured_at, tz);
+    const prev = stepsByDay.get(local.day);
+    if (prev === undefined || s.value_int > prev) stepsByDay.set(local.day, s.value_int);
+  }
+  const morningByDay = new Map<string, number[]>();
+  for (const r of (readingsRes.data ?? []) as { measured_at: string; systolic: number }[]) {
+    const local = toLocal(r.measured_at, tz);
+    if (local.hour < 6 || local.hour >= 12) continue;
+    const list = morningByDay.get(local.day);
+    if (list) list.push(r.systolic);
+    else morningByDay.set(local.day, [r.systolic]);
+  }
+
+  const nextDay = (day: string): string => {
+    const d = new Date(`${day}T12:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + 1);
+    return d.toISOString().slice(0, 10);
+  };
+
+  const pairs: PairedObservation[] = [];
+  for (const [day, steps] of stepsByDay) {
+    const mornings = morningByDay.get(nextDay(day));
+    if (!mornings || mornings.length === 0) continue;
+    const meanSys = mornings.reduce((a, b) => a + b, 0) / mornings.length;
+    pairs.push({ day, x: steps, y: meanSys });
+  }
+  return pairs.sort((a, b) => a.day.localeCompare(b.day));
+}
+
+/** after-meds tag × BP — a two-group comparison expressed as a
+ *  point-biserial pair set: x = 1 when the reading carries the
+ *  after_meds tag, 0 otherwise; y = systolic. The regression slope IS
+ *  the mean difference in mmHg between tagged and untagged readings.
+ *  The caller enforces MIN_GROUP_N per group on top of the shared
+ *  gates. Descriptive only — efficacy is the doctor's question. */
+export async function fetchAfterMedsXBp(
+  args: QueryArgs,
+): Promise<PairedObservation[]> {
+  const { supabase, familyId } = args;
+  const { startIso, endIso } = asOfClause(args.asOf);
+
+  const res = await supabase
+    .from('readings')
+    .select('measured_at, systolic, context_tags')
+    .eq('family_id', familyId)
+    .eq('hidden', false)
+    .gte('measured_at', startIso)
+    .lt('measured_at', endIso);
+  if (res.error) throw res.error;
+
+  const rows = (res.data ?? []) as {
+    measured_at: string;
+    systolic: number;
+    context_tags: string[] | null;
+  }[];
+  const pairs: PairedObservation[] = rows.map((r) => ({
+    day: r.measured_at.slice(0, 10),
+    x: (r.context_tags ?? []).includes('after_meds') ? 1 : 0,
+    y: r.systolic,
+  }));
+  // With no tagged readings at all there is nothing to compare —
+  // return empty so the pair sits in the counting state, not a fake n.
+  if (!pairs.some((p) => p.x === 1)) return [];
+  return pairs.sort((a, b) => a.day.localeCompare(b.day));
+}

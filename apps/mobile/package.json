@@ -14,7 +14,8 @@
     "test:watch": "jest --watch",
     "build:articles": "tsx scripts/build-articles.ts",
     "release:android:apk": "node scripts/release-android.js apk",
-    "release:android:aab": "node scripts/release-android.js aab"
+    "release:android:aab": "node scripts/release-android.js aab",
+    "copy-lint": "tsx tools/copy-lint/index.ts"
   },
   "dependencies": {
     "@expo-google-fonts/instrument-serif": "^0.4.1",

@@ -39,6 +39,7 @@ import {
   REMINDER_OFFSET_MIN,
 } from './learnedTime';
 import type { LocalReading } from '../../state/readings';
+import { formatVoiceHits, lintVoiceText } from '../voice/voiceLint';
 
 const IDENTIFIER_PREFIX = 'leiko.reminder.learned-time';
 const ANDROID_CHANNEL_ID = 'daily-summary';
@@ -57,7 +58,11 @@ export interface ScheduleLearnedTimeInput {
 export type ScheduleSkipReason =
   | 'no_habit'
   | 'quiet_hours'
-  | 'recent_reading_within_4h';
+  | 'recent_reading_within_4h'
+  // Sprint 19 (audit D12 P0-8) — the composed copy tripped a HARD voice
+  // rule. We drop the notification rather than ship it, matching the
+  // server path in supabase/functions/send-push (which fails closed).
+  | 'voice_lint_hard_fail';
 
 export type ScheduleResult =
   | { scheduled: true; identifier: string; firingAt: string }
@@ -145,6 +150,28 @@ export async function scheduleNextLearnedTimeReminder(
     habitualTimeMin: habit.habitualTimeMin,
     isSelf: input.isSelf,
   });
+
+  // Sprint 19 (audit D12 P0-8) — voice gate on LOCAL notifications.
+  // `send-push` lints server-composed push text and fails closed, but
+  // locally-scheduled reminders bypassed it entirely; that is how
+  // a hard-fail phrase from docs/05 reached a lock
+  // screen. Fail closed here too. Frontmatter/MDX/code stripping is
+  // meaningless for push copy, so all three are disabled.
+  const voice = lintVoiceText(`${copy.title}\n${copy.body}`, {
+    stripFrontmatter: false,
+    stripMdxComponents: false,
+    stripCodeBlocks: false,
+  });
+  if (voice.hardHits.length > 0) {
+    if (__DEV__) {
+      console.warn(
+        '[reminders] learned-time copy failed the voice lint; not scheduling.\n' +
+          formatVoiceHits(voice.hardHits),
+      );
+    }
+    return { scheduled: false, reason: 'voice_lint_hard_fail' };
+  }
+
   const dateKey = target.toISOString().slice(0, 10);
   const identifier = `${IDENTIFIER_PREFIX}.${dateKey}`;
 

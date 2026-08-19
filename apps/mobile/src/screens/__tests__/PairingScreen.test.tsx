@@ -13,6 +13,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react-native';
+import { AccessibilityInfo } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '../../theme';
 import { PairingScreen } from '../Pairing/PairingScreen';
@@ -226,5 +227,81 @@ describe('PairingScreen — failure: connect error', () => {
     expect(await screen.findByTestId('pairing-failure')).toBeTruthy();
     expect(screen.getByText(/Bring the phone closer/i)).toBeTruthy();
     expect(screen.getByTestId('pairing-failure-retry')).toBeTruthy();
+  });
+});
+
+// ── Audit P1-7 ───────────────────────────────────────────────────────
+// The pairing phases carried Android-only accessibilityLiveRegion props,
+// so on iOS the whole flow ran silently: no "we're looking", no "it's
+// paired", no "we couldn't reach it". These tests pin the iOS half.
+
+describe('PairingScreen — live-region announcements (audit P1-7)', () => {
+  let announce: jest.SpyInstance;
+
+  beforeEach(() => {
+    announce = jest
+      .spyOn(AccessibilityInfo, 'announceForAccessibility')
+      .mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    announce.mockRestore();
+  });
+
+  it('announces the searching phase, and the label reads as a sentence', async () => {
+    mockRequestPermissions.mockResolvedValue({ granted: true });
+    mockObserveState.mockReturnValue({ remove: jest.fn() });
+    mockScanForUrion.mockReturnValue(jest.fn());
+
+    render(withProviders(<PairingScreen navigation={nav} />));
+    await act(async () => {
+      fireEvent.press(await screen.findByTestId('pairing-permission-continue'));
+    });
+    await act(async () => {
+      fireEvent.press(await screen.findByTestId('pairing-power-on-confirm'));
+    });
+
+    const searching = await screen.findByTestId('pairing-searching');
+    expect(searching.props.accessibilityLabel).toBe(
+      'Looking for the watch. This usually takes a few seconds.',
+    );
+    expect(announce).toHaveBeenCalledWith(
+      'Looking for the watch. This usually takes a few seconds.',
+    );
+  });
+
+  it('announces the failure phase, which previously had no live region at all', async () => {
+    mockRequestPermissions.mockResolvedValue({ granted: true });
+    mockObserveState.mockReturnValue({ remove: jest.fn() });
+
+    let scanCb: ((d: { id: string; name: string | null }) => void) | null = null;
+    mockScanForUrion.mockImplementation((onDevice) => {
+      scanCb = onDevice as typeof scanCb;
+      return jest.fn();
+    });
+    mockConnectToUrion.mockRejectedValue(new Error('connect failed'));
+
+    render(withProviders(<PairingScreen navigation={nav} />));
+    await act(async () => {
+      fireEvent.press(await screen.findByTestId('pairing-permission-continue'));
+    });
+    await act(async () => {
+      fireEvent.press(await screen.findByTestId('pairing-power-on-confirm'));
+    });
+    await screen.findByTestId('pairing-searching');
+    act(() => {
+      scanCb!({ id: 'AA:BB:CC:DD:E4:F2', name: 'Leiko Watch' });
+    });
+    await act(async () => {
+      fireEvent.press(await screen.findByTestId('pairing-found-device-e4f2'));
+    });
+    await act(async () => {
+      fireEvent.press(await screen.findByTestId('pairing-found-confirm'));
+    });
+
+    const failure = await screen.findByTestId('pairing-failure');
+    expect(failure.props.accessibilityLiveRegion).toBe('assertive');
+    expect(failure.props.accessibilityLabel).toMatch(/^We couldn't reach the watch\. .+/);
+    expect(announce).toHaveBeenCalledWith(failure.props.accessibilityLabel);
   });
 });

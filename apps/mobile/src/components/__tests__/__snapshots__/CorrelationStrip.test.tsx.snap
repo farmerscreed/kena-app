@@ -2,6 +2,9 @@
 
 exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMode=dark 1`] = `
 <View
+  accessibilityLabel="Sleep × Morning BP. Over the last 7 days. sleep, solid line, 7 points, from 6.2 to 8.1. blood pressure, dashed line, 7 points, from 119 to 132."
+  accessibilityRole="image"
+  accessible={true}
   testID="strip"
 >
   <Text
@@ -24,10 +27,12 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
     Sleep × Morning BP
   </Text>
   <RNSVGSvgView
+    accessibilityElementsHidden={true}
     bbHeight={96}
     bbWidth={320}
     focusable={false}
     height={96}
+    importantForAccessibility="no-hide-descendants"
     style={
       [
         {
@@ -56,7 +61,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         d="M 4,92 L 4,78.10526315789474 L 56,54.94736842105263 L 108,17.894736842105257 L 160,92 L 212,36.421052631578924 L 264,4 L 316,31.789473684210513 L 316,92 Z"
         fill={
           {
-            "payload": 4286347947,
+            "payload": 4288385991,
             "type": 0,
           }
         }
@@ -82,7 +87,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         }
         stroke={
           {
-            "payload": 4286347947,
+            "payload": 4288385991,
             "type": 0,
           }
         }
@@ -100,7 +105,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         d="M 4,92 L 4,31.07692307692308 L 56,58.15384615384616 L 108,78.46153846153847 L 160,4 L 212,44.61538461538462 L 264,92 L 316,71.69230769230768 L 316,92 Z"
         fill={
           {
-            "payload": 4293435491,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -126,7 +131,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         }
         stroke={
           {
-            "payload": 4293435491,
+            "payload": 4286490820,
             "type": 0,
           }
         }
@@ -142,11 +147,104 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
       />
     </RNSVGGroup>
   </RNSVGSvgView>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "gap": 12,
+        "marginTop": 6,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "gap": 5,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "backgroundColor": "#9B93C7",
+            "height": 2,
+            "width": 14,
+          }
+        }
+      />
+      <Text
+        allowFontScaling={false}
+        style={
+          {
+            "color": "#B8B2AA",
+            "fontFamily": "Inter_400Regular",
+            "fontSize": 12,
+          }
+        }
+      >
+        Sleep
+      </Text>
+    </View>
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "gap": 5,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "borderColor": "#7EA8C4",
+            "borderStyle": "dashed",
+            "borderTopWidth": 2,
+            "height": 0,
+            "width": 14,
+          }
+        }
+      />
+      <Text
+        allowFontScaling={false}
+        style={
+          {
+            "color": "#B8B2AA",
+            "fontFamily": "Inter_400Regular",
+            "fontSize": 12,
+          }
+        }
+      >
+        Blood pressure
+      </Text>
+    </View>
+  </View>
+  <Text
+    allowFontScaling={false}
+    style={
+      {
+        "color": "#857F7A",
+        "fontFamily": "Inter_400Regular",
+        "fontSize": 12,
+        "lineHeight": 16,
+        "marginTop": 4,
+      }
+    }
+    testID="strip-how-to-read"
+  >
+    Both lines share the same nights, each on its own scale. When they rise and fall together — or mirror each other — that pairing is worth noticing.
+  </Text>
 </View>
 `;
 
 exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMode=light 1`] = `
 <View
+  accessibilityLabel="Sleep × Morning BP. Over the last 7 days. sleep, solid line, 7 points, from 6.2 to 8.1. blood pressure, dashed line, 7 points, from 119 to 132."
+  accessibilityRole="image"
+  accessible={true}
   testID="strip"
 >
   <Text
@@ -169,10 +267,12 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
     Sleep × Morning BP
   </Text>
   <RNSVGSvgView
+    accessibilityElementsHidden={true}
     bbHeight={96}
     bbWidth={320}
     focusable={false}
     height={96}
+    importantForAccessibility="no-hide-descendants"
     style={
       [
         {
@@ -245,7 +345,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         d="M 4,92 L 4,31.07692307692308 L 56,58.15384615384616 L 108,78.46153846153847 L 160,4 L 212,44.61538461538462 L 264,92 L 316,71.69230769230768 L 316,92 Z"
         fill={
           {
-            "payload": 4290016302,
+            "payload": 4291398213,
             "type": 0,
           }
         }
@@ -271,7 +371,7 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
         }
         stroke={
           {
-            "payload": 4290016302,
+            "payload": 4291398213,
             "type": 0,
           }
         }
@@ -287,5 +387,95 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
       />
     </RNSVGGroup>
   </RNSVGSvgView>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "gap": 12,
+        "marginTop": 6,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "gap": 5,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "backgroundColor": "#5A5887",
+            "height": 2,
+            "width": 14,
+          }
+        }
+      />
+      <Text
+        allowFontScaling={false}
+        style={
+          {
+            "color": "#2A3040",
+            "fontFamily": "Inter_400Regular",
+            "fontSize": 12,
+          }
+        }
+      >
+        Sleep
+      </Text>
+    </View>
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "gap": 5,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "borderColor": "#C98A45",
+            "borderStyle": "dashed",
+            "borderTopWidth": 2,
+            "height": 0,
+            "width": 14,
+          }
+        }
+      />
+      <Text
+        allowFontScaling={false}
+        style={
+          {
+            "color": "#2A3040",
+            "fontFamily": "Inter_400Regular",
+            "fontSize": 12,
+          }
+        }
+      >
+        Blood pressure
+      </Text>
+    </View>
+  </View>
+  <Text
+    allowFontScaling={false}
+    style={
+      {
+        "color": "#5A6478",
+        "fontFamily": "Inter_400Regular",
+        "fontSize": 12,
+        "lineHeight": 16,
+        "marginTop": 4,
+      }
+    }
+    testID="strip-how-to-read"
+  >
+    Both lines share the same nights, each on its own scale. When they rise and fall together — or mirror each other — that pairing is worth noticing.
+  </Text>
 </View>
 `;

@@ -12,6 +12,7 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 import { Button } from '../../components/Button';
 import { OnboardingScaffold } from '../../components/OnboardingScaffold';
 import { useTheme } from '../../theme';
+import { useAnnounceOnChange } from '../../hooks/useAnnounce';
 import { useAuth } from '../../state/auth';
 import type { AuthScreenProps } from '../../navigation/types';
 
@@ -34,6 +35,11 @@ export function OTPVerifyScreen({ navigation, route }: AuthScreenProps<'OTPVerif
   // 700ms delayMs on verifyOtp gives the user a visible moment of
   // closure instead of an instant screen swap.
   const [verified, setVerified] = useState(false);
+
+  // Audit P1-7 — accessibilityLiveRegion on the inline error below is
+  // Android-only, so on iOS the error was never spoken. This is the iOS half.
+  useAnnounceOnChange(error);
+  useAnnounceOnChange(info);
 
   const valid = CODE_RE.test(code);
 

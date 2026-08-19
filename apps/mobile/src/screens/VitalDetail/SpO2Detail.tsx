@@ -1,7 +1,7 @@
 // SpO2Detail — Sprint 8.5 (vital-detail screens, D13 §8.4).
 //
 // Per-vital detail surface for blood oxygen. Composes the Sprint 8.5
-// foundation primitives (DetailShell, VitalHero, StatTrio, VitalTrendChart,
+// foundation primitives (DetailShell, VitalHero, StatTrio, RangeBandChart,
 // VitalInsightCard, RecentReadingsList) into the SpO2 layout from the
 // design's leiko-detail-screens.jsx (lines 190–242).
 //
@@ -15,7 +15,7 @@
 //   - For overnight dips, lean on "Healthy sleep often shows small,
 //     transient dips like this" framing.
 //   - Forbidden everywhere: patient, diagnose, predict, dangerous,
-//     critical, silent killer, medical-grade, clinical SpO2, loved one,
+//     critical, medical-grade, clinical SpO2, plus the docs/05 hard-fail phrases,
 //     you may have, we detected, abnormal.
 //
 // Tier-aware copy:
@@ -36,11 +36,13 @@
 // completely. Sprint 12.5 wires the real generator.
 
 import { useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { DetailShell } from '../../components/DetailShell';
 import { VitalHero } from '../../components/VitalHero';
 import { StatTrio } from '../../components/StatTrio';
-import { VitalTrendChart } from '../../components/VitalTrendChart';
+import { RangeBandChart } from '../../components/RangeBandChart';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
+import { getServerBaseline } from '../../utils/vitalBaselines';
 import { VitalInsightCard } from '../../components/VitalInsightCard';
 import { VitalExplainerAnchor } from '../../components/VitalExplainerAnchor';
 import { type RecentReading } from '../../components/RecentReadingsList';
@@ -80,11 +82,13 @@ import {
   dayKeyInZone,
 } from '../../utils/timeInZone';
 import { spo2Fill } from '../../utils/vitalThemes';
-import { checkStaleness } from '../../utils/classification';
+import { checkStaleness, canonicalTierForLegacy } from '../../utils/classification';
 import { formatStalenessCaption } from '../../utils/stalenessCaption';
+import { mmkv } from '../../services/storage';
 import { useTheme } from '../../theme';
 import type { ClassificationTier } from '../../utils/classification';
 import type { SpO2Sample } from '../../types/vitals';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 export interface SpO2DetailProps {
   onBack: () => void;
@@ -100,6 +104,8 @@ export interface SpO2DetailProps {
     timeZone: string,
   ) => void;
   familyId?: string;
+  /** Opens the For-your-doctor export (DetailShell renders the card). */
+  onDoctorPress?: () => void;
 }
 
 // Sprint 16.5f — design fallback removed. The chart now shows real
@@ -119,31 +125,73 @@ interface RangeCopy {
 }
 
 /**
+ * Observed overnight facts used to build the Insight body. Every field is
+ * derived from the user's own samples — never assumed.
+ */
+interface OvernightFacts {
+  /** Lowest overnight percent in the selected range, or null when none. */
+  lowestPercent: number | null;
+  /**
+   * Clock label for `lowestPercent` (e.g. "4 am"), or the literal
+   * 'overnight' when the lowest value came from the pre-baked slice and
+   * we have no time for it.
+   */
+  lowestTime: string;
+}
+
+/**
+ * Renders the observed low as a clause, or an empty string when we have
+ * no low to report. Never invents a value or a time.
+ *
+ * Sprint 19 (audit D12 P0-1) — the previous implementation hardcoded
+ * "one brief dip around 4 am" into the in_pattern branch and fixed
+ * thresholds ("below 92%", "below 90") into the concerned branches.
+ * Those strings rendered for every user regardless of their data,
+ * asserting a physiological event that may not have happened. All
+ * specifics now come from `OvernightFacts` or are omitted entirely.
+ */
+function lowestClause(facts: OvernightFacts): string {
+  if (facts.lowestPercent === null) return '';
+  const when =
+    facts.lowestTime === 'overnight' ? 'overnight' : `around ${facts.lowestTime}`;
+  return `${facts.lowestPercent}% ${when}`;
+}
+
+/**
  * Tier → copy. Every string here passes the docs/05-voice-and-claims.md
  * rules. The confirmed-urgent line still uses the calm Direct tone (D5
  * §3.5 Tone D) — it does not say "dangerous" or "critical".
+ *
+ * Specifics (percentages, times) are interpolated from `facts` only when
+ * we actually observed them. With no observation the copy stays true but
+ * general — it never fills the gap with an example.
  */
 function copyForTier(
   tier: ClassificationTier | null | undefined,
+  facts: OvernightFacts,
 ): RangeCopy {
+  const low = lowestClause(facts);
   switch (tier) {
     case 'in_pattern':
       return {
         hero: 'Steady through the night',
-        insight:
-          "Your oxygen saturation held steady through the night with one brief dip around 4 am — nothing unusual. Healthy sleep often shows small, transient dips like this.",
+        insight: low
+          ? `Your oxygen held in your usual range through the night, with a low of ${low}. Small, brief dips like this are common in healthy sleep.`
+          : 'Your oxygen held in your usual range through the night.',
       };
     case 'calm_concerned':
       return {
         hero: 'Worth a look — share with your doctor at your next visit',
-        insight:
-          'Your overnight oxygen has held below 92% on a few recent nights. Worth mentioning at your next doctor visit.',
+        insight: low
+          ? `Your overnight oxygen has been running below your usual, with a low of ${low}. Worth mentioning at your next doctor visit.`
+          : 'Your overnight oxygen has been running below your usual on recent nights. Worth mentioning at your next doctor visit.',
       };
     case 'confirmed_urgent':
       return {
         hero: 'We recommend talking to your doctor soon',
-        insight:
-          'Your overnight oxygen has held below 90 on a few recent nights — worth mentioning at your next doctor visit.',
+        insight: low
+          ? `Your overnight oxygen has been running well below your usual, with a low of ${low}. Worth talking to your doctor soon.`
+          : 'Your overnight oxygen has been running well below your usual on recent nights. Worth talking to your doctor soon.',
       };
     default:
       return {
@@ -320,6 +368,7 @@ export function SpO2Detail({
   onLearnOpen,
   onViewAllHistory,
   familyId,
+  onDoctorPress,
 }: SpO2DetailProps) {
   // Sprint 17a — both data sources called unconditionally.
   const ownPulse = useDailyPulseData();
@@ -344,6 +393,14 @@ export function SpO2Detail({
   // Sprint 18 SP1 — distinguish loading + error from "truly empty" on
   // the caregiver-scoped path (matches Sleep S1+S3 / HR H1 / BP B1).
   const isCaregiverScoped = scopedFamilyId !== null;
+
+  // D13 PR-6 — ribbon from the truth layer (§4.3-gated).
+  const spo2TruthBand = useMemo(() => {
+    const row = getServerBaseline(historyFamilyId ?? '', 'spo2');
+    return row && row.isSufficient
+      ? { low: Math.round(row.p10), high: Math.round(row.p90) }
+      : null;
+  }, [historyFamilyId]);
   const isInitialParentLoad =
     isCaregiverScoped &&
     (parentPulse.isLoading || parentRecent.isLoading) &&
@@ -368,9 +425,23 @@ export function SpO2Detail({
   const [trendRange, setTrendRange] = useState<TrendRange>('7d');
 
   const latestPercent = data.spo2.latestPercent;
+  // D13 PR-7 (§7.3) — honest by design: the hero is the OVERNIGHT low,
+  // never a daytime spot value promoted to headline.
+  const lastOvernightLow =
+    data.spo2.overnightLowsRecent.length > 0
+      ? data.spo2.overnightLowsRecent[data.spo2.overnightLowsRecent.length - 1]
+      : null;
+  const heroPercent = lastOvernightLow ?? latestPercent;
+  const heroIsOvernight = lastOvernightLow !== null;
   const tier = data.spo2.classification?.tier ?? null;
   const isEmpty = latestPercent === null;
   // Sprint 16 — per D13 §6.6, stale when latest SpO2 is older than 8h.
+  const spo2ChipTier = useMemo(() => {
+    const row = getServerBaseline(historyFamilyId ?? '', 'spo2');
+    if (!row || !row.isSufficient) return 'learning' as const;
+    return tier ? canonicalTierForLegacy(tier) : ('learning' as const);
+  }, [historyFamilyId, tier]);
+
   const spo2Staleness = isEmpty
     ? 'no_data'
     : checkStaleness('spo2', data.spo2.latestSampleSec);
@@ -378,7 +449,6 @@ export function SpO2Detail({
     spo2Staleness === 'stale'
       ? formatStalenessCaption(data.spo2.latestSampleSec)
       : null;
-  const range = copyForTier(tier);
 
   const allSamples = useMemo(
     () => [...spo2Pending, ...spo2Recent],
@@ -430,6 +500,13 @@ export function SpO2Detail({
   const lowest =
     lowestSampleInRange?.percent ?? overnightLowsRangeMin ?? null;
   const lowestUnit = lowestSampleInRange?.time ?? 'overnight';
+  // Sprint 19 (audit D12 P0-1) — tier copy is built AFTER `lowest` /
+  // `lowestUnit` so the Insight body can quote the user's own observed
+  // low instead of a hardcoded example. Keep this ordering.
+  const range = copyForTier(tier, {
+    lowestPercent: lowest,
+    lowestTime: lowestUnit,
+  });
   const awakeAvg = useMemo(
     () => computeAwakeAverage(rangedSamples),
     [rangedSamples],
@@ -525,6 +602,7 @@ export function SpO2Detail({
 
   return (
     <DetailShell
+      onDoctorPress={onDoctorPress}
       vital="spo2"
       onBack={onBack}
       onRangeChange={setTrendRange}
@@ -532,13 +610,18 @@ export function SpO2Detail({
       hero={
         <VitalHero
           vital="spo2"
-          primary={latestPercent === null ? '—' : String(latestPercent)}
-          secondary={latestPercent === null ? undefined : '%'}
+          primary={heroPercent === null ? '—' : String(heroPercent)}
+          secondary={heroPercent === null ? undefined : '%'}
           sub={
             spo2StaleCaption ??
-            (isEmpty ? 'No oxygen samples yet' : 'Now · oxygen saturation')
+            (isEmpty
+              ? 'No oxygen samples yet'
+              : heroIsOvernight
+                ? 'Last night · overnight low'
+                : 'Now · oxygen estimate')
           }
           range={range.hero}
+          tier={isEmpty ? null : spo2ChipTier}
           ringFill={spo2Fill(latestPercent)}
           livePulse={false}
           testID="spo2-detail-hero"
@@ -604,20 +687,35 @@ export function SpO2Detail({
 
           {chartHasData ? (
             <View style={{ paddingHorizontal: 20 }}>
-              <VitalTrendChart
+              {/* D13 PR-6 (§6.3) — ribbon from the truth layer's spo2
+                  row, drawn only when the §4.3 gate is met. */}
+              <RangeBandChart
                 vital="spo2"
-                data={overnightSeries}
-                range={chartRange}
+                points={overnightSeries.map((v) => ({ value: v }))}
+                band={spo2TruthBand}
+                unit="%"
                 caption={`Overnight · oxygen · last ${RANGE_TO_DAYS[trendRange]} days`}
                 subCaption={`${chartRange[0]}–${chartRange[1]} band`}
-                peak
-                trough
                 testID="spo2-detail-chart"
               />
+              <ViewAsTableLink
+                rows={overnightSeries.map((v, i) => ({
+                  label: `Night ${i + 1} of ${overnightSeries.length}`,
+                  value: `${Math.round(v)}%`,
+                }))}
+                subjectNoun="overnight lows"
+                testID="spo2-detail-table"
+              />
             </View>
+
           ) : (
             <EmptyChartHelper />
           )}
+
+          {/* D13 PR-7 (§7.3) — honest by design: the no-alarm rule is
+              stated, and the permanent explainer sits below. */}
+          <SpO2NoAlarmNote testID="spo2-detail-no-alarm-note" />
+          <SpO2ExplainerCard testID="spo2-detail-explainer" />
 
           {correlation ? (
             <View style={{ paddingHorizontal: 20 }}>
@@ -731,7 +829,7 @@ function EmptyChartHelper() {
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: captionStyle.size,
@@ -754,3 +852,86 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+
+// ── D13 PR-7 (§7.3) — the honest-by-design explainer ─────────────────
+//
+// Permanent card, expanded by default on first visit; the collapsed
+// choice persists in MMKV. Copy is the §7.3 content (drawn from D9
+// other-002) — do not extend it here.
+
+const SPO2_EXPLAINER_COLLAPSED_KEY = 'leiko.spo2.explainerCollapsed';
+
+function SpO2ExplainerCard({ testID }: { testID?: string }) {
+  const theme = useTheme();
+  const [collapsed, setCollapsed] = useState(
+    () => mmkv.getString(SPO2_EXPLAINER_COLLAPSED_KEY) === 'true',
+  );
+  const toggle = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    mmkv.set(SPO2_EXPLAINER_COLLAPSED_KEY, String(next));
+  };
+  const title = theme.type('title');
+  const bodyM = theme.type('bodyM');
+  return (
+    <View
+      style={{
+        marginHorizontal: 20,
+        marginTop: theme.spacing.l,
+        padding: theme.spacing.l,
+        backgroundColor: theme.colors.surface.warmElevated,
+        borderRadius: theme.radii.l,
+      }}
+      testID={testID}
+    >
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded: !collapsed }}
+        onPress={toggle}
+        testID={testID ? `${testID}-toggle` : undefined}
+      >
+        <Text
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
+          style={[title, { color: theme.colors.text.primary }]}
+        >
+          What your watch can and cannot tell you
+        </Text>
+      </Pressable>
+      {!collapsed ? (
+        <Text
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
+          style={[bodyM, { color: theme.colors.text.secondary, marginTop: theme.spacing.s }]}
+          testID={testID ? `${testID}-body` : undefined}
+        >
+          Wrist optical sensors are less accurate than a clinical oximeter.
+          This is a wellness reference, not a clinical measurement. If you
+          have a chronic respiratory condition, use the device your doctor
+          recommends.
+        </Text>
+      ) : null}
+    </View>
+  );
+}
+
+
+function SpO2NoAlarmNote({ testID }: { testID?: string }) {
+  const theme = useTheme();
+  return (
+    <Text
+      maxFontSizeMultiplier={MAX_FONT_SCALE}
+      style={[
+        theme.type('caption'),
+        {
+          color: theme.colors.text.tertiary,
+          marginHorizontal: 20,
+          marginTop: theme.spacing.m,
+        },
+      ]}
+      testID={testID}
+    >
+      Readings below 92% are shown without alarm and never trigger an alert
+      on their own. Overnight patterns are what we watch.
+    </Text>
+  );
+}

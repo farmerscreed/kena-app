@@ -38,6 +38,7 @@ import {
 } from './RecentReadingsList';
 import { useTheme } from '../theme';
 import type { VitalType } from './VitalRing';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 /** "All" is treated as a sentinel that resolves to readings.length. */
 type CountOption = number | 'all';
@@ -108,7 +109,7 @@ export function RecentReadingsSection({
     <View style={style} testID={testID}>
       {/* Eyebrow — matches the SectionLabel pattern from leiko-detail.jsx */}
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -156,7 +157,7 @@ export function RecentReadingsSection({
           })}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: captionStyle.family,
               fontSize: captionStyle.size,
@@ -227,7 +228,7 @@ export function RecentReadingsSection({
                 })}
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: titleStyle.family,
                     fontSize: titleStyle.size,
@@ -241,7 +242,7 @@ export function RecentReadingsSection({
                   {labelFor(opt)}
                 </Text>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: captionStyle.size,

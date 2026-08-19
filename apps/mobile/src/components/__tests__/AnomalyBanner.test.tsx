@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { AccessibilityInfo, Platform } from 'react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { ThemeProvider } from '../../theme';
 import {
@@ -264,5 +265,103 @@ describe('AnomalyBanner — accessibility', () => {
     expect(screen.getByTestId('banner').props.accessibilityLabel).toBe(
       'Urgent alert: Talk to Mum now. Their latest reading was above their usual range. A calm check-in helps.',
     );
+  });
+});
+
+// ── Audit P1-7 ───────────────────────────────────────────────────────
+// accessibilityLiveRegion is Android-only in React Native. On iOS this
+// banner set "assertive" and then said nothing at all — a VoiceOver user
+// was never told a reading had been flagged. The banner now also posts
+// the composed sentence through AccessibilityInfo on iOS, and stays quiet
+// on Android so the reading isn't doubled up.
+
+describe('AnomalyBanner — live-region announcement (audit P1-7)', () => {
+  let spy: jest.SpyInstance;
+
+  beforeEach(() => {
+    spy = jest
+      .spyOn(AccessibilityInfo, 'announceForAccessibility')
+      .mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    spy.mockRestore();
+    jest.restoreAllMocks();
+  });
+
+  it('speaks the confirmed-urgent banner on iOS', () => {
+    render(
+      withTheme(
+        <AnomalyBanner
+          severity="confirmed-urgent"
+          title={FIXTURES['confirmed-urgent'].title}
+          body={FIXTURES['confirmed-urgent'].body}
+          testID="banner"
+        />,
+      ),
+    );
+    expect(spy).toHaveBeenCalledWith(
+      screen.getByTestId('banner').props.accessibilityLabel,
+    );
+  });
+
+  it('speaks the calm-concerned banner on iOS', () => {
+    render(
+      withTheme(
+        <AnomalyBanner
+          severity="calm-concerned"
+          title={FIXTURES['calm-concerned'].title}
+          body={FIXTURES['calm-concerned'].body}
+          testID="banner"
+        />,
+      ),
+    );
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(
+      screen.getByTestId('banner').props.accessibilityLabel,
+    );
+  });
+
+  it('stays quiet on Android — accessibilityLiveRegion already announces there', () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    render(
+      withTheme(
+        <AnomalyBanner
+          severity="confirmed-urgent"
+          title={FIXTURES['confirmed-urgent'].title}
+          body={FIXTURES['confirmed-urgent'].body}
+          testID="banner"
+        />,
+      ),
+    );
+    expect(spy).not.toHaveBeenCalled();
+    // The Android half of the contract is still in place.
+    expect(screen.getByTestId('banner').props.accessibilityLiveRegion).toBe(
+      'assertive',
+    );
+  });
+
+  it('does not repeat itself on a re-render with unchanged copy', () => {
+    const { rerender } = render(
+      withTheme(
+        <AnomalyBanner
+          severity="confirmed-urgent"
+          title={FIXTURES['confirmed-urgent'].title}
+          body={FIXTURES['confirmed-urgent'].body}
+          testID="banner"
+        />,
+      ),
+    );
+    rerender(
+      withTheme(
+        <AnomalyBanner
+          severity="confirmed-urgent"
+          title={FIXTURES['confirmed-urgent'].title}
+          body={FIXTURES['confirmed-urgent'].body}
+          testID="banner"
+        />,
+      ),
+    );
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });

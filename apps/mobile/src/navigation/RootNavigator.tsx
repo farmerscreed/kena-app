@@ -44,6 +44,7 @@ import { SettingsScreen } from '../screens/Settings/SettingsScreen';
 import { TakeReadingScreen } from '../screens/TakeReading/TakeReadingScreen';
 import { ReadingDetailScreen } from '../screens/ReadingDetail/ReadingDetailScreen';
 import { Trends } from '../screens/Trends/Trends';
+import { PersonOverviewScreen } from '../screens/Person/PersonOverviewScreen';
 import { ForYourDoctorScreen } from '../screens/ForYourDoctor/ForYourDoctorScreen';
 import { AuditLogScreen } from '../screens/AuditLog/AuditLogScreen';
 import { CaregiverVisibilityScreen } from '../screens/CaregiverVisibility/CaregiverVisibilityScreen';
@@ -167,6 +168,7 @@ function CaregiverHomeNavigator() {
       <CaregiverStack.Screen name="TakeReading" component={TakeReadingScreen} />
       <CaregiverStack.Screen name="ReadingDetail" component={ReadingDetailScreen} />
       <CaregiverStack.Screen name="Trends" component={Trends} />
+      <CaregiverStack.Screen name="PersonOverview" component={PersonOverviewRoute} />
       <CaregiverStack.Screen
         name="ForYourDoctor"
         component={ForYourDoctorScreen}
@@ -254,6 +256,7 @@ function SelfBuyerHomeNavigator() {
       <SelfBuyerStack.Screen name="VitalHistory" component={VitalHistoryScreen} />
       <SelfBuyerStack.Screen name="PdfPreview" component={PdfPreviewScreen} />
       <SelfBuyerStack.Screen name="Trends" component={Trends} />
+      <SelfBuyerStack.Screen name="PersonOverview" component={PersonOverviewRoute} />
       <SelfBuyerStack.Screen
         name="ForYourDoctor"
         component={ForYourDoctorScreen}
@@ -294,16 +297,24 @@ function HydratingFallback() {
  * Sprint 16.6 FUN-4 — wire the learned-time reminder dispatcher to
  * current app state. Pure-ish: reads the store snapshots directly so
  * it does not depend on React rendering. Self-buyer fires "you"
- * copy; caregiver fires a neutral "your loved one" until per-parent
- * resolution is wired through useCaregiverFamily (TODO follow-up).
+ * copy; caregiver fires a neutral label until per-parent resolution is
+ * wired through useCaregiverFamily (TODO follow-up).
  * The "parent" persona route is read-only by spec, so we skip it.
+ *
+ * Sprint 19 (audit D12 P0-8) — the caregiver fallback was "your loved
+ * one", a HARD FAIL in docs/05-voice-and-claims.md §87, and it reached
+ * the lock screen because local notifications bypass the voice gate the
+ * server path enforces. `dispatcher.ts` now lints too, but the correct
+ * label matters more than the safety net.
  */
+const CAREGIVER_REMINDER_FALLBACK_LABEL = 'your family member';
+
 function scheduleLearnedTimeFromCurrentState(): Promise<unknown> | void {
   const accountType = useAuth.getState().profile?.account_type;
   if (!accountType || accountType === 'parent') return;
   const isSelf = accountType === 'self_buyer';
   const readings = useReadings.getState().recent ?? [];
-  const parentLabel = isSelf ? '' : 'your loved one';
+  const parentLabel = isSelf ? '' : CAREGIVER_REMINDER_FALLBACK_LABEL;
   return scheduleNextLearnedTimeReminder({ readings, parentLabel, isSelf });
 }
 
@@ -451,3 +462,23 @@ function VisibilityEnforcer(): null {
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
+
+
+// D13 PR-8 — thin route wrapper for PersonOverviewScreen: binds the
+// navigation handlers so the screen itself stays navigation-free.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function PersonOverviewRoute({ navigation, route }: any) {
+  const { familyId, personName, isSelf } = route.params ?? {};
+  return (
+    <PersonOverviewScreen
+      familyId={familyId}
+      personName={personName}
+      isSelf={isSelf}
+      onBack={() => navigation.goBack()}
+      onOpenVital={(vital: 'bp' | 'hr' | 'spo2' | 'sleep' | 'activity', fid: string | null) =>
+        navigation.navigate('VitalDetail', fid ? { vital, familyId: fid } : { vital })
+      }
+      onDoctorPress={() => navigation.navigate('ForYourDoctor')}
+    />
+  );
+}

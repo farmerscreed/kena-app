@@ -1,0 +1,2521 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`StatusChip — tier × subject matrix in_range × fallback renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="In their usual range"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="check-bold__svg-icon-phosphor"
+      color="#5FA97E"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-check-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4284459390,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m232.49 80.49-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#5FA97E",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      In their usual range
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix in_range × named-default-possessive renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="In their usual range"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="check-bold__svg-icon-phosphor"
+      color="#5FA97E"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-check-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4284459390,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m232.49 80.49-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#5FA97E",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      In their usual range
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix in_range × named-her renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="In her usual range"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="check-bold__svg-icon-phosphor"
+      color="#5FA97E"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-check-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4284459390,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m232.49 80.49-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#5FA97E",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      In her usual range
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix in_range × named-his renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="In his usual range"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="check-bold__svg-icon-phosphor"
+      color="#5FA97E"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-check-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4284459390,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m232.49 80.49-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#5FA97E",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      In his usual range
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix in_range × self renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="In your usual range"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#5FA97E24",
+          "borderColor": "#5FA97E3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="check-bold__svg-icon-phosphor"
+      color="#5FA97E"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-check-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4284459390,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m232.49 80.49-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#5FA97E",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      In your usual range
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix learning × fallback renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Learning"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="circle-dashed-bold__svg-icon-phosphor"
+      color="#918B84"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-circle-dashed-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4287728516,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M92.38 38.05A12 12 0 0 1 101 23.42a108 108 0 0 1 54 0 12 12 0 1 1-6 23.23 84.1 84.1 0 0 0-42 0 12 12 0 0 1-14.62-8.6M50.94 52.34a108.1 108.1 0 0 0-27 46.76 12 12 0 0 0 8.37 14.77 12.2 12.2 0 0 0 3.2.43 12 12 0 0 0 11.56-8.8 84 84 0 0 1 21-36.35 12 12 0 1 0-17.13-16.81m-3.88 98.14a12 12 0 0 0-23.12 6.42 108 108 0 0 0 27 46.78A12 12 0 0 0 68 186.85a84 84 0 0 1-20.94-36.37M149 209.35a84 84 0 0 1-42 0 12 12 0 1 0-6 23.23 108 108 0 0 0 54 0 12 12 0 1 0-6-23.23m74.72-67.22A12 12 0 0 0 209 150.5a84 84 0 0 1-21 36.35 12 12 0 0 0 17.12 16.82 108.2 108.2 0 0 0 27-46.77 12 12 0 0 0-8.41-14.77Zm-14.77-36.61a12 12 0 0 0 23.12-6.42 108 108 0 0 0-27-46.78A12 12 0 1 0 188 69.15a84 84 0 0 1 20.94 36.37Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#918B84",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Learning
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix learning × named-default-possessive renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Learning"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="circle-dashed-bold__svg-icon-phosphor"
+      color="#918B84"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-circle-dashed-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4287728516,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M92.38 38.05A12 12 0 0 1 101 23.42a108 108 0 0 1 54 0 12 12 0 1 1-6 23.23 84.1 84.1 0 0 0-42 0 12 12 0 0 1-14.62-8.6M50.94 52.34a108.1 108.1 0 0 0-27 46.76 12 12 0 0 0 8.37 14.77 12.2 12.2 0 0 0 3.2.43 12 12 0 0 0 11.56-8.8 84 84 0 0 1 21-36.35 12 12 0 1 0-17.13-16.81m-3.88 98.14a12 12 0 0 0-23.12 6.42 108 108 0 0 0 27 46.78A12 12 0 0 0 68 186.85a84 84 0 0 1-20.94-36.37M149 209.35a84 84 0 0 1-42 0 12 12 0 1 0-6 23.23 108 108 0 0 0 54 0 12 12 0 1 0-6-23.23m74.72-67.22A12 12 0 0 0 209 150.5a84 84 0 0 1-21 36.35 12 12 0 0 0 17.12 16.82 108.2 108.2 0 0 0 27-46.77 12 12 0 0 0-8.41-14.77Zm-14.77-36.61a12 12 0 0 0 23.12-6.42 108 108 0 0 0-27-46.78A12 12 0 1 0 188 69.15a84 84 0 0 1 20.94 36.37Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#918B84",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Learning
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix learning × named-her renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Learning"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="circle-dashed-bold__svg-icon-phosphor"
+      color="#918B84"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-circle-dashed-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4287728516,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M92.38 38.05A12 12 0 0 1 101 23.42a108 108 0 0 1 54 0 12 12 0 1 1-6 23.23 84.1 84.1 0 0 0-42 0 12 12 0 0 1-14.62-8.6M50.94 52.34a108.1 108.1 0 0 0-27 46.76 12 12 0 0 0 8.37 14.77 12.2 12.2 0 0 0 3.2.43 12 12 0 0 0 11.56-8.8 84 84 0 0 1 21-36.35 12 12 0 1 0-17.13-16.81m-3.88 98.14a12 12 0 0 0-23.12 6.42 108 108 0 0 0 27 46.78A12 12 0 0 0 68 186.85a84 84 0 0 1-20.94-36.37M149 209.35a84 84 0 0 1-42 0 12 12 0 1 0-6 23.23 108 108 0 0 0 54 0 12 12 0 1 0-6-23.23m74.72-67.22A12 12 0 0 0 209 150.5a84 84 0 0 1-21 36.35 12 12 0 0 0 17.12 16.82 108.2 108.2 0 0 0 27-46.77 12 12 0 0 0-8.41-14.77Zm-14.77-36.61a12 12 0 0 0 23.12-6.42 108 108 0 0 0-27-46.78A12 12 0 1 0 188 69.15a84 84 0 0 1 20.94 36.37Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#918B84",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Learning
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix learning × named-his renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Learning"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="circle-dashed-bold__svg-icon-phosphor"
+      color="#918B84"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-circle-dashed-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4287728516,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M92.38 38.05A12 12 0 0 1 101 23.42a108 108 0 0 1 54 0 12 12 0 1 1-6 23.23 84.1 84.1 0 0 0-42 0 12 12 0 0 1-14.62-8.6M50.94 52.34a108.1 108.1 0 0 0-27 46.76 12 12 0 0 0 8.37 14.77 12.2 12.2 0 0 0 3.2.43 12 12 0 0 0 11.56-8.8 84 84 0 0 1 21-36.35 12 12 0 1 0-17.13-16.81m-3.88 98.14a12 12 0 0 0-23.12 6.42 108 108 0 0 0 27 46.78A12 12 0 0 0 68 186.85a84 84 0 0 1-20.94-36.37M149 209.35a84 84 0 0 1-42 0 12 12 0 1 0-6 23.23 108 108 0 0 0 54 0 12 12 0 1 0-6-23.23m74.72-67.22A12 12 0 0 0 209 150.5a84 84 0 0 1-21 36.35 12 12 0 0 0 17.12 16.82 108.2 108.2 0 0 0 27-46.77 12 12 0 0 0-8.41-14.77Zm-14.77-36.61a12 12 0 0 0 23.12-6.42 108 108 0 0 0-27-46.78A12 12 0 1 0 188 69.15a84 84 0 0 1 20.94 36.37Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#918B84",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Learning
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix learning × self renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Learning"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#918B8424",
+          "borderColor": "#918B843D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="circle-dashed-bold__svg-icon-phosphor"
+      color="#918B84"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-circle-dashed-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4287728516,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M92.38 38.05A12 12 0 0 1 101 23.42a108 108 0 0 1 54 0 12 12 0 1 1-6 23.23 84.1 84.1 0 0 0-42 0 12 12 0 0 1-14.62-8.6M50.94 52.34a108.1 108.1 0 0 0-27 46.76 12 12 0 0 0 8.37 14.77 12.2 12.2 0 0 0 3.2.43 12 12 0 0 0 11.56-8.8 84 84 0 0 1 21-36.35 12 12 0 1 0-17.13-16.81m-3.88 98.14a12 12 0 0 0-23.12 6.42 108 108 0 0 0 27 46.78A12 12 0 0 0 68 186.85a84 84 0 0 1-20.94-36.37M149 209.35a84 84 0 0 1-42 0 12 12 0 1 0-6 23.23 108 108 0 0 0 54 0 12 12 0 1 0-6-23.23m74.72-67.22A12 12 0 0 0 209 150.5a84 84 0 0 1-21 36.35 12 12 0 0 0 17.12 16.82 108.2 108.2 0 0 0 27-46.77 12 12 0 0 0-8.41-14.77Zm-14.77-36.61a12 12 0 0 0 23.12-6.42 108 108 0 0 0-27-46.78A12 12 0 1 0 188 69.15a84 84 0 0 1 20.94 36.37Z"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#918B84",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Learning
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix talk_to_doctor × fallback renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Talk to a doctor"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="phone-bold__svg-icon-phosphor"
+      color="#E06A7C"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-phone-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4292897404,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m224 154.8-47.09-21.11-.18-.08a19.94 19.94 0 0 0-19 1.75 13 13 0 0 0-1.12.84l-22.31 19c-13-7.05-26.43-20.37-33.49-33.21l19.06-22.66a12 12 0 0 0 .85-1.15 20 20 0 0 0 1.66-18.83 1.4 1.4 0 0 1-.08-.18L101.2 32a20.06 20.06 0 0 0-20.78-11.85A60.27 60.27 0 0 0 28 80c0 81.61 66.39 148 148 148a60.27 60.27 0 0 0 59.85-52.42A20.06 20.06 0 0 0 224 154.8M176 204A124.15 124.15 0 0 1 52 80a36.29 36.29 0 0 1 28.48-35.54l18.82 42-19.16 22.82a12 12 0 0 0-.86 1.16A20 20 0 0 0 78 130.08c9.42 19.28 28.83 38.56 48.31 48a20 20 0 0 0 19.69-1.45 12 12 0 0 0 1.11-.85l22.43-19.07 42 18.81A36.29 36.29 0 0 1 176 204"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E06A7C",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Talk to a doctor
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix talk_to_doctor × named-default-possessive renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Talk to a doctor"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="phone-bold__svg-icon-phosphor"
+      color="#E06A7C"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-phone-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4292897404,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m224 154.8-47.09-21.11-.18-.08a19.94 19.94 0 0 0-19 1.75 13 13 0 0 0-1.12.84l-22.31 19c-13-7.05-26.43-20.37-33.49-33.21l19.06-22.66a12 12 0 0 0 .85-1.15 20 20 0 0 0 1.66-18.83 1.4 1.4 0 0 1-.08-.18L101.2 32a20.06 20.06 0 0 0-20.78-11.85A60.27 60.27 0 0 0 28 80c0 81.61 66.39 148 148 148a60.27 60.27 0 0 0 59.85-52.42A20.06 20.06 0 0 0 224 154.8M176 204A124.15 124.15 0 0 1 52 80a36.29 36.29 0 0 1 28.48-35.54l18.82 42-19.16 22.82a12 12 0 0 0-.86 1.16A20 20 0 0 0 78 130.08c9.42 19.28 28.83 38.56 48.31 48a20 20 0 0 0 19.69-1.45 12 12 0 0 0 1.11-.85l22.43-19.07 42 18.81A36.29 36.29 0 0 1 176 204"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E06A7C",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Talk to a doctor
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix talk_to_doctor × named-her renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Talk to a doctor"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="phone-bold__svg-icon-phosphor"
+      color="#E06A7C"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-phone-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4292897404,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m224 154.8-47.09-21.11-.18-.08a19.94 19.94 0 0 0-19 1.75 13 13 0 0 0-1.12.84l-22.31 19c-13-7.05-26.43-20.37-33.49-33.21l19.06-22.66a12 12 0 0 0 .85-1.15 20 20 0 0 0 1.66-18.83 1.4 1.4 0 0 1-.08-.18L101.2 32a20.06 20.06 0 0 0-20.78-11.85A60.27 60.27 0 0 0 28 80c0 81.61 66.39 148 148 148a60.27 60.27 0 0 0 59.85-52.42A20.06 20.06 0 0 0 224 154.8M176 204A124.15 124.15 0 0 1 52 80a36.29 36.29 0 0 1 28.48-35.54l18.82 42-19.16 22.82a12 12 0 0 0-.86 1.16A20 20 0 0 0 78 130.08c9.42 19.28 28.83 38.56 48.31 48a20 20 0 0 0 19.69-1.45 12 12 0 0 0 1.11-.85l22.43-19.07 42 18.81A36.29 36.29 0 0 1 176 204"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E06A7C",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Talk to a doctor
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix talk_to_doctor × named-his renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Talk to a doctor"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="phone-bold__svg-icon-phosphor"
+      color="#E06A7C"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-phone-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4292897404,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m224 154.8-47.09-21.11-.18-.08a19.94 19.94 0 0 0-19 1.75 13 13 0 0 0-1.12.84l-22.31 19c-13-7.05-26.43-20.37-33.49-33.21l19.06-22.66a12 12 0 0 0 .85-1.15 20 20 0 0 0 1.66-18.83 1.4 1.4 0 0 1-.08-.18L101.2 32a20.06 20.06 0 0 0-20.78-11.85A60.27 60.27 0 0 0 28 80c0 81.61 66.39 148 148 148a60.27 60.27 0 0 0 59.85-52.42A20.06 20.06 0 0 0 224 154.8M176 204A124.15 124.15 0 0 1 52 80a36.29 36.29 0 0 1 28.48-35.54l18.82 42-19.16 22.82a12 12 0 0 0-.86 1.16A20 20 0 0 0 78 130.08c9.42 19.28 28.83 38.56 48.31 48a20 20 0 0 0 19.69-1.45 12 12 0 0 0 1.11-.85l22.43-19.07 42 18.81A36.29 36.29 0 0 1 176 204"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E06A7C",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Talk to a doctor
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix talk_to_doctor × self renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Talk to a doctor"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E06A7C24",
+          "borderColor": "#E06A7C3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="phone-bold__svg-icon-phosphor"
+      color="#E06A7C"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-phone-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4292897404,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="m224 154.8-47.09-21.11-.18-.08a19.94 19.94 0 0 0-19 1.75 13 13 0 0 0-1.12.84l-22.31 19c-13-7.05-26.43-20.37-33.49-33.21l19.06-22.66a12 12 0 0 0 .85-1.15 20 20 0 0 0 1.66-18.83 1.4 1.4 0 0 1-.08-.18L101.2 32a20.06 20.06 0 0 0-20.78-11.85A60.27 60.27 0 0 0 28 80c0 81.61 66.39 148 148 148a60.27 60.27 0 0 0 59.85-52.42A20.06 20.06 0 0 0 224 154.8M176 204A124.15 124.15 0 0 1 52 80a36.29 36.29 0 0 1 28.48-35.54l18.82 42-19.16 22.82a12 12 0 0 0-.86 1.16A20 20 0 0 0 78 130.08c9.42 19.28 28.83 38.56 48.31 48a20 20 0 0 0 19.69-1.45 12 12 0 0 0 1.11-.85l22.43-19.07 42 18.81A36.29 36.29 0 0 1 176 204"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E06A7C",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Talk to a doctor
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix worth_a_look × fallback renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Worth a look"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="warning-circle-bold__svg-icon-phosphor"
+      color="#E8B54F"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-warning-circle-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4293440847,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 192a84 84 0 1 1 84-84 84.09 84.09 0 0 1-84 84m-12-80V80a12 12 0 0 1 24 0v52a12 12 0 0 1-24 0m28 40a16 16 0 1 1-16-16 16 16 0 0 1 16 16"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E8B54F",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Worth a look
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix worth_a_look × named-default-possessive renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Worth a look"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="warning-circle-bold__svg-icon-phosphor"
+      color="#E8B54F"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-warning-circle-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4293440847,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 192a84 84 0 1 1 84-84 84.09 84.09 0 0 1-84 84m-12-80V80a12 12 0 0 1 24 0v52a12 12 0 0 1-24 0m28 40a16 16 0 1 1-16-16 16 16 0 0 1 16 16"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E8B54F",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Worth a look
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix worth_a_look × named-her renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Worth a look"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="warning-circle-bold__svg-icon-phosphor"
+      color="#E8B54F"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-warning-circle-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4293440847,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 192a84 84 0 1 1 84-84 84.09 84.09 0 0 1-84 84m-12-80V80a12 12 0 0 1 24 0v52a12 12 0 0 1-24 0m28 40a16 16 0 1 1-16-16 16 16 0 0 1 16 16"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E8B54F",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Worth a look
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix worth_a_look × named-his renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Worth a look"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="warning-circle-bold__svg-icon-phosphor"
+      color="#E8B54F"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-warning-circle-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4293440847,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 192a84 84 0 1 1 84-84 84.09 84.09 0 0 1-84 84m-12-80V80a12 12 0 0 1 24 0v52a12 12 0 0 1-24 0m28 40a16 16 0 1 1-16-16 16 16 0 0 1 16 16"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E8B54F",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Worth a look
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;
+
+exports[`StatusChip — tier × subject matrix worth_a_look × self renders the canonical copy 1`] = `
+<RNCSafeAreaProvider
+  onInsetsChange={[Function]}
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityElementsHidden={false}
+    accessibilityLabel="Worth a look"
+    accessibilityRole="text"
+    accessible={true}
+    importantForAccessibility="auto"
+    style={
+      [
+        {
+          "alignItems": "center",
+          "alignSelf": "flex-start",
+          "backgroundColor": "#E8B54F24",
+          "borderColor": "#E8B54F3D",
+          "borderRadius": 99,
+          "borderWidth": 0.5,
+          "flexDirection": "row",
+          "gap": 5,
+          "paddingHorizontal": 10,
+          "paddingVertical": 4,
+        },
+        undefined,
+      ]
+    }
+    testID="chip"
+  >
+    <RNSVGSvgView
+      align="xMidYMid"
+      bbHeight={14}
+      bbWidth={14}
+      className="warning-circle-bold__svg-icon-phosphor"
+      color="#E8B54F"
+      fill="currentColor"
+      focusable={false}
+      height={14}
+      meetOrSlice={0}
+      minX={0}
+      minY={0}
+      style={
+        [
+          {
+            "backgroundColor": "transparent",
+            "borderWidth": 0,
+          },
+          [
+            undefined,
+            undefined,
+            {},
+          ],
+          {
+            "flex": 0,
+            "height": 14,
+            "width": 14,
+          },
+        ]
+      }
+      testID="phosphor-react-native-warning-circle-bold"
+      vbHeight={256}
+      vbWidth={256}
+      width={14}
+    >
+      <RNSVGGroup
+        fill={
+          {
+            "type": 2,
+          }
+        }
+        propList={
+          [
+            "fill",
+          ]
+        }
+      >
+        <RNSVGGroup
+          fill={
+            {
+              "payload": 4293440847,
+              "type": 0,
+            }
+          }
+          propList={
+            [
+              "fill",
+            ]
+          }
+        >
+          <RNSVGPath
+            d="M128 20a108 108 0 1 0 108 108A108.12 108.12 0 0 0 128 20m0 192a84 84 0 1 1 84-84 84.09 84.09 0 0 1-84 84m-12-80V80a12 12 0 0 1 24 0v52a12 12 0 0 1-24 0m28 40a16 16 0 1 1-16-16 16 16 0 0 1 16 16"
+            fill={
+              {
+                "payload": 4278190080,
+                "type": 0,
+              }
+            }
+          />
+        </RNSVGGroup>
+      </RNSVGGroup>
+    </RNSVGSvgView>
+    <Text
+      maxFontSizeMultiplier={1.3}
+      style={
+        {
+          "color": "#E8B54F",
+          "fontFamily": "Inter_400Regular",
+          "fontSize": 13,
+          "lineHeight": 17,
+        }
+      }
+    >
+      Worth a look
+    </Text>
+  </View>
+</RNCSafeAreaProvider>
+`;

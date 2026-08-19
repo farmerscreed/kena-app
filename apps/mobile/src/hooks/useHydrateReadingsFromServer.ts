@@ -27,6 +27,11 @@ import { useReadings, type LocalReading } from '../state/readings';
 import { supabase } from '../services/supabase';
 import { logger } from '../services/analytics/logger';
 import { classifyReading } from '../utils/classification';
+import {
+  refreshVitalBaselines,
+  resolveBpBaselines,
+  type BpBaselinePair,
+} from '../utils/vitalBaselines';
 
 const FETCH_LIMIT = 30;
 
@@ -42,10 +47,20 @@ interface ServerReadingRow {
   hidden: boolean;
 }
 
-function mapServerRowToLocal(row: ServerReadingRow): LocalReading {
+/** Exported for the PR-1 cross-call-site integration test. */
+export function mapServerRowToLocal(
+  row: ServerReadingRow,
+  baselines: BpBaselinePair | null,
+): LocalReading {
+  // D13 PR-1 (P0-2) — server rows are classified against the wearer's
+  // own truth-layer baseline, same as locally-captured ones. The caller
+  // resolves the baseline pair ONCE for the whole fetched batch, so
+  // every row in a hydration is judged consistently. No history is
+  // passed: the confirmation rule only applies to the latest reading
+  // at live-capture sites, never to batch re-classification.
   const classification = classifyReading(
     { systolic: row.systolic, diastolic: row.diastolic, pulse: row.pulse },
-    null,
+    baselines,
   );
   return {
     localId: `srv-${row.id}`,
@@ -109,7 +124,24 @@ export function useHydrateReadingsFromServer(): void {
           .limit(FETCH_LIMIT);
         if (cancelled || error || !rows || rows.length === 0) return;
 
-        const mapped = (rows as ServerReadingRow[]).map(mapServerRowToLocal);
+        // D13 PR-1 (P0-2) — pull the server truth-layer rows first
+        // (non-fatal on failure: the cache, then the provisional
+        // fallback over the union of server + held readings, cover the
+        // offline path). Resolving once, up front, keeps a batch
+        // internally consistent.
+        await refreshVitalBaselines(familyId);
+        const serverRows = rows as ServerReadingRow[];
+        const { pending, recent } = useReadings.getState();
+        const baselines = resolveBpBaselines(familyId, [
+          ...pending,
+          ...recent,
+          ...serverRows.map((r) => ({
+            measuredAtSec: Math.floor(new Date(r.measured_at).getTime() / 1000),
+            systolic: r.systolic,
+            diastolic: r.diastolic,
+          })),
+        ]);
+        const mapped = serverRows.map((r) => mapServerRowToLocal(r, baselines));
         const added = useReadings.getState().seedRecentFromServer(mapped);
         if (added > 0) {
           logger.track('readings_hydrated_from_server', { count: added });

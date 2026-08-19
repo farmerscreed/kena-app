@@ -1,7 +1,7 @@
 // BaselineReference — Sprint 16.5f.
 //
 // Small inline "Your usual: X–Y" line surfaced under each detail-screen
-// hero. Replaces the bare hero phrase "within your range" — which made a
+// hero. Replaces the bare hero range phrase — which made a
 // claim ("your range") without showing the range. Now the user sees the
 // reference and can judge for themselves.
 //
@@ -14,6 +14,7 @@
 
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 export interface BaselineReferenceProps {
   /** The pre-formatted baseline body (e.g. "115–128 / 72–82" or
@@ -41,14 +42,14 @@ export function BaselineReference({
   const captionStyle = theme.type('caption');
 
   return (
-    <View
+    <View accessible={true}
       style={[styles.root, style]}
       accessibilityRole="text"
       accessibilityLabel={`${eyebrow}: ${body}${caption ? `, ${caption}` : ''}`}
       testID={testID}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -62,7 +63,7 @@ export function BaselineReference({
         {eyebrow}
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 14,
@@ -75,7 +76,7 @@ export function BaselineReference({
       </Text>
       {caption ? (
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: captionStyle.family,
             fontSize: captionStyle.size,

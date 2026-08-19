@@ -30,6 +30,10 @@ import type { AccountType } from '../../types/database';
 
 export interface NarrationSlots {
   parent_label: string;
+  /** D13 §7.4 — user-set at add-person time; "their" is the always-safe
+   *  default and the current value everywhere until the Person Overview
+   *  build adds the capture field. Never inferred from a name. */
+  possessive: string;
   bp_value: string;
   bp_delta: string;
   bp_week_avg: string;
@@ -75,17 +79,32 @@ function formatBpValue(latest: { systolic: number; diastolic: number } | null): 
 }
 
 /**
- * "six below her week" / "four above" / empty when no baseline. The
- * template body usually includes the surrounding phrasing
- * ("{bp_delta}" expands to just the number+direction).
+ * A complete predicate describing where the latest systolic sits against
+ * the week's average — e.g. "six above the week's average".
+ *
+ * Sprint 19 (audit D12 P0-7). This used to return a fragment ("six above
+ * her week") into templates that ALSO supplied "above her week",
+ * composing to "…is six above her week above her week." and, in the
+ * uncomputable case, a doubled predicate. The templates now
+ * end at the slot, so this function owns the whole predicate. If you
+ * change the shape here, change `BP_CALM_CONCERNED` in
+ * narrationTemplates.ts to match — and see the composition test in
+ * __tests__/dailyNarration.test.ts, which asserts the rendered sentence
+ * rather than the slot in isolation.
+ *
+ * Gender-neutral by construction: the week belongs to nobody in the
+ * copy, so a "Dad" parent_label never collides with "her".
  */
 function formatBpDelta(
   latestSys: number | null,
   weekAvgSys: number | null,
 ): string {
-  if (latestSys === null || weekAvgSys === null) return 'in pattern';
+  // Both templates consuming this slot only fire on a calm_concerned BP
+  // tier, so "higher than usual" is true by construction when we can't
+  // compute a magnitude. We never invent a number.
+  if (latestSys === null || weekAvgSys === null) return 'higher than usual';
   const diff = latestSys - weekAvgSys;
-  if (Math.abs(diff) < 1) return 'in line with her week';
+  if (Math.abs(diff) < 1) return "in line with the week's average";
   const wordFor = (n: number): string => {
     const map: Record<number, string> = {
       1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five',
@@ -94,7 +113,9 @@ function formatBpDelta(
     return map[n] ?? `${n}`;
   };
   const word = wordFor(Math.abs(diff));
-  return diff < 0 ? `${word} below her week` : `${word} above her week`;
+  return diff < 0
+    ? `${word} below the week's average`
+    : `${word} above the week's average`;
 }
 
 function formatBpWeekAvg(weekAvgSys: number | null, weekAvgDia: number | null): string {
@@ -200,6 +221,8 @@ export function buildNarrationContext(
 export interface BuildNarrationSlotsInput {
   data: DailyPulseData;
   parentLabel: string;
+  /** §7.4 possessive; "their" default, "your" for self surfaces. */
+  possessive?: string;
   weekAverageSystolic?: number | null;
   weekAverageDiastolic?: number | null;
   /** Days in last 7 where steps met target. */
@@ -214,6 +237,7 @@ export function buildNarrationSlots(
   const weekAvgDia = input.weekAverageDiastolic ?? null;
   return {
     parent_label: parentLabel,
+    possessive: input.possessive ?? 'their',
     bp_value: formatBpValue(data.bp.latest),
     bp_delta: formatBpDelta(data.bp.latest?.systolic ?? null, weekAvgSys),
     bp_week_avg: formatBpWeekAvg(weekAvgSys, weekAvgDia),
@@ -229,6 +253,9 @@ export function buildNarrationSlots(
 export interface GenerateDailyNarrationInput {
   data: DailyPulseData;
   parentLabel: string;
+  /** §7.4 possessive for {possessive} slots. Defaults to "their";
+   *  self-buyer callers pass "your". Never inferred from a name. */
+  possessive?: string;
   accountType: AccountType;
   meaningfulCorrelation?: NarrationContext['hasMeaningfulCorrelation'];
   activityStreak?: boolean;

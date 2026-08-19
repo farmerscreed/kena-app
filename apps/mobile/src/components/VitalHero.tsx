@@ -45,7 +45,11 @@ import {
 } from 'phosphor-react-native';
 import { VitalRing, type VitalType } from './VitalRing';
 import { useTheme } from '../theme';
+import { StatusChip } from './StatusChip';
+import type { Tier, Subject } from '../utils/classification';
 import { useReducedMotion } from '../theme/useReducedMotion';
+import { opacity } from '../theme/tokens';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 const VITAL_ICON: Record<VitalType, PhosphorIcon> = {
   bp: DropIcon,
@@ -63,10 +67,20 @@ export interface VitalHeroProps {
   secondary?: string;
   /** Mono uppercase sub-label ("Now · resting", "Latest · 6:42 am"). */
   sub: string;
-  /** Optional context line under the value ("mmHg · within your range"). */
+  /** Optional context line under the value ("mmHg · in your usual range"). */
   range?: string;
   /** Arc fraction 0..1 for the ring. */
   ringFill: number;
+  /**
+   * D13 PR-7 (§6.2, P1-5) — the verdict chip under the value. A hero
+   * value never renders without a verdict; screens pass the canonical
+   * tier. Undefined only for surfaces that have no classifier yet.
+   */
+  tier?: Tier | null;
+  /** Whose verdict — defaults to the self subject. */
+  subject?: Subject;
+  /** Ring colour override (learning grey while insufficient, §6.2). */
+  ringColorOverride?: string;
   /** When true, ring runs the live-pulse worklet + a "live" pill renders. */
   livePulse?: boolean;
   testID?: string;
@@ -80,6 +94,14 @@ const RING_STROKE = 6;
 const ICON_SIZE = 28;
 
 const GLOW_BREATHE_DURATION_MS = 4500;
+/**
+ * Rendered opacity of the ambient glow disc behind the hero value.
+ * Sourced from the shared opacity tokens — see the rationale and the
+ * contrast ceiling documented on `opacity.glowRest` / `opacity.glowPeak`.
+ */
+const GLOW_OPACITY_REST = opacity.glowRest;
+const GLOW_OPACITY_PEAK = opacity.glowPeak;
+const GLOW_OPACITY_STATIC = opacity.glowStatic;
 
 function composeAccessibilityLabel(
   sub: string,
@@ -98,6 +120,9 @@ export function VitalHero({
   sub,
   range,
   ringFill,
+  tier,
+  subject,
+  ringColorOverride,
   livePulse,
   testID,
   style,
@@ -112,19 +137,28 @@ export function VitalHero({
   const IconComponent = VITAL_ICON[vital];
 
   // Ambient glow — soft "breathing" opacity. Reduced motion → static.
-  const glowOpacity = useSharedValue(reduceMotion ? 0.55 : 0.55);
+  //
+  // Sprint 19 (audit D12 P0-5): these values ARE the rendered opacity.
+  // `styles.glow` also declares `opacity: GLOW_OPACITY_REST`, but this
+  // animated style is applied last and wins, so the stylesheet value is
+  // decorative only. The previous 0.55→0.75 range therefore painted the
+  // glow at 3–4× its designed strength, dropping `text.tertiary` over
+  // the hero to ~1.1:1 and oscillating contrast on a 4.5s cycle.
+  // Any change here must keep the peak at or below GLOW_OPACITY_PEAK —
+  // see the contrast test in __tests__/glowOpacity.test.ts.
+  const glowOpacity = useSharedValue<number>(GLOW_OPACITY_REST);
   useEffect(() => {
     if (reduceMotion) {
-      glowOpacity.value = 0.55;
+      glowOpacity.value = GLOW_OPACITY_STATIC;
       return;
     }
     glowOpacity.value = withRepeat(
       withSequence(
-        withTiming(0.75, {
+        withTiming(GLOW_OPACITY_PEAK, {
           duration: GLOW_BREATHE_DURATION_MS / 2,
           easing: Easing.inOut(Easing.ease),
         }),
-        withTiming(0.55, {
+        withTiming(GLOW_OPACITY_REST, {
           duration: GLOW_BREATHE_DURATION_MS / 2,
           easing: Easing.inOut(Easing.ease),
         }),
@@ -141,7 +175,7 @@ export function VitalHero({
   const composedA11yLabel = composeAccessibilityLabel(sub, primary, secondary, range);
 
   return (
-    <View
+    <View accessible={true}
       accessibilityRole="text"
       accessibilityLabel={composedA11yLabel}
       style={[styles.root, style]}
@@ -161,6 +195,7 @@ export function VitalHero({
         <View style={styles.ringWrap}>
           <VitalRing
             vitalType={vital}
+            colorOverride={ringColorOverride}
             fill={ringFill}
             diameter={RING_DIAMETER}
             strokeWidth={RING_STROKE}
@@ -179,7 +214,7 @@ export function VitalHero({
         </View>
         <View style={{ flex: 1, minWidth: 0, marginLeft: theme.spacing.l }}>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,
@@ -195,9 +230,12 @@ export function VitalHero({
           </Text>
           <View style={styles.valueRow}>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
-                fontFamily: theme.fontFamilies.editorial,
+                // D13 §5.2 — measured values render in the numeric
+                // face with tabular figures, never the voice serif.
+                fontFamily: theme.fontFamilies.numeric,
+                fontVariant: ['tabular-nums'],
                 fontSize: numericXl.size,
                 lineHeight: numericXl.lineHeight,
                 color: theme.colors.text.primary,
@@ -209,12 +247,15 @@ export function VitalHero({
             </Text>
             {secondary ? (
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
-                  fontFamily: theme.fontFamilies.editorial,
+                  fontFamily: theme.fontFamilies.numeric,
+                  fontVariant: ['tabular-nums'],
                   fontSize: numericM.size,
                   lineHeight: numericM.lineHeight,
-                  color: theme.colors.text.tertiary,
+                  // §5.2 — the second half of a blood pressure reading
+                  // is not helper text.
+                  color: theme.colors.text.secondary,
                   marginLeft: 4,
                 }}
                 testID={testID ? `${testID}-secondary` : undefined}
@@ -223,9 +264,19 @@ export function VitalHero({
               </Text>
             ) : null}
           </View>
+          {tier ? (
+            <StatusChip
+              tier={tier}
+              subject={subject}
+              size="s"
+              nestedInLabelledCard
+              testID={testID ? `${testID}-chip` : undefined}
+              style={{ marginTop: theme.spacing.xs }}
+            />
+          ) : null}
           {range ? (
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 fontSize: captionStyle.size,
@@ -254,7 +305,7 @@ export function VitalHero({
                 ]}
               />
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.numeric,
                   fontSize: 9,
@@ -287,7 +338,9 @@ const styles = StyleSheet.create({
     width: 280,
     height: 220,
     borderRadius: 999,
-    opacity: 0.18,
+    // Overridden at runtime by the animated glow style (see GLOW_OPACITY_*).
+    // Kept in sync so a static render matches the animated rest state.
+    opacity: opacity.glowRest,
     transform: [{ translateX: -140 }],
   },
   row: {

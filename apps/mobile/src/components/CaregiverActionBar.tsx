@@ -14,7 +14,7 @@
 //
 // Voice rules (docs/05-voice-and-claims.md):
 //   "all in your circle" — calm, in-voice. "+ Add someone" — verb+object
-//   CTA, sentence-cased. No "loved one", no "patient", no fear language.
+//   CTA, sentence-cased. No docs/05 hard-fail phrases, no fear language.
 //
 // Glass material follows the existing Card 'glass' elevation pattern: a
 // surface.glassMedium floor (so Android < 12 still reads as intentional
@@ -28,6 +28,14 @@
 import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
+// Sprint 19 (audit P1-3) — the pill has no fixed height, so the two
+// values that determine it live in homeLayout and CaregiverHome derives
+// the space it must reserve from the same numbers.
+import {
+  CAREGIVER_ACTION_BAR_LINE_HEIGHT,
+  CAREGIVER_ACTION_BAR_VERTICAL_PADDING,
+} from './homeLayout';
 
 export interface CaregiverActionBarProps {
   /** Number of people in the family circle. */
@@ -58,7 +66,9 @@ export function CaregiverActionBar({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    // Sprint 19 (audit P1-3) — was a bare `10`; now shared so the
+    // reserved-height maths can't drift from the rendered pill.
+    paddingVertical: CAREGIVER_ACTION_BAR_VERTICAL_PADDING,
     paddingHorizontal: 18,
     borderRadius: 999,
     backgroundColor: 'rgba(32, 26, 22, 0.7)',
@@ -90,7 +100,7 @@ export function CaregiverActionBar({
           color: theme.colors.text.tertiary,
           textTransform: 'uppercase',
         }}
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
       >
         {countText}
       </Text>
@@ -107,11 +117,13 @@ export function CaregiverActionBar({
             style={{
               fontFamily: theme.fontFamilies.numeric,
               fontSize: 11.5,
-              lineHeight: 16,
+              // Sprint 19 (audit P1-3) — the tallest line in the pill,
+              // so it is what sets the pill's height. Shared.
+              lineHeight: CAREGIVER_ACTION_BAR_LINE_HEIGHT,
               letterSpacing: 0.46, // ~0.04em at 11.5pt
               color: theme.colors.brand.coral,
             }}
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           >
             + Connect
           </Text>

@@ -36,6 +36,7 @@ import { DetailHeader } from './DetailHeader';
 import { ScreenAnomalyBanner } from './ScreenAnomalyBanner';
 import { TimeRangePills, type TrendRange } from './TimeRangePills';
 import { useTheme } from '../theme';
+import { DoctorLinkCard } from './DoctorLinkCard';
 import type { VitalType } from './VitalRing';
 import type { AnomalyVital } from '../state/anomalies';
 
@@ -56,6 +57,10 @@ export interface DetailShellProps {
   onRangeChange?: (range: TrendRange) => void;
   /** Detail content rendered below the range pills. */
   children?: ReactNode;
+  /** Founder-test feedback (2026-08-19) — every detail page ends on
+   *  the DoctorLinkCard so the export is always one obvious tap away. */
+  onDoctorPress?: () => void;
+  doctorPossessive?: string;
   testID?: string;
   style?: StyleProp<ViewStyle>;
 }
@@ -70,6 +75,8 @@ export function DetailShell({
   children,
   testID,
   style,
+  onDoctorPress,
+  doctorPossessive,
 }: DetailShellProps) {
   const theme = useTheme();
   const [range, setRange] = useState<TrendRange>(initialRange);
@@ -153,6 +160,13 @@ export function DetailShell({
           }}
         >
           {children}
+          {onDoctorPress ? (
+            <DoctorLinkCard
+              onPress={onDoctorPress}
+              possessive={doctorPossessive}
+              testID={testID ? `${testID}-doctor` : undefined}
+            />
+          ) : null}
         </View>
       </ScrollView>
     </SafeAreaView>

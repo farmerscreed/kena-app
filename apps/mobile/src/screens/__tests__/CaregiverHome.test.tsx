@@ -210,12 +210,25 @@ describe('<CaregiverHome /> — loading state', () => {
 
 describe('<CaregiverHome /> — populated state', () => {
   function setupThreePeople() {
+    // PR-4 — the tapped row carries a sufficient band so the populated
+    // state exercises the in-range path, not learning.
+    const bandSys = [118, 120, 122, 124, 125, 126, 126, 127, 128, 130, 132, 134];
+    const bandDia = [74, 76, 77, 78, 79, 80, 80, 81, 82, 83, 85, 86];
+    const banded = bandSys.map((sys, i) =>
+      reading({
+        id: `band-${i}`,
+        measuredAt: new Date(Date.now() - (2 + i) * 24 * 3600_000).toISOString(),
+        systolic: sys,
+        diastolic: bandDia[i],
+      }),
+    );
     mockHookResult.parents = [
       parent({
         familyId: 'fam-1',
         parentDisplayName: 'Marian Okeke',
         parentRelationship: 'Mom',
         latestReading: reading({ id: 'r-mom', systolic: 122, diastolic: 78 }),
+        recentReadings: banded,
       }),
       parent({
         familyId: 'fam-2',
@@ -237,8 +250,9 @@ describe('<CaregiverHome /> — populated state', () => {
         initial: 'M',
         accentIndex: 1,
         status: 'clear',
-        bpLabel: '122/78',
-        headline: 'Read 1 min ago — in pattern.',
+        lastReadingAgeMs: 60_000,
+      bpLabel: '122/78',
+        headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 122/78 a moment ago. Inside the usual band.',
         relation: 'Mom',
         vitalStrip: { bp: '122/78', hr: '64', spo2: '98%', sleep: '7:42' },
@@ -249,8 +263,9 @@ describe('<CaregiverHome /> — populated state', () => {
         initial: 'E',
         accentIndex: 2,
         status: 'clear',
-        bpLabel: '134/86',
-        headline: 'Read 1 min ago — in pattern.',
+        lastReadingAgeMs: 60_000,
+      bpLabel: '134/86',
+        headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 134/86 a moment ago. Inside the usual band.',
         relation: 'Dad',
         vitalStrip: { bp: '134/86', hr: '72', spo2: '96%', sleep: '6:18' },
@@ -261,8 +276,9 @@ describe('<CaregiverHome /> — populated state', () => {
         initial: 'J',
         accentIndex: 3,
         status: 'clear',
-        bpLabel: '118/74',
-        headline: 'Read 1 min ago — in pattern.',
+        lastReadingAgeMs: 60_000,
+      bpLabel: '118/74',
+        headline: 'Read 1 min ago — in the usual range.',
         sentence: 'BP 118/74 a moment ago. Inside the usual band.',
         relation: 'Aunt',
         vitalStrip: { bp: '118/74', hr: '58', spo2: '97%', sleep: '8:00' },
@@ -284,16 +300,18 @@ describe('<CaregiverHome /> — populated state', () => {
     expect(screen.getByText('3 · all in your circle')).toBeTruthy();
   });
 
-  it('navigates to ReadingDetail on a legend row tap', () => {
+  it('navigates to PersonOverview on a legend row tap (D13 §7.1)', () => {
     setupThreePeople();
     render(withProviders(<CaregiverHome />));
     fireEvent.press(
       screen.getByRole('button', {
-        name: 'Marian, Mom, All clear, Read 1 min ago — in pattern.',
+        name: 'Marian, Mom, In their usual range, Read 1 min ago — in the usual range.',
       }),
     );
-    expect(mockNavigate).toHaveBeenCalledWith('ReadingDetail', {
-      readingLocalId: 'r-mom',
+    expect(mockNavigate).toHaveBeenCalledWith('PersonOverview', {
+      familyId: 'fam-1',
+      personName: 'Marian Okeke',
+      isSelf: false,
     });
   });
 });
@@ -301,21 +319,35 @@ describe('<CaregiverHome /> — populated state', () => {
 describe('<CaregiverHome /> — anomaly banner', () => {
   function setupOnePerson(status: 'clear' | 'attention' | 'urgent') {
     // ADR-0006 Phase 2 — status is DERIVED from the reading by
-    // buildConstellationNodes now (not injected via `people`). Use BP
-    // that classifies to the intended tier (classification.ts:
-    // >=180/120 urgent; >160/100 attention; else clear/in_pattern).
+    // buildConstellationNodes now (not injected via `people`). Since
+    // D13 PR-1 the tier comes from the person's OWN band, so the
+    // fixture carries a sufficient recent-readings history (12 readings
+    // over 12 days, sys mean 126 / ±2σ ≈ 117–135): 168/104 is outside
+    // the band (attention); ≥180/120 is the absolute floor (urgent);
+    // 122/78 is inside (clear).
     const bp =
       status === 'urgent'
         ? { systolic: 188, diastolic: 122 }
         : status === 'attention'
           ? { systolic: 168, diastolic: 104 }
           : { systolic: 122, diastolic: 78 };
+    const bandSys = [118, 120, 122, 124, 125, 126, 126, 127, 128, 130, 132, 134];
+    const bandDia = [74, 76, 77, 78, 79, 80, 80, 81, 82, 83, 85, 86];
+    const recent = bandSys.map((sys, i) =>
+      reading({
+        id: `band-${i}`,
+        measuredAt: new Date(Date.now() - (2 + i) * 24 * 3600_000).toISOString(),
+        systolic: sys,
+        diastolic: bandDia[i],
+      }),
+    );
     mockHookResult.parents = [
       parent({
         familyId: 'fam-1',
         parentDisplayName: 'Marian Okeke',
         parentRelationship: 'Mom',
         latestReading: reading({ id: 'r1', ...bp }),
+        recentReadings: recent,
       }),
     ];
   }
@@ -323,13 +355,13 @@ describe('<CaregiverHome /> — anomaly banner', () => {
   it('shows confirmed-urgent banner when any person is urgent', () => {
     setupOnePerson('urgent');
     render(withProviders(<CaregiverHome />));
-    expect(screen.getByText('Talk to Marian now')).toBeTruthy();
+    expect(screen.getByText('Please check on Marian')).toBeTruthy();
   });
 
   it('shows calm-concerned banner when only attention status is present', () => {
     setupOnePerson('attention');
     render(withProviders(<CaregiverHome />));
-    expect(screen.getByText('Worth a chat with Marian')).toBeTruthy();
+    expect(screen.getByText('Worth a look')).toBeTruthy();
   });
 
   it('does NOT render an AnomalyBanner when everyone is clear', () => {
@@ -361,8 +393,8 @@ describe('<CaregiverHome /> — anomaly banner', () => {
     // in the BANNER. (Marian's attention headline "Worth a chat …" still
     // renders in her legend row — that's per-person copy, not the banner,
     // so we assert on the banner's specific title, not a loose substring.)
-    expect(screen.getByText('Talk to Emeka now')).toBeTruthy();
-    expect(screen.queryByText('Worth a chat with Marian')).toBeNull();
+    expect(screen.getByText('Please check on Emeka')).toBeTruthy();
+    expect(screen.queryByText('Worth a look')).toBeNull();
   });
 });
 
@@ -462,7 +494,8 @@ describe('<CaregiverHome /> — seeded Learn card (Sprint 14.5 task 3)', () => {
         initial: 'M',
         relation: 'Mom',
         status: 'clear',
-        bpLabel: '122/78',
+        lastReadingAgeMs: 60_000,
+      bpLabel: '122/78',
         headline: 'In pattern',
         sentence: 'morning numbers steady',
         vitalStrip: { bp: '122/78', hr: '64', spo2: '97', sleep: '7.5h' },

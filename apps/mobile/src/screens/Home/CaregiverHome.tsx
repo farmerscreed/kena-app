@@ -1,7 +1,7 @@
 // Caregiver Home — Sprint 7.7a (Family Constellation, bird's-eye view).
 //
 // Replaces the BP-only Sprint 7 card-stack home with the Family
-// Constellation design (`leiko-caregiver-unified.html`). Each loved one
+// Constellation design (`leiko-caregiver-unified.html`). Each person
 // is a glowing orb in a starfield around a centre "You" mark. A legend
 // below carries status pills + headlines. The bottom action bar offers
 // "+ Add someone" when the caregiver has invite capacity.
@@ -49,6 +49,8 @@ import Svg, {
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AnomalyBanner } from '../../components/AnomalyBanner';
+import { bannerCopyFor } from '../../utils/anomalyBannerCopy';
+import { CanvasGradient } from '../../components/CanvasGradient';
 import { ScreenAnomalyBanner } from '../../components/ScreenAnomalyBanner';
 import { SyncReassuranceBanner } from '../../components/SyncReassuranceBanner';
 import { QuietHoursAffirmSheet } from '../../components/QuietHoursAffirmSheet';
@@ -60,6 +62,14 @@ import { Button } from '../../components/Button';
 import { SixthReadingPaywallHost } from '../../components/SixthReadingPaywallHost';
 import { CaregiverActionBar } from '../../components/CaregiverActionBar';
 import { HomeTabBar } from '../../components/HomeTabBar';
+// Sprint 19 (audit P1-3) — single source of truth for the bottom
+// furniture stack (tab bar + action bar) and the scroll padding that
+// must clear it.
+import {
+  homeFurnitureBottom,
+  homeScrollPaddingBottom,
+  type HomeFurniture,
+} from '../../components/homeLayout';
 import {
   ConstellationField,
   type ConstellationPerson,
@@ -88,7 +98,6 @@ import { useHydrateHRFromServer } from '../../hooks/useHydrateHRFromServer';
 import { useHydrateSpO2FromServer } from '../../hooks/useHydrateSpO2FromServer';
 import { useReducedMotion } from '../../theme/useReducedMotion';
 import { useTheme, type Theme } from '../../theme';
-import { usePairing } from '../../state/pairing';
 import { useReadings } from '../../state/readings';
 import type { CaregiverStackParamList } from '../../navigation/types';
 import type {
@@ -97,6 +106,7 @@ import type {
 } from '../../services/families/fetchParentSummaries';
 import type { LocalReading } from '../../state/readings';
 import { type CaregiverPerson } from '../../utils/caregiverPerson';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import {
   buildConstellationNodes,
   hasSelfNode,
@@ -140,7 +150,6 @@ export function CaregiverHome() {
   // refetches and surface a calm banner. Backstop for the
   // `family_removed` push when push is suppressed for any reason.
   const removalBanner = useFamilyRemovalBanner(parents, isLoading);
-  const pairedDevice = usePairing((s) => s.pairedDevice);
   const localLatest = useReadings((s) => s.latest());
   const {
     viewMode: viewModePref,
@@ -218,45 +227,17 @@ export function CaregiverHome() {
     (id: string) => {
       const target = merged.find((p) => p.familyId === id);
       if (!target) return;
-      // ADR-0006 Phase 2 — tapping the viewer's OWN node ("You") opens the
-      // immersive personal view via ParentDashboard, which exists on this
-      // (caregiver) stack and reads the self-circle's data from the server.
-      // (Cross-stack routing to the self-buyer SelfBuyerHome — with its
-      // Take-a-reading FAB — is the Phase 3 navigation unification; for
-      // now ParentDashboard renders the full pulse for the self node too.)
-      if (isSelfCircle(target)) {
-        navigation.navigate('ParentDashboard', { familyId: id });
-        return;
-      }
-      // Sprint 16.6 fix — only route to ReadingDetail when the reading
-      // is in this phone's local MMKV (i.e. the caregiver IS the
-      // parent — hybrid mode — and took the reading here). Cross-phone
-      // readings live only on the server; ReadingDetail can't find
-      // them and renders "We can't find that reading." Sprint 17a
-      // routes those taps to ParentDashboard — the per-parent
-      // immersive surface that replaces the Sprint 7 placeholder.
-      if (target.latestReading) {
-        const local = useReadings.getState().byLocalId(target.latestReading.id);
-        if (local) {
-          navigation.navigate('ReadingDetail', {
-            readingLocalId: target.latestReading.id,
-          });
-          return;
-        }
-        navigation.navigate('ParentDashboard', { familyId: id });
-        return;
-      }
-      // No reading yet — route based on what the user can act on. If the
-      // caregiver hasn't paired their own watch yet, route to Pairing
-      // (they may BE the parent in hybrid mode). Otherwise route to
-      // ParentDashboard, which renders the immersive empty-state view.
-      if (!pairedDevice) {
-        navigation.navigate('Pairing');
-        return;
-      }
-      navigation.navigate('ParentDashboard', { familyId: id });
+      // D13 PR-8 (§7.1) — the navigation contract: every tap target
+      // that represents a person routes to PersonOverview. isSelf
+      // travels with the route, so tapping your own node shows
+      // self-framed copy (closes P2-8).
+      navigation.navigate('PersonOverview', {
+        familyId: id,
+        personName: target.parentDisplayName,
+        isSelf: isSelfCircle(target),
+      });
     },
-    [merged, navigation, pairedDevice],
+    [merged, navigation],
   );
 
   // ADR-0006 Phase 3 — the viewer's own circle is the CENTRE "You" anchor,
@@ -375,6 +356,16 @@ export function CaregiverHome() {
     [mergedPeople, merged, theme],
   );
 
+  // Sprint 19 (audit P1-3) — which bottom furniture renders this frame.
+  // The wearer path stacks BOTH the tab bar and the action bar; a pure
+  // caregiver gets the action bar only, and an empty circle gets neither.
+  // `safeAreaBottom` is 0 because the furniture lives inside the
+  // SafeAreaView below, which already pads the OS inset.
+  const furniture: HomeFurniture = {
+    tabBar: viewerIsWearer,
+    actionBar: merged.length > 0,
+  };
+
   return (
     <SafeAreaView
       // Sprint 16.6 — design uses a near-black warm base (#060505) under
@@ -391,6 +382,7 @@ export function CaregiverHome() {
         style={StyleSheet.absoluteFill}
         testID="caregiver-home-bg"
       >
+        <CanvasGradient />
         <Animated.View
           style={[StyleSheet.absoluteFill, birdsBgAnimatedStyle]}
         >
@@ -408,7 +400,10 @@ export function CaregiverHome() {
           {
             paddingHorizontal: theme.spacing.l,
             paddingTop: theme.spacing.m,
-            paddingBottom: theme.spacing.xxxxl + theme.spacing.xxl,
+            // Sprint 19 (audit P1-3) — was a flat 72pt, which the wearer
+            // path's tab bar + action bar overran by ~56pt and hid the
+            // "Worth a read" card. Derived from the furniture stack now.
+            paddingBottom: homeScrollPaddingBottom(furniture),
           },
         ]}
         refreshControl={
@@ -570,11 +565,11 @@ export function CaregiverHome() {
             position: 'absolute',
             left: theme.spacing.l,
             right: theme.spacing.l,
-            // Sit above the bottom tab bar when the viewer is a wearer
-            // (tab bar bottom=xxl, height 60), else at the usual spot.
-            bottom: viewerIsWearer
-              ? theme.spacing.xxl + 60 + theme.spacing.s
-              : theme.spacing.xxl,
+            // Sprint 19 (audit P1-3) — was `theme.spacing.xxl + 60 +
+            // theme.spacing.s`, where the 60 was a hand-copy of
+            // HomeTabBar's height with nothing keeping the two in sync.
+            // The stack model now positions this layer.
+            bottom: homeFurnitureBottom('actionBar', furniture),
           }}
         >
           {/* Connect Phase A — the old family_owner gate here was built
@@ -709,7 +704,7 @@ function DetailedView({ people, onSelectPerson, theme }: DetailedViewProps) {
     <View testID="caregiver-home-detailed">
       <View style={{ paddingHorizontal: theme.spacing.s, marginBottom: theme.spacing.l }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: headlineStyle.size,
@@ -790,7 +785,7 @@ function SharedHeader({
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9.5,
@@ -805,7 +800,7 @@ function SharedHeader({
           style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.m }}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.numeric,
               fontSize: 9.5,
@@ -830,7 +825,7 @@ function SharedHeader({
             style={({ pressed }) => ({ opacity: pressed ? 0.65 : 1 })}
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontSize: 18,
                 color: theme.colors.brand.coral,
@@ -851,7 +846,7 @@ function SharedHeader({
             {/* Phosphor GearSix lands when icons sweep through screens.
                 Plain glyph until then — affordance still reads. */}
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontSize: 18,
                 color: theme.colors.text.tertiary,
@@ -877,7 +872,7 @@ function SharedHeader({
         }}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 9,
@@ -911,29 +906,42 @@ interface BannerState {
   personId: string;
 }
 
+// D13 PR-2 (P0-4) — the cold-start fallback banner no longer carries
+// its own copy. Selection (confirmed-urgent wins outright, else first
+// attention person, order preserved) stays here; every string comes
+// from canonical utils/anomalyBannerCopy via a synthesized event.
+function bannerFromPerson(
+  p: CaregiverPerson,
+  tier: 'confirmed_urgent' | 'calm_concerned',
+): BannerState {
+  const firstName = p.fullName.split(' ')[0];
+  const copy = bannerCopyFor(
+    {
+      id: 'local-fallback',
+      userId: '',
+      familyId: p.id,
+      vital: 'bp',
+      tier,
+      reason: 'outside_band_confirmed',
+      readingId: null,
+      triggeredAtSec: 0,
+      acknowledgedAt: null,
+      feedbackThumb: 0,
+    },
+    'caregiver',
+    firstName,
+  );
+  return { severity: copy.severity, title: copy.title, body: copy.body, personId: p.id };
+}
+
 function pickAnomalyForBanner(people: CaregiverPerson[]): BannerState | null {
-  // Confirmed-urgent wins outright. Otherwise, the first calm-concerned
-  // person sets the banner. Order is preserved — caregiver sees the
-  // earliest-listed urgent person as the "act now" surface.
   let best: BannerState | null = null;
   for (const p of people) {
     if (p.status === 'urgent') {
-      const firstName = p.fullName.split(' ')[0];
-      return {
-        severity: 'confirmed-urgent',
-        title: `Talk to ${firstName} now`,
-        body: 'Their latest reading was above their usual range. A calm check-in helps.',
-        personId: p.id,
-      };
+      return bannerFromPerson(p, 'confirmed_urgent');
     }
     if (!best && p.status === 'attention') {
-      const firstName = p.fullName.split(' ')[0];
-      best = {
-        severity: 'calm-concerned',
-        title: `Worth a chat with ${firstName}`,
-        body: "We've noticed a pattern worth a gentle check-in.",
-        personId: p.id,
-      };
+      best = bannerFromPerson(p, 'calm_concerned');
     }
   }
   return best;
@@ -966,7 +974,7 @@ function EmptyNoFamily({
       }}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.editorial,
           fontSize: headline.size,

@@ -11,9 +11,11 @@
 //
 //   { mode: 'cron' }
 //     Nightly trigger from pg_cron at 03:00 UTC. For each user with
-//     recent watch data: recompute BP + HR baselines, evaluate HR 3-day
-//     trend + SpO2 3-night trend, write anomaly_events, dispatch
-//     pushes. Pure aggregate path — no per-sample work happens here.
+//     recent watch data: refresh the vital_baselines truth layer (all
+//     six baseline vitals over a 28-day window, D13 PR-1), refresh the
+//     legacy hr_baselines row, evaluate HR 3-day trend + SpO2 3-night
+//     trend, write anomaly_events, dispatch pushes. Pure aggregate
+//     path — no per-sample work happens here.
 //
 // The same /sync request never blocks longer than the BP path because
 // HR/SpO2 trends only ever evaluate from the cron. BP gets the
@@ -29,16 +31,23 @@ import { corsHeaders } from '../_shared/cors.ts';
 import { withInternalHeader } from '../_shared/internal-auth.ts';
 import {
   classifyBP,
+  type BpBaselinePair,
   classifyHR,
   classifySpO2,
   checkSustainedPattern,
-  computeBpBaseline,
   computeHrMedian,
   producesAnomalyEvent,
   shouldDedupAnomaly,
   type ClassificationTier,
   type VitalKind,
 } from '../_shared/classification.ts';
+import {
+  BASELINE_WINDOW_DAYS,
+  computeBpBaselineRows,
+  computeVitalBaselineRow,
+  type BpReadingSample,
+  type VitalBaselineRow,
+} from '../_shared/baselines.ts';
 
 interface ReadingInsertedRequest {
   mode: 'reading_inserted';
@@ -132,11 +141,15 @@ async function handleReadingInserted(
 
   // Fetch baseline + sensitivity in parallel.
   const [baselineRes, familyRes, lastEventRes, recentRes] = await Promise.all([
+    // D13 PR-2 — the inline path reads the truth layer directly, the
+    // same rows the mobile classifier resolves. The bp_baselines
+    // compatibility view no longer has a consumer.
     service
-      .from('bp_baselines')
-      .select('sys_mean, dia_mean, pulse_mean, sigma_sys, sigma_dia, sigma_pulse, days_of_data')
-      .eq('user_id', userId)
-      .maybeSingle(),
+      .from('vital_baselines')
+      .select('vital, mean_value, sd_value, p10_value, p90_value, is_sufficient')
+      .eq('subject_id', userId)
+      .in('vital', ['bp_systolic', 'bp_diastolic'])
+      .is('context_tag', null),
     service
       .from('families')
       .select('anomaly_sensitivity')
@@ -160,17 +173,30 @@ async function handleReadingInserted(
       .limit(20),
   ]);
 
-  const baseline = baselineRes.data
-    ? {
-        sys: Number(baselineRes.data.sys_mean),
-        dia: Number(baselineRes.data.dia_mean),
-        pulse: Number(baselineRes.data.pulse_mean ?? 0),
-        sigmaSys: Number(baselineRes.data.sigma_sys),
-        sigmaDia: Number(baselineRes.data.sigma_dia),
-        sigmaPulse: Number(baselineRes.data.sigma_pulse ?? 1),
-        daysOfData: Number(baselineRes.data.days_of_data),
-      }
-    : null;
+  const baselineRows = (baselineRes.data ?? []) as Array<{
+    vital: string;
+    mean_value: number | string;
+    sd_value: number | string;
+    p10_value: number | string;
+    p90_value: number | string;
+    is_sufficient: boolean;
+  }>;
+  const rowFor = (vital: string) => {
+    const r = baselineRows.find((b) => b.vital === vital);
+    return r
+      ? {
+          mean: Number(r.mean_value),
+          sd: Number(r.sd_value),
+          p10: Number(r.p10_value),
+          p90: Number(r.p90_value),
+          isSufficient: r.is_sufficient,
+        }
+      : null;
+  };
+  const baseline: BpBaselinePair = {
+    systolic: rowFor('bp_systolic'),
+    diastolic: rowFor('bp_diastolic'),
+  };
 
   const sensitivity = familyRes.data
     ? Number((familyRes.data as { anomaly_sensitivity: number | string }).anomaly_sensitivity)
@@ -239,20 +265,36 @@ async function handleReadingInserted(
 // Nightly cron path — baselines + trend evaluation.
 
 async function handleCron(service: SupabaseClient): Promise<CronResponse> {
-  // Find users who have any BP/HR/SpO2 data in the last 14 days. That's
-  // the working set the nightly pass touches.
-  const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-  const familiesRes = await service
-    .from('readings')
-    .select('family_id')
-    .gte('measured_at', since)
-    .eq('hidden', false)
-    .limit(1000);
-  if (familiesRes.error) {
+  // Find users with any vitals data in the baseline window. Since D13
+  // PR-1 the working set unions vitals_other with readings — a family
+  // with HR/sleep data but no recent BP was previously skipped
+  // entirely, so its non-BP baselines were never refreshed.
+  const since = new Date(
+    Date.now() - BASELINE_WINDOW_DAYS * 24 * 60 * 60 * 1000,
+  ).toISOString();
+  const [familiesRes, vitalsFamiliesRes] = await Promise.all([
+    service
+      .from('readings')
+      .select('family_id')
+      .gte('measured_at', since)
+      .eq('hidden', false)
+      .limit(1000),
+    service
+      .from('vitals_other')
+      .select('family_id')
+      .gte('measured_at', since)
+      .eq('hidden', false)
+      .limit(1000),
+  ]);
+  if (familiesRes.error && vitalsFamiliesRes.error) {
     return { usersProcessed: 0, eventsWritten: 0, pushesDispatched: 0 };
   }
   const familyIds = Array.from(
-    new Set((familiesRes.data ?? []).map((r) => r.family_id as string)),
+    new Set(
+      [...(familiesRes.data ?? []), ...(vitalsFamiliesRes.data ?? [])].map(
+        (r) => r.family_id as string,
+      ),
+    ),
   );
 
   // For each family, get the parent_user_id (the user whose readings
@@ -269,11 +311,8 @@ async function handleCron(service: SupabaseClient): Promise<CronResponse> {
     if (!userId) continue;
     usersProcessed++;
 
-    const [bpEvents, bpDispatched] = await refreshBpBaselineAndTrend(
-      service,
-      familyId,
-      userId,
-    );
+    await refreshVitalBaselines(service, familyId, userId);
+
     const [hrEvents, hrDispatched] = await refreshHrBaselineAndTrend(
       service,
       familyId,
@@ -285,8 +324,8 @@ async function handleCron(service: SupabaseClient): Promise<CronResponse> {
       userId,
     );
 
-    eventsWritten += bpEvents + hrEvents + spo2Events;
-    pushesDispatched += bpDispatched + hrDispatched + spo2Dispatched;
+    eventsWritten += hrEvents + spo2Events;
+    pushesDispatched += hrDispatched + spo2Dispatched;
   }
 
   return { usersProcessed, eventsWritten, pushesDispatched };
@@ -313,52 +352,164 @@ async function resolveAnalysisUser(
   return (ownerRow.data?.user_id as string | undefined) ?? null;
 }
 
-// BP baseline refresh + nothing else (single-reading detection is
-// already done in the inline path; the cron's BP responsibility is the
-// baseline itself).
-async function refreshBpBaselineAndTrend(
+// Nightly truth-layer refresh — D13 PR-1 (P0-2 / P0-3). One
+// vital_baselines row per (subject, vital, context) over a 28-day
+// window, all six vitals, context-conditioned rows for BP only.
+//
+// Write strategy is delete-then-insert per subject: PostgREST upsert
+// cannot target the expression index (subject_id, vital,
+// coalesce(context_tag,'')), and the wipe also garbage-collects
+// context rows whose tag fell back below CONTEXT_MIN_READINGS. If a
+// run dies between the two statements the subject has no rows until
+// the next night; the client's provisional offline fallback covers the
+// gap and the inline push path degrades to its cold-start rules.
+async function refreshVitalBaselines(
   service: SupabaseClient,
   familyId: string,
   userId: string,
-): Promise<[number, number]> {
-  const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-  const readingsRes = await service
-    .from('readings')
-    .select('systolic, diastolic, pulse, measured_at')
-    .eq('family_id', familyId)
-    .eq('hidden', false)
-    .eq('source', 'watch')
-    .in('quality_score', ['good', 'fair'])
-    .gte('measured_at', since)
-    .limit(1000);
-  const rows = readingsRes.data ?? [];
-  const baseline = computeBpBaseline(
-    rows.map((r) => ({
-      systolic: r.systolic,
-      diastolic: r.diastolic,
-      pulse: r.pulse,
-      measured_at_sec: Math.floor(new Date(r.measured_at).getTime() / 1000),
+): Promise<void> {
+  const since = new Date(
+    Date.now() - BASELINE_WINDOW_DAYS * 24 * 60 * 60 * 1000,
+  ).toISOString();
+
+  const [bpRes, hrRes, spo2Res, sleepRes, stepsRes] = await Promise.all([
+    service
+      .from('readings')
+      .select('systolic, diastolic, measured_at, context_tags')
+      .eq('family_id', familyId)
+      .eq('hidden', false)
+      .eq('source', 'watch')
+      .in('quality_score', ['good', 'fair'])
+      .gte('measured_at', since)
+      .limit(1000),
+    service
+      .from('vitals_other')
+      .select('value_int, measured_at, value_jsonb')
+      .eq('family_id', familyId)
+      .eq('vital_type', 'hr')
+      .eq('hidden', false)
+      .gte('measured_at', since)
+      .limit(5000),
+    service
+      .from('vitals_other')
+      .select('value_int, value_int_3, measured_at')
+      .eq('family_id', familyId)
+      .eq('vital_type', 'spo2')
+      .eq('hidden', false)
+      .gte('measured_at', since)
+      .limit(5000),
+    service
+      .from('vitals_other')
+      .select('value_int, measured_at')
+      .eq('family_id', familyId)
+      .eq('vital_type', 'sleep_session')
+      .eq('hidden', false)
+      .gte('measured_at', since)
+      .limit(1000),
+    service
+      .from('vitals_other')
+      .select('value_int, measured_at')
+      .eq('family_id', familyId)
+      .eq('vital_type', 'steps_day')
+      .eq('hidden', false)
+      .gte('measured_at', since)
+      .limit(1000),
+  ]);
+
+  const dayKey = (iso: string): string => new Date(iso).toISOString().slice(0, 10);
+  const rows: VitalBaselineRow[] = [];
+
+  // BP — all-readings pair plus context-conditioned pairs (§4.2).
+  const bpSamples: BpReadingSample[] = (bpRes.data ?? []).map((r) => ({
+    systolic: r.systolic as number,
+    diastolic: r.diastolic as number,
+    dayKey: dayKey(r.measured_at as string),
+    contextTags: ((r.context_tags as string[] | null) ?? []),
+  }));
+  rows.push(...computeBpBaselineRows(bpSamples));
+
+  // Resting HR — one sample per day: the minimum of resting-tagged
+  // samples (same derivation the legacy hr_baselines refresh uses).
+  const hrByDay = new Map<string, number>();
+  for (const r of hrRes.data ?? []) {
+    const motion =
+      (r.value_jsonb as { motion_state?: string } | null)?.motion_state ?? 'unknown';
+    if (motion !== 'rest') continue;
+    const day = dayKey(r.measured_at as string);
+    const bpm = r.value_int as number;
+    if (!hrByDay.has(day) || hrByDay.get(day)! > bpm) hrByDay.set(day, bpm);
+  }
+  const hrRow = computeVitalBaselineRow(
+    'resting_hr',
+    [...hrByDay.entries()].map(([day, v]) => ({ value: v, dayKey: day })),
+  );
+  if (hrRow) rows.push(hrRow);
+
+  // SpO2 — one sample per night: the overnight low (min-in-window
+  // column, falling back to the spot value; same as the trend path).
+  const spo2ByDay = new Map<string, number>();
+  for (const r of spo2Res.data ?? []) {
+    const v = (r.value_int_3 as number | null) ?? (r.value_int as number);
+    const day = dayKey(r.measured_at as string);
+    if (!spo2ByDay.has(day) || spo2ByDay.get(day)! > v) spo2ByDay.set(day, v);
+  }
+  const spo2Row = computeVitalBaselineRow(
+    'spo2',
+    [...spo2ByDay.entries()].map(([day, v]) => ({ value: v, dayKey: day })),
+  );
+  if (spo2Row) rows.push(spo2Row);
+
+  // Sleep duration — one row per night keyed by session end (0032);
+  // if re-read reconciliation ever leaves siblings on a night, keep
+  // the fullest (matches the sync path's no-shrink guard).
+  const sleepByNight = new Map<string, number>();
+  for (const r of sleepRes.data ?? []) {
+    const day = dayKey(r.measured_at as string);
+    const minutes = r.value_int as number;
+    if (!sleepByNight.has(day) || sleepByNight.get(day)! < minutes) {
+      sleepByNight.set(day, minutes);
+    }
+  }
+  const sleepRow = computeVitalBaselineRow(
+    'sleep_duration',
+    [...sleepByNight.entries()].map(([day, v]) => ({ value: v, dayKey: day })),
+  );
+  if (sleepRow) rows.push(sleepRow);
+
+  // Steps — one daily-total row per day; keep the fullest on dupes.
+  const stepsByDay = new Map<string, number>();
+  for (const r of stepsRes.data ?? []) {
+    const day = dayKey(r.measured_at as string);
+    const steps = r.value_int as number;
+    if (!stepsByDay.has(day) || stepsByDay.get(day)! < steps) {
+      stepsByDay.set(day, steps);
+    }
+  }
+  const stepsRow = computeVitalBaselineRow(
+    'steps_daily',
+    [...stepsByDay.entries()].map(([day, v]) => ({ value: v, dayKey: day })),
+  );
+  if (stepsRow) rows.push(stepsRow);
+
+  const del = await service.from('vital_baselines').delete().eq('subject_id', userId);
+  if (del.error) return; // keep last night's rows rather than half-replace
+  if (rows.length === 0) return;
+  await service.from('vital_baselines').insert(
+    rows.map((row) => ({
+      family_id: familyId,
+      subject_id: userId,
+      vital: row.vital,
+      window_days: row.windowDays,
+      sample_count: row.sampleCount,
+      mean_value: row.mean,
+      sd_value: row.sd,
+      p10_value: row.p10,
+      p90_value: row.p90,
+      context_tag: row.contextTag,
+      is_sufficient: row.isSufficient,
+      computed_at: new Date().toISOString(),
     })),
   );
-  if (baseline) {
-    await service.from('bp_baselines').upsert(
-      {
-        user_id: userId,
-        family_id: familyId,
-        sys_mean: baseline.sysMean,
-        dia_mean: baseline.diaMean,
-        pulse_mean: baseline.pulseMean,
-        sigma_sys: baseline.sigmaSys,
-        sigma_dia: baseline.sigmaDia,
-        sigma_pulse: baseline.sigmaPulse,
-        days_of_data: baseline.daysOfData,
-        reading_count: baseline.readingCount,
-        computed_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id' },
-    );
-  }
-  return [0, 0];
 }
 
 async function refreshHrBaselineAndTrend(

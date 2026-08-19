@@ -46,7 +46,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             "top": 0,
           },
           {
-            "backgroundColor": "#D6745A",
+            "backgroundColor": "#C99AB0",
             "opacity": 0.08,
           },
         ]
@@ -201,10 +201,10 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
           <Text
             accessibilityLabel="Heart rate"
             accessibilityRole="header"
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#D6745A",
+                "color": "#C99AB0",
                 "fontFamily": "Inter_500Medium",
                 "fontSize": 11,
                 "letterSpacing": 0.55,
@@ -369,8 +369,9 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
           }
         >
           <View
-            accessibilityLabel="Latest reading. 64. bpm · latest"
+            accessibilityLabel="Overnight · resting. 64. bpm · resting"
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -392,7 +393,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                     "borderRadius": 999,
                     "height": 220,
                     "left": "50%",
-                    "opacity": 0.18,
+                    "opacity": 0.12,
                     "position": "absolute",
                     "top": 0,
                     "transform": [
@@ -403,10 +404,10 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                     "width": 280,
                   },
                   {
-                    "backgroundColor": "#D6745A",
+                    "backgroundColor": "#C99AB0",
                   },
                   {
-                    "opacity": 0.55,
+                    "opacity": 0.12,
                   },
                 ]
               }
@@ -439,6 +440,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                       "now": 0.3,
                     }
                   }
+                  accessible={true}
                   style={
                     [
                       {
@@ -502,7 +504,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                         r={51}
                         stroke={
                           {
-                            "payload": 4292244570,
+                            "payload": 4291402416,
                             "type": 0,
                           }
                         }
@@ -536,7 +538,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                         r={51}
                         stroke={
                           {
-                            "payload": 4292244570,
+                            "payload": 4291402416,
                             "type": 0,
                           }
                         }
@@ -588,7 +590,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                     bbHeight={28}
                     bbWidth={28}
                     className="heart-straight-duotone__svg-icon-phosphor"
-                    color="#D6745A"
+                    color="#C99AB0"
                     fill="currentColor"
                     focusable={false}
                     height={28}
@@ -634,7 +636,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                         d="M217.36 133.36 128 224l-89.36-90.64a50 50 0 0 1 70.72-70.72L128 80l18.64-17.36a50 50 0 1 1 70.72 70.72"
                         fill={
                           {
-                            "payload": 4292244570,
+                            "payload": 4291402416,
                             "type": 0,
                           }
                         }
@@ -668,7 +670,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 }
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -682,7 +684,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   }
                   testID="hr-detail-hero-sub"
                 >
-                  Latest reading
+                  Overnight · resting
                 </Text>
                 <View
                   style={
@@ -694,14 +696,17 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.6}
                     style={
                       {
                         "color": "#FFFFFF",
-                        "fontFamily": "InstrumentSerif_400Regular",
-                        "fontSize": 56,
+                        "fontFamily": "JetBrainsMono_500Medium",
+                        "fontSize": 44,
+                        "fontVariant": [
+                          "tabular-nums",
+                        ],
                         "letterSpacing": -0.5,
-                        "lineHeight": 60,
+                        "lineHeight": 48,
                       }
                     }
                     testID="hr-detail-hero-primary"
@@ -709,8 +714,119 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                     64
                   </Text>
                 </View>
+                <View
+                  accessibilityElementsHidden={true}
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
+                  style={
+                    [
+                      {
+                        "alignItems": "center",
+                        "alignSelf": "flex-start",
+                        "backgroundColor": "#918B8424",
+                        "borderColor": "#918B843D",
+                        "borderRadius": 99,
+                        "borderWidth": 0.5,
+                        "flexDirection": "row",
+                        "gap": 4,
+                        "paddingHorizontal": 8,
+                        "paddingVertical": 3,
+                      },
+                      {
+                        "marginTop": 4,
+                      },
+                    ]
+                  }
+                  testID="hr-detail-hero-chip"
+                >
+                  <RNSVGSvgView
+                    align="xMidYMid"
+                    bbHeight={12}
+                    bbWidth={12}
+                    className="circle-dashed-bold__svg-icon-phosphor"
+                    color="#918B84"
+                    fill="currentColor"
+                    focusable={false}
+                    height={12}
+                    meetOrSlice={0}
+                    minX={0}
+                    minY={0}
+                    style={
+                      [
+                        {
+                          "backgroundColor": "transparent",
+                          "borderWidth": 0,
+                        },
+                        [
+                          undefined,
+                          undefined,
+                          {},
+                        ],
+                        {
+                          "flex": 0,
+                          "height": 12,
+                          "width": 12,
+                        },
+                      ]
+                    }
+                    testID="phosphor-react-native-circle-dashed-bold"
+                    vbHeight={256}
+                    vbWidth={256}
+                    width={12}
+                  >
+                    <RNSVGGroup
+                      fill={
+                        {
+                          "type": 2,
+                        }
+                      }
+                      propList={
+                        [
+                          "fill",
+                        ]
+                      }
+                    >
+                      <RNSVGGroup
+                        fill={
+                          {
+                            "payload": 4287728516,
+                            "type": 0,
+                          }
+                        }
+                        propList={
+                          [
+                            "fill",
+                          ]
+                        }
+                      >
+                        <RNSVGPath
+                          d="M92.38 38.05A12 12 0 0 1 101 23.42a108 108 0 0 1 54 0 12 12 0 1 1-6 23.23 84.1 84.1 0 0 0-42 0 12 12 0 0 1-14.62-8.6M50.94 52.34a108.1 108.1 0 0 0-27 46.76 12 12 0 0 0 8.37 14.77 12.2 12.2 0 0 0 3.2.43 12 12 0 0 0 11.56-8.8 84 84 0 0 1 21-36.35 12 12 0 1 0-17.13-16.81m-3.88 98.14a12 12 0 0 0-23.12 6.42 108 108 0 0 0 27 46.78A12 12 0 0 0 68 186.85a84 84 0 0 1-20.94-36.37M149 209.35a84 84 0 0 1-42 0 12 12 0 1 0-6 23.23 108 108 0 0 0 54 0 12 12 0 1 0-6-23.23m74.72-67.22A12 12 0 0 0 209 150.5a84 84 0 0 1-21 36.35 12 12 0 0 0 17.12 16.82 108.2 108.2 0 0 0 27-46.77 12 12 0 0 0-8.41-14.77Zm-14.77-36.61a12 12 0 0 0 23.12-6.42 108 108 0 0 0-27-46.78A12 12 0 1 0 188 69.15a84 84 0 0 1 20.94 36.37Z"
+                          fill={
+                            {
+                              "payload": 4278190080,
+                              "type": 0,
+                            }
+                          }
+                        />
+                      </RNSVGGroup>
+                    </RNSVGGroup>
+                  </RNSVGSvgView>
+                  <Text
+                    maxFontSizeMultiplier={1.3}
+                    style={
+                      {
+                        "color": "#918B84",
+                        "fontFamily": "Inter_400Regular",
+                        "fontSize": 11,
+                        "lineHeight": 15,
+                      }
+                    }
+                  >
+                    Learning
+                  </Text>
+                </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -723,7 +839,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   }
                   testID="hr-detail-hero-range"
                 >
-                  bpm · latest
+                  bpm · resting
                 </Text>
               </View>
             </View>
@@ -806,7 +922,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
               testID="hr-detail-range-7d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
@@ -870,7 +986,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
               testID="hr-detail-range-30d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -934,7 +1050,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
               testID="hr-detail-range-90d"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -977,6 +1093,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Resting avg: — bpm"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -994,7 +1111,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
               testID="hr-detail-stats-0"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1010,20 +1127,23 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 Resting avg
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
-                    "fontFamily": "InstrumentSerif_400Regular",
-                    "fontSize": 22,
-                    "lineHeight": 28,
+                    "fontFamily": "JetBrainsMono_500Medium",
+                    "fontSize": 17,
+                    "fontVariant": [
+                      "tabular-nums",
+                    ],
+                    "lineHeight": 22,
                   }
                 }
               >
                 —
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1041,6 +1161,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Peak: 78 today"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1058,7 +1179,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
               testID="hr-detail-stats-1"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1074,20 +1195,23 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 Peak
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
-                    "fontFamily": "InstrumentSerif_400Regular",
-                    "fontSize": 22,
-                    "lineHeight": 28,
+                    "fontFamily": "JetBrainsMono_500Medium",
+                    "fontSize": 17,
+                    "fontVariant": [
+                      "tabular-nums",
+                    ],
+                    "lineHeight": 22,
                   }
                 }
               >
                 78
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1105,6 +1229,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Range today: 14 bpm"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1122,7 +1247,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
               testID="hr-detail-stats-2"
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1138,20 +1263,23 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 Range today
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FFFFFF",
-                    "fontFamily": "InstrumentSerif_400Regular",
-                    "fontSize": 22,
-                    "lineHeight": 28,
+                    "fontFamily": "JetBrainsMono_500Medium",
+                    "fontSize": 17,
+                    "fontVariant": [
+                      "tabular-nums",
+                    ],
+                    "lineHeight": 22,
                   }
                 }
               >
                 14
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
@@ -1168,7 +1296,21 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             </View>
           </View>
           <View
-            accessibilityLabel="Last 24h · heart rate trend, latest 64, peak 78, low 64"
+            accessibilityLabel="Last 24h · heart rate, 16 readings plotted, latest 64 bpm."
+            accessibilityRole="image"
+            accessible={true}
+            onMoveShouldSetResponder={[Function]}
+            onMoveShouldSetResponderCapture={[Function]}
+            onResponderEnd={[Function]}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderReject={[Function]}
+            onResponderRelease={[Function]}
+            onResponderStart={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            onStartShouldSetResponderCapture={[Function]}
             style={
               {
                 "marginHorizontal": 20,
@@ -1182,51 +1324,49 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   "alignItems": "baseline",
                   "flexDirection": "row",
                   "justifyContent": "space-between",
-                  "marginBottom": 8,
+                  "marginBottom": 6,
                 }
               }
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
-                    "fontFamily": "Inter_500Medium",
+                    "fontFamily": "JetBrainsMono_500Medium",
                     "fontSize": 11,
-                    "letterSpacing": 0.55,
-                    "lineHeight": 14,
+                    "letterSpacing": 0.6,
+                    "lineHeight": 16,
                     "textTransform": "uppercase",
                   }
                 }
-                testID="hr-detail-trend-caption"
               >
                 Last 24h · heart rate
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#857F7A",
                     "fontFamily": "JetBrainsMono_500Medium",
                     "fontSize": 12,
-                    "letterSpacing": 0.4,
+                    "fontVariant": [
+                      "tabular-nums",
+                    ],
                     "lineHeight": 16,
                   }
                 }
-                testID="hr-detail-trend-subCaption"
               >
                 50–95 band
               </Text>
             </View>
             <RNSVGSvgView
-              align="xMidYMid"
-              bbHeight={170}
-              bbWidth="100%"
+              accessibilityElementsHidden={true}
+              bbHeight={180}
+              bbWidth={320}
               focusable={false}
-              height={170}
-              meetOrSlice={0}
-              minX={0}
-              minY={0}
+              height={180}
+              importantForAccessibility="no-hide-descendants"
               style={
                 [
                   {
@@ -1235,15 +1375,12 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   },
                   {
                     "flex": 0,
-                    "height": 170,
-                    "width": "100%",
+                    "height": 180,
+                    "width": 320,
                   },
                 ]
               }
-              testID="hr-detail-trend-svg"
-              vbHeight={170}
-              vbWidth={320}
-              width="100%"
+              width={320}
             >
               <RNSVGGroup
                 fill={
@@ -1253,192 +1390,30 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   }
                 }
               >
-                <RNSVGDefs>
-                  <RNSVGLinearGradient
-                    gradient={
-                      [
-                        0,
-                        1305900122,
-                        1,
-                        14054490,
-                      ]
-                    }
-                    gradientTransform={null}
-                    gradientUnits={0}
-                    name="hr-detail-trend-fill"
-                    x1="0"
-                    x2="0"
-                    y1="0"
-                    y2="1"
-                  />
-                </RNSVGDefs>
-                <RNSVGRect
-                  fill={
-                    {
-                      "payload": 4292244570,
-                      "type": 0,
-                    }
-                  }
-                  fillOpacity={0.08}
-                  height={126}
-                  propList={
-                    [
-                      "fill",
-                      "fillOpacity",
-                    ]
-                  }
-                  width={288}
-                  x={16}
-                  y={22}
-                />
-                <RNSVGLine
-                  fill={
-                    {
-                      "payload": 4278190080,
-                      "type": 0,
-                    }
-                  }
-                  propList={
-                    [
-                      "stroke",
-                      "strokeOpacity",
-                      "strokeDasharray",
-                    ]
-                  }
-                  stroke={
-                    {
-                      "payload": 4294967295,
-                      "type": 0,
-                    }
-                  }
-                  strokeDasharray={
-                    [
-                      "2",
-                      "4",
-                    ]
-                  }
-                  strokeOpacity={0.04}
-                  x1={16}
-                  x2={304}
-                  y1={53.5}
-                  y2={53.5}
-                />
-                <RNSVGLine
-                  fill={
-                    {
-                      "payload": 4278190080,
-                      "type": 0,
-                    }
-                  }
-                  propList={
-                    [
-                      "stroke",
-                      "strokeOpacity",
-                      "strokeDasharray",
-                    ]
-                  }
-                  stroke={
-                    {
-                      "payload": 4294967295,
-                      "type": 0,
-                    }
-                  }
-                  strokeDasharray={
-                    [
-                      "2",
-                      "4",
-                    ]
-                  }
-                  strokeOpacity={0.04}
-                  x1={16}
-                  x2={304}
-                  y1={85}
-                  y2={85}
-                />
-                <RNSVGLine
-                  fill={
-                    {
-                      "payload": 4278190080,
-                      "type": 0,
-                    }
-                  }
-                  propList={
-                    [
-                      "stroke",
-                      "strokeOpacity",
-                      "strokeDasharray",
-                    ]
-                  }
-                  stroke={
-                    {
-                      "payload": 4294967295,
-                      "type": 0,
-                    }
-                  }
-                  strokeDasharray={
-                    [
-                      "2",
-                      "4",
-                    ]
-                  }
-                  strokeOpacity={0.04}
-                  x1={16}
-                  x2={304}
-                  y1={116.5}
-                  y2={116.5}
-                />
                 <RNSVGPath
-                  d="M 16 69.6 L 35.2 69.6 L 54.4 69.6 L 73.6 69.6 L 92.8 69.6 L 112 69.6 L 131.2 69.6 L 150.4 69.6 L 169.6 69.6 L 188.8 69.6 L 208 69.6 L 227.2 69.6 L 246.4 92 L 265.6 92 L 284.8 92 L 304 108.8 L 304 148 L 16 148 Z"
-                  fill={
-                    {
-                      "brushRef": "hr-detail-trend-fill",
-                      "type": 1,
-                    }
-                  }
-                  propList={
-                    [
-                      "fill",
-                    ]
-                  }
-                />
-                <RNSVGPath
-                  d="M16 69.6 35.2 69.6 54.4 69.6 73.6 69.6 92.8 69.6 112 69.6 131.2 69.6 150.4 69.6 169.6 69.6 188.8 69.6 208 69.6 227.2 69.6 246.4 92 265.6 92 284.8 92 304 108.8"
+                  d="M34 28.22222222222223 52.4 28.22222222222223 70.8 28.22222222222223 89.2 28.22222222222223 107.6 28.22222222222223 126 28.22222222222223 144.4 28.22222222222223 162.8 28.22222222222223 181.2 28.22222222222223 199.6 28.22222222222223 218 28.22222222222223 236.39999999999998 28.22222222222223 254.8 93.11111111111111 273.20000000000005 93.11111111111111 291.6 93.11111111111111 310 141.77777777777777"
                   fill={null}
                   propList={
                     [
                       "fill",
                       "stroke",
                       "strokeWidth",
-                      "strokeDasharray",
-                      "strokeDashoffset",
-                      "strokeLinecap",
-                      "strokeLinejoin",
                     ]
                   }
                   stroke={
                     {
-                      "payload": 4292244570,
+                      "payload": 4291402416,
                       "type": 0,
                     }
                   }
-                  strokeDasharray={
-                    [
-                      725,
-                      725,
-                    ]
-                  }
-                  strokeDashoffset={725}
-                  strokeLinecap={1}
-                  strokeLinejoin={1}
                   strokeWidth={1.6}
-                  testID="hr-detail-trend-line"
                 />
                 <RNSVGCircle
-                  cx={16}
-                  cy={69.6}
+                  cx={34}
+                  cy={28.22222222222223}
                   fill={
                     {
-                      "payload": 4278847752,
+                      "payload": 4291402416,
                       "type": 0,
                     }
                   }
@@ -1449,75 +1424,314 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                       "strokeWidth",
                     ]
                   }
-                  r={3.5}
-                  stroke={
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-0"
+                />
+                <RNSVGCircle
+                  cx={52.4}
+                  cy={28.22222222222223}
+                  fill={
                     {
-                      "payload": 4292244570,
+                      "payload": 4291402416,
                       "type": 0,
                     }
                   }
-                  strokeWidth={1.5}
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-1"
                 />
-                <RNSVGText
-                  content={null}
-                  dx={[]}
-                  dy={[]}
+                <RNSVGCircle
+                  cx={70.8}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-2"
+                />
+                <RNSVGCircle
+                  cx={89.2}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-3"
+                />
+                <RNSVGCircle
+                  cx={107.6}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-4"
+                />
+                <RNSVGCircle
+                  cx={126}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-5"
+                />
+                <RNSVGCircle
+                  cx={144.4}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-6"
+                />
+                <RNSVGCircle
+                  cx={162.8}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-7"
+                />
+                <RNSVGCircle
+                  cx={181.2}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-8"
+                />
+                <RNSVGCircle
+                  cx={199.6}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-9"
+                />
+                <RNSVGCircle
+                  cx={218}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-10"
+                />
+                <RNSVGCircle
+                  cx={236.39999999999998}
+                  cy={28.22222222222223}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-11"
+                />
+                <RNSVGCircle
+                  cx={254.8}
+                  cy={93.11111111111111}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-12"
+                />
+                <RNSVGCircle
+                  cx={273.20000000000005}
+                  cy={93.11111111111111}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-13"
+                />
+                <RNSVGCircle
+                  cx={291.6}
+                  cy={93.11111111111111}
+                  fill={
+                    {
+                      "payload": 4291402416,
+                      "type": 0,
+                    }
+                  }
+                  propList={
+                    [
+                      "fill",
+                      "stroke",
+                      "strokeWidth",
+                    ]
+                  }
+                  r={2.6}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-14"
+                />
+                <RNSVGCircle
+                  cx={310}
+                  cy={141.77777777777777}
                   fill={
                     {
                       "payload": 4294967295,
                       "type": 0,
                     }
                   }
-                  font={
-                    {
-                      "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 9,
-                      "letterSpacing": 0.4,
-                      "textAnchor": "middle",
-                    }
-                  }
-                  propList={
-                    [
-                      "fill",
-                    ]
-                  }
-                  rotate={[]}
-                  x={
-                    [
-                      16,
-                    ]
-                  }
-                  y={
-                    [
-                      61.599999999999994,
-                    ]
-                  }
-                >
-                  <RNSVGTSpan
-                    content="78"
-                    dx={[]}
-                    dy={[]}
-                    fill={
-                      {
-                        "payload": 4278190080,
-                        "type": 0,
-                      }
-                    }
-                    font={{}}
-                    rotate={[]}
-                    x={[]}
-                    y={[]}
-                  />
-                </RNSVGText>
-                <RNSVGCircle
-                  cx={304}
-                  cy={108.8}
-                  fill={
-                    {
-                      "payload": 4278847752,
-                      "type": 0,
-                    }
-                  }
                   propList={
                     [
                       "fill",
@@ -1525,93 +1739,132 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                       "strokeWidth",
                     ]
                   }
-                  r={3.5}
-                  stroke={
-                    {
-                      "payload": 4292244570,
-                      "type": 0,
-                    }
-                  }
-                  strokeWidth={1.5}
-                />
-                <RNSVGText
-                  content={null}
-                  dx={[]}
-                  dy={[]}
-                  fill={
-                    {
-                      "payload": 4286939002,
-                      "type": 0,
-                    }
-                  }
-                  font={
-                    {
-                      "fontFamily": "JetBrainsMono_500Medium",
-                      "fontSize": 9,
-                      "letterSpacing": 0.4,
-                      "textAnchor": "middle",
-                    }
-                  }
-                  propList={
-                    [
-                      "fill",
-                    ]
-                  }
-                  rotate={[]}
-                  x={
-                    [
-                      304,
-                    ]
-                  }
-                  y={
-                    [
-                      122.8,
-                    ]
-                  }
-                >
-                  <RNSVGTSpan
-                    content="64"
-                    dx={[]}
-                    dy={[]}
-                    fill={
-                      {
-                        "payload": 4278190080,
-                        "type": 0,
-                      }
-                    }
-                    font={{}}
-                    rotate={[]}
-                    x={[]}
-                    y={[]}
-                  />
-                </RNSVGText>
-                <RNSVGCircle
-                  cx={304}
-                  cy={108.8}
-                  fill={
-                    {
-                      "payload": 4292244570,
-                      "type": 0,
-                    }
-                  }
-                  propList={
-                    [
-                      "fill",
-                      "stroke",
-                      "strokeWidth",
-                    ]
-                  }
-                  r={3.5}
-                  stroke={
-                    {
-                      "payload": 4278847752,
-                      "type": 0,
-                    }
-                  }
-                  strokeWidth={2}
+                  r={3.4}
+                  stroke={null}
+                  strokeWidth={0}
+                  testID="hr-detail-trend-point-15"
                 />
               </RNSVGGroup>
             </RNSVGSvgView>
+          </View>
+          <View
+            style={
+              {
+                "marginHorizontal": 20,
+              }
+            }
+            testID="hr-detail-table"
+          >
+            <View
+              accessibilityHint="Shows the heart-rate points behind the chart as text"
+              accessibilityLabel="View as table"
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": undefined,
+                  "checked": undefined,
+                  "disabled": undefined,
+                  "expanded": false,
+                  "selected": undefined,
+                }
+              }
+              accessibilityValue={
+                {
+                  "max": undefined,
+                  "min": undefined,
+                  "now": undefined,
+                  "text": undefined,
+                }
+              }
+              accessible={true}
+              collapsable={false}
+              focusable={true}
+              hitSlop={8}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onResponderGrant={[Function]}
+              onResponderMove={[Function]}
+              onResponderRelease={[Function]}
+              onResponderTerminate={[Function]}
+              onResponderTerminationRequest={[Function]}
+              onStartShouldSetResponder={[Function]}
+              style={
+                {
+                  "alignSelf": "flex-start",
+                  "paddingVertical": 6,
+                }
+              }
+              testID="hr-detail-table-toggle"
+            >
+              <Text
+                maxFontSizeMultiplier={1.6}
+                style={
+                  {
+                    "color": "#B8B2AA",
+                    "fontFamily": "Inter_500Medium",
+                    "fontSize": 13,
+                    "lineHeight": 16,
+                    "textDecorationLine": "underline",
+                  }
+                }
+              >
+                View as table
+              </Text>
+            </View>
+          </View>
+          <View
+            accessibilityLabel="What tends to move this number. Regular movement over weeks is associated with a lower resting heart rate. Short or fragmented sleep often shows up as a higher resting rate the next morning. The charts below compare your own nights."
+            accessibilityRole="text"
+            accessible={true}
+            style={
+              {
+                "backgroundColor": "#1D140D",
+                "borderRadius": 22,
+                "marginHorizontal": 20,
+                "marginTop": 16,
+                "padding": 16,
+              }
+            }
+            testID="hr-detail-what-moves"
+          >
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                [
+                  {
+                    "family": "Inter_600SemiBold",
+                    "lineHeight": 24,
+                    "size": 18,
+                    "weight": "600",
+                  },
+                  {
+                    "color": "#FFFFFF",
+                  },
+                ]
+              }
+            >
+              What tends to move this number
+            </Text>
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                [
+                  {
+                    "family": "Inter_400Regular",
+                    "lineHeight": 22,
+                    "size": 15,
+                    "weight": "400",
+                  },
+                  {
+                    "color": "#B8B2AA",
+                    "marginTop": 8,
+                  },
+                ]
+              }
+            >
+              Regular movement over weeks is associated with a lower resting heart rate. Short or fragmented sleep often shows up as a higher resting rate the next morning. Neither is a promise — the charts below compare your own nights, and your doctor is the right reader of anything persistent.
+            </Text>
           </View>
           <View
             accessibilityRole="summary"
@@ -1633,7 +1886,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             testID="hr-detail-zones"
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={1.6}
               style={
                 {
                   "color": "#857F7A",
@@ -1652,6 +1905,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Resting zone, < 60 bpm, 0 percent"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1676,7 +1930,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 }
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#FFFFFF",
@@ -1689,7 +1943,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   Resting
                 </Text>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -1736,7 +1990,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                           "width": "100%",
                         },
                         {
-                          "backgroundColor": "#D6745A",
+                          "backgroundColor": "#C99AB0",
                           "borderRadius": 99,
                           "opacity": 0.35,
                         },
@@ -1753,7 +2007,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 </View>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.6}
                 style={
                   {
                     "color": "#857F7A",
@@ -1772,6 +2026,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Calm zone, 60–80 bpm, 100 percent"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1796,7 +2051,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 }
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#FFFFFF",
@@ -1809,7 +2064,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   Calm
                 </Text>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -1856,7 +2111,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                           "width": "100%",
                         },
                         {
-                          "backgroundColor": "#D6745A",
+                          "backgroundColor": "#C99AB0",
                           "borderRadius": 99,
                           "opacity": 0.6,
                         },
@@ -1873,7 +2128,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 </View>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.6}
                 style={
                   {
                     "color": "#857F7A",
@@ -1892,6 +2147,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Active zone, 80–110 bpm, 0 percent"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -1916,7 +2172,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 }
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#FFFFFF",
@@ -1929,7 +2185,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   Active
                 </Text>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -1976,7 +2232,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                           "width": "100%",
                         },
                         {
-                          "backgroundColor": "#D6745A",
+                          "backgroundColor": "#C99AB0",
                           "borderRadius": 99,
                           "opacity": 0.8,
                         },
@@ -1993,7 +2249,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 </View>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.6}
                 style={
                   {
                     "color": "#857F7A",
@@ -2012,6 +2268,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <View
               accessibilityLabel="Vigorous zone, 110+ bpm, 0 percent"
               accessibilityRole="text"
+              accessible={true}
               style={
                 [
                   {
@@ -2036,7 +2293,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 }
               >
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#FFFFFF",
@@ -2049,7 +2306,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   Vigorous
                 </Text>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.6}
                   style={
                     {
                       "color": "#857F7A",
@@ -2096,7 +2353,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                           "width": "100%",
                         },
                         {
-                          "backgroundColor": "#D6745A",
+                          "backgroundColor": "#C99AB0",
                           "borderRadius": 99,
                           "opacity": 1,
                         },
@@ -2113,7 +2370,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 </View>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.6}
                 style={
                   {
                     "color": "#857F7A",
@@ -2134,7 +2391,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             testID="hr-detail-recent"
           >
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={1.6}
               style={
                 {
                   "color": "#857F7A",
@@ -2226,7 +2483,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                         "width": 6,
                       },
                       {
-                        "backgroundColor": "#D6745A",
+                        "backgroundColor": "#C99AB0",
                       },
                     ]
                   }
@@ -2240,20 +2497,23 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#FFFFFF",
-                        "fontFamily": "InstrumentSerif_400Regular",
-                        "fontSize": 22,
-                        "lineHeight": 28,
+                        "fontFamily": "JetBrainsMono_500Medium",
+                        "fontSize": 17,
+                        "fontVariant": [
+                          "tabular-nums",
+                        ],
+                        "lineHeight": 22,
                       }
                     }
                   >
                     64
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#857F7A",
@@ -2270,7 +2530,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.3}
                   style={
                     {
                       "color": "#857F7A",
@@ -2341,7 +2601,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                         "width": 6,
                       },
                       {
-                        "backgroundColor": "#D6745A",
+                        "backgroundColor": "#C99AB0",
                       },
                     ]
                   }
@@ -2355,20 +2615,23 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#FFFFFF",
-                        "fontFamily": "InstrumentSerif_400Regular",
-                        "fontSize": 22,
-                        "lineHeight": 28,
+                        "fontFamily": "JetBrainsMono_500Medium",
+                        "fontSize": 17,
+                        "fontVariant": [
+                          "tabular-nums",
+                        ],
+                        "lineHeight": 22,
                       }
                     }
                   >
                     70
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#857F7A",
@@ -2385,7 +2648,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.3}
                   style={
                     {
                       "color": "#857F7A",
@@ -2456,7 +2719,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                         "width": 6,
                       },
                       {
-                        "backgroundColor": "#D6745A",
+                        "backgroundColor": "#C99AB0",
                       },
                     ]
                   }
@@ -2470,20 +2733,23 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   }
                 >
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#FFFFFF",
-                        "fontFamily": "InstrumentSerif_400Regular",
-                        "fontSize": 22,
-                        "lineHeight": 28,
+                        "fontFamily": "JetBrainsMono_500Medium",
+                        "fontSize": 17,
+                        "fontVariant": [
+                          "tabular-nums",
+                        ],
+                        "lineHeight": 22,
                       }
                     }
                   >
                     78
                   </Text>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={1.3}
                     style={
                       {
                         "color": "#857F7A",
@@ -2500,7 +2766,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   </Text>
                 </View>
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={1.3}
                   style={
                     {
                       "color": "#857F7A",
@@ -2519,6 +2785,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
           <View
             accessibilityLabel="Leiko about your heart rate: After a few nights of sleep, this card will compare your resting heart rate to your usual band and call out anything worth noting."
             accessibilityRole="text"
+            accessible={true}
             style={
               [
                 {
@@ -2556,7 +2823,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                       "width": 18,
                     },
                     {
-                      "backgroundColor": "#D6745A26",
+                      "backgroundColor": "#C99AB026",
                     },
                   ]
                 }
@@ -2566,7 +2833,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                   bbHeight={11}
                   bbWidth={11}
                   className="sparkle-fill__svg-icon-phosphor"
-                  color="#D6745A"
+                  color="#C99AB0"
                   fill="currentColor"
                   focusable={false}
                   height={11}
@@ -2611,7 +2878,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                     <RNSVGGroup
                       fill={
                         {
-                          "payload": 4292244570,
+                          "payload": 4291402416,
                           "type": 0,
                         }
                       }
@@ -2635,10 +2902,10 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
                 </RNSVGSvgView>
               </View>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={2}
                 style={
                   {
-                    "color": "#D6745A",
+                    "color": "#C99AB0",
                     "fontFamily": "Inter_500Medium",
                     "fontSize": 11,
                     "letterSpacing": 0.55,
@@ -2709,7 +2976,7 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             <Text
               style={
                 {
-                  "color": "#E8A063",
+                  "color": "#C96442",
                   "fontFamily": "Inter_400Regular",
                   "fontSize": 15,
                   "fontWeight": "500",

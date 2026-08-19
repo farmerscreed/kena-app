@@ -12,6 +12,7 @@
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export const TRENDS_SEE_EVERYTHING_LABEL = 'See everything';
 
@@ -62,7 +63,7 @@ export function TrendsSeeEverythingToggle({
         </Svg>
       </View>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 10,

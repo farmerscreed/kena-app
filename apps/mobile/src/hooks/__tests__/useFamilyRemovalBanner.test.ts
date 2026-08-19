@@ -38,9 +38,17 @@ describe('buildCurrentMap', () => {
     expect(map).toEqual({ 'fam-1': 'Mum' });
   });
 
-  it('falls back to "your loved one" when display name is empty', () => {
+  // Sprint 19 (audit D12 P0-8) — the fallback WAS "your loved one",
+  // which is a HARD FAIL in docs/05-voice-and-claims.md §87. This test
+  // asserted the violation, so it was pinning the bug in place.
+  it('falls back to a voice-clean generic when display name is empty', () => {
     const map = buildCurrentMap([parent('fam-1', '')]);
-    expect(map).toEqual({ 'fam-1': 'your loved one' });
+    expect(map).toEqual({ 'fam-1': 'your family member' });
+  });
+
+  it('never emits a forbidden generic in the fallback', () => {
+    const map = buildCurrentMap([parent('fam-1', '')]);
+    expect(map['fam-1']).not.toMatch(/loved one|patient/i);
   });
 
   it('handles multiple parents', () => {

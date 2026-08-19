@@ -32,7 +32,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomSheet } from '../../components/BottomSheet';
 import { Button } from '../../components/Button';
 import { Pill } from '../../components/Pill';
+import { ContextTagSheet } from '../../components/ContextTagSheet';
 import { useTheme } from '../../theme';
+import { useAnnounceOnChange } from '../../hooks/useAnnounce';
 import { useTakeReading } from '../../state/takeReading';
 import { useReadings } from '../../state/readings';
 import {
@@ -203,13 +205,28 @@ function Body({ children }: { children: React.ReactNode }) {
   );
 }
 
+// Audit P1-7 — every phase of this state machine carried an Android-only
+// accessibilityLiveRegion, so on iOS the whole measurement flow was silent.
+// Each view now declares one sentence, hands it to both the live region
+// (Android) and useAnnounceOnChange (iOS), so the two can't drift apart.
+// The sentences are user-visible copy: complete, calm, voice-rule clean
+// (docs/05-voice-and-claims.md).
+const A11Y_CONNECTING =
+  'Reaching the watch. This usually takes a couple of seconds.';
+const A11Y_WAITING =
+  "Press the BP button on your watch. Sit still while it takes the reading — we'll catch the result here.";
+const A11Y_RECONNECTING = 'One moment. Picking up the new reading from your watch.';
+const A11Y_FETCHING = 'Reading complete. Saving it now.';
+
 function ConnectingView() {
   const theme = useTheme();
+  // Audit P1-7.
+  useAnnounceOnChange(A11Y_CONNECTING);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-connecting"
       accessibilityLiveRegion="polite"
-      accessibilityLabel="Reaching the watch"
+      accessibilityLabel={A11Y_CONNECTING}
     >
       <Headline>Reaching the watch</Headline>
       <Body>This usually takes a couple of seconds.</Body>
@@ -228,11 +245,13 @@ function WaitingForWatchView({
   onManualEntry: () => void;
 }) {
   const theme = useTheme();
+  // Audit P1-7.
+  useAnnounceOnChange(A11Y_WAITING);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-waiting"
       accessibilityLiveRegion="polite"
-      accessibilityLabel="Waiting for a reading from the watch"
+      accessibilityLabel={A11Y_WAITING}
     >
       <Headline>Press the BP button on your watch</Headline>
       <Body>
@@ -263,11 +282,13 @@ function WaitingForWatchView({
 
 function ReconnectingView() {
   const theme = useTheme();
+  // Audit P1-7.
+  useAnnounceOnChange(A11Y_RECONNECTING);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-reconnecting"
       accessibilityLiveRegion="polite"
-      accessibilityLabel="Picking up the new reading"
+      accessibilityLabel={A11Y_RECONNECTING}
     >
       <Headline>One moment</Headline>
       <Body>Picking up the new reading from your watch.</Body>
@@ -280,11 +301,13 @@ function ReconnectingView() {
 
 function FetchingView() {
   const theme = useTheme();
+  // Audit P1-7.
+  useAnnounceOnChange(A11Y_FETCHING);
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-fetching"
       accessibilityLiveRegion="polite"
-      accessibilityLabel="Reading complete, saving"
+      accessibilityLabel={A11Y_FETCHING}
     >
       <Headline>Reading complete</Headline>
       <Body>Saving — one moment.</Body>
@@ -307,13 +330,21 @@ function SuccessView({
   const numericXl = theme.type('numericXl');
   const bodyM = theme.type('bodyM');
 
+  const [tagSheetOpen, setTagSheetOpen] = useState(false);
+  const a11yLabel = reading
+    ? `Reading saved. ${reading.systolic} over ${reading.diastolic} mmHg, pulse ${reading.pulse ?? 'unknown'}.`
+    : null;
+  // Audit P1-7 — hook runs before the early return so hook order stays
+  // stable across the fetching → success transition.
+  useAnnounceOnChange(a11yLabel);
+
   if (!reading) return <FetchingView />;
 
   return (
-    <View
+    <View accessible={true}
       testID="take-reading-success"
       accessibilityLiveRegion="assertive"
-      accessibilityLabel={`Reading saved. ${reading.systolic} over ${reading.diastolic} mmHg, pulse ${reading.pulse ?? 'unknown'}.`}
+      accessibilityLabel={a11yLabel ?? undefined}
     >
       <Headline>Saved</Headline>
       <View
@@ -351,6 +382,25 @@ function SuccessView({
           {tierChipText(reading.classification.tier)}
         </Pill>
       </View>
+      {/* D13 PR-11 (§6.5) — tag the reading. Never blocking; a
+          reading with no tags is valid. */}
+      <Button
+        variant="ghost"
+        onPress={() => setTagSheetOpen(true)}
+        accessibilityLabel="Add context to this reading"
+        testID="take-reading-add-context"
+      >
+        Add context
+      </Button>
+      <ContextTagSheet
+        visible={tagSheetOpen}
+        readingHour={new Date(reading.measuredAtSec * 1000).getHours()}
+        onSave={(tags) => {
+          useReadings.getState().setContextTags(reading.localId, tags);
+          setTagSheetOpen(false);
+        }}
+        onDismiss={() => setTagSheetOpen(false)}
+      />
       <Button
         variant="primary"
         onPress={onDone}
@@ -382,8 +432,16 @@ function FailureView({
   onCancel: () => void;
 }) {
   const theme = useTheme();
+  // Audit P1-7 — this view had no live region at all, on either platform.
+  // Both halves added: assertive on Android, announced on iOS.
+  const a11yLabel = `We couldn't get that reading. ${friendly}`;
+  useAnnounceOnChange(a11yLabel);
   return (
-    <View testID="take-reading-failure">
+    <View accessible={true}
+      testID="take-reading-failure"
+      accessibilityLiveRegion="assertive"
+      accessibilityLabel={a11yLabel}
+    >
       <Headline>We couldn't get that reading</Headline>
       <Body>{friendly}</Body>
       <Button
@@ -425,6 +483,10 @@ function ManualEntrySheet({
   const [dia, setDia] = useState('');
   const [pulse, setPulse] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  // Audit P1-7 — the inline validation error below is an Android-only live
+  // region. On iOS the form silently refused to submit.
+  useAnnounceOnChange(error);
 
   const reset = () => {
     setSys('');

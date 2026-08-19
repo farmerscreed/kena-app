@@ -6,7 +6,7 @@
 
 import {
   activityFill,
-  bpFillFromTier,
+  bpRingFill,
   clamp01,
   fillForVital,
   hrFill,
@@ -61,12 +61,26 @@ describe('clamp01', () => {
   it('NaN folds to 0', () => expect(clamp01(NaN)).toBe(0));
 });
 
-describe('bpFillFromTier (D13 §7.1)', () => {
-  it('in_pattern → 1.0', () => expect(bpFillFromTier('in_pattern')).toBe(1.0));
-  it('calm_concerned → 0.5', () => expect(bpFillFromTier('calm_concerned')).toBe(0.5));
-  it('confirmed_urgent → 0.25', () => expect(bpFillFromTier('confirmed_urgent')).toBe(0.25));
-  it('null → 0', () => expect(bpFillFromTier(null)).toBe(0));
-  it('unknown tier → 0', () => expect(bpFillFromTier('mystery' as never)).toBe(0));
+describe('bpRingFill (D13 §6.2 — stroke encodes data sufficiency)', () => {
+  const verdictFor = (sampleCount: number) => ({
+    tier: 'in_pattern' as const,
+    reason: 'within_baseline' as const,
+    verdict: {
+      tier: 'in_range' as const,
+      reason: 'inside_band' as const,
+      band: { low: 118, high: 134 },
+      deviation: 0,
+      sampleCount,
+      windowDays: 28,
+      provisional: false,
+    },
+  });
+  it('2 of 10 readings → 0.2 (the partial ring)', () =>
+    expect(bpRingFill(verdictFor(2))).toBeCloseTo(0.2));
+  it('10+ of 10 → capped at 1', () => expect(bpRingFill(verdictFor(14))).toBe(1));
+  it('no classification → 0', () => expect(bpRingFill(null)).toBe(0));
+  it('legacy row without a verdict → 0 (grey until reclassified)', () =>
+    expect(bpRingFill({ tier: 'in_pattern', reason: 'within_baseline' })).toBe(0));
 });
 
 describe('hrFill — (resting - 40) / 80 clamped', () => {
@@ -96,7 +110,7 @@ describe('activityFill — steps / target clamped', () => {
 });
 
 describe('fillForVital — convenience selector over DailyPulseData', () => {
-  it('routes BP to its tier-based formula', () => {
+  it('routes BP to the sufficiency formula (D13 §6.2)', () => {
     const reading: LocalReading = {
       localId: 'r1',
       serverId: null,
@@ -105,7 +119,19 @@ describe('fillForVital — convenience selector over DailyPulseData', () => {
       diastolic: 78,
       pulse: 64,
       source: 'watch',
-      classification: { tier: 'in_pattern', reason: 'within_baseline' },
+      classification: {
+        tier: 'in_pattern',
+        reason: 'within_baseline',
+        verdict: {
+          tier: 'in_range',
+          reason: 'inside_band',
+          band: { low: 118, high: 134 },
+          deviation: -4,
+          sampleCount: 12,
+          windowDays: 28,
+          provisional: false,
+        },
+      },
       deviceBleId: null,
       capturedAtMs: NOW_SEC * 1000,
     };

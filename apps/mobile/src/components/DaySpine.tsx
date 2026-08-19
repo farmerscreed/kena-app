@@ -35,6 +35,7 @@ import {
 import { useTheme } from '../theme';
 import type { DayMoment, MomentVital } from '../utils/dayMoments';
 import type { VitalType } from './VitalRing';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 // Moment vitals are a strict subset of VitalType; the cast is safe.
 function vitalToVitalType(v: MomentVital): VitalType {
@@ -53,7 +54,11 @@ export interface DaySpineProps {
 
 const SPINE_X = 56;       // matches the v2 source's 56px left offset
 const DOT_SIZE = 9;
-const PAST_OPACITY = 0.55;
+// D13 PR-9 (§9.1) — past moments no longer dim the whole row (0.55×
+// opacity dropped the time label to ~2.2:1, the worst pairing in the
+// app). Past state is carried by the muted TEXT COLOUR below — never
+// by opacity on text.
+const PAST_OPACITY = 1;
 
 export function DaySpine({
   moments,
@@ -90,7 +95,7 @@ export function DaySpine({
           }}
         />
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
           style={{
             fontFamily: eyebrowStyle.family,
             fontSize: eyebrowStyle.size,
@@ -150,10 +155,10 @@ export function DaySpine({
 
           {moments.map((m) => {
             const vitalColor = m.concerned
-              ? theme.colors.brand.coral
+              ? theme.colors.status.attention
               : theme.colors.vital[vitalToVitalType(m.vital)];
             const interactive = Boolean(onSelect);
-            const a11yLabel = `${m.timeLabel}: ${m.title}. ${m.sub}`;
+            const a11yLabel = `${m.timeLabel}: ${m.title}. ${m.sub}${m.concerned ? '. Worth a look' : ''}`;
 
             return (
               <Pressable
@@ -172,7 +177,7 @@ export function DaySpine({
               >
                 {/* Time label — fixed-width column on the left */}
                 <Text
-                  allowFontScaling={false}
+                  maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                   style={{
                     fontFamily: theme.fontFamilies.numeric,
                     fontSize: timeStyle.size,
@@ -198,11 +203,14 @@ export function DaySpine({
                 >
                   <View
                     style={{
-                      width: DOT_SIZE,
-                      height: DOT_SIZE,
-                      borderRadius: DOT_SIZE / 2,
+                      // §9.1 — a concerned dot grows: colour is never
+                      // the sole channel (the label carries the status
+                      // in words below).
+                      width: m.concerned ? DOT_SIZE + 4 : DOT_SIZE,
+                      height: m.concerned ? DOT_SIZE + 4 : DOT_SIZE,
+                      borderRadius: (m.concerned ? DOT_SIZE + 4 : DOT_SIZE) / 2,
                       backgroundColor: m.past ? 'transparent' : vitalColor,
-                      borderWidth: 1.5,
+                      borderWidth: m.concerned ? 2 : 1.5,
                       borderColor: vitalColor,
                     }}
                   />
@@ -211,7 +219,7 @@ export function DaySpine({
                 {/* Body column */}
                 <View style={{ flex: 1, paddingTop: 2 }}>
                   <Text
-                    allowFontScaling={false}
+                    maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
                     style={{
                       fontFamily: theme.fontFamilies.editorial,
                       fontSize: titleStyle.size,

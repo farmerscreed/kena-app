@@ -338,7 +338,7 @@ describe('SelfBuyerHome — anomaly banner', () => {
       activityToday: null,
     });
     render(withProviders(<SelfBuyerHome />));
-    expect(screen.getByText('Talk to your doctor today')).toBeTruthy();
+    expect(screen.getByText('Please call your doctor')).toBeTruthy();
   });
 
   it('omits the banner when BP is in pattern', () => {

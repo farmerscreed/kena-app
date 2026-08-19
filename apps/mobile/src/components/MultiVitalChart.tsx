@@ -8,8 +8,8 @@
 // value in its own unit so absolute scale stays accessible to users
 // who want it.
 //
-// Hand-rolled `react-native-svg` to stay consistent with VitalTrendChart,
-// BPTwinLineChart, Sparkline, and the rest of the chart library — no
+// Hand-rolled `react-native-svg` to stay consistent with RangeBandChart,
+// Sparkline, and the rest of the chart library — no
 // Victory Native dependency, per the founder-approved stack pin.
 //
 // Geometry pure helper exported for unit tests.
@@ -316,7 +316,7 @@ export function MultiVitalChart({
   const anyVisible = series.some((s) => s.visible && s.values.length > 0);
 
   return (
-    <View
+    <View accessible={true}
       style={style}
       testID={testID}
       accessibilityLabel={a11yLabel}

@@ -1,4 +1,5 @@
 import {
+  statusUrgencyFor,
   orderConstellationNodes,
   focalNode,
   statusUrgency,
@@ -19,7 +20,8 @@ function node(
     fullName: id,
     initial: id[0]?.toUpperCase() ?? '·',
     accentIndex: 1,
-    bpLabel: '—',
+    lastReadingAgeMs: 60_000,
+  bpLabel: '—',
     headline: '',
     sentence: '',
     relation: '',
@@ -34,9 +36,15 @@ describe('statusUrgency', () => {
     expect(statusUrgency('watch')).toBeGreaterThan(statusUrgency('clear'));
   });
 
-  it('treats offline and sleeping as calm (never pre-empt You)', () => {
-    expect(statusUrgency('offline')).toBe(statusUrgency('clear'));
-    expect(statusUrgency('sleeping')).toBe(statusUrgency('clear'));
+  it('ranks offline at the silence tier (D13 §7.1a) while sleeping stays calm', () => {
+    // Silence is the most actionable calm-adjacent state: a stale or
+    // absent reading outranks a normal number, though never an active
+    // concern.
+    expect(statusUrgency('offline')).toBe(3);
+    expect(statusUrgency('sleeping')).toBe(0);
+    expect(statusUrgency('urgent')).toBeGreaterThan(statusUrgency('offline'));
+    expect(statusUrgency('attention')).toBeGreaterThan(statusUrgency('offline'));
+    expect(statusUrgency('offline')).toBeGreaterThan(statusUrgency('learning'));
   });
 });
 
@@ -116,5 +124,23 @@ describe('focalNode', () => {
 
   it('returns null for an empty constellation', () => {
     expect(focalNode([])).toBeNull();
+  });
+});
+
+
+describe('statusUrgencyFor — the §7.1a silence rank', () => {
+  it('raises any calm status to the silence tier after 48h without a reading', () => {
+    expect(statusUrgencyFor('clear', 49 * 3600_000)).toBe(3);
+    expect(statusUrgencyFor('learning', null)).toBe(3);
+  });
+  it('a fresh reading keeps the base rank', () => {
+    expect(statusUrgencyFor('clear', 3600_000)).toBe(0);
+    expect(statusUrgencyFor('learning', 3600_000)).toBe(1);
+  });
+  it('an active concern always outranks silence', () => {
+    expect(statusUrgencyFor('attention', 49 * 3600_000)).toBeGreaterThan(
+      statusUrgencyFor('clear', 49 * 3600_000),
+    );
+    expect(statusUrgencyFor('urgent', null)).toBe(5);
   });
 });

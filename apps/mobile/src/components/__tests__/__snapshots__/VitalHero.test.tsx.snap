@@ -4,6 +4,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
 <View
   accessibilityLabel="Last night · in bed 11:14 pm. 7:42hrs. A quieter night than last week"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -25,7 +26,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
           "borderRadius": 999,
           "height": 220,
           "left": "50%",
-          "opacity": 0.18,
+          "opacity": 0.12,
           "position": "absolute",
           "top": 0,
           "transform": [
@@ -36,10 +37,10 @@ exports[`VitalHero — render matches snapshot 1`] = `
           "width": 280,
         },
         {
-          "backgroundColor": "#7C7AAB",
+          "backgroundColor": "#9B93C7",
         },
         {
-          "opacity": 0.55,
+          "opacity": 0.12,
         },
       ]
     }
@@ -72,6 +73,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
             "now": 0.78,
           }
         }
+        accessible={true}
         style={
           [
             {
@@ -135,7 +137,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
               r={51}
               stroke={
                 {
-                  "payload": 4286347947,
+                  "payload": 4288385991,
                   "type": 0,
                 }
               }
@@ -169,7 +171,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
               r={51}
               stroke={
                 {
-                  "payload": 4286347947,
+                  "payload": 4288385991,
                   "type": 0,
                 }
               }
@@ -221,7 +223,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
           bbHeight={28}
           bbWidth={28}
           className="moon-duotone__svg-icon-phosphor"
-          color="#7C7AAB"
+          color="#9B93C7"
           fill="currentColor"
           focusable={false}
           height={28}
@@ -267,7 +269,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
               d="M227.89 147.89A96 96 0 1 1 108.11 28.11a96.09 96.09 0 0 0 119.78 119.78"
               fill={
                 {
-                  "payload": 4286347947,
+                  "payload": 4288385991,
                   "type": 0,
                 }
               }
@@ -301,7 +303,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
       }
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#857F7A",
@@ -327,14 +329,17 @@ exports[`VitalHero — render matches snapshot 1`] = `
         }
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.6}
           style={
             {
               "color": "#FFFFFF",
-              "fontFamily": "InstrumentSerif_400Regular",
-              "fontSize": 56,
+              "fontFamily": "JetBrainsMono_500Medium",
+              "fontSize": 44,
+              "fontVariant": [
+                "tabular-nums",
+              ],
               "letterSpacing": -0.5,
-              "lineHeight": 60,
+              "lineHeight": 48,
             }
           }
           testID="hero-primary"
@@ -342,13 +347,16 @@ exports[`VitalHero — render matches snapshot 1`] = `
           7:42
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={1.6}
           style={
             {
-              "color": "#857F7A",
-              "fontFamily": "InstrumentSerif_400Regular",
-              "fontSize": 22,
-              "lineHeight": 28,
+              "color": "#B8B2AA",
+              "fontFamily": "JetBrainsMono_500Medium",
+              "fontSize": 17,
+              "fontVariant": [
+                "tabular-nums",
+              ],
+              "lineHeight": 22,
               "marginLeft": 4,
             }
           }
@@ -358,7 +366,7 @@ exports[`VitalHero — render matches snapshot 1`] = `
         </Text>
       </View>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={1.6}
         style={
           {
             "color": "#857F7A",

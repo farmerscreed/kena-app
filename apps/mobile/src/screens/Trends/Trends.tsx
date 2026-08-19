@@ -69,6 +69,9 @@ import { useTheme, type Theme } from '../../theme';
 import { generateTrendsNarrative } from '../../services/ai/trendsNarration';
 import type { TrendsRange, TrendsData } from '../../utils/trends-aggregate';
 import type { VitalType } from '../../components/VitalRing';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
+import { StorySection } from '../../components/StorySection';
+import { mmkv, STORAGE_KEYS } from '../../services/storage';
 import type { AccountType } from '../../types/database';
 import { bpBaseline, formatBPBaseline } from '../../utils/vitalBaselines';
 import type {
@@ -460,6 +463,13 @@ export function Trends() {
       >
         <Header title={headerTitle} onBack={() => navigation.goBack()} />
 
+        {/* Story Trends (2026-08-19) — the person's arc sits above the
+            range machinery: letter, band river, chapters. */}
+        <StorySection
+          familyId={familyId ?? mmkv.getString(STORAGE_KEYS.currentFamilyId) ?? null}
+          userId={userId}
+        />
+
         <TrendsRangeChipsRow
           accountType={accountType}
           active={range}
@@ -707,6 +717,20 @@ function ExpansionPanel({
         caption="This range"
         subCaption={rangeLabel}
         testID="trends-chart"
+      />
+      {/* D13 PR-6 (§6.3/§9.1) — the non-visual route to the chart's
+          numbers. Trends previously had none at all. */}
+      <ViewAsTableLink
+        rows={series
+          .filter((s) => s.visible)
+          .flatMap((s) =>
+            s.values.map((v, i) => ({
+              label: `${s.kind.toUpperCase()} · ${s.days[i] ?? ''}`,
+              value: String(Math.round(v)),
+            })),
+          )}
+        subjectNoun="daily values"
+        testID="trends-table"
       />
     </View>
   );

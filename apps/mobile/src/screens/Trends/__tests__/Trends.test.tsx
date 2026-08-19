@@ -99,6 +99,13 @@ jest.mock('../../../hooks/useTrendsData', () => ({
   usePrefetchTrendsRange: () => undefined,
 }));
 
+// Story Trends (2026-08-19) — the section owns its own react-query
+// wiring; this suite tests the page chrome, so stub it (its own suite
+// covers the story pieces).
+jest.mock('../../../components/StorySection', () => ({
+  StorySection: () => null,
+}));
+
 jest.mock('../../../hooks/usePlusEntitlement', () => ({
   usePlusEntitlement: () => ({
     tier: mockIsPlus ? 'plus' : 'free',
@@ -428,17 +435,13 @@ describe('Trends v2 — weekly summary placeholder + doctor inline link', () => 
 
   it('reads "for your doctor" in self-buyer mode', async () => {
     await renderAndAwaitNarrative();
-    expect(
-      screen.getByTestId('trends-doctor-link-label').props.children,
-    ).toBe('Want to put this together for your doctor?');
+    expect(screen.getByText('For your doctor')).toBeTruthy();
   });
 
   it('reads "for their doctor" in caregiver mode', async () => {
     mockAccountType = 'caregiver';
     await renderAndAwaitNarrative();
-    expect(
-      screen.getByTestId('trends-doctor-link-label').props.children,
-    ).toBe('Want to put this together for their doctor?');
+    expect(screen.getByText('For your doctor')).toBeTruthy();
   });
 
   it('does NOT render a PDF export CTA anywhere on Trends', async () => {

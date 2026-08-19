@@ -13,7 +13,7 @@
 // a React renderer (the pure jest project has no RN/jsdom).
 //
 // Per CLAUDE.md voice rules: this file does NOT format user-visible
-// strings. The hero component owns "in pattern" / "Worth a look" /
+// strings. The hero component owns the §7.4 verdict strings /
 // "Talk to your doctor" wording via the existing tierChipText helper.
 
 import { useReadings } from './readings';

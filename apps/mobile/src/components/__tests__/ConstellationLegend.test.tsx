@@ -67,7 +67,7 @@ describe('ConstellationLegend — render', () => {
     expect(screen.getByText('Resting since 11pm.')).toBeTruthy();
 
     // Three StatusPills (text content from STATUS_LABEL_FOR).
-    expect(screen.getByText('All clear')).toBeTruthy();
+    expect(screen.getByText('In their usual range')).toBeTruthy();
     expect(screen.getByText('Needs attention')).toBeTruthy();
     expect(screen.getByText('Sleeping')).toBeTruthy();
   });
@@ -209,7 +209,7 @@ describe('ConstellationLegend — accessibility', () => {
 
     expect(
       screen.getByRole('button', {
-        name: 'Marian, Mom, All clear, A calm morning.',
+        name: 'Marian, Mom, In their usual range, A calm morning.',
       }),
     ).toBeTruthy();
     expect(

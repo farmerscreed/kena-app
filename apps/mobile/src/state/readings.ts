@@ -21,6 +21,7 @@ import { create } from 'zustand';
 import { mmkv, STORAGE_KEYS } from '../services/storage';
 import { logger } from '../services/analytics/logger';
 import { classifyReading, type Classification } from '../utils/classification';
+import { resolveBpBaselines } from '../utils/vitalBaselines';
 import { postReading } from '../services/sync/postReading';
 import { forwardReadingToPlatform } from '../services/health-platform/syncBridge';
 
@@ -41,6 +42,9 @@ export interface LocalReading {
   classification: Classification;
   /** ble device MAC for this reading; null for manual entries. */
   deviceBleId: string | null;
+  /** D13 PR-11 (§6.5) — reading_context tags. Optional so persisted
+   *  pre-tag rows stay valid; a reading with no tags is valid. */
+  contextTags?: string[];
   /** ms timestamp of the local insert (used for sort tie-break, debug). */
   capturedAtMs: number;
 }
@@ -58,6 +62,8 @@ interface ReadingsState {
   ) => LocalReading;
   /** Best-effort sync of every pending row. Idempotent; safe to call repeatedly. */
   syncPending: () => Promise<void>;
+  /** D13 PR-11 — attach context tags to a held reading (pre-sync). */
+  setContextTags: (localId: string, tags: string[]) => void;
   /** Latest reading regardless of pending/recent. UI helper. */
   latest: () => LocalReading | null;
   /** Lookup by localId (UI deep-link). */
@@ -173,9 +179,35 @@ export const useReadings = create<ReadingsState>((set, get) => ({
     if (existing) {
       return existing;
     }
+    // D13 PR-1 (P0-2) — classify against the wearer's own 28-day
+    // baseline: the server truth-layer row when the cache has one,
+    // else a provisional local recompute — so this works offline.
+    // `classifyReading` owns the sufficiency gate and renders the
+    // learning state until the §4.3 minimums are met. History (this
+    // reading first) enables the three-consecutive confirmation rule.
+    // The provisional sample set INCLUDES the reading being stored —
+    // same batch-inclusive semantics as the hydration path, and the
+    // ring's sufficiency fill counts every reading the account holds.
+    const held = [...get().pending, ...get().recent];
+    const familyId = mmkv.getString(STORAGE_KEYS.currentFamilyId) ?? '';
+    const baselines = resolveBpBaselines(familyId, [
+      { systolic: input.systolic, diastolic: input.diastolic, measuredAtSec: input.measuredAtSec },
+      ...held,
+    ]);
     const classification = classifyReading(
       { systolic: input.systolic, diastolic: input.diastolic, pulse: input.pulse },
-      null, // cold-start; baseline computation deferred to Sprint 15
+      baselines,
+      [
+        { systolic: input.systolic, diastolic: input.diastolic, measuredAtSec: input.measuredAtSec },
+        ...held
+          .slice()
+          .sort((a, b) => b.measuredAtSec - a.measuredAtSec)
+          .map((r) => ({
+            systolic: r.systolic,
+            diastolic: r.diastolic,
+            measuredAtSec: r.measuredAtSec,
+          })),
+      ],
     );
     const row: LocalReading = {
       ...input,
@@ -281,6 +313,15 @@ export const useReadings = create<ReadingsState>((set, get) => ({
     } finally {
       set({ syncing: false });
     }
+  },
+
+  setContextTags: (localId, tags) => {
+    const patch = (rows: LocalReading[]) =>
+      rows.map((r) => (r.localId === localId ? { ...r, contextTags: tags } : r));
+    const pending = patch(get().pending);
+    const recent = patch(get().recent);
+    set({ pending, recent });
+    persist({ pending, recent });
   },
 
   latest: () => {

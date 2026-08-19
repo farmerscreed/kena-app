@@ -217,6 +217,11 @@ export type ReadingRow = {
   pulse: number | null;
   quality_score: QualityScore | null;
   quality_flags: Record<string, unknown>;
+  // D13 PR-1/PR-11 — reading context (migration 0055). Optional so
+  // pre-existing row literals in fixtures stay valid; the DB default
+  // is '{}'.
+  context_tags?: string[];
+  context_note?: string | null;
   motion_detected: boolean | null;
   hidden: boolean;
   hidden_reason: string | null;
@@ -345,7 +350,11 @@ export type VitalsOtherRow = {
 export type CorrelationType =
   | 'sleep_x_morning_bp'
   | 'activity_x_resting_hr'
-  | 'spo2_dip_x_sleep_score';
+  | 'spo2_dip_x_sleep_score'
+  // The cross-vital matrix (2026-08-19).
+  | 'sleep_x_resting_hr'
+  | 'activity_x_morning_bp'
+  | 'after_meds_x_bp';
 
 export type CorrelationRow = {
   id: string;
@@ -469,6 +478,27 @@ export type Database = {
         Update: Partial<BpBaselineRow>;
         Relationships: [];
       };
+      // D13 PR-1/PR-11 — the truth layer + the medication log.
+      vital_baselines: {
+        Row: VitalBaselineDbRow;
+        Insert: VitalBaselineDbRow;
+        Update: Partial<VitalBaselineDbRow>;
+        Relationships: [];
+      };
+      medications: {
+        Row: MedicationDbRow;
+        Insert: Omit<MedicationDbRow, 'id' | 'created_at' | 'active'> &
+          Partial<Pick<MedicationDbRow, 'id' | 'created_at' | 'active'>>;
+        Update: Partial<MedicationDbRow>;
+        Relationships: [];
+      };
+      medication_events: {
+        Row: MedicationEventDbRow;
+        Insert: Omit<MedicationEventDbRow, 'id' | 'created_at'> &
+          Partial<Pick<MedicationEventDbRow, 'id' | 'created_at'>>;
+        Update: Partial<MedicationEventDbRow>;
+        Relationships: [];
+      };
       hr_baselines: {
         Row: HrBaselineRow;
         Insert: HrBaselineRow;
@@ -493,3 +523,41 @@ export type Database = {
     };
   };
 };
+
+
+// D13 PR-1 — one truth-layer row per (subject, vital, context).
+export type VitalBaselineDbRow = {
+  id?: string;
+  family_id: string;
+  subject_id: string;
+  vital: string;
+  window_days: number;
+  sample_count: number;
+  mean_value: number | string;
+  sd_value: number | string;
+  p10_value: number | string;
+  p90_value: number | string;
+  context_tag: string | null;
+  is_sufficient: boolean;
+  computed_at: string;
+}
+
+// D13 PR-11 — the medication log (§4.5).
+export type MedicationDbRow = {
+  id: string;
+  family_id: string;
+  subject_id: string;
+  label: string;
+  schedule: Record<string, unknown>;
+  active: boolean;
+  created_at: string;
+}
+
+export type MedicationEventDbRow = {
+  id: string;
+  medication_id: string;
+  subject_id: string;
+  taken_at: string;
+  logged_by: string;
+  created_at: string;
+}

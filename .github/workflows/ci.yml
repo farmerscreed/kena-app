@@ -2,9 +2,11 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    # D13 §13.5 — every d13/pr-N branch merges into the integration
+    # branch only when CI is green, so PRs into it must run CI too.
+    branches: [main, 'redesign/**']
   push:
-    branches: [main]
+    branches: [main, 'redesign/**']
 
 # Cancel in-progress runs for the same branch when a newer commit lands.
 concurrency:
@@ -38,6 +40,24 @@ jobs:
 
       - name: Test
         run: npm run test --workspace=apps/mobile
+
+      # D13 PR-3 — the docs/05 CI contract (step 5): every user-visible
+      # string in the scanned tree passes the voice dictionary. Hard
+      # fails block the merge; the deliberate-violation test in the
+      # unit suite proves this step actually bites.
+      - name: Copy lint (voice rules)
+        run: npm run copy-lint --workspace=apps/mobile
+
+      # D13 PR-1 — the edge functions carry Deno tests (classification,
+      # baselines, templates, guards) that the npm graph never runs.
+      # -A: internal-auth's tests read env to prove the fail-closed path.
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Edge function tests (Deno)
+        run: deno test -A supabase/functions/_shared/
 
       # Sprint 16.6 QUA-6. Production-only audit, high+critical block
       # the build. Moderate/low transitives are tolerated because the

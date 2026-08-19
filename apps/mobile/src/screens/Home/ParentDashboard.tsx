@@ -83,6 +83,7 @@ import { useTheme, type Theme } from '../../theme';
 import {
   buildHeroVitals,
   buildCentralSub,
+  buildCentralUnit,
 } from './SelfBuyerHome';
 import {
   deriveDayMoments,
@@ -93,6 +94,7 @@ import type { CaregiverStackParamList } from '../../navigation/types';
 import type { ParentSummary } from '../../services/families/fetchParentSummaries';
 import type { DailyPulseData } from '../../state/dailyPulse';
 import type { HRSample, SleepSession } from '../../types/vitals';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 type Nav = NativeStackNavigationProp<CaregiverStackParamList>;
 type Route = RouteProp<CaregiverStackParamList, 'ParentDashboard'>;
@@ -353,6 +355,14 @@ export function ParentDashboard() {
                 central.priority === 'bp' ? 'Blood pressure' : central.label,
               value: central.value,
               sub: buildCentralSub(data, central.priority),
+              unit: buildCentralUnit(central.priority),
+              // Sprint 19 (audit P1-5) — same tier `deriveParentBanner`
+              // reads below; it never reached the hero value itself.
+              // Only meaningful when the cascade resolved to BP.
+              tier:
+                central.priority === 'bp'
+                  ? data.bp.classification?.tier ?? null
+                  : null,
               live: false,
             }}
             onSelectVital={handleVitalPress}
@@ -540,7 +550,7 @@ function PulseHeader({ theme, eyebrow, parentName, onBack }: PulseHeaderProps) {
         })}
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: 18,
@@ -552,7 +562,7 @@ function PulseHeader({ theme, eyebrow, parentName, onBack }: PulseHeaderProps) {
       </Pressable>
       <View style={{ flex: 1 }}>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: eyebrowStyle.family,
             fontSize: eyebrowStyle.size,
@@ -566,7 +576,7 @@ function PulseHeader({ theme, eyebrow, parentName, onBack }: PulseHeaderProps) {
           {eyebrow}
         </Text>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.editorial,
             fontSize: greetingStyle.size,
@@ -649,7 +659,7 @@ function RemoteRefreshNudgeRow({
           })}
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: labelStyle.family,
               fontSize: labelStyle.size,
@@ -684,7 +694,7 @@ function NarrationCard({ theme, text }: NarrationCardProps) {
       testID="parent-dashboard-narration"
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -773,7 +783,8 @@ export function buildParentHeader(parent: ParentSummary | null): {
   // parentDisplayName is the user-supplied first-person reference for
   // the parent ("Mum", "Dad", or a given name). Fall back to a calm
   // neutral when absent (rare: family-readings hasn't loaded yet).
-  const parentName = parent?.parentDisplayName?.trim() || 'your loved one';
+  // D13 PR-2 (§7.4) — the only permitted missing-label fallback.
+  const parentName = parent?.parentDisplayName?.trim() || 'your family member';
   return { date, parentName };
 }
 

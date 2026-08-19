@@ -14,6 +14,7 @@ import { Pill } from '../../components/Pill';
 import { useTheme } from '../../theme';
 import type { TrendsRange } from '../../utils/trends-aggregate';
 import type { AccountType } from '../../types/database';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
 const CAREGIVER_RANGES: TrendsRange[] = ['7d', '30d', '90d', '1y'];
 const SELF_BUYER_RANGES: TrendsRange[] = ['7d', '30d', '90d', '1y', 'all_time'];
@@ -115,7 +116,7 @@ function LockedChip({
       ]}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.numeric,
           fontSize: 13,
@@ -136,7 +137,7 @@ function LockedChip({
         accessibilityElementsHidden
       >
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: labelStyle.family,
             fontSize: 8,

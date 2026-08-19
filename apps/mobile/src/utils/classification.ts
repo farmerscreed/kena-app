@@ -1,49 +1,74 @@
 import type { VitalKind } from '../types/vitals';
 export type { VitalKind };
 
-// Reading classification — Sprint 6.
+// Reading classification — Sprint 6; truth-layer contract since D13 PR-1.
 //
-// Pure function implementing docs/10-anomaly-logic.md §2. Two paths:
+// `classifyVital` is the canonical classifier (D13 §4.4): it judges one
+// value against the person's OWN 28-day baseline row (vital_baselines,
+// served through utils/vitalBaselines.resolveBpBaselines). Rules, in
+// spec order:
 //
-// • Cold-start (no baseline / <14 days of data): absolute-threshold
-//   ladder only. Any reading at or above 180/120 is `confirmed_urgent`
-//   (crisis); anything strictly above 160/100 (or pulse > 130) is
-//   `calm_concerned`; otherwise `in_pattern`. Sprint 6 always runs this
-//   path because the baseline isn't computed until the anomaly engine
-//   ships in Sprint 15.
+//   1. Absolute floor — systolic ≥ 180 or diastolic ≥ 120 →
+//      talk_to_doctor, regardless of band and regardless of
+//      sufficiency. The one place an absolute number drives the UI.
+//   2. No baseline / insufficient → learning. Below the §4.3 gate no
+//      surface shows a coloured verdict — not amber, not green.
+//   3. Inside [p10, p90] → in_range.
+//   4. Outside mean ± 2σ → worth_a_look.
+//   5. Between p90 and mean + 2σ (and mirrored below) → in_range —
+//      the band edge is soft; never flag on the shoulder.
 //
-// • Hot path (≥14 days of baseline): outlier (>2σ) AND a soft-threshold
-//   floor must both fire to flag `calm_concerned`. Crisis absolute
-//   thresholds remain in force regardless of baseline.
+// talk_to_doctor from outside_band requires CONFIRMATION, never a
+// single reading: three consecutive readings outside mean ± 2σ on the
+// same side within 72 hours (`confirmedOutsideBand`), or the absolute
+// floor. A single outlier never escalates past worth_a_look.
 //
-// HARD RULE per CLAUDE.md + D3: this is a STATISTICAL classification, not
-// a clinical diagnosis. UI never says "hypertension" or "crisis"; it
-// says "Worth a look" / "Talk to your doctor". See docs/05-voice-and-claims.md.
+// `classifyReading` remains the entry point the app calls, as a thin
+// adapter: it classifies systolic and diastolic against their own
+// baselines, keeps the legacy tier/reason vocabulary that is persisted
+// in MMKV and consumed by every UI surface, and carries the full
+// Verdict alongside for PR-2 to surface. Pulse no longer participates
+// in BP classification — resting HR is its own vital with its own
+// baseline row.
 //
-// The hot-path `checkSustainedPattern` (3+ Stage-2 readings in 60min)
-// is deferred to Sprint 15 — Sprint 6 ingests one reading at a time and
-// has no rolling-window context. The cold-start path's
-// `confirmed_urgent` crisis threshold still catches the single-reading
-// emergency case.
+// HARD RULE per CLAUDE.md + D3: this is a STATISTICAL classification,
+// not a clinical one. Verdicts are statements about the person's own
+// baseline; UI strings never name a clinical category. See
+// docs/05-voice-and-claims.md.
+
+import type { BaselineVital, VitalBaseline, BpBaselinePair } from './vitalBaselines';
+export type { BaselineVital, VitalBaseline, BpBaselinePair };
 
 // Tier taxonomy per D13 §6 — `in_pattern` (premium-pulse framing) replaces
-// the Sprint 6 `in_range` literal. Display string is "In pattern".
+// the Sprint 6 `in_range` literal. Display string is "In your usual range".
 export type ClassificationTier = 'in_pattern' | 'calm_concerned' | 'confirmed_urgent';
+
+/** D13 §4.4 canonical tiers. The legacy ClassificationTier above maps
+ *  1:1 (learning+in_range → in_pattern) until PR-2 swaps the UI over. */
+export type Tier = 'learning' | 'in_range' | 'worth_a_look' | 'talk_to_doctor';
+
+export type VerdictReason =
+  | 'insufficient_data'
+  | 'inside_band'
+  | 'outside_band'
+  | 'absolute_floor';
+
+export interface Verdict {
+  tier: Tier;
+  reason: VerdictReason;
+  band: { low: number; high: number } | null;
+  /** Signed, in units of the vital: value − mean. Null without a baseline. */
+  deviation: number | null;
+  sampleCount: number;
+  windowDays: number;
+  /** True when computed from the offline fallback baseline. */
+  provisional: boolean;
+}
 
 export interface ReadingForClassification {
   systolic: number;
   diastolic: number;
   pulse?: number | null;
-}
-
-export interface ReadingBaseline {
-  sys: number;
-  dia: number;
-  pulse: number;
-  sigmaSys: number;
-  sigmaDia: number;
-  sigmaPulse: number;
-  daysOfData: number;
 }
 
 export interface Classification {
@@ -53,68 +78,241 @@ export interface Classification {
     | 'absolute_cold_start'
     | 'cold_start'
     | 'outlier_and_soft_threshold'
+    | 'outside_band_confirmed'
     | 'within_baseline';
+  /** The winning canonical verdict (D13 §4.4), carried for PR-2's
+   *  surfaces. Optional so Classification objects persisted in MMKV
+   *  before PR-1 stay valid. */
+  verdict?: Verdict;
 }
 
-const CRISIS_SYS = 180;
-const CRISIS_DIA = 120;
-const STAGE2_SYS = 160;
-const STAGE2_DIA = 100;
-const SOFT_SYS = 150;
-const SOFT_DIA = 95;
-const SOFT_PULSE = 120;
-const COLD_PULSE = 130;
+const ABSOLUTE_FLOOR_SYS = 180;
+const ABSOLUTE_FLOOR_DIA = 120;
 const SIGMA_MULTIPLIER = 2;
-const MIN_BASELINE_DAYS = 14;
+const CONFIRMATION_COUNT = 3;
+const CONFIRMATION_WINDOW_SEC = 72 * 3600;
 
+function isAtAbsoluteFloor(vital: BaselineVital, value: number): boolean {
+  return (
+    (vital === 'bp_systolic' && value >= ABSOLUTE_FLOOR_SYS) ||
+    (vital === 'bp_diastolic' && value >= ABSOLUTE_FLOOR_DIA)
+  );
+}
+
+/** Canonical single-value classifier — D13 §4.4, rules in order. */
+export function classifyVital(
+  input: { vital: BaselineVital; value: number; contextTag?: string | null },
+  baseline: VitalBaseline | null,
+): Verdict {
+  const { vital, value } = input;
+  const common = {
+    band: baseline && baseline.isSufficient ? { low: baseline.p10, high: baseline.p90 } : null,
+    deviation: baseline ? value - baseline.mean : null,
+    sampleCount: baseline?.sampleCount ?? 0,
+    windowDays: baseline?.windowDays ?? 28,
+    provisional: baseline?.provisional ?? false,
+  };
+
+  // 1. The absolute floor beats everything, including insufficiency.
+  if (isAtAbsoluteFloor(vital, value)) {
+    return { tier: 'talk_to_doctor', reason: 'absolute_floor', ...common };
+  }
+
+  // 2. Below the §4.3 gate every surface renders the learning state.
+  if (!baseline || !baseline.isSufficient) {
+    return { tier: 'learning', reason: 'insufficient_data', ...common };
+  }
+
+  // 3. Inside the display band.
+  if (value >= baseline.p10 && value <= baseline.p90) {
+    return { tier: 'in_range', reason: 'inside_band', ...common };
+  }
+
+  // 4. Outside the classification band.
+  const spread = SIGMA_MULTIPLIER * baseline.sd;
+  if (value > baseline.mean + spread || value < baseline.mean - spread) {
+    return { tier: 'worth_a_look', reason: 'outside_band', ...common };
+  }
+
+  // 5. The shoulder between p90 and mean + 2σ (and its mirror) is soft.
+  return { tier: 'in_range', reason: 'inside_band', ...common };
+}
+
+/** One historical value for the confirmation rule. */
+export interface HistoryEntry {
+  value: number;
+  measuredAtSec: number;
+}
+
+/**
+ * D13 §4.4 confirmation: true when the three most recent entries are
+ * all outside mean ± 2σ on the SAME side and span ≤ 72 hours.
+ * `history` must be most-recent-first and INCLUDE the reading being
+ * judged. Only meaningful for the latest reading — never call it when
+ * re-classifying an older row.
+ */
+export function confirmedOutsideBand(
+  history: readonly HistoryEntry[],
+  baseline: VitalBaseline,
+): boolean {
+  if (!baseline.isSufficient) return false;
+  if (history.length < CONFIRMATION_COUNT) return false;
+  const recent = history.slice(0, CONFIRMATION_COUNT);
+  const spanSec = recent[0].measuredAtSec - recent[CONFIRMATION_COUNT - 1].measuredAtSec;
+  if (spanSec < 0 || spanSec > CONFIRMATION_WINDOW_SEC) return false;
+  const spread = SIGMA_MULTIPLIER * baseline.sd;
+  const high = baseline.mean + spread;
+  const low = baseline.mean - spread;
+  const allAbove = recent.every((e) => e.value > high);
+  const allBelow = recent.every((e) => e.value < low);
+  return allAbove || allBelow;
+}
+
+const TIER_SEVERITY: Record<Tier, number> = {
+  learning: 0,
+  in_range: 1,
+  worth_a_look: 2,
+  talk_to_doctor: 3,
+};
+
+const LEGACY_TIER: Record<Tier, ClassificationTier> = {
+  learning: 'in_pattern',
+  in_range: 'in_pattern',
+  worth_a_look: 'calm_concerned',
+  talk_to_doctor: 'confirmed_urgent',
+};
+
+function legacyReason(verdict: Verdict): Classification['reason'] {
+  switch (verdict.tier) {
+    case 'learning':
+      return 'cold_start';
+    case 'in_range':
+      return 'within_baseline';
+    case 'worth_a_look':
+      return 'outlier_and_soft_threshold';
+    case 'talk_to_doctor':
+      return verdict.reason === 'absolute_floor'
+        ? 'crisis_absolute'
+        : 'outside_band_confirmed';
+  }
+}
+
+/** A prior reading, for the confirmation rule at live-capture sites. */
+export interface ReadingHistoryEntry {
+  systolic: number;
+  diastolic: number;
+  measuredAtSec: number;
+}
+
+/**
+ * The app-facing adapter. Judges systolic and diastolic against their
+ * own baselines and returns the more severe verdict in the legacy
+ * shape every consumer (and MMKV) already understands.
+ *
+ * `history` — most-recent-first, INCLUDING the reading being judged —
+ * enables the three-consecutive confirmation. Pass it only when
+ * classifying the latest reading (live capture, latest-reading status);
+ * batch re-classification of older rows must omit it.
+ */
 export function classifyReading(
   reading: ReadingForClassification,
-  baseline?: ReadingBaseline | null,
+  baselines?: BpBaselinePair | null,
+  history?: readonly ReadingHistoryEntry[],
 ): Classification {
-  const { systolic, diastolic } = reading;
-  const pulse = reading.pulse ?? 0;
+  const sysVerdict = classifyVital(
+    { vital: 'bp_systolic', value: reading.systolic },
+    baselines?.systolic ?? null,
+  );
+  const diaVerdict = classifyVital(
+    { vital: 'bp_diastolic', value: reading.diastolic },
+    baselines?.diastolic ?? null,
+  );
 
-  // Crisis-absolute always wins, regardless of baseline maturity.
-  if (systolic >= CRISIS_SYS || diastolic >= CRISIS_DIA) {
-    return { tier: 'confirmed_urgent', reason: 'crisis_absolute' };
-  }
+  let worst =
+    TIER_SEVERITY[diaVerdict.tier] > TIER_SEVERITY[sysVerdict.tier]
+      ? diaVerdict
+      : sysVerdict;
 
-  // Cold-start path: no baseline or insufficient data.
-  if (!baseline || baseline.daysOfData < MIN_BASELINE_DAYS) {
-    if (systolic > STAGE2_SYS || diastolic > STAGE2_DIA || pulse > COLD_PULSE) {
-      return { tier: 'calm_concerned', reason: 'absolute_cold_start' };
+  // Confirmation: a worth_a_look latest reading escalates when three
+  // consecutive readings sit outside the band on the same side in 72h.
+  if (worst.tier === 'worth_a_look' && history && history.length >= CONFIRMATION_COUNT) {
+    const sysConfirmed =
+      sysVerdict.tier === 'worth_a_look' &&
+      baselines?.systolic != null &&
+      confirmedOutsideBand(
+        history.map((h) => ({ value: h.systolic, measuredAtSec: h.measuredAtSec })),
+        baselines.systolic,
+      );
+    const diaConfirmed =
+      diaVerdict.tier === 'worth_a_look' &&
+      baselines?.diastolic != null &&
+      confirmedOutsideBand(
+        history.map((h) => ({ value: h.diastolic, measuredAtSec: h.measuredAtSec })),
+        baselines.diastolic,
+      );
+    if (sysConfirmed || diaConfirmed) {
+      worst = { ...worst, tier: 'talk_to_doctor' };
     }
-    return { tier: 'in_pattern', reason: 'cold_start' };
   }
 
-  // Hot path: outlier AND exceeds soft threshold → calm-concerned.
-  const sysOutlier =
-    Math.abs(systolic - baseline.sys) > SIGMA_MULTIPLIER * baseline.sigmaSys;
-  const diaOutlier =
-    Math.abs(diastolic - baseline.dia) > SIGMA_MULTIPLIER * baseline.sigmaDia;
-  const pulseOutlier =
-    reading.pulse != null &&
-    Math.abs(reading.pulse - baseline.pulse) >
-      SIGMA_MULTIPLIER * baseline.sigmaPulse;
-
-  const exceedsSoft = systolic > SOFT_SYS || diastolic > SOFT_DIA || pulse > SOFT_PULSE;
-
-  if ((sysOutlier || diaOutlier || pulseOutlier) && exceedsSoft) {
-    return { tier: 'calm_concerned', reason: 'outlier_and_soft_threshold' };
-  }
-  return { tier: 'in_pattern', reason: 'within_baseline' };
+  return { tier: LEGACY_TIER[worst.tier], reason: legacyReason(worst), verdict: worst };
 }
 
-/** UI string for the tier chip. Centralised so tests catch voice-rule drift. */
-export function tierChipText(tier: ClassificationTier): string {
+// UI helpers — thin shims over the canonical vocabulary
+// (services/voice/tierVocabulary, D13 §7.4). One definition site;
+// these keep the legacy ClassificationTier signatures that existing
+// surfaces call with, defaulting to the self subject. Caregiver
+// surfaces pass their own Subject as they migrate (PR-7/PR-8).
+
+import {
+  chipTextForTier,
+  sentenceFragmentForTier,
+  SELF_SUBJECT,
+  type Subject,
+} from '../services/voice/tierVocabulary';
+export type { Subject };
+
+/** Legacy tier → canonical §4.4 tier. Without a Verdict the legacy
+ *  in_pattern is ambiguous (learning vs in_range); callers that have
+ *  a Classification should use canonicalTierFor instead. */
+export function canonicalTierForLegacy(tier: ClassificationTier): Tier {
   switch (tier) {
     case 'in_pattern':
-      return 'In pattern';
+      return 'in_range';
     case 'calm_concerned':
-      return 'Worth a look';
+      return 'worth_a_look';
     case 'confirmed_urgent':
-      return 'Talk to your doctor';
+      return 'talk_to_doctor';
   }
+}
+
+/** Canonical tier for a full Classification — verdict-aware, so the
+ *  learning state survives the legacy shape. */
+export function canonicalTierFor(classification: Classification): Tier {
+  return classification.verdict?.tier ?? canonicalTierForLegacy(classification.tier);
+}
+
+/** UI string for the tier chip. */
+export function tierChipText(
+  tier: ClassificationTier,
+  subject: Subject = SELF_SUBJECT,
+): string {
+  return chipTextForTier(canonicalTierForLegacy(tier), subject);
+}
+
+/**
+ * The hero sub-line under a vital value — "<unit> · <verdict>".
+ * A null tier yields the bare unit: we say nothing rather than guess.
+ */
+export function vitalRangeCopyForTier(
+  unit: string,
+  tier: ClassificationTier | null | undefined,
+  subject: Subject = SELF_SUBJECT,
+): string {
+  if (tier == null) return unit;
+  const fragment = sentenceFragmentForTier(canonicalTierForLegacy(tier), subject);
+  // "is in your usual range" → "in your usual range" for the sub-line.
+  return `${unit} · ${fragment.replace(/^is /, '')}`;
 }
 
 export function tierPillVariant(tier: ClassificationTier): 'success' | 'accent' | 'urgent' {

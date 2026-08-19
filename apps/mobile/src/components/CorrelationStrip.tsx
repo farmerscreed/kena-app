@@ -32,6 +32,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Path, Polyline } from 'react-native-svg';
 import { useTheme } from '../theme';
+import { vitalTheme } from '../utils/vitalThemes';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { type VitalType } from './VitalRing';
 
@@ -156,6 +157,65 @@ function areaPathFromPoints(pointsStr: string, height: number): string {
 }
 
 // ============================================================
+// Accessibility (audit P1-6)
+// ============================================================
+
+// Plain-language names for each series. Voice rules
+// (docs/05-voice-and-claims.md): plain words before clinical ones, and no
+// "smartwatch" / clinical framing.
+const VITAL_SPOKEN_NAME: Record<VitalType, string> = {
+  bp: 'blood pressure',
+  hr: 'heart rate',
+  spo2: 'oxygen',
+  sleep: 'sleep',
+  activity: 'steps',
+};
+
+function describeSeries(series: VitalSeries, shape: string): string {
+  const name = VITAL_SPOKEN_NAME[series.type];
+  const count = series.points.length;
+  if (count === 0) return `No ${name} to show for this window (${shape} line).`;
+  const values = series.points.map((p) => p.value);
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  const noun = count === 1 ? 'point' : 'points';
+  if (low === high) {
+    return `${name}, ${shape} line, ${count} ${noun}, steady at ${formatValue(low)}.`;
+  }
+  return `${name}, ${shape} line, ${count} ${noun}, from ${formatValue(low)} to ${formatValue(high)}.`;
+}
+
+// Values arrive in whatever unit the caller uses (hours of sleep, mmHg,
+// bpm). Round to one decimal so the sentence doesn't read out 6.499999.
+function formatValue(v: number): string {
+  return Number.isInteger(v) ? String(v) : String(Math.round(v * 10) / 10);
+}
+
+/**
+ * Audit P1-6 — composes the strip's spoken description. Exported so the
+ * sentence is unit-testable without mounting SVG.
+ *
+ * The chart's whole point is "do these two move together?", so the label
+ * names both series, says which is solid and which is dashed, and gives
+ * each one's span. It deliberately does NOT assert a relationship between
+ * them: describing what is drawn is safe; claiming a cause is not.
+ */
+export function composeCorrelationAccessibilityLabel(
+  vitalA: VitalSeries,
+  vitalB: VitalSeries,
+  range: '7d' | '30d' | '90d',
+  caption?: string,
+): string {
+  const window =
+    range === '7d' ? 'the last 7 days' : range === '30d' ? 'the last 30 days' : 'the last 90 days';
+  // Captions are written without terminal punctuation ("Sleep × Morning
+  // BP"), but strip it if a caller supplies one so the sentence doesn't
+  // read "BP..".
+  const head = caption ? `${caption.trim().replace(/[.!?]+$/, '')}.` : 'Two vitals compared.';
+  return `${head} Over ${window}. ${describeSeries(vitalA, 'solid')} ${describeSeries(vitalB, 'dashed')}`;
+}
+
+// ============================================================
 // Component
 // ============================================================
 
@@ -163,9 +223,10 @@ export function CorrelationStrip({
   vitalA,
   vitalB,
   // `range` is metadata for the consumer (which window of data to fetch).
-  // The chart auto-scales to whatever points it's handed, so we accept
-  // and ignore it here. Documented in the file header.
-  range: _range, // eslint-disable-line @typescript-eslint/no-unused-vars
+  // The chart auto-scales to whatever points it's handed, so it has no
+  // effect on the geometry — but audit P1-6 uses it to say how wide the
+  // window is in the composed accessibility label.
+  range,
   caption,
   width = DEFAULT_WIDTH,
   height = DEFAULT_HEIGHT,
@@ -264,8 +325,20 @@ export function CorrelationStrip({
   const areaA = hasA && !isSinglePointA ? areaPathFromPoints(pointsA, height) : '';
   const areaB = hasB && !isSinglePointB ? areaPathFromPoints(pointsB, height) : '';
 
+  // Audit P1-6 — this chart had zero accessibility props.
+  const a11yLabel = composeCorrelationAccessibilityLabel(vitalA, vitalB, range, caption);
+
   return (
-    <View style={style} testID={testID}>
+    // Audit P1-6 — `accessible` is explicit so iOS exposes the strip as a
+    // single element carrying the composed sentence, rather than leaving
+    // the label on a container it never focuses.
+    <View
+      style={style}
+      testID={testID}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={a11yLabel}
+    >
       {caption ? (
         <Text
           style={[
@@ -283,7 +356,14 @@ export function CorrelationStrip({
           {caption}
         </Text>
       ) : null}
-      <Svg width={width} height={height} testID={testID ? `${testID}-svg` : undefined}>
+      <Svg
+        width={width}
+        height={height}
+        testID={testID ? `${testID}-svg` : undefined}
+        // Audit P1-6 — decorative once the composed label describes it.
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
         {/* Vital A — solid line + area fill at 12% opacity */}
         {areaA ? <Path d={areaA} fill={colorA} fillOpacity={AREA_FILL_OPACITY} /> : null}
         {hasA && !isSinglePointA ? (
@@ -341,6 +421,60 @@ export function CorrelationStrip({
           />
         ) : null}
       </Svg>
+      {/* Founder-test feedback (2026-08-19) — a two-line key: which
+          line is which, and how to read the pairing. Without it the
+          strip reads as random lines. */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 6 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <View style={{ width: 14, height: 2, backgroundColor: theme.colors.vital[vitalA.type] }} />
+          <Text
+            allowFontScaling={false}
+            style={{
+              fontFamily: captionStyle.family,
+              fontSize: captionStyle.size,
+              color: theme.colors.text.secondary,
+            }}
+          >
+            {vitalTheme(vitalA.type).displayName}
+          </Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <View
+            style={{
+              width: 14,
+              height: 0,
+              borderTopWidth: 2,
+              borderStyle: 'dashed',
+              borderColor: theme.colors.vital[vitalB.type],
+            }}
+          />
+          <Text
+            allowFontScaling={false}
+            style={{
+              fontFamily: captionStyle.family,
+              fontSize: captionStyle.size,
+              color: theme.colors.text.secondary,
+            }}
+          >
+            {vitalTheme(vitalB.type).displayName}
+          </Text>
+        </View>
+      </View>
+      <Text
+        allowFontScaling={false}
+        style={{
+          fontFamily: captionStyle.family,
+          fontSize: captionStyle.size,
+          lineHeight: captionStyle.lineHeight,
+          color: theme.colors.text.tertiary,
+          marginTop: 4,
+        }}
+        testID={testID ? `${testID}-how-to-read` : undefined}
+      >
+        Both lines share the same nights, each on its own scale. When they
+        rise and fall together — or mirror each other — that pairing is
+        worth noticing.
+      </Text>
       {axisLabels ? (
         <View style={styles.axisRow}>
           <Text

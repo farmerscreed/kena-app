@@ -52,6 +52,7 @@ import {
 } from 'react-native';
 import { DetailShell } from '../../components/DetailShell';
 import { StatTrio } from '../../components/StatTrio';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
 import { VitalInsightCard } from '../../components/VitalInsightCard';
 import { VitalExplainerAnchor } from '../../components/VitalExplainerAnchor';
 import { type RecentReading } from '../../components/RecentReadingsList';
@@ -76,6 +77,7 @@ import { BaselineReference } from '../../components/BaselineReference';
 import { StalenessHintRow } from '../../components/StalenessHintRow';
 import { LoadingState } from '../../components/LoadingState';
 import { ErrorState } from '../../components/ErrorState';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import {
   activityBaseline,
   formatActivityBaseline,
@@ -98,6 +100,8 @@ export interface ActivityDetailProps {
     timeZone: string,
   ) => void;
   familyId?: string;
+  /** Opens the For-your-doctor export (DetailShell renders the card). */
+  onDoctorPress?: () => void;
 }
 
 // Indexed by Date.getUTCDay(): 0=Sun, 1=Mon, ..., 6=Sat.
@@ -127,24 +131,32 @@ function activityInsightBody(
   rangedDays: ActivityDay[],
   goal: number,
   baseline: ActivityBaseline | null,
+  windowLabel: string,
 ): string {
   if (rangedDays.length === 0 || baseline === null) {
     return PLACEHOLDER_INSIGHT_PRE_BASELINE;
   }
-  const metGoal = rangedDays.filter((d) => d.totalSteps >= goal).length;
-  const total = rangedDays.length;
-  const sum = rangedDays.reduce((a, b) => a + b.totalSteps, 0);
-  const avgPerDay = total > 0 ? Math.round(sum / total) : 0;
+  // Founder-test fix (2026-08-19): the narration averaged over ALL
+  // ranged days — including zero-step days, which are almost always
+  // days the watch wasn't worn — while the stat trio and the baseline
+  // median both average over days WITH data. Same number, same
+  // denominator, everywhere: days with steps only.
+  const daysWithData = rangedDays.filter((d) => d.totalSteps > 0);
+  if (daysWithData.length === 0) return PLACEHOLDER_INSIGHT_PRE_BASELINE;
+  const metGoal = daysWithData.filter((d) => d.totalSteps >= goal).length;
+  const sum = daysWithData.reduce((a, b) => a + b.totalSteps, 0);
+  const avgPerDay = Math.round(sum / daysWithData.length);
   const baselineDiff = avgPerDay - baseline.median;
   const absDiff = Math.abs(baselineDiff);
 
-  // First line — met-goal frequency.
+  // First line — met-goal frequency, honest about the window (it was
+  // hardcoded to "this week" even on the 30/90-day ranges).
   const goalLine =
     metGoal === 0
-      ? `No met-goal days yet this week — a gentle walk today would change that.`
+      ? `No met-goal days yet ${windowLabel} — a gentle walk today would change that.`
       : metGoal === 1
-        ? `You met your goal once this week.`
-        : `You met your goal ${metGoal} times this week.`;
+        ? `You met your goal once ${windowLabel}.`
+        : `You met your goal ${metGoal} times ${windowLabel}.`;
 
   // Second line — how the average compares to baseline.
   let compareLine: string;
@@ -167,6 +179,7 @@ export function ActivityDetail({
   onLearnOpen,
   onViewAllHistory,
   familyId,
+  onDoctorPress,
 }: ActivityDetailProps) {
   // Same user timezone the rest of the app uses for day boundaries so
   // today's calories bucket matches the hero. Null → UTC.
@@ -337,6 +350,7 @@ export function ActivityDetail({
   return (
     <>
       <DetailShell
+        onDoctorPress={onDoctorPress}
         vital="activity"
         onBack={onBack}
         onRangeChange={setRange}
@@ -420,7 +434,7 @@ export function ActivityDetail({
           body={
             isEmpty
               ? PLACEHOLDER_INSIGHT_EMPTY
-              : activityInsightBody(rangedDays, targetSteps, baseline)
+              : activityInsightBody(rangedDays, targetSteps, baseline, rangeWindowLabel(range))
           }
           testID="activity-detail-insight"
         />
@@ -436,6 +450,17 @@ export function ActivityDetail({
           <WeeklyCaloriesRow kcal={weeklyActiveKcal} />
         ) : null}
 
+        {!isEmpty && rangedDays.length > 0 ? (
+          <ViewAsTableLink
+            rows={rangedDays.map((d) => ({
+              label: d.dayLocal,
+              value: `${d.totalSteps.toLocaleString()} steps`,
+            }))}
+            subjectNoun="days"
+            testID="activity-detail-table"
+            style={{ marginHorizontal: 20 }}
+          />
+        ) : null}
         {!isEmpty ? (
           <RecentReadingsSection
             vital="activity"
@@ -491,7 +516,7 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
   return (
     <View>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -526,7 +551,7 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
       >
         <View style={{ flex: 1 }}>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.editorial,
               fontSize: valueStyle.size,
@@ -537,7 +562,7 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
             {currentGoal.toLocaleString()}
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={MAX_FONT_SCALE}
             style={{
               fontFamily: theme.fontFamilies.numeric,
               fontSize: 11,
@@ -551,7 +576,7 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
           </Text>
         </View>
         <Text
-          allowFontScaling={false}
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
           style={{
             fontFamily: theme.fontFamilies.numeric,
             fontSize: 22,
@@ -561,6 +586,25 @@ function GoalConfigSection({ currentGoal, onPress }: GoalConfigSectionProps) {
           ›
         </Text>
       </Pressable>
+      {/* D13 PR-7 (§7.3) — goal framing uses the 7,000–9,000 step
+          evidence for older adults, not the 10,000 marketing legacy
+          (D9 other-004). Consistency over intensity. */}
+      <Text
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
+        style={{
+          fontFamily: theme.fontFamilies.body,
+          fontSize: 13,
+          lineHeight: 18,
+          color: theme.colors.text.tertiary,
+          marginHorizontal: 20,
+          marginTop: theme.spacing.s,
+        }}
+        testID="activity-detail-goal-framing"
+      >
+        The famous ten-thousand figure is marketing, not medicine — the
+        evidence for older adults supports benefit at 7,000–9,000 steps a
+        day. Steady weeks matter more than big days.
+      </Text>
     </View>
   );
 }
@@ -614,6 +658,19 @@ function dayKeyToDate(key: string): Date {
 
 function shortMonthDay(date: Date): string {
   return `${SHORT_MONTHS[date.getUTCMonth()]} ${date.getUTCDate()}`;
+}
+
+/** "this week" / "this month" / "these 90 days" — the insight's
+ *  honest window phrasing. */
+export function rangeWindowLabel(range: TrendRange): string {
+  switch (range) {
+    case '7d':
+      return 'this week';
+    case '30d':
+      return 'this month';
+    case '90d':
+      return 'these 90 days';
+  }
 }
 
 export function rangeShortLabel(range: TrendRange): string {
@@ -867,7 +924,7 @@ function WeeklyCaloriesRow({ kcal }: WeeklyCaloriesRowProps) {
       testID="activity-detail-weekly-calories"
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -880,7 +937,7 @@ function WeeklyCaloriesRow({ kcal }: WeeklyCaloriesRowProps) {
         Weekly calories
       </Text>
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: theme.fontFamilies.editorial,
           fontSize: valueStyle.size,

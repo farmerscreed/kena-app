@@ -41,6 +41,26 @@ function summary(partial: Partial<ParentSummary> = {}): ParentSummary {
   };
 }
 
+// D13 PR-1 — a sufficient personal band (12 readings across 8 distinct
+// days, sys mean 126 / ±2σ ≈ 117–135, dia mean 80). Verdicts now come
+// from the person's own baseline: a fixture that wants "attention" must
+// carry enough history to have a band, not just a big number.
+const BAND_SYS = [118, 120, 122, 124, 125, 126, 126, 127, 128, 130, 132, 134];
+const BAND_DIA = [74, 76, 77, 78, 79, 80, 80, 81, 82, 83, 85, 86];
+
+function bandedRecent(nowMs: number): ReadingSummary[] {
+  // One reading per day, days 2–13 back: 12 distinct UTC days, all
+  // inside the 28-day window, clearing the ≥7-distinct-days gate.
+  return BAND_SYS.map((sys, i) =>
+    reading({
+      id: `band-${i}`,
+      measuredAt: new Date(nowMs - (2 + i) * 24 * HOUR).toISOString(),
+      systolic: sys,
+      diastolic: BAND_DIA[i],
+    }),
+  );
+}
+
 describe('caregiverPersonFromParent — accent rotation', () => {
   it('rotates the slot index 0/1/2 → 1/2/3', () => {
     expect(caregiverPersonFromParent(summary(), 0, NOW).accentIndex).toBe(1);
@@ -89,16 +109,44 @@ describe('caregiverPersonFromParent — status mapping (D13 §6 + D10 anomaly)',
     return summary({ latestReading: reading({ measuredAt: '2023-11-14T20:53:00Z', ...p }) });
   }
 
-  it('returns "clear" when classification is in_pattern and the reading is fresh', () => {
-    // 2023-11-14T20:53:00Z is exactly NOW (1_700_000_000_000)
-    const p = caregiverPersonFromParent(withReading({ systolic: 122, diastolic: 78 }), 0, NOW);
+  it('returns "clear" when the reading sits inside a sufficient personal band', () => {
+    // 2023-11-14T20:53:00Z is exactly NOW (1_700_000_000_000). Since
+    // PR-4 "clear" requires a sufficient band — without one the state
+    // is learning, not a range claim.
+    const p = caregiverPersonFromParent(
+      summary({
+        latestReading: reading({ measuredAt: '2023-11-14T20:53:00Z', systolic: 122, diastolic: 78 }),
+        recentReadings: bandedRecent(NOW),
+      }),
+      0,
+      NOW,
+    );
     expect(p.status).toBe('clear');
     expect(p.bpLabel).toBe('122/78');
   });
 
-  it('returns "attention" when classification is calm_concerned', () => {
-    // 165/100 — above calm_concerned threshold but below confirmed_urgent
-    const p = caregiverPersonFromParent(withReading({ systolic: 165, diastolic: 100 }), 0, NOW);
+  it('returns "learning" when the reading is fresh but the band is not yet earned', () => {
+    const p = caregiverPersonFromParent(withReading({ systolic: 122, diastolic: 78 }), 0, NOW);
+    expect(p.status).toBe('learning');
+    expect(p.headline).toBe('Still learning');
+  });
+
+  it('returns "attention" when the reading sits outside the personal band', () => {
+    // 165/100 against a 12-reading band (sys ±2σ ≈ 117–135) — outside
+    // the band but below the 180/120 absolute floor. One outlier never
+    // escalates past worth_a_look (D13 §4.4).
+    const p = caregiverPersonFromParent(
+      summary({
+        latestReading: reading({
+          measuredAt: '2023-11-14T20:53:00Z',
+          systolic: 165,
+          diastolic: 100,
+        }),
+        recentReadings: bandedRecent(NOW),
+      }),
+      0,
+      NOW,
+    );
     expect(p.status).toBe('attention');
     expect(p.headline).toContain("pattern");
   });
@@ -326,12 +374,25 @@ describe('caregiverPersonFromParent — sentence (placeholder editorial prose)',
 
   it('clear sentence is calm + factual', () => {
     const p = caregiverPersonFromParent(
-      summary({ latestReading: reading({ measuredAt: new Date(NOW - HOUR).toISOString() }) }),
+      summary({
+        latestReading: reading({ measuredAt: new Date(NOW - HOUR).toISOString() }),
+        recentReadings: bandedRecent(NOW),
+      }),
       0,
       NOW,
     );
     expect(p.sentence).toContain('122/78');
     expect(p.sentence).toContain('Inside the usual band');
+    checkVoice(p.sentence);
+  });
+
+  it('learning sentence is honest and in voice', () => {
+    const p = caregiverPersonFromParent(
+      summary({ latestReading: reading({ measuredAt: new Date(NOW - HOUR).toISOString() }) }),
+      0,
+      NOW,
+    );
+    expect(p.sentence).toContain("Still learning what's usual for");
     checkVoice(p.sentence);
   });
 
@@ -343,6 +404,7 @@ describe('caregiverPersonFromParent — sentence (placeholder editorial prose)',
           systolic: 165,
           diastolic: 100,
         }),
+        recentReadings: bandedRecent(NOW),
       }),
       0,
       NOW,

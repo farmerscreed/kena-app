@@ -23,6 +23,7 @@
 
 import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
+import { MAX_FONT_SCALE_TIGHT } from '../theme/fontScaling';
 
 export type Status =
   | 'clear'
@@ -30,7 +31,10 @@ export type Status =
   | 'attention'
   | 'urgent'
   | 'offline'
-  | 'sleeping';
+  | 'sleeping'
+  // D13 PR-4 (§4.3) — data still accumulating; below the sufficiency
+  // gate a person renders grey, never a coloured verdict.
+  | 'learning';
 
 export interface StatusPillProps {
   status: Status;
@@ -38,8 +42,13 @@ export interface StatusPillProps {
   style?: StyleProp<ViewStyle>;
 }
 
+// D13 PR-2 (§6.1, §7.4) — "All clear" is deleted: "all clear" is
+// itself a claim. The clear state is a statement about the person's
+// own range; "their" is the always-safe possessive on multi-person
+// surfaces (the pill never renders on self surfaces).
 const STATUS_LABEL: Record<Status, string> = {
-  clear: 'All clear',
+  clear: 'In their usual range',
+  learning: 'Learning',
   watch: 'Watch',
   attention: 'Needs attention',
   urgent: 'Urgent',
@@ -72,7 +81,7 @@ export function StatusPill({ status, testID, style }: StatusPillProps) {
         };
 
   return (
-    <View
+    <View accessible={true}
       accessibilityRole="text"
       accessibilityLabel={STATUS_LABEL[status]}
       testID={testID}
@@ -106,14 +115,14 @@ export function StatusPill({ status, testID, style }: StatusPillProps) {
       />
       <Text
         style={{
-          fontFamily: theme.fontFamilies.numeric,
-          fontSize: labelStyle.size - 1, // 10pt — design uses 9.5
+          // D13 PR-2 — sentence case, never uppercase (docs/05:182).
+          fontFamily: theme.fontFamilies.bodyMedium,
+          fontSize: 11,
           lineHeight: labelStyle.lineHeight,
-          letterSpacing: 0.95, // 0.10em at 9.5pt
+          letterSpacing: 0.2,
           color: tone,
-          textTransform: 'uppercase',
         }}
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
       >
         {STATUS_LABEL[status]}
       </Text>

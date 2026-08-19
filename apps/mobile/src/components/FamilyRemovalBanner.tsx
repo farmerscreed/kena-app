@@ -15,7 +15,7 @@ import { useTheme } from '../theme';
 
 export interface FamilyRemovalBannerProps {
   /** Human-readable label of the removed family (e.g. "Mum",
-   *  "Biebele"). Falls back to "your loved one" in the hook when no
+   *  "Biebele"). Falls back to "your family member" in the hook when no
    *  label was persisted. */
   label: string;
   /** User taps "Got it" — clears the banner. The hook also wipes the

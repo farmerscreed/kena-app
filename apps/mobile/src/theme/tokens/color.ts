@@ -19,6 +19,11 @@ export const paletteDark = {
   // (`leiko-caregiver-unified.html`). The design's `#0a0908` is
   // rendered as `warmCharcoal.900`; brighter steps (elev/high) are
   // computed from oklch(16% / 20% .015 60) for surface depth.
+  // D13 PR-5 (§5.4) — the canvas gradient: #141110 at the top fading
+  // to the base by the bottom. "This single change carries most of the
+  // expensive-vs-cheap difference" (D11 §9.5). Consumed by
+  // CanvasGradient; the flat base remains the fallback colour.
+  canvasGradientTop: '#141110',
   warmCharcoal: {
     900: '#0A0908', // base
     850: '#120C07', // subtle
@@ -41,7 +46,34 @@ export const paletteDark = {
   //                                    labels. Exact match to the
   //                                    offline status tone.
   stone: { 300: '#857F7A', 500: '#6B6862' },
-  amber: { 400: '#F5B47A', 500: '#E8A063', 600: '#C5824A' },
+  // D13 PR-5 — #E8A063 is retired entirely (§5.1). The CTA amber moves
+  // to the spec's interactive copper; the ramp neighbours follow.
+  amber: { 400: '#F5B47A', 500: '#C96442', 600: '#B0553A' },
+  // Sprint 19 (audit D12 P1-1) — colour quarantine.
+  //
+  // `brand.primary`, `vital.bp` and `state.warning` all resolved to the
+  // SAME hex (#E8A063). Contrast between "this is tappable", "this is
+  // your blood pressure" and "this is a calm-concerned anomaly" was
+  // 1.00:1 — the colour language was ambiguous by construction, so it
+  // could not be learned. D12 §2.4 mandated it ("BP ring/tile uses
+  // brand accent — BP is the headline vital"), so this reverses a
+  // spec-level decision, not implementation drift.
+  //
+  // The fork stays inside the amber family so the screens keep their
+  // warmth; only the ROLE separation is new. Interactive keeps the
+  // canonical 500; data goes lighter; the anomaly state goes deeper.
+  //
+  // [DESIGNER] These two steps are the audit's recommendation, not a
+  // designer's. The relationships (data lighter than CTA, warning
+  // deeper than CTA) should hold even if the exact hexes move.
+  // D13 PR-5 (§5.1) — chart series family: muted, desaturated, only
+  // ever inside a plot area. Never on a chip, never on a control.
+  vitalBp: '#7EA8C4',
+  seriesHr: '#C99AB0',
+  seriesSpo2: '#8FBCA8',
+  seriesSleep: '#9B93C7',
+  seriesActivity: '#C4B07E',
+  warningAmber: '#D89150', // anomaly tone — deeper than the CTA amber
   // Coral — caregiver-mode brand accent (Sprint 7.7). Distinct from the
   // existing `coral.500 #D6745A` used for HR vital chromatic; this is
   // brighter / warmer to read as the caregiver brand colour against
@@ -53,7 +85,7 @@ export const paletteDark = {
   violet: { 500: '#7C7AAB' },
   sage: { 500: '#7CA56F' },
   success: { 500: '#5BA873' },
-  warning: { 500: '#E8A063' },
+  warning: { 500: '#E8B54F' }, // §5.1 worth-a-look family
   crimson: { 700: '#A8403F' },
   // Per-person rotating accents (Sprint 7.7). Three accents drawn from
   // the design's three test personas (Mom coral / Dad amber / Aunt
@@ -67,18 +99,33 @@ export const paletteDark = {
   // StatusPill + PersonOrb glow / dot. `clear` is success-green,
   // `urgent` is the same crimson family as `state.urgent`, the rest
   // are unique caregiver-mode shades from the design.
+  // D13 PR-5 (§5.1) — the colour fork. Status is one of exactly three
+  // families (interactive / status / chart series) and they never
+  // overlap. Status colours apply only to a verdict — chip, icon,
+  // ring — never to a vital's identity or a person's accent.
+  //
+  //   in-range green    #5FA97E   (6.6:1 on surface)
+  //   worth-a-look      #E8B54F   (9.8:1)
+  //   talk-to-doctor    #E06A7C   — the spec's #B23A48 measures 3.16:1
+  //                     on canvas.surface; §5.1 says lighten a failing
+  //                     red, never ship it. 5.7:1 here, 4.65:1 on its
+  //                     own 16% tint. [DESIGNER] keep ≥4.5:1 if moved.
+  //   learning grey     #8A837C   (4.9:1; the §5.1 #6B645E is
+  //                     non-text-only and measures 3.2:1)
   status: {
-    clear: '#61B565', // green
+    clear: '#5FA97E',
     watch: '#F2A618', // amber (same as person.2)
-    attention: '#FF7350', // coral (same as person.1 / brand caregiver)
-    // Sprint 16.6 — was #EE343B (bright red). The caregiver-unified
-    // design source uses oklch(62% 0.22 25) for the urgent dot — a
-    // softer red-orange that reads as "needs attention now" without
-    // siren-grade alarm. Aligns with the broader Leiko voice rule
-    // that red is reserved for confirmed-urgent, calibrated tone.
-    urgent: '#DC5631',
-    offline: '#857F7A', // grey
-    sleeping: '#7B67CC', // periwinkle (same as person.3)
+    attention: '#E8B54F', // §5.1 worth-a-look — decoupled from person.1 coral
+    urgent: '#E06A7C',
+    // D13 PR-5 — raised from #857F7A: 4.5:1 against the 14% tint too.
+    offline: '#918B84',
+    // D13 PR-4 — the learning state: data still accumulating, no
+    // verdict claimed. Same muted family as offline (grey is the
+    // point); the PR-5 colour fork gives it its own token pair.
+    learning: '#948D86',
+    // D13 PR-5 — lightened from #7B67CC (4.09:1, failed the §5.1
+    // contrast floor) and decoupled from person.3.
+    sleeping: '#8F7FD4',
   },
   glass: {
     10: 'rgba(255,255,255,0.04)',
@@ -105,6 +152,12 @@ export const paletteLight = {
   // review pending before launch — single hex to edit if the
   // founder/designer wants a different shade.
   amber: { 500: '#B4742E' },
+  // Sprint 19 (audit D12 P1-1) — light-mode counterparts to the dark
+  // fork. Same rule: data lighter than the CTA, warning deeper. Both
+  // verified >= 3:1 against linen surfaces (the light-mode amber floor
+  // that Sprint 14.5 established).
+  vitalBp: '#C98A45',
+  warningAmber: '#A6641F',
   coral: { 500: '#C95F44' },
   teal: { 500: '#3F8888' },
   violet: { 500: '#5A5887' },
@@ -189,6 +242,7 @@ export interface SemanticColors {
     urgent: string;
     offline: string;
     sleeping: string;
+    learning: string;
   };
   focus: { ring: string };
 }
@@ -226,15 +280,17 @@ export const semanticColorsDark: SemanticColors = {
     rim: paletteDark.rim[20],
   },
   vital: {
-    bp: paletteDark.amber[500],
-    hr: paletteDark.coral[500],
-    spo2: paletteDark.teal[500],
-    sleep: paletteDark.violet[500],
-    activity: paletteDark.sage[500],
+    // Sprint 19 (audit D12 P1-1) — forked off brand.primary.
+    bp: paletteDark.vitalBp,
+    hr: paletteDark.seriesHr,
+    spo2: paletteDark.seriesSpo2,
+    sleep: paletteDark.seriesSleep,
+    activity: paletteDark.seriesActivity,
   },
   state: {
     success: paletteDark.success[500],
-    warning: paletteDark.warning[500],
+    // Sprint 19 (audit D12 P1-1) — forked off brand.primary.
+    warning: paletteDark.warningAmber,
     urgent: paletteDark.crimson[700],
   },
   person: {
@@ -248,6 +304,7 @@ export const semanticColorsDark: SemanticColors = {
     attention: paletteDark.status.attention,
     urgent: paletteDark.status.urgent,
     offline: paletteDark.status.offline,
+    learning: paletteDark.status.learning,
     sleeping: paletteDark.status.sleeping,
   },
   focus: { ring: paletteDark.amber[500] },
@@ -297,7 +354,8 @@ export const semanticColorsLight: SemanticColors = {
     rim: 'transparent',
   },
   vital: {
-    bp: paletteLight.amber[500],
+    // Sprint 19 (audit D12 P1-1) — forked off brand.primary.
+    bp: paletteLight.vitalBp,
     hr: paletteLight.coral[500],
     spo2: paletteLight.teal[500],
     sleep: paletteLight.violet[500],
@@ -305,7 +363,8 @@ export const semanticColorsLight: SemanticColors = {
   },
   state: {
     success: paletteLight.success[500],
-    warning: paletteLight.warning[500],
+    // Sprint 19 (audit D12 P1-1) — forked off brand.primary.
+    warning: paletteLight.warningAmber,
     urgent: paletteLight.crimson[700],
   },
   // Person + status reuse the dark-mode hexes — caregiver home is
@@ -321,6 +380,7 @@ export const semanticColorsLight: SemanticColors = {
     attention: paletteDark.status.attention,
     urgent: paletteDark.status.urgent,
     offline: paletteDark.status.offline,
+    learning: paletteDark.status.learning,
     sleeping: paletteDark.status.sleeping,
   },
   focus: { ring: paletteLight.amber[500] },

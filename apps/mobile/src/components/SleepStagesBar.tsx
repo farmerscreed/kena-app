@@ -181,7 +181,8 @@ export function SleepStagesBar({
             <Text
               allowFontScaling={false}
               style={{
-                fontFamily: theme.fontFamilies.editorial,
+                fontFamily: theme.fontFamilies.numeric,
+                fontVariant: ['tabular-nums'],
                 fontSize: titleStyle.size,
                 lineHeight: titleStyle.lineHeight,
                 color: sleepColor,
@@ -221,7 +222,8 @@ export function SleepStagesBar({
             <Text
               allowFontScaling={false}
               style={{
-                fontFamily: theme.fontFamilies.editorial,
+                fontFamily: theme.fontFamilies.numeric,
+                fontVariant: ['tabular-nums'],
                 fontSize: titleStyle.size,
                 lineHeight: titleStyle.lineHeight,
                 color: sleepColor,
@@ -252,6 +254,10 @@ export function SleepStagesBar({
       {/* The bar itself — three flexed segments. */}
       <View
         style={styles.bar}
+        // Audit P1-6 — `accessible` added explicitly. A View carrying a
+        // composed accessibilityLabel without it is not guaranteed to be
+        // exposed as a single element on iOS, which would silence the label.
+        accessible
         accessibilityRole="image"
         accessibilityLabel={`Deep ${deepPct}%, Light ${lightPct}%, Other ${otherPct}%`}
       >

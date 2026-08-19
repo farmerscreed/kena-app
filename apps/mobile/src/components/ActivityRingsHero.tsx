@@ -142,6 +142,10 @@ export function ActivityRingsHero({
 
   return (
     <View
+      // Audit P1-6 — `accessible` added explicitly. A View carrying a
+      // composed accessibilityLabel without it is not guaranteed to be
+      // exposed as a single element on iOS, which would silence the label.
+      accessible
       accessibilityRole="text"
       accessibilityLabel={a11yLabel}
       style={[styles.root, style]}
@@ -244,7 +248,8 @@ export function ActivityRingsHero({
           <Text
             allowFontScaling={false}
             style={{
-              fontFamily: theme.fontFamilies.editorial,
+              fontFamily: theme.fontFamilies.numeric,
+              fontVariant: ['tabular-nums'],
               fontSize: numericXl.size,
               lineHeight: numericXl.lineHeight,
               color: theme.colors.text.primary,
@@ -361,7 +366,8 @@ function LegendDot({ color, label, value, testID }: LegendDotProps) {
       <Text
         allowFontScaling={false}
         style={{
-          fontFamily: theme.fontFamilies.editorial,
+          fontFamily: theme.fontFamilies.numeric,
+              fontVariant: ['tabular-nums'],
           fontSize: 14,
           color: theme.colors.text.primary,
           marginLeft: 6,

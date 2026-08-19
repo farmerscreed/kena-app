@@ -7,8 +7,10 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
     [
       {
         "alignSelf": "center",
-        "height": 360,
         "position": "relative",
+      },
+      {
+        "height": 366,
         "width": 360,
       },
       undefined,
@@ -17,10 +19,10 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   testID="field"
 >
   <RNSVGSvgView
-    bbHeight={360}
+    bbHeight={366}
     bbWidth={360}
     focusable={false}
-    height={360}
+    height={366}
     pointerEvents="none"
     style={
       [
@@ -37,7 +39,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         },
         {
           "flex": 0,
-          "height": 360,
+          "height": 366,
           "width": 360,
         },
       ]
@@ -76,7 +78,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       </RNSVGDefs>
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={
           {
             "brushRef": "cg-fieldglow",
@@ -88,11 +90,11 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             "fill",
           ]
         }
-        r={160}
+        r={172}
       />
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={null}
         propList={
           [
@@ -103,7 +105,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             "strokeDasharray",
           ]
         }
-        r={130}
+        r={142}
         stroke={
           {
             "payload": 4294967295,
@@ -121,7 +123,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       />
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={null}
         propList={
           [
@@ -132,7 +134,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             "strokeDasharray",
           ]
         }
-        r={80}
+        r={82}
         stroke={
           {
             "payload": 4294967295,
@@ -169,9 +171,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         }
         strokeWidth={0.5}
         x1={180}
-        x2={92}
-        y1={180}
-        y2={120}
+        x2={65.6846467004541}
+        y1={150}
+        y2={84.00000000000001}
       />
       <RNSVGLine
         fill={
@@ -194,9 +196,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         }
         strokeWidth={0.5}
         x1={180}
-        x2={272}
-        y1={180}
-        y2={166}
+        x2={294.3153532995459}
+        y1={150}
+        y2={84.00000000000001}
       />
       <RNSVGLine
         fill={
@@ -219,13 +221,13 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         }
         strokeWidth={0.5}
         x1={180}
-        x2={150}
-        y1={180}
-        y2={280}
+        x2={180}
+        y1={150}
+        y2={282}
       />
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={
           {
             "payload": 4294967295,
@@ -241,7 +243,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       />
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={null}
         propList={
           [
@@ -268,7 +270,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       {
         "left": 180,
         "position": "absolute",
-        "top": 190,
+        "top": 160,
         "transform": [
           {
             "translateX": -16,
@@ -283,7 +285,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         {
           "color": "#857F7A",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 8.5,
+          "fontSize": 11,
           "fontWeight": "500",
           "letterSpacing": 1.7,
           "lineHeight": 11,
@@ -297,9 +299,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   <View
     style={
       {
-        "left": 64,
+        "left": 35.684646700454095,
         "position": "absolute",
-        "top": 92,
+        "top": 54.000000000000014,
       }
     }
     testID="field-orb-mom"
@@ -323,7 +325,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       }
     >
       <View
-        accessibilityLabel="Marian, All clear, blood pressure 122/78"
+        accessibilityLabel="Marian, In their usual range, blood pressure 122/78"
         accessibilityRole="button"
         accessibilityState={
           {
@@ -364,8 +366,8 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         <View
           style={
             {
-              "height": 56,
-              "width": 56,
+              "height": 60,
+              "width": 60,
             }
           }
         >
@@ -484,28 +486,28 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                     "alignItems": "center",
                     "backgroundColor": "#FF735022",
                     "borderColor": "#FF735066",
-                    "borderRadius": 22,
+                    "borderRadius": 28,
                     "borderWidth": 0.5,
-                    "height": 44,
+                    "height": 56,
                     "justifyContent": "center",
-                    "width": 44,
+                    "width": 56,
                   },
                   {
-                    "borderRadius": 28,
-                    "height": 56,
-                    "width": 56,
+                    "borderRadius": 30,
+                    "height": 60,
+                    "width": 60,
                   },
                 ]
               }
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FF7350",
                     "fontFamily": "InstrumentSerif_400Regular_Italic",
-                    "fontSize": 20,
-                    "lineHeight": 20,
+                    "fontSize": 25,
+                    "lineHeight": 25,
                   }
                 }
               >
@@ -522,12 +524,12 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
               "left": 0,
               "position": "absolute",
               "right": 0,
-              "top": 60,
+              "top": 64,
             }
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#FFFFFF",
@@ -541,20 +543,35 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             Marian
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#FF7350",
+                "color": "#B8B2AA",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 10,
+                "fontSize": 11,
                 "fontWeight": "500",
                 "letterSpacing": 0.4,
-                "lineHeight": 12,
+                "lineHeight": 13,
                 "marginTop": 1,
               }
             }
           >
             122/78
+          </Text>
+          <Text
+            maxFontSizeMultiplier={1.3}
+            numberOfLines={1}
+            style={
+              {
+                "color": "#5FA97E",
+                "fontFamily": "Inter_400Regular",
+                "fontSize": 11,
+                "lineHeight": 13,
+                "marginTop": 1,
+              }
+            }
+          >
+            In their usual range
           </Text>
         </View>
       </View>
@@ -563,9 +580,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   <View
     style={
       {
-        "left": 240,
+        "left": 264.3153532995459,
         "position": "absolute",
-        "top": 134,
+        "top": 54.000000000000014,
       }
     }
     testID="field-orb-dad"
@@ -630,8 +647,8 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         <View
           style={
             {
-              "height": 64,
-              "width": 64,
+              "height": 60,
+              "width": 60,
             }
           }
         >
@@ -757,15 +774,15 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                     "width": 56,
                   },
                   {
-                    "borderRadius": 32,
-                    "height": 64,
-                    "width": 64,
+                    "borderRadius": 30,
+                    "height": 60,
+                    "width": 60,
                   },
                 ]
               }
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#F2A618",
@@ -783,7 +800,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             pointerEvents="none"
             style={
               {
-                "backgroundColor": "#FF7350",
+                "backgroundColor": "#E8B54F",
                 "borderColor": "#0A0908",
                 "borderRadius": 99,
                 "borderWidth": 1.5,
@@ -804,12 +821,12 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
               "left": 0,
               "position": "absolute",
               "right": 0,
-              "top": 68,
+              "top": 64,
             }
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#FFFFFF",
@@ -823,20 +840,35 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             Emeka
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#F2A618",
+                "color": "#B8B2AA",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 10,
+                "fontSize": 11,
                 "fontWeight": "500",
                 "letterSpacing": 0.4,
-                "lineHeight": 12,
+                "lineHeight": 13,
                 "marginTop": 1,
               }
             }
           >
             138/89
+          </Text>
+          <Text
+            maxFontSizeMultiplier={1.3}
+            numberOfLines={1}
+            style={
+              {
+                "color": "#E8B54F",
+                "fontFamily": "Inter_400Regular",
+                "fontSize": 11,
+                "lineHeight": 13,
+                "marginTop": 1,
+              }
+            }
+          >
+            Needs attention
           </Text>
         </View>
       </View>
@@ -845,9 +877,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   <View
     style={
       {
-        "left": 128,
+        "left": 150,
         "position": "absolute",
-        "top": 258,
+        "top": 252,
       }
     }
     testID="field-orb-aunt"
@@ -912,8 +944,8 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         <View
           style={
             {
-              "height": 44,
-              "width": 44,
+              "height": 60,
+              "width": 60,
             }
           }
         >
@@ -1032,28 +1064,28 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                     "alignItems": "center",
                     "backgroundColor": "#7B67CC22",
                     "borderColor": "#7B67CC66",
-                    "borderRadius": 16,
+                    "borderRadius": 28,
                     "borderWidth": 0.5,
-                    "height": 32,
+                    "height": 56,
                     "justifyContent": "center",
-                    "width": 32,
+                    "width": 56,
                   },
                   {
-                    "borderRadius": 22,
-                    "height": 44,
-                    "width": 44,
+                    "borderRadius": 30,
+                    "height": 60,
+                    "width": 60,
                   },
                 ]
               }
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#7B67CC",
                     "fontFamily": "InstrumentSerif_400Regular_Italic",
-                    "fontSize": 14,
-                    "lineHeight": 14,
+                    "fontSize": 25,
+                    "lineHeight": 25,
                   }
                 }
               >
@@ -1083,9 +1115,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
               allowFontScaling={false}
               style={
                 {
-                  "color": "#7B67CC",
-                  "fontSize": 9,
-                  "lineHeight": 11,
+                  "color": "#B8B2AA",
+                  "fontSize": 11,
+                  "lineHeight": 13,
                 }
               }
             >
@@ -1101,12 +1133,12 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
               "left": 0,
               "position": "absolute",
               "right": 0,
-              "top": 48,
+              "top": 64,
             }
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#FFFFFF",
@@ -1120,20 +1152,35 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             Joy
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#7B67CC",
+                "color": "#B8B2AA",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 10,
+                "fontSize": 11,
                 "fontWeight": "500",
                 "letterSpacing": 0.4,
-                "lineHeight": 12,
+                "lineHeight": 13,
                 "marginTop": 1,
               }
             }
           >
             118/74
+          </Text>
+          <Text
+            maxFontSizeMultiplier={1.3}
+            numberOfLines={1}
+            style={
+              {
+                "color": "#8F7FD4",
+                "fontFamily": "Inter_400Regular",
+                "fontSize": 11,
+                "lineHeight": 13,
+                "marginTop": 1,
+              }
+            }
+          >
+            Sleeping
           </Text>
         </View>
       </View>
@@ -1149,8 +1196,10 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
     [
       {
         "alignSelf": "center",
-        "height": 360,
         "position": "relative",
+      },
+      {
+        "height": 366,
         "width": 360,
       },
       undefined,
@@ -1159,10 +1208,10 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   testID="field"
 >
   <RNSVGSvgView
-    bbHeight={360}
+    bbHeight={366}
     bbWidth={360}
     focusable={false}
-    height={360}
+    height={366}
     pointerEvents="none"
     style={
       [
@@ -1179,7 +1228,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         },
         {
           "flex": 0,
-          "height": 360,
+          "height": 366,
           "width": 360,
         },
       ]
@@ -1218,7 +1267,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       </RNSVGDefs>
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={
           {
             "brushRef": "cg-fieldglow",
@@ -1230,11 +1279,11 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             "fill",
           ]
         }
-        r={160}
+        r={172}
       />
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={null}
         propList={
           [
@@ -1245,7 +1294,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             "strokeDasharray",
           ]
         }
-        r={130}
+        r={142}
         stroke={
           {
             "payload": 4279177756,
@@ -1263,7 +1312,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       />
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={null}
         propList={
           [
@@ -1274,7 +1323,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             "strokeDasharray",
           ]
         }
-        r={80}
+        r={82}
         stroke={
           {
             "payload": 4279177756,
@@ -1311,9 +1360,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         }
         strokeWidth={0.5}
         x1={180}
-        x2={92}
-        y1={180}
-        y2={120}
+        x2={65.6846467004541}
+        y1={150}
+        y2={84.00000000000001}
       />
       <RNSVGLine
         fill={
@@ -1336,9 +1385,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         }
         strokeWidth={0.5}
         x1={180}
-        x2={272}
-        y1={180}
-        y2={166}
+        x2={294.3153532995459}
+        y1={150}
+        y2={84.00000000000001}
       />
       <RNSVGLine
         fill={
@@ -1361,13 +1410,13 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         }
         strokeWidth={0.5}
         x1={180}
-        x2={150}
-        y1={180}
-        y2={280}
+        x2={180}
+        y1={150}
+        y2={282}
       />
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={
           {
             "payload": 4279177756,
@@ -1383,7 +1432,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       />
       <RNSVGCircle
         cx={180}
-        cy={180}
+        cy={150}
         fill={null}
         propList={
           [
@@ -1410,7 +1459,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       {
         "left": 180,
         "position": "absolute",
-        "top": 190,
+        "top": 160,
         "transform": [
           {
             "translateX": -16,
@@ -1425,7 +1474,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         {
           "color": "#5A6478",
           "fontFamily": "JetBrainsMono_500Medium",
-          "fontSize": 8.5,
+          "fontSize": 11,
           "fontWeight": "500",
           "letterSpacing": 1.7,
           "lineHeight": 11,
@@ -1439,9 +1488,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   <View
     style={
       {
-        "left": 64,
+        "left": 35.684646700454095,
         "position": "absolute",
-        "top": 92,
+        "top": 54.000000000000014,
       }
     }
     testID="field-orb-mom"
@@ -1465,7 +1514,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
       }
     >
       <View
-        accessibilityLabel="Marian, All clear, blood pressure 122/78"
+        accessibilityLabel="Marian, In their usual range, blood pressure 122/78"
         accessibilityRole="button"
         accessibilityState={
           {
@@ -1506,8 +1555,8 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         <View
           style={
             {
-              "height": 56,
-              "width": 56,
+              "height": 60,
+              "width": 60,
             }
           }
         >
@@ -1626,28 +1675,28 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                     "alignItems": "center",
                     "backgroundColor": "#FF735022",
                     "borderColor": "#FF735066",
-                    "borderRadius": 22,
+                    "borderRadius": 28,
                     "borderWidth": 0.5,
-                    "height": 44,
+                    "height": 56,
                     "justifyContent": "center",
-                    "width": 44,
+                    "width": 56,
                   },
                   {
-                    "borderRadius": 28,
-                    "height": 56,
-                    "width": 56,
+                    "borderRadius": 30,
+                    "height": 60,
+                    "width": 60,
                   },
                 ]
               }
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#FF7350",
                     "fontFamily": "InstrumentSerif_400Regular_Italic",
-                    "fontSize": 20,
-                    "lineHeight": 20,
+                    "fontSize": 25,
+                    "lineHeight": 25,
                   }
                 }
               >
@@ -1664,12 +1713,12 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
               "left": 0,
               "position": "absolute",
               "right": 0,
-              "top": 60,
+              "top": 64,
             }
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#0F121C",
@@ -1683,20 +1732,35 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             Marian
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#FF7350",
+                "color": "#2A3040",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 10,
+                "fontSize": 11,
                 "fontWeight": "500",
                 "letterSpacing": 0.4,
-                "lineHeight": 12,
+                "lineHeight": 13,
                 "marginTop": 1,
               }
             }
           >
             122/78
+          </Text>
+          <Text
+            maxFontSizeMultiplier={1.3}
+            numberOfLines={1}
+            style={
+              {
+                "color": "#5FA97E",
+                "fontFamily": "Inter_400Regular",
+                "fontSize": 11,
+                "lineHeight": 13,
+                "marginTop": 1,
+              }
+            }
+          >
+            In their usual range
           </Text>
         </View>
       </View>
@@ -1705,9 +1769,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   <View
     style={
       {
-        "left": 240,
+        "left": 264.3153532995459,
         "position": "absolute",
-        "top": 134,
+        "top": 54.000000000000014,
       }
     }
     testID="field-orb-dad"
@@ -1772,8 +1836,8 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         <View
           style={
             {
-              "height": 64,
-              "width": 64,
+              "height": 60,
+              "width": 60,
             }
           }
         >
@@ -1899,15 +1963,15 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                     "width": 56,
                   },
                   {
-                    "borderRadius": 32,
-                    "height": 64,
-                    "width": 64,
+                    "borderRadius": 30,
+                    "height": 60,
+                    "width": 60,
                   },
                 ]
               }
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#F2A618",
@@ -1925,7 +1989,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             pointerEvents="none"
             style={
               {
-                "backgroundColor": "#FF7350",
+                "backgroundColor": "#E8B54F",
                 "borderColor": "#0A0908",
                 "borderRadius": 99,
                 "borderWidth": 1.5,
@@ -1946,12 +2010,12 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
               "left": 0,
               "position": "absolute",
               "right": 0,
-              "top": 68,
+              "top": 64,
             }
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#0F121C",
@@ -1965,20 +2029,35 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             Emeka
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#F2A618",
+                "color": "#2A3040",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 10,
+                "fontSize": 11,
                 "fontWeight": "500",
                 "letterSpacing": 0.4,
-                "lineHeight": 12,
+                "lineHeight": 13,
                 "marginTop": 1,
               }
             }
           >
             138/89
+          </Text>
+          <Text
+            maxFontSizeMultiplier={1.3}
+            numberOfLines={1}
+            style={
+              {
+                "color": "#E8B54F",
+                "fontFamily": "Inter_400Regular",
+                "fontSize": 11,
+                "lineHeight": 13,
+                "marginTop": 1,
+              }
+            }
+          >
+            Needs attention
           </Text>
         </View>
       </View>
@@ -1987,9 +2066,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   <View
     style={
       {
-        "left": 128,
+        "left": 150,
         "position": "absolute",
-        "top": 258,
+        "top": 252,
       }
     }
     testID="field-orb-aunt"
@@ -2054,8 +2133,8 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         <View
           style={
             {
-              "height": 44,
-              "width": 44,
+              "height": 60,
+              "width": 60,
             }
           }
         >
@@ -2174,28 +2253,28 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                     "alignItems": "center",
                     "backgroundColor": "#7B67CC22",
                     "borderColor": "#7B67CC66",
-                    "borderRadius": 16,
+                    "borderRadius": 28,
                     "borderWidth": 0.5,
-                    "height": 32,
+                    "height": 56,
                     "justifyContent": "center",
-                    "width": 32,
+                    "width": 56,
                   },
                   {
-                    "borderRadius": 22,
-                    "height": 44,
-                    "width": 44,
+                    "borderRadius": 30,
+                    "height": 60,
+                    "width": 60,
                   },
                 ]
               }
             >
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={1.3}
                 style={
                   {
                     "color": "#7B67CC",
                     "fontFamily": "InstrumentSerif_400Regular_Italic",
-                    "fontSize": 14,
-                    "lineHeight": 14,
+                    "fontSize": 25,
+                    "lineHeight": 25,
                   }
                 }
               >
@@ -2225,9 +2304,9 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
               allowFontScaling={false}
               style={
                 {
-                  "color": "#7B67CC",
-                  "fontSize": 9,
-                  "lineHeight": 11,
+                  "color": "#2A3040",
+                  "fontSize": 11,
+                  "lineHeight": 13,
                 }
               }
             >
@@ -2243,12 +2322,12 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
               "left": 0,
               "position": "absolute",
               "right": 0,
-              "top": 48,
+              "top": 64,
             }
           }
         >
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
                 "color": "#0F121C",
@@ -2262,20 +2341,35 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
             Joy
           </Text>
           <Text
-            allowFontScaling={false}
+            maxFontSizeMultiplier={1.3}
             style={
               {
-                "color": "#7B67CC",
+                "color": "#2A3040",
                 "fontFamily": "JetBrainsMono_500Medium",
-                "fontSize": 10,
+                "fontSize": 11,
                 "fontWeight": "500",
                 "letterSpacing": 0.4,
-                "lineHeight": 12,
+                "lineHeight": 13,
                 "marginTop": 1,
               }
             }
           >
             118/74
+          </Text>
+          <Text
+            maxFontSizeMultiplier={1.3}
+            numberOfLines={1}
+            style={
+              {
+                "color": "#8F7FD4",
+                "fontFamily": "Inter_400Regular",
+                "fontSize": 11,
+                "lineHeight": 13,
+                "marginTop": 1,
+              }
+            }
+          >
+            Sleeping
           </Text>
         </View>
       </View>

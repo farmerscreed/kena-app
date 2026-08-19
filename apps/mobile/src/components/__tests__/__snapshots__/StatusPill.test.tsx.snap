@@ -4,13 +4,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
 <View
   accessibilityLabel="Needs attention"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#FF735024",
-        "borderColor": "#FF735059",
+        "backgroundColor": "#E8B54F24",
+        "borderColor": "#E8B54F59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -28,14 +29,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     style={
       [
         {
-          "backgroundColor": "#FF7350",
+          "backgroundColor": "#E8B54F",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#FF7350",
+          "shadowColor": "#E8B54F",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -47,15 +48,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#FF7350",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#E8B54F",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -68,13 +68,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
 <View
   accessibilityLabel="Needs attention"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#FF735024",
-        "borderColor": "#FF735059",
+        "backgroundColor": "#E8B54F24",
+        "borderColor": "#E8B54F59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -92,14 +93,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     style={
       [
         {
-          "backgroundColor": "#FF7350",
+          "backgroundColor": "#E8B54F",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#FF7350",
+          "shadowColor": "#E8B54F",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -111,15 +112,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#FF7350",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#E8B54F",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -130,15 +130,16 @@ exports[`StatusPill — status × mode snapshot matrix renders status=attention 
 
 exports[`StatusPill — status × mode snapshot matrix renders status=clear mode=dark 1`] = `
 <View
-  accessibilityLabel="All clear"
+  accessibilityLabel="In their usual range"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#61B56524",
-        "borderColor": "#61B56559",
+        "backgroundColor": "#5FA97E24",
+        "borderColor": "#5FA97E59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -156,14 +157,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     style={
       [
         {
-          "backgroundColor": "#61B565",
+          "backgroundColor": "#5FA97E",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#61B565",
+          "shadowColor": "#5FA97E",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -175,34 +176,34 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#61B565",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#5FA97E",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
-    All clear
+    In their usual range
   </Text>
 </View>
 `;
 
 exports[`StatusPill — status × mode snapshot matrix renders status=clear mode=light 1`] = `
 <View
-  accessibilityLabel="All clear"
+  accessibilityLabel="In their usual range"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#61B56524",
-        "borderColor": "#61B56559",
+        "backgroundColor": "#5FA97E24",
+        "borderColor": "#5FA97E59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -220,14 +221,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     style={
       [
         {
-          "backgroundColor": "#61B565",
+          "backgroundColor": "#5FA97E",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#61B565",
+          "shadowColor": "#5FA97E",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -239,19 +240,18 @@ exports[`StatusPill — status × mode snapshot matrix renders status=clear mode
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#61B565",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#5FA97E",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
-    All clear
+    In their usual range
   </Text>
 </View>
 `;
@@ -260,13 +260,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
 <View
   accessibilityLabel="No recent reading"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#857F7A24",
-        "borderColor": "#857F7A59",
+        "backgroundColor": "#918B8424",
+        "borderColor": "#918B8459",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -284,14 +285,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     style={
       [
         {
-          "backgroundColor": "#857F7A",
+          "backgroundColor": "#918B84",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#857F7A",
+          "shadowColor": "#918B84",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -303,15 +304,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#857F7A",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#918B84",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -324,13 +324,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
 <View
   accessibilityLabel="No recent reading"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#857F7A24",
-        "borderColor": "#857F7A59",
+        "backgroundColor": "#918B8424",
+        "borderColor": "#918B8459",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -348,14 +349,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     style={
       [
         {
-          "backgroundColor": "#857F7A",
+          "backgroundColor": "#918B84",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#857F7A",
+          "shadowColor": "#918B84",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -367,15 +368,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=offline mo
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#857F7A",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#918B84",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -388,13 +388,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
 <View
   accessibilityLabel="Sleeping"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#7B67CC24",
-        "borderColor": "#7B67CC59",
+        "backgroundColor": "#8F7FD424",
+        "borderColor": "#8F7FD459",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -412,7 +413,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     style={
       [
         {
-          "backgroundColor": "#7B67CC",
+          "backgroundColor": "#8F7FD4",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
@@ -422,15 +423,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#7B67CC",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#8F7FD4",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -443,13 +443,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
 <View
   accessibilityLabel="Sleeping"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#7B67CC24",
-        "borderColor": "#7B67CC59",
+        "backgroundColor": "#8F7FD424",
+        "borderColor": "#8F7FD459",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -467,7 +468,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     style={
       [
         {
-          "backgroundColor": "#7B67CC",
+          "backgroundColor": "#8F7FD4",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
@@ -477,15 +478,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=sleeping m
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#7B67CC",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#8F7FD4",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -498,13 +498,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
 <View
   accessibilityLabel="Urgent"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#DC563124",
-        "borderColor": "#DC563159",
+        "backgroundColor": "#E06A7C24",
+        "borderColor": "#E06A7C59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -522,14 +523,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     style={
       [
         {
-          "backgroundColor": "#DC5631",
+          "backgroundColor": "#E06A7C",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#DC5631",
+          "shadowColor": "#E06A7C",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -541,15 +542,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#DC5631",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#E06A7C",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -562,13 +562,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
 <View
   accessibilityLabel="Urgent"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
         "alignItems": "center",
         "alignSelf": "flex-start",
-        "backgroundColor": "#DC563124",
-        "borderColor": "#DC563159",
+        "backgroundColor": "#E06A7C24",
+        "borderColor": "#E06A7C59",
         "borderRadius": 99,
         "borderWidth": 0.5,
         "flexDirection": "row",
@@ -586,14 +587,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     style={
       [
         {
-          "backgroundColor": "#DC5631",
+          "backgroundColor": "#E06A7C",
           "borderRadius": 99,
           "height": 5,
           "width": 5,
         },
         {
           "elevation": 0,
-          "shadowColor": "#DC5631",
+          "shadowColor": "#E06A7C",
           "shadowOffset": {
             "height": 0,
             "width": 0,
@@ -605,15 +606,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=urgent mod
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
-        "color": "#DC5631",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "color": "#E06A7C",
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -626,6 +626,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
 <View
   accessibilityLabel="Watch"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -669,15 +670,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#F2A618",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >
@@ -690,6 +690,7 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
 <View
   accessibilityLabel="Watch"
   accessibilityRole="text"
+  accessible={true}
   style={
     [
       {
@@ -733,15 +734,14 @@ exports[`StatusPill — status × mode snapshot matrix renders status=watch mode
     }
   />
   <Text
-    allowFontScaling={false}
+    maxFontSizeMultiplier={1.3}
     style={
       {
         "color": "#F2A618",
-        "fontFamily": "JetBrainsMono_500Medium",
-        "fontSize": 10,
-        "letterSpacing": 0.95,
+        "fontFamily": "Inter_500Medium",
+        "fontSize": 11,
+        "letterSpacing": 0.2,
         "lineHeight": 14,
-        "textTransform": "uppercase",
       }
     }
   >

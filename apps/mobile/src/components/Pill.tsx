@@ -148,6 +148,7 @@ export function Pill({
 
   return (
     <View
+      accessible={true}
       accessibilityRole="text"
       accessibilityLabel={a11yLabel}
       testID={testID}

@@ -143,3 +143,30 @@ describe('SleepStagesBar — bed/wake window shows only for confident HR inferen
     expect(screen.queryByText('Woke')).toBeNull();
   });
 });
+
+// ── Audit P1-6 ───────────────────────────────────────────────────────
+// Same fix: the stage-split label was on a View with an image role but no
+// `accessible` prop.
+
+describe('SleepStagesBar — accessibility (audit P1-6)', () => {
+  it('marks the labelled bar explicitly accessible', () => {
+    const wake = Math.floor(new Date('2026-05-22T05:30:00Z').getTime() / 1000);
+    render(
+      withTheme(
+        <SleepStagesBar
+          totalMinutes={420}
+          deepMinutes={90}
+          lightMinutes={200}
+          sessionStartSec={wake - 7 * 3600}
+          sessionEndSec={wake}
+          tz="Africa/Lagos"
+          wakeSource="hr_inferred"
+          testID="bar"
+        />,
+      ),
+    );
+    const bar = screen.getByLabelText(/^Deep \d+%, Light \d+%, Other \d+%$/);
+    expect(bar.props.accessible).toBe(true);
+    expect(bar.props.accessibilityRole).toBe('image');
+  });
+});

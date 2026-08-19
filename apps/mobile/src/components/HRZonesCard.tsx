@@ -43,6 +43,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTheme } from '../theme';
 import { useReducedMotion } from '../theme/useReducedMotion';
+import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
 const BAR_HEIGHT = 8;
 const BAR_RADIUS = 99;
@@ -169,7 +170,7 @@ export function HRZonesCard({
       testID={testID}
     >
       <Text
-        allowFontScaling={false}
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={{
           fontFamily: labelStyle.family,
           fontSize: labelStyle.size,
@@ -186,7 +187,7 @@ export function HRZonesCard({
       {zones.map((z, i) => {
         const a11y = `${z.name} zone, ${z.range} bpm, ${Math.round(z.pct)} percent`;
         return (
-          <View
+          <View accessible={true}
             key={`${z.name}-${i}`}
             accessibilityRole="text"
             accessibilityLabel={a11y}
@@ -202,7 +203,7 @@ export function HRZonesCard({
           >
             <View style={styles.nameColumn}>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: bodyStyle.family,
                   fontSize: bodyStyle.size,
@@ -213,7 +214,7 @@ export function HRZonesCard({
                 {z.name}
               </Text>
               <Text
-                allowFontScaling={false}
+                maxFontSizeMultiplier={MAX_FONT_SCALE}
                 style={{
                   fontFamily: theme.fontFamilies.numeric,
                   fontSize: 9,
@@ -237,7 +238,7 @@ export function HRZonesCard({
               />
             </View>
             <Text
-              allowFontScaling={false}
+              maxFontSizeMultiplier={MAX_FONT_SCALE}
               style={{
                 fontFamily: theme.fontFamilies.numeric,
                 fontSize: captionStyle.size,

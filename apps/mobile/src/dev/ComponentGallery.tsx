@@ -522,7 +522,7 @@ export function ComponentGallery({ mode, onModeChange }: Props) {
             value: '128/82',
             sub: 'mmHg · 6:42 am',
           }}
-          aiNarration="Mum is in pattern. 124/79 this morning, six below her week."
+          aiNarration="Mum is in her usual range. 124/79 this morning, six below her week."
           parentName="Mum"
         />
         <View style={{ height: theme.spacing.xxl }} />

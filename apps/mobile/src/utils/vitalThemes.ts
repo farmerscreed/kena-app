@@ -15,6 +15,8 @@
 
 import type { VitalType } from '../components/VitalRing';
 import type { DailyPulseData } from '../state/dailyPulse';
+import type { Classification } from './classification';
+import { bpRingCalibration } from './calibration';
 
 export interface VitalTheme {
   /** Plain-language label ("Blood pressure", "Heart rate", "Oxygen", "Sleep", "Activity"). */
@@ -39,18 +41,15 @@ export function vitalTheme(vital: VitalType): VitalTheme {
 // Ring fill formulas (D13 §7.1)
 // ---------------------------------------------------------------------------
 
-/** D13 §7.1: BP tier → ring fill. */
-export function bpFillFromTier(tier: string | null | undefined): number {
-  switch (tier) {
-    case 'in_pattern':
-      return 1.0;
-    case 'calm_concerned':
-      return 0.5;
-    case 'confirmed_urgent':
-      return 0.25;
-    default:
-      return 0;
-  }
+/** D13 §6.2 (PR-4) — the BP ring's stroke encodes DATA SUFFICIENCY,
+ *  not tier: fill = min(sampleCount / requiredCount, 1). Colour is
+ *  what carries the verdict (learning grey → status[tier]). Replaces
+ *  the retired tier→fraction mapping, which made a worrying reading
+ *  LOOK emptier — encoding severity as absence. */
+export function bpRingFill(
+  classification: Classification | null | undefined,
+): number {
+  return bpRingCalibration(classification).fillFraction;
 }
 
 /** Clamps any number into [0, 1]. NaN folds to 0. */
@@ -91,7 +90,7 @@ export function activityFill(stepsToday: number, targetSteps: number): number {
 export function fillForVital(vital: VitalType, data: DailyPulseData): number {
   switch (vital) {
     case 'bp':
-      return bpFillFromTier(data.bp.classification?.tier);
+      return bpRingFill(data.bp.classification);
     case 'hr':
       return hrFill(data.hr.displayBpm);
     case 'spo2':

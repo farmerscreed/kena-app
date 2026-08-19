@@ -1,14 +1,14 @@
 // HRDetail — Sprint 8.5 (per-vital detail screen).
 //
 // One of five vital-detail screens (BP, HR, SpO2, Sleep, Activity). Built
-// on the shared DetailShell + VitalHero + StatTrio + VitalTrendChart +
+// on the shared DetailShell + VitalHero + StatTrio + RangeBandChart +
 // VitalInsightCard primitives, plus the HR-specific HRZonesCard and a
 // CorrelationStrip for sleep × resting-HR.
 //
 // Composition (per the brief):
 //   1. VitalHero — vital="hr"; resting bpm + ring fill
 //   2. StatTrio — Resting / Peak / Variability
-//   3. VitalTrendChart — continuous HR through the day
+//   3. RangeBandChart — HR through the window, against the band
 //   4. HRZonesCard — 4-tier time-in-zones
 //   5. CorrelationStrip — sleep × resting HR over the last 7 days (hidden
 //      when either series has no data)
@@ -22,14 +22,18 @@
 // Voice rules (docs/05-voice-and-claims.md): every user-visible string
 // in this file is voice-checked. Forbidden: "patient", "diagnose",
 // "predict", "dangerous level", "critical level", "silent killer", "you
-// may have", "we detected", "loved one", "smartwatch". Preferred: "your
+// may have", "we detected", plus the docs/05 hard-fail phrases. Preferred: "your
 // reading", "talk to your doctor", calm/reassuring framing.
 //
 // Stack pin (docs/00-tech-stack.md): RN 0.81.5, react-native-svg 15.x,
 // react-native-reanimated v3, phosphor-react-native v3. No new deps.
 
 import { Fragment, useMemo, useState } from 'react';
+import { Text, View } from 'react-native';
+import { useTheme } from '../../theme';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import { DetailShell } from '../../components/DetailShell';
+import { PersonalFindingsCard } from '../../components/PersonalFindingsCard';
 import { BaselineReference } from '../../components/BaselineReference';
 import { StalenessHintRow } from '../../components/StalenessHintRow';
 import { LoadingState } from '../../components/LoadingState';
@@ -45,7 +49,9 @@ const RANGE_TO_DAYS: Record<TrendRange, number> = {
 
 import { VitalHero } from '../../components/VitalHero';
 import { StatTrio } from '../../components/StatTrio';
-import { VitalTrendChart } from '../../components/VitalTrendChart';
+import { RangeBandChart } from '../../components/RangeBandChart';
+import { ViewAsTableLink } from '../../components/ViewAsTableLink';
+import { getServerBaseline } from '../../utils/vitalBaselines';
 import { VitalInsightCard } from '../../components/VitalInsightCard';
 import { VitalExplainerAnchor } from '../../components/VitalExplainerAnchor';
 import {
@@ -67,7 +73,11 @@ import { useParentVitalsRecent } from '../../hooks/useParentVitalsRecent';
 import { useOnboarding } from '../../state/onboarding';
 import { useHRRangeSummary } from '../../hooks/useHRRangeSummary';
 import { hrFill } from '../../utils/vitalThemes';
-import { checkStaleness } from '../../utils/classification';
+import {
+  canonicalTierForLegacy,
+  checkStaleness,
+  vitalRangeCopyForTier,
+} from '../../utils/classification';
 import { formatStalenessCaption } from '../../utils/stalenessCaption';
 import type { HRSample, SleepSession } from '../../types/vitals';
 
@@ -401,6 +411,8 @@ export interface HRDetailProps {
    *  swap to the parent-scoped query layer. Unset → unchanged
    *  self-buyer behavior. */
   familyId?: string;
+  /** Opens the For-your-doctor export (DetailShell renders the card). */
+  onDoctorPress?: () => void;
 }
 
 export function HRDetail({
@@ -408,6 +420,7 @@ export function HRDetail({
   onArticleOpen,
   onLearnOpen,
   familyId,
+  onDoctorPress,
 }: HRDetailProps) {
   // Sprint 17a — both data sources called unconditionally (rules of
   // hooks). Value-level pick below.
@@ -428,6 +441,15 @@ export function HRDetail({
   // Sprint 18 H1 — distinguish loading + error from "truly empty" for
   // the caregiver-scoped path. Same pattern SleepDetail uses.
   const isCaregiverScoped = scopedFamilyId !== null;
+
+  // D13 PR-6 — the chart ribbon comes from the truth layer: the
+  // resting-HR row's p10–p90, only when the §4.3 gate is met.
+  const hrTruthBand = useMemo(() => {
+    const row = getServerBaseline(summaryFamilyId ?? '', 'resting_hr');
+    return row && row.isSufficient
+      ? { low: Math.round(row.p10), high: Math.round(row.p90) }
+      : null;
+  }, [summaryFamilyId]);
   const isInitialParentLoad =
     isCaregiverScoped &&
     (parentPulse.isLoading || parentRecent.isLoading) &&
@@ -605,12 +627,17 @@ export function HRDetail({
     [allSamples],
   );
   const liveBpm = liveSample?.bpm ?? null;
-  const heroBpm = liveBpm ?? displayBpm;
+  // D13 PR-7 (§7.3) — the hero is NIGHTLY RESTING HR (the lowest
+  // sustained value across the sleep window). An instantaneous value
+  // with a verdict under it is close to meaningless; the live/spot
+  // value only carries the hero when no resting value exists yet.
+  const heroBpm = restingToday ?? liveBpm ?? displayBpm;
+  const heroIsResting = restingToday !== null;
   // "Live" framing whenever the hero value is a recent sample rather than a
   // resting value — either one found in the slice, or dailyPulse's display
   // falling back to its latest (non-resting) sample. Only when the value is
   // genuinely resting do we keep the calm resting wording.
-  const isLive = liveBpm !== null || data.hr.displaySource === 'latest';
+  const isLive = !heroIsResting && (liveBpm !== null || data.hr.displaySource === 'latest');
   const heroSampleSec = liveSample?.measuredAtSec ?? data.hr.latestSampleSec;
 
   // Resting-specific copy (insight card, baseline) stays gated on a
@@ -632,19 +659,43 @@ export function HRDetail({
   // Live reading leads with neutral "Latest" wording (the sample may be a
   // few minutes old); the resting fallback keeps the calm resting framing.
   const heroPrimary = hasHero ? String(Math.round(heroBpm!)) : '—';
+  // Founder-test fix (2026-08-19) — the narration's "usual" is the
+  // truth-layer resting-HR band when earned, same as the chip.
+  const hrInsightBand = useMemo(() => {
+    const row = getServerBaseline(summaryFamilyId ?? '', 'resting_hr');
+    return row && row.isSufficient
+      ? { bpmLow: Math.round(row.p10), bpmHigh: Math.round(row.p90), sampleCount: row.sampleCount }
+      : null;
+  }, [summaryFamilyId]);
+
+  const hrChipTier = useMemo(() => {
+    const row = getServerBaseline(summaryFamilyId ?? '', 'resting_hr');
+    if (!row || !row.isSufficient) return 'learning' as const;
+    const legacy = data.hr.classification?.tier;
+    return legacy ? canonicalTierForLegacy(legacy) : ('learning' as const);
+  }, [summaryFamilyId, data.hr.classification]);
   const heroSub =
     staleCaption ??
     (hasHero ? (isLive ? 'Latest reading' : 'Now · resting') : 'Heart rate');
+  // Sprint 19 (audit D12 P0-4) — this used to gate on `baseline !== null`
+  // and render a same-sub-line verdict for EVERY classified tier,
+  // contradicting the anomaly banner above it. The verdict now comes
+  // from the classification, via the same helper BPDetail uses.
+  const hrTier = data.hr.classification?.tier ?? null;
+  // §4.3 — the range claim renders only once the truth layer's
+  // resting-HR row is sufficient; below the gate the sub-line stays
+  // neutral and the chip carries the Learning state.
   const heroRange = hasHero
     ? isLive
       ? 'bpm · latest'
-      : baseline !== null
-        ? 'bpm · within your range'
+      : hrChipTier !== 'learning' && hrTier !== null
+        ? vitalRangeCopyForTier('bpm', hrTier)
         : 'bpm · resting'
     : 'Wear the watch to start tracking your heart rate.';
 
   return (
     <DetailShell
+      onDoctorPress={onDoctorPress}
       vital="hr"
       onBack={onBack}
       onRangeChange={setRange}
@@ -652,9 +703,12 @@ export function HRDetail({
         <VitalHero
           vital="hr"
           primary={heroPrimary}
-          sub={heroSub}
+          sub={heroIsResting ? 'Overnight · resting' : heroSub}
           range={heroRange}
           ringFill={hrFill(heroBpm)}
+          // §6.2/P1-5 — the verdict chip; learning until the truth
+          // layer's resting-HR row clears the §4.3 gate.
+          tier={hasHero ? hrChipTier : null}
           livePulse={false}
           testID="hr-detail-hero"
         />
@@ -732,22 +786,42 @@ export function HRDetail({
           />
 
           {trendData.length > 0 ? (
-            <VitalTrendChart
-              vital="hr"
-              data={trendData}
-              range={trendChartRange}
-              // Range-driven: a daily-average line over the selected
-              // window when the server summary is available, else
-              // today's intraday 24h curve (offline/loading fallback).
-              // Caption tracks which one is showing.
-              caption={trendCaption}
-              subCaption={`${trendChartRange[0]}–${trendChartRange[1]} band`}
-              peak
-              trough
-              testID="hr-detail-trend"
-              style={{ marginHorizontal: 20 }}
-            />
+            <>
+              {/* D13 PR-6 (§6.3) — RangeBandChart: the ribbon is the
+                  personal resting-HR band from the truth layer, drawn
+                  only when earned; the legacy display range stays in
+                  the sub-caption text. */}
+              <RangeBandChart
+                vital="hr"
+                points={trendData.map((v) => ({ value: v }))}
+                band={hrTruthBand}
+                unit="bpm"
+                caption={trendCaption}
+                subCaption={`${trendChartRange[0]}–${trendChartRange[1]} band`}
+                testID="hr-detail-trend"
+                style={{ marginHorizontal: 20 }}
+              />
+              <ViewAsTableLink
+                rows={trendData.map((v, i) => ({
+                  label: `Point ${i + 1} of ${trendData.length}`,
+                  value: `${Math.round(v)} bpm`,
+                }))}
+                subjectNoun="heart-rate points"
+                testID="hr-detail-table"
+                style={{ marginHorizontal: 20 }}
+              />
+            </>
           ) : null}
+
+          {/* Cross-vital matrix — the person's own HR results. */}
+          <PersonalFindingsCard
+            familyId={summaryFamilyId ?? null}
+            pairs={['activity_x_resting_hr', 'sleep_x_resting_hr']}
+            testID="hr-detail-findings"
+          />
+
+          {/* Founder-test feedback (2026-08-19, item 4). */}
+          <HRWhatMovesCard testID="hr-detail-what-moves" />
 
           {hasZoneData ? (
             <HRZonesCard
@@ -802,7 +876,7 @@ export function HRDetail({
             vital="hr"
             body={
               hasData
-                ? hrInsightBody(restingToday, baseline, restingByNight.length)
+                ? hrInsightBody(restingToday, hrInsightBand ?? baseline, restingByNight.length)
                 : INSIGHT_BODY_EMPTY
             }
             testID="hr-detail-insight"
@@ -817,5 +891,50 @@ export function HRDetail({
         </Fragment>
       )}
     </DetailShell>
+  );
+}
+
+
+// What tends to move resting heart rate — evidence-shaped tendencies
+// (regular aerobic movement ↔ lower resting rate over weeks; short or
+// fragmented sleep ↔ higher next-morning resting rate). Stated as
+// associations, never promises; the strips below show the user's own
+// nights.
+function HRWhatMovesCard({ testID }: { testID?: string }) {
+  const theme = useTheme();
+  return (
+    <View
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel="What tends to move this number. Regular movement over weeks is associated with a lower resting heart rate. Short or fragmented sleep often shows up as a higher resting rate the next morning. The charts below compare your own nights."
+      style={{
+        marginHorizontal: 20,
+        marginTop: theme.spacing.l,
+        padding: theme.spacing.l,
+        backgroundColor: theme.colors.surface.warmElevated,
+        borderRadius: theme.radii.l,
+      }}
+      testID={testID}
+    >
+      <Text
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
+        style={[theme.type('title'), { color: theme.colors.text.primary }]}
+      >
+        What tends to move this number
+      </Text>
+      <Text
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
+        style={[
+          theme.type('bodyM'),
+          { color: theme.colors.text.secondary, marginTop: theme.spacing.s },
+        ]}
+      >
+        Regular movement over weeks is associated with a lower resting heart
+        rate. Short or fragmented sleep often shows up as a higher resting
+        rate the next morning. Neither is a promise — the charts below
+        compare your own nights, and your doctor is the right reader of
+        anything persistent.
+      </Text>
+    </View>
   );
 }

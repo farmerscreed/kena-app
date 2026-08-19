@@ -200,6 +200,108 @@ describe('DailyPulseHero — accessibility composition (D12 §11.2.3)', () => {
   });
 });
 
+// Sprint 19 (audit P1-5) — the hero carried label/value/sub/live but no
+// status, so the single biggest number in the app arrived with no
+// interpretation while BPDetail, two taps away, showed the verdict for
+// the same reading. The copy must come from the shared
+// `vitalRangeCopyForTier` — these assert the exact strings it owns.
+describe('DailyPulseHero — the central verdict', () => {
+  const withTier = (tier: 'in_pattern' | 'calm_concerned' | 'confirmed_urgent') => ({
+    ...FRESH_BP,
+    sub: '6:42 am',
+    unit: 'mmHg',
+    tier,
+  });
+
+  it('renders the in-pattern verdict under the value', () => {
+    render(
+      withTheme(
+        <DailyPulseHero
+          vitals={SAMPLE_VITALS}
+          central={withTier('in_pattern')}
+          testID="hero"
+        />,
+      ),
+    );
+    expect(screen.getByTestId('hero-bp-verdict')).toBeTruthy();
+    expect(screen.getByText('mmHg · in your usual range')).toBeTruthy();
+  });
+
+  it('renders the calm-concerned verdict', () => {
+    render(
+      withTheme(
+        <DailyPulseHero
+          vitals={SAMPLE_VITALS}
+          central={withTier('calm_concerned')}
+          testID="hero"
+        />,
+      ),
+    );
+    expect(screen.getByText('mmHg · a little above your usual')).toBeTruthy();
+  });
+
+  it('renders the confirmed-urgent verdict', () => {
+    render(
+      withTheme(
+        <DailyPulseHero
+          vitals={SAMPLE_VITALS}
+          central={withTier('confirmed_urgent')}
+          testID="hero"
+        />,
+      ),
+    );
+    expect(screen.getByText('mmHg · well above your usual')).toBeTruthy();
+  });
+
+  it('falls back to the bare unit rather than guessing when there is no tier', () => {
+    render(
+      withTheme(
+        <DailyPulseHero
+          vitals={SAMPLE_VITALS}
+          central={{ ...FRESH_BP, sub: '6:42 am', unit: 'mmHg', tier: null }}
+          testID="hero"
+        />,
+      ),
+    );
+    expect(screen.getByTestId('hero-bp-verdict')).toBeTruthy();
+    expect(screen.getByText('mmHg')).toBeTruthy();
+  });
+
+  it('renders no verdict line at all without a unit (sleep / empty cascade)', () => {
+    render(
+      withTheme(
+        <DailyPulseHero
+          vitals={SAMPLE_VITALS}
+          central={{ label: 'Last night', value: '7h 24m', sub: 'last night' }}
+          testID="hero"
+        />,
+      ),
+    );
+    expect(screen.queryByTestId('hero-bp-verdict')).toBeNull();
+  });
+
+  it('reads the verdict to screen readers, on the ring and in the composed label', () => {
+    render(
+      withTheme(
+        <DailyPulseHero
+          vitals={SAMPLE_VITALS}
+          central={withTier('calm_concerned')}
+          parentName="Mum"
+          testID="hero"
+        />,
+      ),
+    );
+    expect(screen.getByTestId('hero-bp').props.accessibilityLabel).toBe(
+      'Blood pressure 128/82, mmHg · a little above your usual',
+    );
+    const node = screen.UNSAFE_root.findAll((n: { props: { accessibilityLabel?: unknown } }) =>
+      typeof n.props.accessibilityLabel === 'string' &&
+      n.props.accessibilityLabel.startsWith('Daily pulse for Mum'),
+    )[0];
+    expect(node.props.accessibilityLabel).toContain('mmHg · a little above your usual');
+  });
+});
+
 describe('DailyPulseHero — colorMode snapshot matrix', () => {
   const colorModes: Array<'dark' | 'light'> = ['dark', 'light'];
   for (const colorMode of colorModes) {

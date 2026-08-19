@@ -36,7 +36,8 @@ import type {
   Spo2Summary,
 } from '../services/families/fetchParentSummaries';
 import type { Status } from '../components/StatusPill';
-import { classifyReading } from './classification';
+import { classifyReading, canonicalTierFor } from './classification';
+import { resolveBpBaselines } from './vitalBaselines';
 
 const BP_STALE_THRESHOLD_MS = 12 * 60 * 60 * 1000; // 12h per D13 §6
 const MIN_PER_HR = 60;
@@ -68,6 +69,9 @@ export interface CaregiverPerson {
   status: Status;
   /** Pre-formatted BP, e.g. "122/78" or "—" when no reading exists. */
   bpLabel: string;
+  /** Milliseconds since the latest reading; null when none exists.
+   *  Drives the §7.1a attention sort's silence rank. */
+  lastReadingAgeMs: number | null;
   /** One-line factual headline. Placeholder until Sprint 12.5 AI. */
   headline: string;
   /** Longer editorial prose. Placeholder until Sprint 12.5 AI. */
@@ -108,25 +112,51 @@ export function caregiverPersonFromParent(
       headline = `Last reading ${ageLabel} ago`;
       sentence = `No reading in the last ${ageLabel}. The watch may be off the wrist.`;
     } else {
-      const tier = classifyReading(
+      // D13 PR-1 (P0-2) — judge the parent's reading against the
+      // parent's OWN truth-layer baseline: the server row seeded by
+      // whichever fetcher produced this summary, else a provisional
+      // recompute over the recent-readings window the summary already
+      // carries. Below the §4.3 sufficiency gate the classifier
+      // renders the learning state. History (latest first) enables the
+      // three-consecutive confirmation for the latest reading.
+      const samples = parent.recentReadings.map((s) => ({
+        measuredAtSec: Math.floor(Date.parse(s.measuredAt) / 1000),
+        systolic: s.systolic,
+        diastolic: s.diastolic,
+      }));
+      const baselines = resolveBpBaselines(
+        parent.familyId,
+        samples,
+        Math.floor(nowMs / 1000),
+      );
+      const classification = classifyReading(
         { systolic: r.systolic, diastolic: r.diastolic, pulse: r.pulse },
-        null,
-      ).tier;
-      switch (tier) {
-        case 'confirmed_urgent':
+        baselines,
+        samples.slice().sort((a, b) => b.measuredAtSec - a.measuredAtSec),
+      );
+      // D13 PR-4 (§4.3) — the verdict-aware tier keeps the learning
+      // state visible: below the sufficiency gate a person is grey
+      // with honest copy, never a green "in range" claim.
+      switch (canonicalTierFor(classification)) {
+        case 'talk_to_doctor':
           status = 'urgent';
           headline = 'A calm check-in helps right now.';
           sentence = `BP ${bpLabel} ${ageLabel} ago — above the usual range. A calm check-in helps.`;
           break;
-        case 'calm_concerned':
+        case 'worth_a_look':
           status = 'attention';
           headline = "Worth a chat — pattern's a little off.";
           sentence = `BP ${bpLabel} ${ageLabel} ago — a little above the usual band.`;
           break;
-        case 'in_pattern':
+        case 'in_range':
           status = 'clear';
-          headline = `Read ${ageLabel} ago — in pattern.`;
+          headline = `Read ${ageLabel} ago — in the usual range.`;
           sentence = `BP ${bpLabel} ${ageLabel} ago. Inside the usual band.`;
+          break;
+        case 'learning':
+          status = 'learning';
+          headline = 'Still learning';
+          sentence = `BP ${bpLabel} ${ageLabel} ago. Still learning what's usual for ${parent.parentDisplayName?.trim() || 'your family member'}.`;
           break;
       }
     }
@@ -147,6 +177,7 @@ export function caregiverPersonFromParent(
     accentIndex,
     status,
     bpLabel,
+    lastReadingAgeMs: r ? Math.max(0, nowMs - Date.parse(r.measuredAt)) : null,
     headline,
     sentence,
     // Sprint 19 Block 5 — prefer the per-caregiver label when the
@@ -177,7 +208,7 @@ export function resolveRelation(
  *  `families.parent_relationship === 'self'` is a self-buyer onboarding
  *  signal — "the wearer is themselves." From a caregiver's perspective
  *  (a co-caregiver invited into a self-buyer's family), seeing "Self"
- *  in the eyebrow makes no sense — the wearer is THEIR loved one, not
+ *  in the eyebrow makes no sense — the wearer is THEIR family member, not
  *  themselves. We render "Wearer" as a neutral fallback. Sprint 19
  *  Block 5 adds a per-caregiver label that takes precedence over this
  *  fallback when the caregiver sets one.
