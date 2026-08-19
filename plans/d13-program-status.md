@@ -173,6 +173,30 @@ exist yet; nothing to flip.
   `tools/deploy-d13-fns.sh [fn …]` instead. Rewrite or delete the old
   script before anyone trusts it again.
 
+### On-device fix round (2026-08-19, v16 → v18)
+
+Found by walking v15 on the device, all pre-existing, all fixed and
+re-verified on the device afterwards:
+
+- The Family home greeted every hour as "Good morning" — the string was
+  hard-coded. Both homes now share `utils/greeting.ts`.
+- The medication section read "What you takes" on the self path.
+- Four labels were clipped by containers narrower than their text: the
+  ring's compass words, the BP time-of-day pills, the constellation orb
+  caption, and the legend headline.
+
+The pills took two attempts and the second one is the instructive part:
+wrapping did nothing because the row had ~130px of slack. A uiautomator
+dump showed the real constraint was the label's own measured box — in
+large-text mode the glyphs paint wider than the Text measured for
+itself. **If a label clips on Android with room to spare, measure the
+node before changing the layout.** The fix is `alignSelf: 'stretch'`
+so the label fills its container instead of its own measurement.
+
+NOT a bug, deliberately unchanged: the "Worth a read" card looks
+overlapped by the action bar mid-scroll. Scrolled to the bottom it
+clears both bars — `homeLayout`'s furniture stack is correct.
+
 ### CI state on main (read before assuming you broke something)
 
 - `lint`, `typecheck`, `test`, `copy lint (voice rules)`, and the Deno
@@ -222,5 +246,6 @@ inherits the matrix through the existing context assembler.
 3. Remaining founder review flags (§ above): storyCopy.ts strings,
    chapter thresholds (4 mmHg / 3 weeks / t≥2), the lightened §5.1
    hexes, the "Diagnosed with hypertension?" allowlist.
-4. v1.1 deferrals as chosen. Version-code ledger: next install is 16.
+4. v1.1 deferrals as chosen. Version-code ledger: next install is 19
+   (16, 17 and 18 were used by the on-device fix round below).
 5. Rewrite or delete `tools/release-d13.sh` (stale CLI flags).
