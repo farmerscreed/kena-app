@@ -25,6 +25,13 @@ import urllib.error
 
 PAT = os.environ.get("LEIKO_PAT")
 if not PAT:
+    # Session fallback: a 0600 file the founder drops for a release run and
+    # deletes right after. The env var still wins when set.
+    _pat_file = os.path.expanduser("~/secrets/leiko-pat")
+    if os.path.isfile(_pat_file):
+        with open(_pat_file) as fh:
+            PAT = fh.read().strip()
+if not PAT:
     sys.exit("LEIKO_PAT is not set. `export LEIKO_PAT='sbp_…'` (from 1Password) first.")
 REF = os.environ.get("LEIKO_REF", "kqnzxjrpnjnczhgdwdqg")
 
