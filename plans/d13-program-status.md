@@ -1,6 +1,6 @@
 # D13 Vitals Layer — Program Status & Handoff
 
-Last updated: 2026-08-19 (after founder test round 1, PR #27; v14 on device). This document is the
+Last updated: 2026-08-19 — MERGED TO MAIN (#29) incl. the correlation matrix (#28); v15 (from main) on device. ONE founder action outstanding: run tools/release-d13.sh with LEIKO_PAT. This document is the
 single source of truth for where the D13 programme stands; it is
 written so any future session (or person) can continue with nothing
 missing.
@@ -119,17 +119,36 @@ exist yet; nothing to flip.
   surfaced per-vital + Story drivers + the letter; brainstorm answer
   delivered, implementation next).
 
-## Approved-but-not-yet-built (awaiting founder "go")
+## Release state (2026-08-19)
 
-**The cross-vital correlation matrix** (founder item 5, proposal
-delivered 2026-08-19): expand `compute-correlations` to five tested
-pairs — sleep→morning BP (exists), sleep→resting HR, movement→resting
-HR, movement→BP, after-meds-tag→BP — every pair behind the engine's
-gate (n≥14, |r|≥0.3, p<0.05, honest negatives), surfaced in three
-places: (a) each vital page's "what moves this number" area with the
-PERSONAL result, (b) the Story page drivers panel, (c) the weekly AI
-letter narrating the strongest finding. Client prerequisite: plumb a
-steps series into HRDetail for the movement×HR strip.
+- `redesign/vitals-layer-d13` → `main` MERGED as PR #29 (after the
+  matrix, #28). versionCode 15, built from main, installed + verified.
+- db-migrate on main FAILED with the pre-existing remote-only
+  migration-history drift ("Remote migration versions not found in
+  local migrations directory") — prod's history table carries entries
+  the repo lacks (the Aug-14 punch list recorded this same failure).
+- Migrations 0053–0058 are therefore NOT YET APPLIED to prod, the five
+  edge functions are NOT YET DEPLOYED, and the cron has not been
+  invoked. Until then the app runs correctly on provisional on-device
+  bands; the matrix/letter/context-band features await the backend.
+- EVERYTHING is packaged in `tools/release-d13.sh`: the founder runs
+  it once with `export LEIKO_PAT='sbp_…'` (1Password, per session,
+  never in a file — docs/release/prod-db-access.md). It shows the
+  history drift, guides the repair, pushes migrations, deploys
+  detect-anomaly/sync/compute-correlations/compute-weekly-summary/
+  compute-monthly-baseline, and invokes the detect-anomaly cron once
+  via tools/prod-sql.py.
+
+## Built (was: approved-but-not-yet-built)
+
+**The cross-vital correlation matrix SHIPPED (#28)**: six engine
+pairs (sleep→BP, activity→restingHR, spo2→sleep existed; added
+sleep→restingHR, movement→next-morning-BP, after-meds→BP as
+point-biserial with per-group min 5), all gated n≥14/|r|≥0.3/p<0.05,
+honest negatives persisted. `PersonalFindingsCard` (found / honest
+negative / counting; never computes stats client-side) on BPDetail +
+HRDetail; Trends cited cards know the new types; the weekly letter
+inherits the matrix through the existing context assembler.
 
 ## Where new copy lives (for founder voice review)
 
