@@ -33,6 +33,7 @@ import { Text, View } from 'react-native';
 import { useTheme } from '../../theme';
 import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import { DetailShell } from '../../components/DetailShell';
+import { PersonalFindingsCard } from '../../components/PersonalFindingsCard';
 import { BaselineReference } from '../../components/BaselineReference';
 import { StalenessHintRow } from '../../components/StalenessHintRow';
 import { LoadingState } from '../../components/LoadingState';
@@ -811,6 +812,13 @@ export function HRDetail({
               />
             </>
           ) : null}
+
+          {/* Cross-vital matrix — the person's own HR results. */}
+          <PersonalFindingsCard
+            familyId={summaryFamilyId ?? null}
+            pairs={['activity_x_resting_hr', 'sleep_x_resting_hr']}
+            testID="hr-detail-findings"
+          />
 
           {/* Founder-test feedback (2026-08-19, item 4). */}
           <HRWhatMovesCard testID="hr-detail-what-moves" />

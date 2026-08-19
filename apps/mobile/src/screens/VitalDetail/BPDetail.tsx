@@ -40,6 +40,7 @@ import { RecentReadingsSection } from '../../components/RecentReadingsSection';
 import { VitalInsightCard } from '../../components/VitalInsightCard';
 import { RangeBandChart } from '../../components/RangeBandChart';
 import { TimeOfDayRing } from '../../components/TimeOfDayRing';
+import { PersonalFindingsCard } from '../../components/PersonalFindingsCard';
 import { ViewAsTableLink } from '../../components/ViewAsTableLink';
 import { VitalExplainerAnchor } from '../../components/VitalExplainerAnchor';
 import { BaselineReference } from '../../components/BaselineReference';
@@ -819,6 +820,14 @@ export function BPDetail({
                   : INSIGHT_BODY_PRE_BASELINE
             }
             testID="bp-detail-insight"
+          />
+
+          {/* Cross-vital matrix (2026-08-19) — the person's own results
+              for the pairs that involve blood pressure. */}
+          <PersonalFindingsCard
+            familyId={bandFamilyId}
+            pairs={['sleep_x_morning_bp', 'activity_x_morning_bp', 'after_meds_x_bp']}
+            testID="bp-detail-findings"
           />
 
           {/* D13 PR-7 (§7.3) — the BP signature section: the 24-hour

@@ -23,6 +23,9 @@ const CORRELATION_HEADLINE: Record<CorrelationRow['correlation_type'], string> =
   sleep_x_morning_bp: 'Sleep × morning BP',
   activity_x_resting_hr: 'Activity × resting HR',
   spo2_dip_x_sleep_score: 'SpO2 × sleep score',
+  sleep_x_resting_hr: 'Sleep × resting HR',
+  activity_x_morning_bp: 'Movement × next-morning BP',
+  after_meds_x_bp: 'After meds × BP',
 };
 
 // Sprint 16.5g — deterministic body fallback per correlation type.
@@ -37,6 +40,12 @@ const CORRELATION_BODY_FALLBACK: Record<CorrelationRow['correlation_type'], stri
     'On the days with more walking, resting heart rate has settled lower.',
   spo2_dip_x_sleep_score:
     'On the nights oxygen dipped, sleep tended to be lighter.',
+  sleep_x_resting_hr:
+    'After longer nights, resting heart rate has settled lower.',
+  activity_x_morning_bp:
+    'Mornings after higher-step days have run a little lower.',
+  after_meds_x_bp:
+    'Readings tagged after meds have averaged differently from the rest.',
 };
 
 function strengthLabel(r: number | null): 'Strong' | 'Moderate' | 'Gentle' {

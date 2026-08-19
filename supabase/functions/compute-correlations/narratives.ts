@@ -65,5 +65,47 @@ export function narrativeFor(
           : `Across the last ${inputs.sampleN} nights, lower SpO2 dips tracked alongside slightly more sleep — opposite of what's typical. Worth bringing up with your doctor if it continues.`;
       return { short, long, effectUnit: 'min/SpO2-percent' };
     }
+    case 'sleep_x_resting_hr': {
+      // x = sleep minutes, y = resting HR. Negative slope = expected
+      // (more sleep ↔ lower resting rate).
+      const bpmPerHour = inputs.effectSize * 60;
+      const absBpm = Math.abs(Math.round(bpmPerHour * 10) / 10);
+      const short =
+        bpmPerHour < 0
+          ? `Longer sleep ↔ −${absBpm} bpm resting HR`
+          : `Longer sleep ↔ +${absBpm} bpm resting HR`;
+      const long =
+        bpmPerHour < 0
+          ? `On nights with more sleep, your resting heart rate ran about ${absBpm} bpm lower per extra hour. Pattern based on the last ${inputs.sampleN} nights.`
+          : `Across the last ${inputs.sampleN} nights, longer sleep tracked alongside a slightly higher resting heart rate — opposite of what's typical. Worth bringing up with your doctor if it continues.`;
+      return { short, long, effectUnit: 'bpm/hour-sleep' };
+    }
+    case 'activity_x_morning_bp': {
+      // x = steps, y = NEXT-morning systolic. Negative slope = expected.
+      const mmHgPer1k = inputs.effectSize * 1000;
+      const absMmHg = Math.abs(Math.round(mmHgPer1k * 10) / 10);
+      const short =
+        mmHgPer1k < 0
+          ? `More daily steps ↔ −${absMmHg} mmHg next morning`
+          : `More daily steps ↔ +${absMmHg} mmHg next morning`;
+      const long =
+        mmHgPer1k < 0
+          ? `Mornings after higher-step days ran about ${absMmHg} mmHg lower per extra 1,000 steps, across the last ${inputs.sampleN} paired days.`
+          : `Across the last ${inputs.sampleN} paired days, mornings after higher-step days ran slightly higher — opposite of what's typical. Worth raising with your doctor if it continues.`;
+      return { short, long, effectUnit: 'mmHg/1k-steps' };
+    }
+    case 'after_meds_x_bp': {
+      // Point-biserial: slope = mean difference (tagged − untagged) in
+      // mmHg. Descriptive only — never an efficacy claim.
+      const diff = Math.round(Math.abs(inputs.effectSize));
+      const lower = inputs.effectSize < 0;
+      const short = lower
+        ? `After-meds readings ↔ −${diff} mmHg`
+        : `After-meds readings ↔ +${diff} mmHg`;
+      const long = lower
+        ? `Readings tagged "after meds" have averaged about ${diff} mmHg lower than the rest, across ${inputs.sampleN} readings. Worth showing your doctor.`
+        : `Readings tagged "after meds" have averaged about ${diff} mmHg higher than the rest, across ${inputs.sampleN} readings. Worth showing your doctor.`;
+      return { short, long, effectUnit: 'mmHg-tagged-vs-not' };
+    }
   }
 }

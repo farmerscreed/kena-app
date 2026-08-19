@@ -25,6 +25,9 @@ import {
   fetchSpO2DipXSleepScore,
   localHourFor,
   type PairedObservation,
+  fetchSleepXRestingHr,
+  fetchActivityXMorningBp,
+  fetchAfterMedsXBp,
 } from './queries.ts';
 import { pearsonR, pearsonP, regressionSlope } from './stats.ts';
 import { narrativeFor } from './narratives.ts';
@@ -36,6 +39,7 @@ import {
   P_THRESHOLD,
   type CorrelationType,
   type CorrelationOutput,
+  MIN_GROUP_N,
 } from './types.ts';
 
 const TARGET_LOCAL_HOUR = 3;
@@ -85,6 +89,12 @@ async function fetchPairs(
       return fetchActivityXRestingHr(args);
     case 'spo2_dip_x_sleep_score':
       return fetchSpO2DipXSleepScore(args);
+    case 'sleep_x_resting_hr':
+      return fetchSleepXRestingHr(args);
+    case 'activity_x_morning_bp':
+      return fetchActivityXMorningBp(args);
+    case 'after_meds_x_bp':
+      return fetchAfterMedsXBp(args);
   }
 }
 
@@ -98,7 +108,14 @@ async function computeOne(
   const pairs = await fetchPairs(supabase, familyId, userId, type, asOf);
   const sampleN = pairs.length;
 
-  if (sampleN < MIN_SAMPLE_N) {
+  // Two-group types additionally need both groups populated — one
+  // lonely tagged reading cannot manufacture a finding.
+  const groupGateFails =
+    type === 'after_meds_x_bp' &&
+    (pairs.filter((p) => p.x === 1).length < MIN_GROUP_N ||
+      pairs.filter((p) => p.x === 0).length < MIN_GROUP_N);
+
+  if (sampleN < MIN_SAMPLE_N || groupGateFails) {
     return {
       correlationType: type,
       pearsonR: null,
@@ -215,11 +232,7 @@ async function pickFamiliesAtLocalHour(
     .select('family_id, user_id, users:users!inner(timezone)')
     .is('removed_at', null);
   if (error) throw error;
-  const rows = (data ?? []) as {
-    family_id: string;
-    user_id: string;
-    users: { timezone: string };
-  }[];
+  const rows = (data ?? []) as unknown as { family_id: string; user_id: string; users: { timezone: string } }[];
   return rows
     .filter((r) => localHourFor(nowIso, r.users.timezone) === targetHour)
     .map((r) => ({ familyId: r.family_id, userId: r.user_id }));
