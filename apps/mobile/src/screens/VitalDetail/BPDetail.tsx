@@ -725,10 +725,6 @@ export function BPDetail({
                         accessibilityRole="tablist"
                         style={{
                           flexDirection: 'row',
-                          // Wrap rather than squeeze: at large text sizes
-                          // three pills on one line clipped their labels
-                          // to "Mornin" / "Evenin" / "All".
-                          flexWrap: 'wrap',
                           gap: theme.spacing.s,
                           marginBottom: theme.spacing.m,
                         }}
@@ -741,8 +737,15 @@ export function BPDetail({
                             onPress={() => setDaySegment(seg)}
                             hitSlop={6}
                             style={{
-                              flexShrink: 0,
-                              paddingHorizontal: theme.spacing.m,
+                              // Equal thirds. Sized to content the pills
+                              // measured their labels too narrow and
+                              // clipped them ("Mornin" / "Eveni…") even
+                              // with slack left in the row; a third of
+                              // the row is comfortably wider than the
+                              // longest label at the Dynamic Type cap.
+                              flex: 1,
+                              alignItems: 'center',
+                              paddingHorizontal: theme.spacing.s,
                               paddingVertical: 6,
                               borderRadius: 99,
                               backgroundColor:
@@ -763,6 +766,14 @@ export function BPDetail({
                               style={[
                                 theme.type('label'),
                                 {
+                                  // Fill the pill rather than sizing to
+                                  // the label's own measurement: in
+                                  // large-text mode the glyphs paint
+                                  // wider than the measured box and the
+                                  // label ellipsised to "Morni…" even
+                                  // with the pill left half empty.
+                                  alignSelf: 'stretch',
+                                  textAlign: 'center',
                                   color:
                                     daySegment === seg
                                       ? theme.colors.text.primary

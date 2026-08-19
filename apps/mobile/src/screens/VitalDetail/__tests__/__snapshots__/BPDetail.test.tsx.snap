@@ -1416,7 +1416,6 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                 style={
                   {
                     "flexDirection": "row",
-                    "flexWrap": "wrap",
                     "gap": 8,
                     "marginBottom": 12,
                   }
@@ -1456,12 +1455,13 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                   onStartShouldSetResponder={[Function]}
                   style={
                     {
+                      "alignItems": "center",
                       "backgroundColor": "#120C07",
                       "borderColor": "rgba(255,255,255,0.06)",
                       "borderRadius": 99,
                       "borderWidth": 0.5,
-                      "flexShrink": 0,
-                      "paddingHorizontal": 12,
+                      "flex": 1,
+                      "paddingHorizontal": 8,
                       "paddingVertical": 6,
                     }
                   }
@@ -1479,7 +1479,9 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                           "weight": "500",
                         },
                         {
+                          "alignSelf": "stretch",
                           "color": "#B8B2AA",
+                          "textAlign": "center",
                         },
                       ]
                     }
@@ -1521,12 +1523,13 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                   onStartShouldSetResponder={[Function]}
                   style={
                     {
+                      "alignItems": "center",
                       "backgroundColor": "#120C07",
                       "borderColor": "rgba(255,255,255,0.06)",
                       "borderRadius": 99,
                       "borderWidth": 0.5,
-                      "flexShrink": 0,
-                      "paddingHorizontal": 12,
+                      "flex": 1,
+                      "paddingHorizontal": 8,
                       "paddingVertical": 6,
                     }
                   }
@@ -1544,7 +1547,9 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                           "weight": "500",
                         },
                         {
+                          "alignSelf": "stretch",
                           "color": "#B8B2AA",
+                          "textAlign": "center",
                         },
                       ]
                     }
@@ -1586,12 +1591,13 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                   onStartShouldSetResponder={[Function]}
                   style={
                     {
+                      "alignItems": "center",
                       "backgroundColor": "#1D140D",
                       "borderColor": "#C96442",
                       "borderRadius": 99,
                       "borderWidth": 1,
-                      "flexShrink": 0,
-                      "paddingHorizontal": 12,
+                      "flex": 1,
+                      "paddingHorizontal": 8,
                       "paddingVertical": 6,
                     }
                   }
@@ -1609,7 +1615,9 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                           "weight": "500",
                         },
                         {
+                          "alignSelf": "stretch",
                           "color": "#FFFFFF",
+                          "textAlign": "center",
                         },
                       ]
                     }
