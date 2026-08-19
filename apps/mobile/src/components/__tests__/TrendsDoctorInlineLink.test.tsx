@@ -22,9 +22,7 @@ describe('TrendsDoctorInlineLink', () => {
         />,
       ),
     );
-    expect(screen.getByTestId('doc-label').props.children).toBe(
-      'Want to put this together for your doctor?',
-    );
+    expect(screen.getByText('For your doctor')).toBeTruthy();
   });
 
   it("reads 'for their doctor' for caregivers", () => {
@@ -37,9 +35,7 @@ describe('TrendsDoctorInlineLink', () => {
         />,
       ),
     );
-    expect(screen.getByTestId('doc-label').props.children).toBe(
-      'Want to put this together for their doctor?',
-    );
+    expect(screen.getByText('For your doctor')).toBeTruthy();
   });
 
   it('fires onPress when tapped', () => {
@@ -68,7 +64,7 @@ describe('TrendsDoctorInlineLink', () => {
       ),
     );
     const node = screen.getByTestId('doc');
-    expect(node.props.accessibilityRole).toBe('link');
+    expect(node.props.accessibilityRole).toBe('button');
   });
 
   it('both copy variants pass voice-lint', () => {

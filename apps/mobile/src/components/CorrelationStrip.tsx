@@ -32,6 +32,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Path, Polyline } from 'react-native-svg';
 import { useTheme } from '../theme';
+import { vitalTheme } from '../utils/vitalThemes';
 import { useReducedMotion } from '../theme/useReducedMotion';
 import { type VitalType } from './VitalRing';
 
@@ -420,6 +421,60 @@ export function CorrelationStrip({
           />
         ) : null}
       </Svg>
+      {/* Founder-test feedback (2026-08-19) — a two-line key: which
+          line is which, and how to read the pairing. Without it the
+          strip reads as random lines. */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 6 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <View style={{ width: 14, height: 2, backgroundColor: theme.colors.vital[vitalA.type] }} />
+          <Text
+            allowFontScaling={false}
+            style={{
+              fontFamily: captionStyle.family,
+              fontSize: captionStyle.size,
+              color: theme.colors.text.secondary,
+            }}
+          >
+            {vitalTheme(vitalA.type).displayName}
+          </Text>
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <View
+            style={{
+              width: 14,
+              height: 0,
+              borderTopWidth: 2,
+              borderStyle: 'dashed',
+              borderColor: theme.colors.vital[vitalB.type],
+            }}
+          />
+          <Text
+            allowFontScaling={false}
+            style={{
+              fontFamily: captionStyle.family,
+              fontSize: captionStyle.size,
+              color: theme.colors.text.secondary,
+            }}
+          >
+            {vitalTheme(vitalB.type).displayName}
+          </Text>
+        </View>
+      </View>
+      <Text
+        allowFontScaling={false}
+        style={{
+          fontFamily: captionStyle.family,
+          fontSize: captionStyle.size,
+          lineHeight: captionStyle.lineHeight,
+          color: theme.colors.text.tertiary,
+          marginTop: 4,
+        }}
+        testID={testID ? `${testID}-how-to-read` : undefined}
+      >
+        Both lines share the same nights, each on its own scale. When they
+        rise and fall together — or mirror each other — that pairing is
+        worth noticing.
+      </Text>
       {axisLabels ? (
         <View style={styles.axisRow}>
           <Text

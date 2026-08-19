@@ -1814,6 +1814,59 @@ exports[`HRDetail — dark-mode snapshot matches snapshot with full data in dark
             </View>
           </View>
           <View
+            accessibilityLabel="What tends to move this number. Regular movement over weeks is associated with a lower resting heart rate. Short or fragmented sleep often shows up as a higher resting rate the next morning. The charts below compare your own nights."
+            accessibilityRole="text"
+            accessible={true}
+            style={
+              {
+                "backgroundColor": "#1D140D",
+                "borderRadius": 22,
+                "marginHorizontal": 20,
+                "marginTop": 16,
+                "padding": 16,
+              }
+            }
+            testID="hr-detail-what-moves"
+          >
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                [
+                  {
+                    "family": "Inter_600SemiBold",
+                    "lineHeight": 24,
+                    "size": 18,
+                    "weight": "600",
+                  },
+                  {
+                    "color": "#FFFFFF",
+                  },
+                ]
+              }
+            >
+              What tends to move this number
+            </Text>
+            <Text
+              maxFontSizeMultiplier={1.6}
+              style={
+                [
+                  {
+                    "family": "Inter_400Regular",
+                    "lineHeight": 22,
+                    "size": 15,
+                    "weight": "400",
+                  },
+                  {
+                    "color": "#B8B2AA",
+                    "marginTop": 8,
+                  },
+                ]
+              }
+            >
+              Regular movement over weeks is associated with a lower resting heart rate. Short or fragmented sleep often shows up as a higher resting rate the next morning. Neither is a promise — the charts below compare your own nights, and your doctor is the right reader of anything persistent.
+            </Text>
+          </View>
+          <View
             accessibilityRole="summary"
             style={
               [

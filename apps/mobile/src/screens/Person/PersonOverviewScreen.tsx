@@ -39,6 +39,7 @@ import { timeInZone } from '../../utils/timeInZone';
 import { LEARNING_COPY } from '../../utils/calibration';
 import { mmkv, STORAGE_KEYS } from '../../services/storage';
 import { MedicationSection } from '../../components/MedicationSection';
+import { DoctorLinkCard } from '../../components/DoctorLinkCard';
 import { useAuth } from '../../state/auth';
 
 export interface PersonOverviewScreenProps {
@@ -182,8 +183,7 @@ export function PersonOverviewScreen({
   }, [bandFamilyId, data, latest, bpTier]);
 
   const title = theme.type('title');
-  const numericXl = theme.type('numericXl');
-  const caption = theme.type('caption');
+  const heroType = theme.type('numericHero');
   const voice = theme.fontFamilies.editorial;
 
   return (
@@ -234,16 +234,29 @@ export function PersonOverviewScreen({
               ? `${isSelf ? 'Your' : `${subject.label}'s`} latest blood pressure, ${latest.systolic} over ${latest.diastolic}, ${bpTier ? sentenceFragmentForTier(bpTier, subject) : ''}`
               : 'No readings yet'
           }
-          style={{ paddingHorizontal: theme.spacing.l, paddingVertical: theme.spacing.m }}
+          style={{
+            // Founder-test feedback (2026-08-19) — the headline number
+            // deserves a stage: a softly tinted card in the vital's own
+            // hue (decorative, sub-ribbon opacity) with the hero scale.
+            marginHorizontal: theme.spacing.l,
+            marginVertical: theme.spacing.m,
+            paddingHorizontal: theme.spacing.l,
+            paddingVertical: theme.spacing.xl,
+            borderRadius: theme.radii.l,
+            backgroundColor: `${theme.colors.vital.bp}14`,
+            borderWidth: 1,
+            borderColor: `${theme.colors.vital.bp}2E`,
+            alignItems: 'center',
+          }}
           testID={`${testID}-latest`}
         >
           <Text
             maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
             style={{
-              fontFamily: numericXl.family,
+              fontFamily: heroType.family,
               fontVariant: ['tabular-nums'],
-              fontSize: numericXl.size,
-              lineHeight: numericXl.lineHeight,
+              fontSize: heroType.size,
+              lineHeight: heroType.lineHeight,
               color: theme.colors.text.primary,
             }}
           >
@@ -334,30 +347,12 @@ export function PersonOverviewScreen({
         ) : null}
 
         {onDoctorPress ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={
-              isSelf ? 'For your doctor' : `For ${subject.possessive} doctor`
-            }
+          <DoctorLinkCard
             onPress={onDoctorPress}
-            style={{
-              marginHorizontal: theme.spacing.l,
-              marginTop: theme.spacing.l,
-              minHeight: 44,
-              justifyContent: 'center',
-            }}
+            possessive={isSelf ? 'your' : subject.possessive}
             testID={`${testID}-doctor`}
-          >
-            <Text
-              maxFontSizeMultiplier={MAX_FONT_SCALE}
-              style={[
-                caption,
-                { color: theme.colors.text.secondary, textDecorationLine: 'underline' },
-              ]}
-            >
-              {isSelf ? 'For your doctor' : `For ${subject.possessive} doctor`}
-            </Text>
-          </Pressable>
+            style={{ marginHorizontal: theme.spacing.l }}
+          />
         ) : null}
       </ScrollView>
     </View>
