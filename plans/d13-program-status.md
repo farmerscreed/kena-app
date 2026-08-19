@@ -1,6 +1,6 @@
 # D13 Vitals Layer — Program Status & Handoff
 
-Last updated: 2026-08-19 (end of build sessions). This document is the
+Last updated: 2026-08-19 (after founder test round 1, PR #27; v14 on device). This document is the
 single source of truth for where the D13 programme stands; it is
 written so any future session (or person) can continue with nothing
 missing.
@@ -119,10 +119,36 @@ exist yet; nothing to flip.
   surfaced per-vital + Story drivers + the letter; brainstorm answer
   delivered, implementation next).
 
+## Approved-but-not-yet-built (awaiting founder "go")
+
+**The cross-vital correlation matrix** (founder item 5, proposal
+delivered 2026-08-19): expand `compute-correlations` to five tested
+pairs — sleep→morning BP (exists), sleep→resting HR, movement→resting
+HR, movement→BP, after-meds-tag→BP — every pair behind the engine's
+gate (n≥14, |r|≥0.3, p<0.05, honest negatives), surfaced in three
+places: (a) each vital page's "what moves this number" area with the
+PERSONAL result, (b) the Story page drivers panel, (c) the weekly AI
+letter narrating the strongest finding. Client prerequisite: plumb a
+steps series into HRDetail for the movement×HR strip.
+
+## Where new copy lives (for founder voice review)
+
+- `services/voice/tierVocabulary.ts` — §7.4 verdict table.
+- `services/voice/correlationCopy.ts` — §7.5 table + countdown.
+- `services/voice/storyCopy.ts` — Story page (river caption, chapter
+  sentences, steady/building lines).
+- `utils/calibration.ts` LEARNING_COPY — §7.7 learning states.
+- Inline, founder-commissioned round 1: DoctorLinkCard subtitle,
+  MedicationSection subtitle, HRWhatMovesCard body, SpO2 explainer +
+  no-alarm note, TimeOfDayRing + segment captions, correlation-strip
+  how-to-read line, Activity goal framing.
+
 ## Next session, in order
 
-1. Founder joint test on v13 (walk: cold start → take reading + tags →
-   five vitals → person overview → Trends story → TalkBack spot check).
-2. Address anything the test surfaces + the review flags above.
-3. Single PR: `redesign/vitals-layer-d13` → `main`, founder-reviewed,
-   then execute the release runbook above.
+1. Founder verifies v14 (round-1 fixes: activity numbers, doctor
+   cards, segment labels, ring compass, strip legends, hero card).
+2. On "go": build the cross-vital correlation matrix (above).
+3. Remaining review flags (§ above) + v1.1 deferrals as chosen.
+4. Single PR: `redesign/vitals-layer-d13` → `main`, founder-reviewed,
+   then execute the release runbook above. Version-code ledger: next
+   install is 15.
