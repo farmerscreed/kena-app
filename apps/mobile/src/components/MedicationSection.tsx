@@ -111,6 +111,11 @@ export function MedicationSection({
     void refresh();
   };
 
+  // Verb agreement: the section is titled after whoever is being
+  // cared for. Second person drops the -s ("you take"), a name keeps
+  // it ("Mum takes"). Without this the self path read "What you takes".
+  const takes = subjectName.trim().toLowerCase() === 'you' ? 'take' : 'takes';
+
   return (
     <View
       style={[
@@ -129,7 +134,7 @@ export function MedicationSection({
         maxFontSizeMultiplier={MAX_FONT_SCALE}
         style={[title, { color: theme.colors.text.primary }]}
       >
-        {`What ${subjectName} takes`}
+        {`What ${subjectName} ${takes}`}
       </Text>
       <Text
         maxFontSizeMultiplier={MAX_FONT_SCALE}
@@ -146,7 +151,7 @@ export function MedicationSection({
           style={[bodyM, { color: theme.colors.text.secondary, marginTop: theme.spacing.s }]}
           testID={`${testID}-empty`}
         >
-          {`Nothing added yet. Adding what ${subjectName} takes helps us show you the fuller picture alongside the readings.`}
+          {`Nothing added yet. Adding what ${subjectName} ${takes} helps us show you the fuller picture alongside the readings.`}
         </Text>
       ) : null}
 

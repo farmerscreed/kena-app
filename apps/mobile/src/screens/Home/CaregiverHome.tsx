@@ -50,6 +50,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AnomalyBanner } from '../../components/AnomalyBanner';
 import { bannerCopyFor } from '../../utils/anomalyBannerCopy';
+import { timeOfDayGreeting } from '../../utils/greeting';
 import { CanvasGradient } from '../../components/CanvasGradient';
 import { ScreenAnomalyBanner } from '../../components/ScreenAnomalyBanner';
 import { SyncReassuranceBanner } from '../../components/SyncReassuranceBanner';
@@ -858,7 +859,7 @@ function SharedHeader({
           </Pressable>
         </View>
       </View>
-      {/* Row 2: "Good morning" greeting on the left, view toggle on the
+      {/* Row 2: time-of-day greeting on the left, view toggle on the
           right. Founder moved the toggle off its absolute top-right
           position (it was blocking the top of the screen) — sitting
           here inline keeps the toggle reachable as part of the
@@ -881,7 +882,7 @@ function SharedHeader({
             textTransform: 'uppercase',
           }}
         >
-          Good morning
+          {timeOfDayGreeting()}
         </Text>
         {showToggle ? (
           <ViewToggle

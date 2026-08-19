@@ -387,11 +387,15 @@ export function PersonOrb({
               orb's single tap target and its composed label. */}
           <Text
             maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
-            numberOfLines={1}
+            // Two lines: the label block is only as wide as the orb, so
+            // "In their usual range" / "No recent reading" ellipsized to
+            // "In their us…" on one line. The field reserves the height.
+            numberOfLines={2}
             style={{
               fontFamily: theme.fontFamilies.body,
               fontSize: 11,
               lineHeight: 13,
+              textAlign: 'center',
               color: theme.colors.status[status],
               marginTop: 1,
             }}

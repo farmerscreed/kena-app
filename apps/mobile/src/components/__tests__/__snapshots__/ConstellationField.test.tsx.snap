@@ -10,7 +10,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         "position": "relative",
       },
       {
-        "height": 366,
+        "height": 401,
         "width": 360,
       },
       undefined,
@@ -19,10 +19,10 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   testID="field"
 >
   <RNSVGSvgView
-    bbHeight={366}
+    bbHeight={401}
     bbWidth={360}
     focusable={false}
-    height={366}
+    height={401}
     pointerEvents="none"
     style={
       [
@@ -39,7 +39,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         },
         {
           "flex": 0,
-          "height": 366,
+          "height": 401,
           "width": 360,
         },
       ]
@@ -560,7 +560,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
           </Text>
           <Text
             maxFontSizeMultiplier={1.3}
-            numberOfLines={1}
+            numberOfLines={2}
             style={
               {
                 "color": "#5FA97E",
@@ -568,6 +568,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                 "fontSize": 11,
                 "lineHeight": 13,
                 "marginTop": 1,
+                "textAlign": "center",
               }
             }
           >
@@ -857,7 +858,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
           </Text>
           <Text
             maxFontSizeMultiplier={1.3}
-            numberOfLines={1}
+            numberOfLines={2}
             style={
               {
                 "color": "#E8B54F",
@@ -865,6 +866,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                 "fontSize": 11,
                 "lineHeight": 13,
                 "marginTop": 1,
+                "textAlign": "center",
               }
             }
           >
@@ -1169,7 +1171,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
           </Text>
           <Text
             maxFontSizeMultiplier={1.3}
-            numberOfLines={1}
+            numberOfLines={2}
             style={
               {
                 "color": "#8F7FD4",
@@ -1177,6 +1179,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                 "fontSize": 11,
                 "lineHeight": 13,
                 "marginTop": 1,
+                "textAlign": "center",
               }
             }
           >
@@ -1199,7 +1202,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         "position": "relative",
       },
       {
-        "height": 366,
+        "height": 401,
         "width": 360,
       },
       undefined,
@@ -1208,10 +1211,10 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
   testID="field"
 >
   <RNSVGSvgView
-    bbHeight={366}
+    bbHeight={401}
     bbWidth={360}
     focusable={false}
-    height={366}
+    height={401}
     pointerEvents="none"
     style={
       [
@@ -1228,7 +1231,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
         },
         {
           "flex": 0,
-          "height": 366,
+          "height": 401,
           "width": 360,
         },
       ]
@@ -1749,7 +1752,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
           </Text>
           <Text
             maxFontSizeMultiplier={1.3}
-            numberOfLines={1}
+            numberOfLines={2}
             style={
               {
                 "color": "#5FA97E",
@@ -1757,6 +1760,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                 "fontSize": 11,
                 "lineHeight": 13,
                 "marginTop": 1,
+                "textAlign": "center",
               }
             }
           >
@@ -2046,7 +2050,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
           </Text>
           <Text
             maxFontSizeMultiplier={1.3}
-            numberOfLines={1}
+            numberOfLines={2}
             style={
               {
                 "color": "#E8B54F",
@@ -2054,6 +2058,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                 "fontSize": 11,
                 "lineHeight": 13,
                 "marginTop": 1,
+                "textAlign": "center",
               }
             }
           >
@@ -2358,7 +2363,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
           </Text>
           <Text
             maxFontSizeMultiplier={1.3}
-            numberOfLines={1}
+            numberOfLines={2}
             style={
               {
                 "color": "#8F7FD4",
@@ -2366,6 +2371,7 @@ exports[`ConstellationField — snapshot per colorMode renders three-person fixt
                 "fontSize": 11,
                 "lineHeight": 13,
                 "marginTop": 1,
+                "textAlign": "center",
               }
             }
           >

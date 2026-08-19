@@ -27,6 +27,10 @@ export interface TimeOfDayRingProps {
 
 const DOT_MIN = 2;
 const DOT_MAX = 5;
+// The "morning" / "evening" compass words sit outside the ring on the
+// left and right. Without a horizontal gutter the SVG canvas ends at
+// the ring's own box and clips them to "morni" / "ening".
+const LABEL_GUTTER = 40;
 
 function positionFor(hour: number, radius: number, cx: number, cy: number) {
   // Midnight at 12 o'clock, clockwise.
@@ -53,7 +57,8 @@ export function TimeOfDayRing({
 }: TimeOfDayRingProps) {
   const theme = useTheme();
   const caption = theme.type('caption');
-  const cx = size / 2;
+  const svgWidth = size + LABEL_GUTTER * 2;
+  const cx = svgWidth / 2;
   const cy = size / 2;
   const radius = size / 2 - 26;
 
@@ -93,7 +98,7 @@ export function TimeOfDayRing({
       >
         When readings usually land
       </Text>
-      <Svg width={size} height={size} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+      <Svg width={svgWidth} height={size} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
         {/* The track. */}
         <Circle
           cx={cx}

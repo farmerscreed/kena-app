@@ -148,10 +148,11 @@ const SELF_ORB_DIAMETER = 72;
 // PersonOrb hangs an absolutely-positioned name + BP label below the orb
 // body, starting at `diameter + 4`. It is outside PersonOrb's laid-out
 // box, so the field has to account for it when sizing the canvas or the
-// bottom orbs' labels get clipped. 18pt name + 1pt gap + 13pt BP, times
-// the tight Dynamic Type ceiling.
+// bottom orbs' labels get clipped. 18pt name + 1pt gap + 13pt BP + 1pt
+// gap + the verdict caption, which wraps to two 13pt lines because the
+// block is only as wide as the orb. Times the tight Dynamic Type ceiling.
 const ORB_LABEL_GAP = 4;
-const ORB_LABEL_BLOCK_H = Math.ceil((18 + 1 + 13) * MAX_FONT_SCALE_TIGHT);
+const ORB_LABEL_BLOCK_H = Math.ceil((18 + 1 + 13 + 1 + 13 * 2) * MAX_FONT_SCALE_TIGHT);
 
 /** Bare "You" label under the centre dot (caregiver, no self node). */
 const YOU_LABEL_TOP = 10;

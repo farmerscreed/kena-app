@@ -185,7 +185,10 @@ export function ConstellationLegend({
               </View>
               <Text
                 maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}
-                numberOfLines={1}
+                // Two lines: one line clipped the verdict off the end
+                // ("Read 4 hr ago — in the …"), which is the half of the
+                // sentence that carries the meaning.
+                numberOfLines={2}
                 ellipsizeMode="tail"
                 style={{
                   // Secondary token now resolves to a warm cream

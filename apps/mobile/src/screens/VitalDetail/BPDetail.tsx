@@ -723,7 +723,15 @@ export function BPDetail({
                       </Text>
                       <View
                         accessibilityRole="tablist"
-                        style={{ flexDirection: 'row', gap: theme.spacing.s, marginBottom: theme.spacing.m }}
+                        style={{
+                          flexDirection: 'row',
+                          // Wrap rather than squeeze: at large text sizes
+                          // three pills on one line clipped their labels
+                          // to "Mornin" / "Evenin" / "All".
+                          flexWrap: 'wrap',
+                          gap: theme.spacing.s,
+                          marginBottom: theme.spacing.m,
+                        }}
                       >
                         {(['morning', 'evening', 'all'] as const).map((seg) => (
                           <Pressable
@@ -733,6 +741,7 @@ export function BPDetail({
                             onPress={() => setDaySegment(seg)}
                             hitSlop={6}
                             style={{
+                              flexShrink: 0,
                               paddingHorizontal: theme.spacing.m,
                               paddingVertical: 6,
                               borderRadius: 99,
@@ -750,6 +759,7 @@ export function BPDetail({
                           >
                             <Text
                               maxFontSizeMultiplier={MAX_FONT_SCALE}
+                              numberOfLines={1}
                               style={[
                                 theme.type('label'),
                                 {

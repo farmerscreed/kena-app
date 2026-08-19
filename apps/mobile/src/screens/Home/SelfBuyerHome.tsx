@@ -90,6 +90,7 @@ import {
   pickCentralValue,
   type DayMoment,
 } from '../../utils/dayMoments';
+import { timeOfDayGreeting } from '../../utils/greeting';
 import type { SelfBuyerStackParamList } from '../../navigation/types';
 import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 
@@ -1160,15 +1161,7 @@ function buildHeader(displayName: string | undefined): {
   const weekday = now.toLocaleDateString(undefined, { weekday: 'long' });
   const month = now.toLocaleDateString(undefined, { month: 'long' });
   const date = `${weekday} · ${month} ${now.getDate()}`;
-  const hours = now.getHours();
-  const greeting =
-    hours < 5
-      ? 'Good night'
-      : hours < 12
-        ? 'Good morning'
-        : hours < 18
-          ? 'Good afternoon'
-          : 'Good evening';
+  const greeting = timeOfDayGreeting(now);
   const name = displayName?.trim() ? displayName.split(' ')[0] : 'friend';
   return { date, greeting, name };
 }

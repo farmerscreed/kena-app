@@ -20,6 +20,7 @@ import { ThemeProvider } from '../../theme';
 import { CaregiverHome } from '../Home/CaregiverHome';
 import type { ParentSummary } from '../../services/families/fetchParentSummaries';
 import type { CaregiverPerson } from '../../utils/caregiverPerson';
+import { timeOfDayGreeting } from '../../utils/greeting';
 
 const mockNavigate = jest.fn();
 const mockRefresh = jest.fn(async () => undefined);
@@ -546,11 +547,21 @@ describe('<CaregiverHome /> — voice rules', () => {
     /Has someone shared a Leiko code with you/,
     'Enter a code',
     /Or share your own code/,
-    'Good morning',
     'Leiko · Family',
   ])('voice-rule clean string present: %s', (text) => {
     render(withProviders(<CaregiverHome />));
     expect(screen.getByText(text)).toBeTruthy();
+  });
+
+  // The greeting used to be the hard-coded literal 'Good morning', so it
+  // greeted the afternoon as morning. It now follows the clock, which
+  // means the assertion has to be time-independent: whatever hour the
+  // suite runs at, the rendered greeting must be one of the four vetted
+  // strings. timeOfDayGreeting's boundaries are pinned in its own unit
+  // test (src/utils/__tests__/greeting.test.ts).
+  it('renders a vetted time-of-day greeting', () => {
+    render(withProviders(<CaregiverHome />));
+    expect(screen.getByText(timeOfDayGreeting())).toBeTruthy();
   });
 });
 

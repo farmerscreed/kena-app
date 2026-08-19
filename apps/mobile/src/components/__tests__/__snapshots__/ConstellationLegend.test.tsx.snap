@@ -137,7 +137,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       <Text
         ellipsizeMode="tail"
         maxFontSizeMultiplier={1.3}
-        numberOfLines={1}
+        numberOfLines={2}
         style={
           {
             "color": "#B8B2AA",
@@ -334,7 +334,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       <Text
         ellipsizeMode="tail"
         maxFontSizeMultiplier={1.3}
-        numberOfLines={1}
+        numberOfLines={2}
         style={
           {
             "color": "#B8B2AA",
@@ -522,7 +522,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       <Text
         ellipsizeMode="tail"
         maxFontSizeMultiplier={1.3}
-        numberOfLines={1}
+        numberOfLines={2}
         style={
           {
             "color": "#B8B2AA",
@@ -728,7 +728,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       <Text
         ellipsizeMode="tail"
         maxFontSizeMultiplier={1.3}
-        numberOfLines={1}
+        numberOfLines={2}
         style={
           {
             "color": "#2A3040",
@@ -925,7 +925,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       <Text
         ellipsizeMode="tail"
         maxFontSizeMultiplier={1.3}
-        numberOfLines={1}
+        numberOfLines={2}
         style={
           {
             "color": "#2A3040",
@@ -1113,7 +1113,7 @@ exports[`ConstellationLegend — colorMode snapshot matrix renders the 3-person 
       <Text
         ellipsizeMode="tail"
         maxFontSizeMultiplier={1.3}
-        numberOfLines={1}
+        numberOfLines={2}
         style={
           {
             "color": "#2A3040",
