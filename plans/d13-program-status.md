@@ -197,18 +197,27 @@ NOT a bug, deliberately unchanged: the "Worth a read" card looks
 overlapped by the action bar mid-scroll. Scrolled to the bottom it
 clears both bars — `homeLayout`'s furniture stack is correct.
 
-### CI state on main (read before assuming you broke something)
+### CI state on main
 
-- `lint`, `typecheck`, `test`, `copy lint (voice rules)`, and the Deno
-  edge-function tests all PASS on main as of d184434.
-- The `Audit (production deps, high+ severity)` step FAILS, and has
-  failed continuously since at least 2026-08-14 — it predates every
-  D13 commit. Cause: new advisories against toolchain packages
-  (`@babel/core`, `brace-expansion`, `image-size` via metro/expo).
-  `npm audit fix --force` would install expo@57, a breaking change, so
-  it is NOT taken: the stack is pinned in docs/00-tech-stack.md and
-  bumping needs a founder decision. **Open question for the founder:**
-  bump the toolchain, or scope the audit step to runtime deps only?
+**Fully green as of 2026-08-19** — lint, typecheck, test, copy lint,
+Deno edge-function tests, and the dependency audit all pass.
+
+The audit step had been red since 2026-08-14. It is now
+`npm run audit-gate --workspace=apps/mobile`
+(`apps/mobile/tools/audit-gate/`), which blocks on any high/critical
+advisory that has no entry in `allowlist.ts` explaining why it cannot
+reach the shipped APK, and expires every suppression. The old bare
+`npm audit --omit=dev` was asking the wrong question: Expo declares
+its CLI, Metro and Babel as runtime dependencies, so it audited the
+build machine rather than the app.
+
+**Never run `npm audit fix --force` here** — it resolves the findings
+by downgrading react-native 0.81.5 → 0.72.17. Never delete
+`package-lock.json` to force a re-resolve either: a full regeneration
+pruned 1089 lines of platform-specific entries the iOS build needs.
+Both are documented in `docs/_reference/npm-audit-allowlist.md`.
+
+Version-code ledger: 16–19 used; next install is 20.
 
 ## Built (was: approved-but-not-yet-built)
 
