@@ -15,7 +15,8 @@
     "build:articles": "tsx scripts/build-articles.ts",
     "release:android:apk": "node scripts/release-android.js apk",
     "release:android:aab": "node scripts/release-android.js aab",
-    "copy-lint": "tsx tools/copy-lint/index.ts"
+    "copy-lint": "tsx tools/copy-lint/index.ts",
+    "audit-gate": "tsx tools/audit-gate/index.ts"
   },
   "dependencies": {
     "@expo-google-fonts/instrument-serif": "^0.4.1",
@@ -70,7 +71,7 @@
     "expo-build-properties": "~1.0.10",
     "jest": "30.3.0",
     "jest-expo": "^54.0.17",
-    "js-yaml": "^4.1.1",
+    "js-yaml": "^4.3.1",
     "react-test-renderer": "^19.1.0",
     "ts-jest": "29.4.9",
     "tsx": "^4.20.6",

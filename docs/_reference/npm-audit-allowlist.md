@@ -1,82 +1,78 @@
 # npm audit allowlist
 
-Sprint 16.6 QUA-6 — known-tolerated transitive vulnerabilities.
+Last audited: **2026-08-19**
 
-Last audited: **2026-05-14**
+## How this works now
 
-## Current state
+The allowlist used to live only in this document while CI ran a bare
+`npm audit --omit=dev --audit-level=high`. Nothing connected the two,
+so when new high/critical advisories landed on build tooling in
+August the gate went red and stayed red — five days of a check that
+could no longer tell anyone anything.
 
-`npm audit` reports 9 vulnerabilities (5 low, 4 moderate, 0 high, 0
-critical). Every one is in a transitive build-time or test-time
-dependency. None ship in the production APK. CI gates production
-dependencies with `--audit-level=high`, so this allowlist exists
-purely for human reference.
+The allowlist is now executable: `apps/mobile/tools/audit-gate/`.
+CI runs `npm run audit-gate --workspace=apps/mobile`.
 
-## The 9 transitive entries
+- `allowlist.ts` holds the entries, each with a reason and a
+  `reviewBy` date. Past that date the gate fails on it again, so a
+  suppression cannot outlive its reasoning.
+- `index.ts` fails the build on any high/critical advisory filed
+  against a package that has no current entry.
+- Advisories a package merely *inherits* from a dependency are not
+  counted twice. Without that, `react-native` is reported as
+  vulnerable because its CLI plugin has a finding — which is how the
+  old output reached 33 entries from 11 real ones.
 
-### Moderate (4) — postcss XSS chain
+## Why --omit=dev was the wrong question
 
-`postcss <8.5.10` has an XSS via unescaped `</style>` in CSS
-Stringify Output ([GHSA-qx2v-qp2m-jg93](https://github.com/advisories/GHSA-qx2v-qp2m-jg93)).
-The chain:
+`--omit=dev` filters *our* devDependencies. It does not filter the
+build toolchain, because Expo declares `@expo/cli`, Metro and Babel
+as runtime `dependencies` of `expo`. Auditing production dependencies
+therefore audits the machine that builds the app, not the app.
 
-    postcss
-    ↳ @expo/metro-config
-       ↳ @expo/cli
-          ↳ expo
+The right question is whether an advisory can reach the shipped APK.
+The APK contains the emitted JS bundle plus native libraries; Metro,
+Babel and the Expo CLI are not in it.
 
-The auto-fix path `npm audit fix --force` would downgrade us to
-`expo@49.0.23`, a major version regression that loses:
+## Never run `npm audit fix --force` on this repo
 
-- Expo SDK 56 features we depend on (new arch, the `privacyManifests`
-  field, `eas build --local` profiles, the new notification handler
-  shape).
-- Two years of incremental fixes across `expo-notifications`,
-  `expo-secure-store`, `expo-background-fetch`, etc.
+npm resolves the current findings by **downgrading react-native from
+0.81.5 to 0.72.17** and Expo to SDK 57, and by downgrading
+`react-native-health-connect` below its current pin. That would
+destroy the New Architecture setup the app depends on. Verified
+2026-08-19.
 
-Why we accept the risk: `postcss` runs only at build time inside
-Metro's CSS pipeline. The published APK never invokes a postcss
-codepath. The XSS vector requires an attacker to control the CSS
-input being stringified, which on our build server requires either
-a compromise of the source tree or of the dev dependency tree —
-both pre-conditions that already grant the attacker far worse paths.
+`npm audit fix` without `--force` is also unusable here: it tries to
+move `expo` and hits peer conflicts across every `expo-*` package.
 
-Remediation: upgrade to Expo SDK 57 once the channel lands a patch
-release of `@expo/metro-config` that pins `postcss >=8.5.10`. Tracked
-in PRODUCTION_READINESS.md (post-launch).
+## Current entries
 
-### Low (5) — jest-expo / jsdom chain
+Nine packages, all build-time or test-time, all expiring 2026-11-30:
+`@babel/core`, `brace-expansion`, `image-size`, `js-yaml`, `nanoid`,
+`postcss`, `shell-quote`, `tar`, `undici`, `ws`. Each carries its own
+reason in `allowlist.ts` — read them there rather than duplicating
+them here, so there is one source of truth.
 
-The Jest test-environment pulls jsdom which transitively pulls
-`http-proxy-agent` + `@tootallnate/once`, both flagged at low
-severity. Auto-fix downgrades `jest-expo` to 47, which removes our
-ability to test against SDK 56 native modules. Tests never ship.
+`js-yaml` is the one worth explaining twice. Our own devDependency
+was bumped 4.1.1 → 4.3.1 on 2026-08-19, which patches it. The copy
+still flagged is `js-yaml@3.14.2` nested under
+`@istanbuljs/load-nyc-config`, pulled in by `react-native` →
+`babel-jest` → `babel-plugin-istanbul` for coverage runs. npm
+`overrides` do not reach it in this workspace layout — package-scoped,
+nested and version-scoped forms were all tried and none changed the
+resolved version. It parses our own coverage config and never ships.
 
-Remediation: tracks the same Expo SDK 57 upgrade — `jest-expo` 56+
-should pull in the patched `jsdom`.
+## The standing remediation
 
-## Adding a new entry to the allowlist
+Expo SDK 54 → 57 clears most of the toolchain set at once. That is
+scoped work with a device-regression pass, not a dependency bump:
+it moves React Native, and the native module pins in
+docs/00-tech-stack.md (reanimated 4.1.7, gesture-handler 2.28.0,
+MMKV 4.x, ble-plx 3.x, healthkit, health-connect, Sentry) are tied to
+SDK 54 by ADR-0002 and ADR-0004. Plan it as its own sprint.
 
-Don't. If `npm audit` surfaces a new finding:
+## Adding an entry
 
-1. If high or critical: CI fails; fix the underlying dependency or
-   reject the offending direct dependency.
-2. If moderate or low and runtime-shippable: same — CI doesn't fail
-   today but it should; raise to high severity in the workflow.
-3. If moderate or low and dev-only: append to this document with
-   a remediation note. The allowlist is not a backlog of "fix
-   later" items — it is a record of decisions.
-
-## CI invocation
-
-The shipping step in `.github/workflows/ci.yml` is:
-
-```
-npm audit --omit=dev --audit-level=high
-```
-
-`--omit=dev` filters out the jest-expo and jsdom chain entirely
-(they're dev dependencies). `--audit-level=high` then filters out
-the postcss chain (it surfaces as moderate). Today this command
-exits 0; if a real production high/critical lands, the build
-breaks until it is addressed.
+Don't, unless you can say why the advisory cannot reach the shipped
+app. If you cannot, fix the dependency instead. The allowlist is a
+record of decisions, not a backlog.

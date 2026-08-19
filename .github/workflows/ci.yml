@@ -59,10 +59,17 @@ jobs:
       - name: Edge function tests (Deno)
         run: deno test -A supabase/functions/_shared/
 
-      # Sprint 16.6 QUA-6. Production-only audit, high+critical block
-      # the build. Moderate/low transitives are tolerated because the
-      # current set (postcss / jest-expo / jsdom) are all build-time
-      # or test-time only — they never ship in the APK. Allowlist + a
-      # remediation plan live in docs/_reference/npm-audit-allowlist.md.
-      - name: Audit (production deps, high+ severity)
-        run: npm audit --omit=dev --audit-level=high
+      # Dependency security. Was a bare `npm audit --omit=dev
+      # --audit-level=high`, which had failed on every run since
+      # 2026-08-14 and so carried no information — a permanently red
+      # check tells you nothing changed.
+      #
+      # The cause is that --omit=dev does not mean "what ships": Expo
+      # declares its CLI, Metro and Babel as runtime dependencies, so
+      # the build toolchain is audited as if it were in the APK.
+      # audit-gate asks the question that was actually intended — can
+      # this advisory reach the shipped app? — and blocks on anything
+      # not recorded as unreachable in tools/audit-gate/allowlist.ts.
+      # Suppressions carry a reason and expire.
+      - name: Audit (dependency security gate)
+        run: npm run audit-gate --workspace=apps/mobile
