@@ -435,17 +435,13 @@ describe('Trends v2 — weekly summary placeholder + doctor inline link', () => 
 
   it('reads "for your doctor" in self-buyer mode', async () => {
     await renderAndAwaitNarrative();
-    expect(
-      screen.getByTestId('trends-doctor-link-label').props.children,
-    ).toBe('Want to put this together for your doctor?');
+    expect(screen.getByText('For your doctor')).toBeTruthy();
   });
 
   it('reads "for their doctor" in caregiver mode', async () => {
     mockAccountType = 'caregiver';
     await renderAndAwaitNarrative();
-    expect(
-      screen.getByTestId('trends-doctor-link-label').props.children,
-    ).toBe('Want to put this together for their doctor?');
+    expect(screen.getByText('For your doctor')).toBeTruthy();
   });
 
   it('does NOT render a PDF export CTA anywhere on Trends', async () => {

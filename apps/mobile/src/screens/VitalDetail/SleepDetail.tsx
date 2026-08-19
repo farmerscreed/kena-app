@@ -284,6 +284,8 @@ export interface SleepDetailProps {
     timeZone: string,
   ) => void;
   familyId?: string;
+  /** Opens the For-your-doctor export (DetailShell renders the card). */
+  onDoctorPress?: () => void;
 }
 
 export function SleepDetail({
@@ -292,6 +294,7 @@ export function SleepDetail({
   onLearnOpen,
   onViewAllHistory,
   familyId,
+  onDoctorPress,
 }: SleepDetailProps) {
   const theme = useTheme();
   const { width: screenWidth } = useWindowDimensions();
@@ -450,6 +453,7 @@ export function SleepDetail({
 
   return (
     <DetailShell
+      onDoctorPress={onDoctorPress}
       vital="sleep"
       onBack={onBack}
       onRangeChange={setRange}

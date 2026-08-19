@@ -29,6 +29,9 @@
 // react-native-reanimated v3, phosphor-react-native v3. No new deps.
 
 import { Fragment, useMemo, useState } from 'react';
+import { Text, View } from 'react-native';
+import { useTheme } from '../../theme';
+import { MAX_FONT_SCALE } from '../../theme/fontScaling';
 import { DetailShell } from '../../components/DetailShell';
 import { BaselineReference } from '../../components/BaselineReference';
 import { StalenessHintRow } from '../../components/StalenessHintRow';
@@ -407,6 +410,8 @@ export interface HRDetailProps {
    *  swap to the parent-scoped query layer. Unset → unchanged
    *  self-buyer behavior. */
   familyId?: string;
+  /** Opens the For-your-doctor export (DetailShell renders the card). */
+  onDoctorPress?: () => void;
 }
 
 export function HRDetail({
@@ -414,6 +419,7 @@ export function HRDetail({
   onArticleOpen,
   onLearnOpen,
   familyId,
+  onDoctorPress,
 }: HRDetailProps) {
   // Sprint 17a — both data sources called unconditionally (rules of
   // hooks). Value-level pick below.
@@ -652,6 +658,15 @@ export function HRDetail({
   // Live reading leads with neutral "Latest" wording (the sample may be a
   // few minutes old); the resting fallback keeps the calm resting framing.
   const heroPrimary = hasHero ? String(Math.round(heroBpm!)) : '—';
+  // Founder-test fix (2026-08-19) — the narration's "usual" is the
+  // truth-layer resting-HR band when earned, same as the chip.
+  const hrInsightBand = useMemo(() => {
+    const row = getServerBaseline(summaryFamilyId ?? '', 'resting_hr');
+    return row && row.isSufficient
+      ? { bpmLow: Math.round(row.p10), bpmHigh: Math.round(row.p90), sampleCount: row.sampleCount }
+      : null;
+  }, [summaryFamilyId]);
+
   const hrChipTier = useMemo(() => {
     const row = getServerBaseline(summaryFamilyId ?? '', 'resting_hr');
     if (!row || !row.isSufficient) return 'learning' as const;
@@ -679,6 +694,7 @@ export function HRDetail({
 
   return (
     <DetailShell
+      onDoctorPress={onDoctorPress}
       vital="hr"
       onBack={onBack}
       onRangeChange={setRange}
@@ -796,6 +812,9 @@ export function HRDetail({
             </>
           ) : null}
 
+          {/* Founder-test feedback (2026-08-19, item 4). */}
+          <HRWhatMovesCard testID="hr-detail-what-moves" />
+
           {hasZoneData ? (
             <HRZonesCard
               zones={zones}
@@ -849,7 +868,7 @@ export function HRDetail({
             vital="hr"
             body={
               hasData
-                ? hrInsightBody(restingToday, baseline, restingByNight.length)
+                ? hrInsightBody(restingToday, hrInsightBand ?? baseline, restingByNight.length)
                 : INSIGHT_BODY_EMPTY
             }
             testID="hr-detail-insight"
@@ -864,5 +883,50 @@ export function HRDetail({
         </Fragment>
       )}
     </DetailShell>
+  );
+}
+
+
+// What tends to move resting heart rate — evidence-shaped tendencies
+// (regular aerobic movement ↔ lower resting rate over weeks; short or
+// fragmented sleep ↔ higher next-morning resting rate). Stated as
+// associations, never promises; the strips below show the user's own
+// nights.
+function HRWhatMovesCard({ testID }: { testID?: string }) {
+  const theme = useTheme();
+  return (
+    <View
+      accessible={true}
+      accessibilityRole="text"
+      accessibilityLabel="What tends to move this number. Regular movement over weeks is associated with a lower resting heart rate. Short or fragmented sleep often shows up as a higher resting rate the next morning. The charts below compare your own nights."
+      style={{
+        marginHorizontal: 20,
+        marginTop: theme.spacing.l,
+        padding: theme.spacing.l,
+        backgroundColor: theme.colors.surface.warmElevated,
+        borderRadius: theme.radii.l,
+      }}
+      testID={testID}
+    >
+      <Text
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
+        style={[theme.type('title'), { color: theme.colors.text.primary }]}
+      >
+        What tends to move this number
+      </Text>
+      <Text
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
+        style={[
+          theme.type('bodyM'),
+          { color: theme.colors.text.secondary, marginTop: theme.spacing.s },
+        ]}
+      >
+        Regular movement over weeks is associated with a lower resting heart
+        rate. Short or fragmented sleep often shows up as a higher resting
+        rate the next morning. Neither is a promise — the charts below
+        compare your own nights, and your doctor is the right reader of
+        anything persistent.
+      </Text>
+    </View>
   );
 }

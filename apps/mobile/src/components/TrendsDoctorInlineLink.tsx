@@ -9,8 +9,9 @@
 // Mode-aware copy: self-buyer → "your doctor"; caregiver → "their
 // doctor". Voice-rule clean.
 
-import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme';
+import { DoctorLinkCard } from './DoctorLinkCard';
 import type { AccountType } from '../types/database';
 
 export function trendsDoctorInlineLinkCopy(accountType: AccountType): string {
@@ -27,13 +28,11 @@ export interface TrendsDoctorInlineLinkProps {
 }
 
 export function TrendsDoctorInlineLink({
-  accountType,
   onPress,
   style,
   testID,
 }: TrendsDoctorInlineLinkProps) {
   const theme = useTheme();
-  const copy = trendsDoctorInlineLinkCopy(accountType);
   return (
     <View
       style={[
@@ -46,28 +45,13 @@ export function TrendsDoctorInlineLink({
         style,
       ]}
     >
-      <Pressable
+      {/* Founder-test feedback (2026-08-19) — the underlined caption
+          becomes the DoctorLinkCard so users actually find it. */}
+      <DoctorLinkCard
         onPress={onPress}
-        accessibilityRole="link"
-        accessibilityLabel={copy}
         testID={testID}
-        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      >
-        <Text
-          style={{
-            fontFamily: theme.fontFamilies.body,
-            fontSize: 13,
-            lineHeight: 20,
-            color: theme.colors.text.secondary,
-            textAlign: 'center',
-            textDecorationLine: 'underline',
-            textDecorationColor: theme.colors.text.tertiary,
-          }}
-          testID={testID ? `${testID}-label` : undefined}
-        >
-          {copy}
-        </Text>
-      </Pressable>
+        style={{ marginHorizontal: 0, marginTop: 0, alignSelf: 'stretch' }}
+      />
     </View>
   );
 }

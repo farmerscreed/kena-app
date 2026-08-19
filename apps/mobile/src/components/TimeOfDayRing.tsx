@@ -11,7 +11,7 @@
 // composed accessibility label carries the meaning instead.
 
 import { View, Text, type StyleProp, type ViewStyle } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Text as SvgText } from 'react-native-svg';
 import { useTheme } from '../theme';
 import { MAX_FONT_SCALE } from '../theme/fontScaling';
 
@@ -55,7 +55,7 @@ export function TimeOfDayRing({
   const caption = theme.type('caption');
   const cx = size / 2;
   const cy = size / 2;
-  const radius = size / 2 - 10;
+  const radius = size / 2 - 26;
 
   const buckets = hourBuckets(historyHours);
   const maxCount = Math.max(1, ...buckets.values());
@@ -103,7 +103,8 @@ export function TimeOfDayRing({
           strokeWidth={1}
           fill="none"
         />
-        {/* Top (midnight) marker — orientation without a digit. */}
+        {/* Compass words orient the clock face without digit chrome:
+            midnight top, morning right, noon bottom, evening left. */}
         <Circle cx={cx} cy={cy - radius} r={1.5} fill={theme.colors.text.tertiary} />
         {/* History density dots. */}
         {[...buckets.entries()].map(([hour, count]) => {
@@ -135,6 +136,18 @@ export function TimeOfDayRing({
             />
           );
         })}
+        <SvgText x={cx} y={cy - radius - 4} fontSize={9} fill={theme.colors.text.tertiary} textAnchor="middle">
+          midnight
+        </SvgText>
+        <SvgText x={cx + radius + 4} y={cy + 3} fontSize={9} fill={theme.colors.text.tertiary} textAnchor="start">
+          morning
+        </SvgText>
+        <SvgText x={cx} y={cy + radius + 12} fontSize={9} fill={theme.colors.text.tertiary} textAnchor="middle">
+          noon
+        </SvgText>
+        <SvgText x={cx - radius - 4} y={cy + 3} fontSize={9} fill={theme.colors.text.tertiary} textAnchor="end">
+          evening
+        </SvgText>
       </Svg>
       <Text
         maxFontSizeMultiplier={MAX_FONT_SCALE}
@@ -144,9 +157,11 @@ export function TimeOfDayRing({
           lineHeight: caption.lineHeight,
           color: theme.colors.text.tertiary,
           marginTop: 6,
+          textAlign: 'center',
         }}
       >
-        Bigger dots mean more readings at that time of day.
+        A clock face of your day: each dot is a time you tend to measure —
+        bigger dots, more readings at that hour. The bright marks are today's.
       </Text>
     </View>
   );

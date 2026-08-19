@@ -82,6 +82,7 @@ export function VitalDetailRouter() {
       return (
         <BPDetail
           onBack={onBack}
+          onDoctorPress={onSharePress}
           onSelectReading={onSelectReading}
           onArticleOpen={onArticleOpen}
           onLearnOpen={onLearnOpen}
@@ -96,6 +97,7 @@ export function VitalDetailRouter() {
       return (
         <HRDetail
           onBack={onBack}
+          onDoctorPress={onSharePress}
           onArticleOpen={onArticleOpen}
           onLearnOpen={onLearnOpen}
           familyId={familyId}
@@ -105,6 +107,7 @@ export function VitalDetailRouter() {
       return (
         <SpO2Detail
           onBack={onBack}
+          onDoctorPress={onSharePress}
           onArticleOpen={onArticleOpen}
           onLearnOpen={onLearnOpen}
           familyId={familyId}
@@ -117,6 +120,7 @@ export function VitalDetailRouter() {
       return (
         <SleepDetail
           onBack={onBack}
+          onDoctorPress={onSharePress}
           onArticleOpen={onArticleOpen}
           onLearnOpen={onLearnOpen}
           familyId={familyId}
@@ -129,6 +133,7 @@ export function VitalDetailRouter() {
       return (
         <ActivityDetail
           onBack={onBack}
+          onDoctorPress={onSharePress}
           onArticleOpen={onArticleOpen}
           onLearnOpen={onLearnOpen}
           familyId={familyId}

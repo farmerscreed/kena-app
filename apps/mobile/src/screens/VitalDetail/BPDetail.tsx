@@ -290,6 +290,8 @@ export interface BPDetailProps {
    *  `useParentVitalsRecent(familyId)` instead of the singleton
    *  slices. Unset → unchanged self-buyer behavior. */
   familyId?: string;
+  /** Opens the For-your-doctor export (DetailShell renders the card). */
+  onDoctorPress?: () => void;
 }
 
 export function BPDetail({
@@ -300,6 +302,7 @@ export function BPDetail({
   onSharePress,
   onViewAllHistory,
   familyId,
+  onDoctorPress,
 }: BPDetailProps) {
   const theme = useTheme();
   // Sprint 17a — both data sources called unconditionally (rules of
@@ -563,6 +566,23 @@ export function BPDetail({
 
   // ----- Baseline reference (16.5f) ------------------------------------
   const baseline = useMemo(() => bpBaseline(allBPReadings), [allBPReadings]);
+  // Founder-test fix (2026-08-19) — the narration's "your usual" is the
+  // SAME band the verdict chip judges against (the truth layer),
+  // falling back to the legacy display band only when the truth layer
+  // hasn't earned one yet. Two bands disagreeing is the exact bug the
+  // whole programme exists to kill.
+  const insightBand: BPBaseline | null = useMemo(() => {
+    if (chartBands.band && chartBands.secondaryBand) {
+      return {
+        sysLow: chartBands.band.low,
+        sysHigh: chartBands.band.high,
+        diaLow: chartBands.secondaryBand.low,
+        diaHigh: chartBands.secondaryBand.high,
+        sampleCount: baseline?.sampleCount ?? 0,
+      };
+    }
+    return baseline;
+  }, [chartBands, baseline]);
   const baselineBody = baseline ? formatBPBaseline(baseline) : '';
 
   // ----- Recent readings list — filtered to range, sliced by
@@ -599,6 +619,7 @@ export function BPDetail({
 
   return (
     <DetailShell
+      onDoctorPress={onDoctorPress}
       vital="bp"
       onBack={onBack}
       onRangeChange={setRange}
@@ -685,8 +706,20 @@ export function BPDetail({
                 >
                   {has7dTodayData ? (
                     <>
-                      {/* §7.3 — Morning | Evening | All: each segment is
-                          judged against its own band. */}
+                      {/* §7.3 — Morning | Evening | All times: each
+                          segment is judged against its own band.
+                          Founder-test feedback (2026-08-19): the pills
+                          read as labels, not buttons — caption + filled
+                          idle state make them obviously tappable. */}
+                      <Text
+                        maxFontSizeMultiplier={MAX_FONT_SCALE}
+                        style={[
+                          theme.type('caption'),
+                          { color: theme.colors.text.tertiary, marginBottom: theme.spacing.s },
+                        ]}
+                      >
+                        Tap to filter by time of day — each gets its own usual band.
+                      </Text>
                       <View
                         accessibilityRole="tablist"
                         style={{ flexDirection: 'row', gap: theme.spacing.s, marginBottom: theme.spacing.m }}
@@ -705,9 +738,12 @@ export function BPDetail({
                               backgroundColor:
                                 daySegment === seg
                                   ? theme.colors.surface.warmElevated
-                                  : 'transparent',
-                              borderWidth: 0.5,
-                              borderColor: theme.colors.border.rim,
+                                  : theme.colors.surface.warmSubtle,
+                              borderWidth: daySegment === seg ? 1 : 0.5,
+                              borderColor:
+                                daySegment === seg
+                                  ? theme.colors.brand.primary
+                                  : theme.colors.border.rim,
                             }}
                             testID={`bp-detail-segment-${seg}`}
                           >
@@ -723,7 +759,7 @@ export function BPDetail({
                                 },
                               ]}
                             >
-                              {seg === 'morning' ? 'Morning' : seg === 'evening' ? 'Evening' : 'All'}
+                              {seg === 'morning' ? 'Morning' : seg === 'evening' ? 'Evening' : 'All times'}
                             </Text>
                           </Pressable>
                         ))}
@@ -778,8 +814,8 @@ export function BPDetail({
             body={
               isEmpty
                 ? INSIGHT_BODY_EMPTY
-                : baseline
-                  ? bpInsightBody(stats, baseline, range, tier)
+                : insightBand
+                  ? bpInsightBody(stats, insightBand, range, tier)
                   : INSIGHT_BODY_PRE_BASELINE
             }
             testID="bp-detail-insight"

@@ -324,8 +324,8 @@ describe('HRDetail — has-data path', () => {
     // baseline midpoint around 63, the absDiff is small enough to land
     // in the "right at your usual / close to the middle" band.
     expect(
-      screen.getByText(/resting heart rate/i),
-    ).toBeTruthy();
+      screen.getAllByText(/resting heart rate/i).length,
+    ).toBeGreaterThan(0);
   });
 
   it('hides the correlation strip when sleep history is missing', () => {

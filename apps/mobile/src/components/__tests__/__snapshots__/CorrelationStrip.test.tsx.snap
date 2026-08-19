@@ -147,6 +147,96 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
       />
     </RNSVGGroup>
   </RNSVGSvgView>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "gap": 12,
+        "marginTop": 6,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "gap": 5,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "backgroundColor": "#9B93C7",
+            "height": 2,
+            "width": 14,
+          }
+        }
+      />
+      <Text
+        allowFontScaling={false}
+        style={
+          {
+            "color": "#B8B2AA",
+            "fontFamily": "Inter_400Regular",
+            "fontSize": 12,
+          }
+        }
+      >
+        Sleep
+      </Text>
+    </View>
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "gap": 5,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "borderColor": "#7EA8C4",
+            "borderStyle": "dashed",
+            "borderTopWidth": 2,
+            "height": 0,
+            "width": 14,
+          }
+        }
+      />
+      <Text
+        allowFontScaling={false}
+        style={
+          {
+            "color": "#B8B2AA",
+            "fontFamily": "Inter_400Regular",
+            "fontSize": 12,
+          }
+        }
+      >
+        Blood pressure
+      </Text>
+    </View>
+  </View>
+  <Text
+    allowFontScaling={false}
+    style={
+      {
+        "color": "#857F7A",
+        "fontFamily": "Inter_400Regular",
+        "fontSize": 12,
+        "lineHeight": 16,
+        "marginTop": 4,
+      }
+    }
+    testID="strip-how-to-read"
+  >
+    Both lines share the same nights, each on its own scale. When they rise and fall together — or mirror each other — that pairing is worth noticing.
+  </Text>
 </View>
 `;
 
@@ -297,5 +387,95 @@ exports[`CorrelationStrip — colorMode snapshot matrix renders range=7d colorMo
       />
     </RNSVGGroup>
   </RNSVGSvgView>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "flexDirection": "row",
+        "gap": 12,
+        "marginTop": 6,
+      }
+    }
+  >
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "gap": 5,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "backgroundColor": "#5A5887",
+            "height": 2,
+            "width": 14,
+          }
+        }
+      />
+      <Text
+        allowFontScaling={false}
+        style={
+          {
+            "color": "#2A3040",
+            "fontFamily": "Inter_400Regular",
+            "fontSize": 12,
+          }
+        }
+      >
+        Sleep
+      </Text>
+    </View>
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "gap": 5,
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "borderColor": "#C98A45",
+            "borderStyle": "dashed",
+            "borderTopWidth": 2,
+            "height": 0,
+            "width": 14,
+          }
+        }
+      />
+      <Text
+        allowFontScaling={false}
+        style={
+          {
+            "color": "#2A3040",
+            "fontFamily": "Inter_400Regular",
+            "fontSize": 12,
+          }
+        }
+      >
+        Blood pressure
+      </Text>
+    </View>
+  </View>
+  <Text
+    allowFontScaling={false}
+    style={
+      {
+        "color": "#5A6478",
+        "fontFamily": "Inter_400Regular",
+        "fontSize": 12,
+        "lineHeight": 16,
+        "marginTop": 4,
+      }
+    }
+    testID="strip-how-to-read"
+  >
+    Both lines share the same nights, each on its own scale. When they rise and fall together — or mirror each other — that pairing is worth noticing.
+  </Text>
 </View>
 `;

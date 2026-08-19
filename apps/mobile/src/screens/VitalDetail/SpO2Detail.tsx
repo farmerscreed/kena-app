@@ -104,6 +104,8 @@ export interface SpO2DetailProps {
     timeZone: string,
   ) => void;
   familyId?: string;
+  /** Opens the For-your-doctor export (DetailShell renders the card). */
+  onDoctorPress?: () => void;
 }
 
 // Sprint 16.5f — design fallback removed. The chart now shows real
@@ -366,6 +368,7 @@ export function SpO2Detail({
   onLearnOpen,
   onViewAllHistory,
   familyId,
+  onDoctorPress,
 }: SpO2DetailProps) {
   // Sprint 17a — both data sources called unconditionally.
   const ownPulse = useDailyPulseData();
@@ -599,6 +602,7 @@ export function SpO2Detail({
 
   return (
     <DetailShell
+      onDoctorPress={onDoctorPress}
       vital="spo2"
       onBack={onBack}
       onRangeChange={setTrendRange}

@@ -100,6 +100,8 @@ export interface ActivityDetailProps {
     timeZone: string,
   ) => void;
   familyId?: string;
+  /** Opens the For-your-doctor export (DetailShell renders the card). */
+  onDoctorPress?: () => void;
 }
 
 // Indexed by Date.getUTCDay(): 0=Sun, 1=Mon, ..., 6=Sat.
@@ -129,24 +131,32 @@ function activityInsightBody(
   rangedDays: ActivityDay[],
   goal: number,
   baseline: ActivityBaseline | null,
+  windowLabel: string,
 ): string {
   if (rangedDays.length === 0 || baseline === null) {
     return PLACEHOLDER_INSIGHT_PRE_BASELINE;
   }
-  const metGoal = rangedDays.filter((d) => d.totalSteps >= goal).length;
-  const total = rangedDays.length;
-  const sum = rangedDays.reduce((a, b) => a + b.totalSteps, 0);
-  const avgPerDay = total > 0 ? Math.round(sum / total) : 0;
+  // Founder-test fix (2026-08-19): the narration averaged over ALL
+  // ranged days — including zero-step days, which are almost always
+  // days the watch wasn't worn — while the stat trio and the baseline
+  // median both average over days WITH data. Same number, same
+  // denominator, everywhere: days with steps only.
+  const daysWithData = rangedDays.filter((d) => d.totalSteps > 0);
+  if (daysWithData.length === 0) return PLACEHOLDER_INSIGHT_PRE_BASELINE;
+  const metGoal = daysWithData.filter((d) => d.totalSteps >= goal).length;
+  const sum = daysWithData.reduce((a, b) => a + b.totalSteps, 0);
+  const avgPerDay = Math.round(sum / daysWithData.length);
   const baselineDiff = avgPerDay - baseline.median;
   const absDiff = Math.abs(baselineDiff);
 
-  // First line — met-goal frequency.
+  // First line — met-goal frequency, honest about the window (it was
+  // hardcoded to "this week" even on the 30/90-day ranges).
   const goalLine =
     metGoal === 0
-      ? `No met-goal days yet this week — a gentle walk today would change that.`
+      ? `No met-goal days yet ${windowLabel} — a gentle walk today would change that.`
       : metGoal === 1
-        ? `You met your goal once this week.`
-        : `You met your goal ${metGoal} times this week.`;
+        ? `You met your goal once ${windowLabel}.`
+        : `You met your goal ${metGoal} times ${windowLabel}.`;
 
   // Second line — how the average compares to baseline.
   let compareLine: string;
@@ -169,6 +179,7 @@ export function ActivityDetail({
   onLearnOpen,
   onViewAllHistory,
   familyId,
+  onDoctorPress,
 }: ActivityDetailProps) {
   // Same user timezone the rest of the app uses for day boundaries so
   // today's calories bucket matches the hero. Null → UTC.
@@ -339,6 +350,7 @@ export function ActivityDetail({
   return (
     <>
       <DetailShell
+        onDoctorPress={onDoctorPress}
         vital="activity"
         onBack={onBack}
         onRangeChange={setRange}
@@ -422,7 +434,7 @@ export function ActivityDetail({
           body={
             isEmpty
               ? PLACEHOLDER_INSIGHT_EMPTY
-              : activityInsightBody(rangedDays, targetSteps, baseline)
+              : activityInsightBody(rangedDays, targetSteps, baseline, rangeWindowLabel(range))
           }
           testID="activity-detail-insight"
         />
@@ -646,6 +658,19 @@ function dayKeyToDate(key: string): Date {
 
 function shortMonthDay(date: Date): string {
   return `${SHORT_MONTHS[date.getUTCMonth()]} ${date.getUTCDate()}`;
+}
+
+/** "this week" / "this month" / "these 90 days" — the insight's
+ *  honest window phrasing. */
+export function rangeWindowLabel(range: TrendRange): string {
+  switch (range) {
+    case '7d':
+      return 'this week';
+    case '30d':
+      return 'this month';
+    case '90d':
+      return 'these 90 days';
+  }
 }
 
 export function rangeShortLabel(range: TrendRange): string {

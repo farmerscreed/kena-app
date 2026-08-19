@@ -1392,6 +1392,25 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                 }
               }
             >
+              <Text
+                maxFontSizeMultiplier={1.6}
+                style={
+                  [
+                    {
+                      "family": "Inter_400Regular",
+                      "lineHeight": 16,
+                      "size": 12,
+                      "weight": "400",
+                    },
+                    {
+                      "color": "#857F7A",
+                      "marginBottom": 8,
+                    },
+                  ]
+                }
+              >
+                Tap to filter by time of day — each gets its own usual band.
+              </Text>
               <View
                 accessibilityRole="tablist"
                 style={
@@ -1436,7 +1455,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                   onStartShouldSetResponder={[Function]}
                   style={
                     {
-                      "backgroundColor": "transparent",
+                      "backgroundColor": "#120C07",
                       "borderColor": "rgba(255,255,255,0.06)",
                       "borderRadius": 99,
                       "borderWidth": 0.5,
@@ -1499,7 +1518,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                   onStartShouldSetResponder={[Function]}
                   style={
                     {
-                      "backgroundColor": "transparent",
+                      "backgroundColor": "#120C07",
                       "borderColor": "rgba(255,255,255,0.06)",
                       "borderRadius": 99,
                       "borderWidth": 0.5,
@@ -1563,9 +1582,9 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                   style={
                     {
                       "backgroundColor": "#1D140D",
-                      "borderColor": "rgba(255,255,255,0.06)",
+                      "borderColor": "#C96442",
                       "borderRadius": 99,
-                      "borderWidth": 0.5,
+                      "borderWidth": 1,
                       "paddingHorizontal": 12,
                       "paddingVertical": 6,
                     }
@@ -1588,7 +1607,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                       ]
                     }
                   >
-                    All
+                    All times
                   </Text>
                 </View>
               </View>
@@ -1995,7 +2014,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                         "strokeWidth",
                       ]
                     }
-                    r={64}
+                    r={48}
                     stroke={
                       {
                         "payload": 4280095757,
@@ -2006,7 +2025,7 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                   />
                   <RNSVGCircle
                     cx={74}
-                    cy={10}
+                    cy={26}
                     fill={
                       {
                         "payload": 4286939002,
@@ -2021,8 +2040,8 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                     r={1.5}
                   />
                   <RNSVGCircle
-                    cx={23.225386221360957}
-                    cy={112.96073145655814}
+                    cx={35.919039666020716}
+                    cy={103.2205485924186}
                     fill={
                       {
                         "payload": 4286490820,
@@ -2038,8 +2057,8 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                     r={5}
                   />
                   <RNSVGCircle
-                    cx={23.225386221360957}
-                    cy={112.96073145655814}
+                    cx={35.919039666020716}
+                    cy={103.2205485924186}
                     fill={
                       {
                         "payload": 4294967295,
@@ -2062,6 +2081,202 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                     }
                     strokeWidth={1}
                   />
+                  <RNSVGText
+                    content={null}
+                    dx={[]}
+                    dy={[]}
+                    fill={
+                      {
+                        "payload": 4286939002,
+                        "type": 0,
+                      }
+                    }
+                    font={
+                      {
+                        "fontSize": 9,
+                        "textAnchor": "middle",
+                      }
+                    }
+                    propList={
+                      [
+                        "fill",
+                      ]
+                    }
+                    rotate={[]}
+                    x={
+                      [
+                        74,
+                      ]
+                    }
+                    y={
+                      [
+                        22,
+                      ]
+                    }
+                  >
+                    <RNSVGTSpan
+                      content="midnight"
+                      dx={[]}
+                      dy={[]}
+                      fill={
+                        {
+                          "payload": 4278190080,
+                          "type": 0,
+                        }
+                      }
+                      font={{}}
+                      rotate={[]}
+                      x={[]}
+                      y={[]}
+                    />
+                  </RNSVGText>
+                  <RNSVGText
+                    content={null}
+                    dx={[]}
+                    dy={[]}
+                    fill={
+                      {
+                        "payload": 4286939002,
+                        "type": 0,
+                      }
+                    }
+                    font={
+                      {
+                        "fontSize": 9,
+                        "textAnchor": "start",
+                      }
+                    }
+                    propList={
+                      [
+                        "fill",
+                      ]
+                    }
+                    rotate={[]}
+                    x={
+                      [
+                        126,
+                      ]
+                    }
+                    y={
+                      [
+                        77,
+                      ]
+                    }
+                  >
+                    <RNSVGTSpan
+                      content="morning"
+                      dx={[]}
+                      dy={[]}
+                      fill={
+                        {
+                          "payload": 4278190080,
+                          "type": 0,
+                        }
+                      }
+                      font={{}}
+                      rotate={[]}
+                      x={[]}
+                      y={[]}
+                    />
+                  </RNSVGText>
+                  <RNSVGText
+                    content={null}
+                    dx={[]}
+                    dy={[]}
+                    fill={
+                      {
+                        "payload": 4286939002,
+                        "type": 0,
+                      }
+                    }
+                    font={
+                      {
+                        "fontSize": 9,
+                        "textAnchor": "middle",
+                      }
+                    }
+                    propList={
+                      [
+                        "fill",
+                      ]
+                    }
+                    rotate={[]}
+                    x={
+                      [
+                        74,
+                      ]
+                    }
+                    y={
+                      [
+                        134,
+                      ]
+                    }
+                  >
+                    <RNSVGTSpan
+                      content="noon"
+                      dx={[]}
+                      dy={[]}
+                      fill={
+                        {
+                          "payload": 4278190080,
+                          "type": 0,
+                        }
+                      }
+                      font={{}}
+                      rotate={[]}
+                      x={[]}
+                      y={[]}
+                    />
+                  </RNSVGText>
+                  <RNSVGText
+                    content={null}
+                    dx={[]}
+                    dy={[]}
+                    fill={
+                      {
+                        "payload": 4286939002,
+                        "type": 0,
+                      }
+                    }
+                    font={
+                      {
+                        "fontSize": 9,
+                        "textAnchor": "end",
+                      }
+                    }
+                    propList={
+                      [
+                        "fill",
+                      ]
+                    }
+                    rotate={[]}
+                    x={
+                      [
+                        22,
+                      ]
+                    }
+                    y={
+                      [
+                        77,
+                      ]
+                    }
+                  >
+                    <RNSVGTSpan
+                      content="evening"
+                      dx={[]}
+                      dy={[]}
+                      fill={
+                        {
+                          "payload": 4278190080,
+                          "type": 0,
+                        }
+                      }
+                      font={{}}
+                      rotate={[]}
+                      x={[]}
+                      y={[]}
+                    />
+                  </RNSVGText>
                 </RNSVGGroup>
               </RNSVGSvgView>
               <Text
@@ -2073,10 +2288,11 @@ exports[`BPDetail — snapshot matches snapshot in dark mode with a populated re
                     "fontSize": 12,
                     "lineHeight": 16,
                     "marginTop": 6,
+                    "textAlign": "center",
                   }
                 }
               >
-                Bigger dots mean more readings at that time of day.
+                A clock face of your day: each dot is a time you tend to measure — bigger dots, more readings at that hour. The bright marks are today's.
               </Text>
             </View>
           </View>

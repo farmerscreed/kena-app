@@ -131,6 +131,14 @@ export function MedicationSection({
       >
         {`What ${subjectName} takes`}
       </Text>
+      <Text
+        maxFontSizeMultiplier={MAX_FONT_SCALE}
+        style={[caption, { color: theme.colors.text.tertiary, marginTop: 2 }]}
+        testID={`${testID}-subtitle`}
+      >
+        A simple medication log — a record of what's taken and when, shown
+        alongside the readings and on the doctor summary.
+      </Text>
 
       {rows.length === 0 && !adding ? (
         <Text
