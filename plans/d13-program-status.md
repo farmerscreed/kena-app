@@ -1,6 +1,19 @@
 # D13 Vitals Layer — Program Status & Handoff
 
-Last updated: 2026-08-19 — MERGED TO MAIN (#29) incl. the correlation matrix (#28); v15 (from main) on device. ONE founder action outstanding: run tools/release-d13.sh with LEIKO_PAT. This document is the
+Last updated: 2026-08-19 — MERGED TO MAIN (#29) incl. the correlation matrix (#28); v15 (from main) on device. ONE founder action outstanding: run tools/release-d13.sh with LEIKO_PAT.
+
+**Session-end note (2026-08-19):** the founder exported LEIKO_PAT in
+their own terminal; that export does NOT reach the agent's shell (env
+resets per command; nothing in profile/secrets). The export and
+`bash tools/release-d13.sh` must run in the SAME terminal window. Next
+session: first ask whether the script ran and printed "── done ──".
+  - If YES → prod is live: verify vital_baselines rows exist (via
+    tools/prod-sql.py with the PAT), then run the on-device pass on
+    live server bands; first Story letter after Mon 04:00 UTC cron.
+  - If NO → the founder re-runs both lines in one terminal. The
+    script's repair step is interactive by design (remote-only
+    migration versions must be reviewed before `migration repair
+    --status reverted`). This document is the
 single source of truth for where the D13 programme stands; it is
 written so any future session (or person) can continue with nothing
 missing.
