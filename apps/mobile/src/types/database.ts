@@ -350,7 +350,11 @@ export type VitalsOtherRow = {
 export type CorrelationType =
   | 'sleep_x_morning_bp'
   | 'activity_x_resting_hr'
-  | 'spo2_dip_x_sleep_score';
+  | 'spo2_dip_x_sleep_score'
+  // The cross-vital matrix (2026-08-19).
+  | 'sleep_x_resting_hr'
+  | 'activity_x_morning_bp'
+  | 'after_meds_x_bp';
 
 export type CorrelationRow = {
   id: string;
