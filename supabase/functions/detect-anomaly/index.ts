@@ -379,7 +379,9 @@ async function refreshVitalBaselines(
       .eq('family_id', familyId)
       .eq('hidden', false)
       .eq('source', 'watch')
-      .in('quality_score', ['good', 'fair'])
+      // quality_score is null on most device rows — only exclude
+      // readings the pipeline explicitly scored poor.
+      .or('quality_score.is.null,quality_score.in.(good,fair)')
       .gte('measured_at', since)
       .limit(1000),
     service
@@ -428,17 +430,23 @@ async function refreshVitalBaselines(
   }));
   rows.push(...computeBpBaselineRows(bpSamples));
 
-  // Resting HR — one sample per day: the minimum of resting-tagged
-  // samples (same derivation the legacy hr_baselines refresh uses).
-  const hrByDay = new Map<string, number>();
+  // Resting HR — one sample per day. Prefer resting-tagged samples,
+  // but device payloads often carry no motion tag at all; when none
+  // are tagged, fall back to the daily minimum across all samples
+  // (the daily low lands in the sleep window, the same proxy the
+  // client series uses).
+  const hrRestByDay = new Map<string, number>();
+  const hrAllByDay = new Map<string, number>();
   for (const r of hrRes.data ?? []) {
+    const day = dayKey(r.measured_at as string);
+    const bpm = r.value_int as number;
+    if (!hrAllByDay.has(day) || hrAllByDay.get(day)! > bpm) hrAllByDay.set(day, bpm);
     const motion =
       (r.value_jsonb as { motion_state?: string } | null)?.motion_state ?? 'unknown';
     if (motion !== 'rest') continue;
-    const day = dayKey(r.measured_at as string);
-    const bpm = r.value_int as number;
-    if (!hrByDay.has(day) || hrByDay.get(day)! > bpm) hrByDay.set(day, bpm);
+    if (!hrRestByDay.has(day) || hrRestByDay.get(day)! > bpm) hrRestByDay.set(day, bpm);
   }
+  const hrByDay = hrRestByDay.size > 0 ? hrRestByDay : hrAllByDay;
   const hrRow = computeVitalBaselineRow(
     'resting_hr',
     [...hrByDay.entries()].map(([day, v]) => ({ value: v, dayKey: day })),
@@ -535,15 +543,20 @@ async function refreshHrBaselineAndTrend(
     .gte('measured_at', since)
     .limit(5000);
   const rows = hrRes.data ?? [];
-  // Group by UTC day (YYYY-MM-DD), keep min resting bpm.
-  const byDay = new Map<string, number>();
+  // Group by UTC day (YYYY-MM-DD), keep min bpm. Prefer resting-tagged
+  // samples; device payloads often carry no motion tag, so fall back
+  // to the daily minimum across all samples when none are tagged.
+  const restByDay = new Map<string, number>();
+  const allByDay = new Map<string, number>();
   for (const r of rows) {
-    const motion = (r.value_jsonb as { motion_state?: string } | null)?.motion_state ?? 'unknown';
-    if (motion !== 'rest') continue;
     const day = new Date(r.measured_at).toISOString().slice(0, 10);
     const bpm = r.value_int as number;
-    if (!byDay.has(day) || byDay.get(day)! > bpm) byDay.set(day, bpm);
+    if (!allByDay.has(day) || allByDay.get(day)! > bpm) allByDay.set(day, bpm);
+    const motion = (r.value_jsonb as { motion_state?: string } | null)?.motion_state ?? 'unknown';
+    if (motion !== 'rest') continue;
+    if (!restByDay.has(day) || restByDay.get(day)! > bpm) restByDay.set(day, bpm);
   }
+  const byDay = restByDay.size > 0 ? restByDay : allByDay;
   const days = [...byDay.entries()].sort((a, b) => a[0].localeCompare(b[0]));
   if (days.length === 0) return [0, 0];
 
