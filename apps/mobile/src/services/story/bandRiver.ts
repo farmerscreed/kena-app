@@ -97,7 +97,10 @@ export async function fetchBandRiver(
   nowSec: number = Math.floor(Date.now() / 1000),
 ): Promise<BandRiverData> {
   const since = new Date((nowSec - STORY_MONTHS * 30 * DAY_SEC) * 1000).toISOString();
-  const res = await client
+  // context_tags lands with migration 0055; a prod instance that
+  // predates the main merge would fail the whole select over one
+  // optional column — retry without it so the river always flows.
+  let res = await client
     .from('readings')
     .select('measured_at, systolic, diastolic, context_tags')
     .eq('family_id', familyId)
@@ -105,6 +108,16 @@ export async function fetchBandRiver(
     .gte('measured_at', since)
     .order('measured_at', { ascending: true })
     .limit(2000);
+  if (res.error) {
+    res = (await client
+      .from('readings')
+      .select('measured_at, systolic, diastolic')
+      .eq('family_id', familyId)
+      .eq('hidden', false)
+      .gte('measured_at', since)
+      .order('measured_at', { ascending: true })
+      .limit(2000)) as typeof res;
+  }
   const readings: RiverReading[] = ((res.data ?? []) as unknown as Array<{
     measured_at: string;
     systolic: number;

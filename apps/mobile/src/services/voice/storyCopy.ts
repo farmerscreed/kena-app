@@ -23,6 +23,8 @@ export const storyCopy = {
     movementAnchor: (weekLabel: string): string =>
       `Readings tagged after walking became regular around ${weekLabel}.`,
     alongside: 'What was happening alongside:',
+    building:
+      'Your story starts here. Once a few weeks of readings are in, this becomes the picture of where your usual range is heading.',
     noChapters:
       "No shifts so far — the usual band has held steady across this window. Steady is a finding too.",
   },
