@@ -8,6 +8,7 @@
 
 import { type ReactNode } from 'react';
 import { render, screen } from '@testing-library/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '../../../theme';
 import { HRDetail } from '../HRDetail';
@@ -166,6 +167,15 @@ jest.mock('../../../state/onboarding', () => ({
   },
 }));
 
+// PersonalFindingsCard (D13 correlation matrix) calls useQuery directly,
+// so the screen needs a client even though every data hook is mocked.
+// Retries off: a failed fetch should surface now, not after backoff.
+function makeTestQueryClient() {
+  return new QueryClient({
+    defaultOptions: { queries: { retry: false, gcTime: 0 } },
+  });
+}
+
 function withProviders(ui: ReactNode, colorMode: 'dark' | 'light' = 'dark') {
   return (
     <SafeAreaProvider
@@ -174,9 +184,11 @@ function withProviders(ui: ReactNode, colorMode: 'dark' | 'light' = 'dark') {
         insets: { top: 0, left: 0, right: 0, bottom: 0 },
       }}
     >
-      <ThemeProvider mode="caregiver" colorMode={colorMode}>
-        {ui}
-      </ThemeProvider>
+      <QueryClientProvider client={makeTestQueryClient()}>
+        <ThemeProvider mode="caregiver" colorMode={colorMode}>
+          {ui}
+        </ThemeProvider>
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 }
