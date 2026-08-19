@@ -1,22 +1,44 @@
 # D13 Vitals Layer — Program Status & Handoff
 
-Last updated: 2026-08-19 — MERGED TO MAIN (#29) incl. the correlation matrix (#28); v15 (from main) on device. ONE founder action outstanding: run tools/release-d13.sh with LEIKO_PAT.
+Last updated: 2026-08-19 — **PROD RELEASE EXECUTED AND VERIFIED.**
+Everything is merged to main (#29) and live on prod; v15 (from main)
+on the device.
 
-**Session-end note (2026-08-19):** the founder exported LEIKO_PAT in
-their own terminal; that export does NOT reach the agent's shell (env
-resets per command; nothing in profile/secrets). The export and
-`bash tools/release-d13.sh` must run in the SAME terminal window. Next
-session: first ask whether the script ran and printed "── done ──".
-  - If YES → prod is live: verify vital_baselines rows exist (via
-    tools/prod-sql.py with the PAT), then run the on-device pass on
-    live server bands; first Story letter after Mon 04:00 UTC cron.
-  - If NO → the founder re-runs both lines in one terminal. The
-    script's repair step is interactive by design (remote-only
-    migration versions must be reviewed before `migration repair
-    --status reverted`). This document is the
-single source of truth for where the D13 programme stands; it is
-written so any future session (or person) can continue with nothing
-missing.
+**Release record (2026-08-19):** `release-d13.sh` could not run as-is
+(supabase CLI v2.109 dropped `--project-ref` from `migration list` /
+`db push`; also the founder's first PAT belonged to their *other*
+Supabase account — leiko-prod lives in the account whose token now
+sits in 1Password as the working one). The release was executed via
+the management API instead (`tools/prod-sql.py`, PAT from the session
+file `~/secrets/leiko-pat`, since deleted):
+  - Migrations 0053–0056 + 0058 applied to prod and recorded in
+    `supabase_migrations.schema_migrations`.
+  - The 19 remote-only timestamp versions (WhatsApp/studio/pg_cron
+    hotfixes applied straight to prod) were DELETED from the history
+    table — their SQL stays applied — so `db-migrate` on main is
+    green from now on. The drift is gone for good.
+  - Five functions deployed via `tools/deploy-d13-fns.sh` (founder-run):
+    detect-anomaly, sync, compute-correlations, compute-weekly-summary,
+    compute-monthly-baseline.
+  - detect-anomaly cron invoked twice; first run exposed a real bug —
+    prod readings all have `quality_score` null and HR samples carry no
+    motion tag, so the good/fair + rest-only filters excluded the whole
+    working set (and legacy `hr_baselines` had been writing nothing for
+    the same reason). Fixed (commit e733f47), redeployed, re-invoked.
+  - VERIFIED: `vital_baselines` now holds bp_systolic / bp_diastolic /
+    resting_hr / spo2 / sleep_duration / steps_daily rows for all three
+    subjects, `is_sufficient` honest (20-reading subject sufficient on
+    BP/SpO₂/steps; sparse subjects in learning). Active crons:
+    detect-anomaly-nightly, compute-correlations-hourly,
+    compute-weekly-summary-weekly, compute-monthly-baseline-monthly.
+
+**Next:** on-device live pass (server bands, matrix findings, context
+segments); first Story letter lands after the Mon 04:00 UTC weekly
+cron. Founder may rotate the PAT in Supabase account settings (the
+session token file is deleted; rotation is optional hygiene).
+This document is the single source of truth for where the D13
+programme stands; it is written so any future session (or person) can
+continue with nothing missing.
 
 ## Where everything lives
 
