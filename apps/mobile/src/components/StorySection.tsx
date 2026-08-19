@@ -87,7 +87,8 @@ export function StorySection({ familyId, userId, testID = 'story-section' }: Sto
   const anchors = story.data?.river.anchors ?? [];
   const chapters = story.data?.chapters ?? [];
 
-  if (!familyId || (story.isSuccess && anchors.length < 2)) return null;
+  if (!familyId) return null;
+  const thin = story.isSuccess && anchors.length < 2;
 
   return (
     <View style={{ paddingHorizontal: 20, paddingTop: 8 }} testID={testID}>
@@ -115,14 +116,24 @@ export function StorySection({ familyId, userId, testID = 'story-section' }: Sto
         </Text>
       ) : null}
 
-      <BandRiver
-        anchors={anchors}
-        changePoints={story.data?.river.changePoints ?? []}
-        width={Math.min(width - 40, 520)}
-        testID={`${testID}-river`}
-      />
+      {thin ? (
+        <Text
+          maxFontSizeMultiplier={MAX_FONT_SCALE}
+          style={[caption, { color: theme.colors.text.tertiary, marginBottom: 8 }]}
+          testID={`${testID}-building`}
+        >
+          {storyCopy.chapters.building}
+        </Text>
+      ) : (
+        <BandRiver
+          anchors={anchors}
+          changePoints={story.data?.river.changePoints ?? []}
+          width={Math.min(width - 40, 520)}
+          testID={`${testID}-river`}
+        />
+      )}
 
-      {chapters.length > 0 ? (
+      {thin ? null : chapters.length > 0 ? (
         <View style={{ marginTop: 16 }} testID={`${testID}-chapters`}>
           <Text
             maxFontSizeMultiplier={MAX_FONT_SCALE_TIGHT}

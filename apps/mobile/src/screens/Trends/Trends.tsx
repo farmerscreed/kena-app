@@ -71,6 +71,7 @@ import type { TrendsRange, TrendsData } from '../../utils/trends-aggregate';
 import type { VitalType } from '../../components/VitalRing';
 import { ViewAsTableLink } from '../../components/ViewAsTableLink';
 import { StorySection } from '../../components/StorySection';
+import { mmkv, STORAGE_KEYS } from '../../services/storage';
 import type { AccountType } from '../../types/database';
 import { bpBaseline, formatBPBaseline } from '../../utils/vitalBaselines';
 import type {
@@ -464,7 +465,10 @@ export function Trends() {
 
         {/* Story Trends (2026-08-19) — the person's arc sits above the
             range machinery: letter, band river, chapters. */}
-        <StorySection familyId={familyId} userId={userId} />
+        <StorySection
+          familyId={familyId ?? mmkv.getString(STORAGE_KEYS.currentFamilyId) ?? null}
+          userId={userId}
+        />
 
         <TrendsRangeChipsRow
           accountType={accountType}
